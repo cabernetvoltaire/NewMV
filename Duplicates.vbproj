@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{5AD60B53-901B-42A3-8D96-AE67A945BB2D}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>Duplicates.FindDuplicates</StartupObject>
+    <RootNamespace>Duplicates</RootNamespace>
+    <AssemblyName>WindowsApplication</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".vs\Metavisua\v15\.suo" />
+    <None Include=".vs\Metavisua\v15\Server\sqlite3\db.lock" />
+    <None Include=".vs\Metavisua\v15\Server\sqlite3\storage.ide" />
+    <None Include="App.config" />
+    <None Include="FileHandling.vb~RF5ec3de5.TMP" />
+    <None Include="FindDuplicates.vb~RF5a3adb9.TMP" />
+    <None Include="Metavisua.vbproj.old" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ButtonHandling.vb" />
+    <Compile Include="Duplicates2.Designer.vb">
+      <DependentUpon>Duplicates2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Duplicates2.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FileHandling.vb" />
+    <Compile Include="FindDuplicates.Designer.vb">
+      <DependentUpon>FindDuplicates.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FindDuplicates.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FolderManagement.vb" />
+    <Compile Include="FolderSelect.Designer.vb">
+      <DependentUpon>FolderSelect.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FolderSelect.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.vb">
+      <DependentUpon>Form1.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form1.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmFullScreen.Designer.vb">
+      <DependentUpon>frmFullScreen.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmFullScreen.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMain.Designer.vb">
+      <DependentUpon>frmMain.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmMain.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KeyHandling.vb" />
+    <Compile Include="Module1.vb" />
+    <Compile Include="MovieHandler.vb" />
+    <Compile Include="PictureFunctions.vb" />
+    <Compile Include="Settings.vb" />
+    <Compile Include="Sublists.Designer.vb">
+      <DependentUpon>Sublists.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Sublists.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Subsets.vb" />
+    <Compile Include="Thumbnails.Designer.vb">
+      <DependentUpon>Thumbnails.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Thumbnails.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TreeView.Designer.vb">
+      <DependentUpon>TreeView.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TreeView.vb">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Duplicates2.resx">
+      <DependentUpon>Duplicates2.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FindDuplicates.resx">
+      <DependentUpon>FindDuplicates.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FolderSelect.resx">
+      <DependentUpon>FolderSelect.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmFullScreen.resx">
+      <DependentUpon>frmFullScreen.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMain.resx">
+      <DependentUpon>frmMain.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OldTest.resx" />
+    <EmbeddedResource Include="Sublists.resx">
+      <DependentUpon>Sublists.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Thumbnails.resx">
+      <DependentUpon>Thumbnails.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TreeView.resx">
+      <DependentUpon>TreeView.vb</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Connected Services\" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.Targets" />
+  <ProjectExtensions>
+    <VisualStudio AllowExistingFolder="true" />
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

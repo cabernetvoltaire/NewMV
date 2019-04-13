@@ -1,0 +1,393 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AE2A260B-7821-4E97-A843-D96814954527}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>MasaSam.Forms.Sample.SplashScreen1</StartupObject>
+    <RootNamespace>MasaSam.Forms.Sample</RootNamespace>
+    <AssemblyName>Metavisua</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>K:\MV\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>Metavisua.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>Metavisua.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\FileAccess_Alpha_frmMain_Icon1.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Interop.Dsofile">
+      <HintPath>C:\DsoFile\Demo\Interop.Dsofile.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="MasaSam.Forms.Controls, Version=1.0.6487.35861, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MasaSam.Forms.Controls\bin\Debug\MasaSam.Forms.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Threading.Tasks" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AddFolders.Designer.vb">
+      <DependentUpon>AddFolders.vb</DependentUpon>
+    </Compile>
+    <Compile Include="AddFolders.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Attributes.Designer.vb">
+      <DependentUpon>Attributes.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Attributes.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoTrailer.vb" />
+    <Compile Include="ButtonForm.Designer.vb">
+      <DependentUpon>ButtonForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ButtonForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ButtonSet.vb" />
+    <Compile Include="ButtonRow.vb" />
+    <Compile Include="Dashboard.Designer.vb">
+      <DependentUpon>Dashboard.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Dashboard.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DateMove.vb" />
+    <Compile Include="Duplicates.vb" />
+    <Compile Include="FavouritesMinder.vb" />
+    <Compile Include="FileNamesGrouper.vb" />
+    <Compile Include="FilterHandler.vb" />
+    <Compile Include="Colors.vb" />
+    <Compile Include="FilterMove.vb" />
+    <Compile Include="FindDuplicates.Designer.vb">
+      <DependentUpon>FindDuplicates.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FindDuplicates.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FolderSelect.Designer.vb">
+      <DependentUpon>FolderSelect.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FolderSelect.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form2.Designer.vb">
+      <DependentUpon>Form2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form2.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Grouper.vb" />
+    <Compile Include="GroupingForm.Designer.vb">
+      <DependentUpon>GroupingForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="GroupingForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KeyHandler.vb" />
+    <Compile Include="ListBoxHandler.vb" />
+    <Compile Include="MediaHandler.vb" />
+    <Compile Include="MovieSwapper.vb" />
+    <Compile Include="MVButton.vb" />
+    <Compile Include="My Project\Class1.vb" />
+    <Compile Include="NextFile.vb" />
+    <Compile Include="OrphanFinder.vb" />
+    <Compile Include="PlayListHandler.vb" />
+    <Compile Include="Preferences.Designer.vb">
+      <DependentUpon>Preferences.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Preferences.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Progress.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RandomHandler.vb" />
+    <Compile Include="Settings.vb" />
+    <Compile Include="Shortcuts.vb" />
+    <Compile Include="ShowListForm.Designer.vb">
+      <DependentUpon>ShowListForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ShowListForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SortHandler.vb" />
+    <Compile Include="SplashScreen1.Designer.vb">
+      <DependentUpon>SplashScreen1.vb</DependentUpon>
+    </Compile>
+    <Compile Include="SplashScreen1.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StartPointHandler.vb" />
+    <Compile Include="StateHandler.vb" />
+    <Compile Include="frmFullScreen.Designer.vb">
+      <DependentUpon>frmFullScreen.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmFullScreen.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.vb">
+      <DependentUpon>MainForm.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KeyHandling.vb" />
+    <Compile Include="FileHandling.vb" />
+    <Compile Include="General.vb" />
+    <Compile Include="ButtonHandling.vb" />
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="PictureFunctions.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="MySettings.vb" />
+    <Compile Include="Subsets.vb" />
+    <Compile Include="Thumbnails2.designer.vb">
+      <DependentUpon>Thumbnails2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Thumbnails2.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TrailMode.vb" />
+    <Compile Include="TreeView.Designer.vb">
+      <DependentUpon>TreeView.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TreeView.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Undo.vb" />
+    <Compile Include="UserPrefs.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AddFolders.resx">
+      <DependentUpon>AddFolders.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Attributes.resx">
+      <DependentUpon>Attributes.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ButtonForm.resx">
+      <DependentUpon>ButtonForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dashboard.resx">
+      <DependentUpon>Dashboard.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FindDuplicates.resx">
+      <DependentUpon>FindDuplicates.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FolderSelect.resx">
+      <DependentUpon>FolderSelect.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form2.resx">
+      <DependentUpon>Form2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GroupingForm.resx">
+      <DependentUpon>GroupingForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Preferences.resx">
+      <DependentUpon>Preferences.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Progress.resx">
+      <DependentUpon>Progress.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmFullScreen.resx">
+      <DependentUpon>frmFullScreen.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShowListForm.resx">
+      <DependentUpon>ShowListForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SplashScreen1.resx">
+      <DependentUpon>SplashScreen1.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Thumbnails2.resx">
+      <DependentUpon>Thumbnails2.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TreeView.resx">
+      <DependentUpon>TreeView.vb</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\app.manifest">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="AxWMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>aximp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="IWshRuntimeLibrary">
+      <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Shell32">
+      <Guid>{50A7E9B0-70EF-11D1-B75A-00A0C90564FE}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Untitled-1 copy1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FileAccess_Alpha_frmMain_Icon1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Key_empty_Small.png" />
+    <Content Include="Resources\MVSplash.PNG" />
+    <None Include="Resources\Key_empty_Small1.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
