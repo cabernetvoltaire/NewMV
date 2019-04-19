@@ -25,6 +25,7 @@ Public Class MainForm
     Private WithEvents Op As New OrphanFinder
     Public WithEvents SP As New SpeedHandler
     Public WithEvents AT As New AutoTrailer
+    ' Public WithEvents Response As New Timer
 
 
     Public DraggedFolder As String
@@ -268,7 +269,7 @@ Public Class MainForm
         'MSFiles.URLSZero()
         MSFiles.ResettersOff()
 
-        If Media.Player.Visible Then
+        If Media.Player.URL <> "" Then
             Media.Player.URL = ""
         End If
         If currentPicBox.Visible Then
@@ -652,6 +653,7 @@ Public Class MainForm
             Media.Player.Ctlcontrols.play()
         End If
     End Sub
+
     Public Sub HandleKeys(sender As Object, e As KeyEventArgs)
         Me.Cursor = Cursors.WaitCursor
         'MsgBox(e.KeyCode.ToString)
@@ -704,6 +706,8 @@ Public Class MainForm
                     tvMain2.tvFiles_KeyDown(sender, e)
                 End If
             Case Keys.Left, Keys.Right, Keys.Up, Keys.Down
+                'Response.Enabled = True
+                'If Response.Enabled = False Then
                 If PFocus <> CtrlFocus.ShowList Then
                     'SendKeys.SendWait("")
                     ControlSetFocus(tvMain2)
@@ -712,6 +716,7 @@ Public Class MainForm
                     tvMain2.tvFiles_KeyDown(sender, e)
 
                 End If
+                'End If
 
             Case KeyEscape
                 CancelDisplay()                'currentPicBox.Image.Dispose()
@@ -901,6 +906,7 @@ Public Class MainForm
         End Select
         Me.Cursor = Cursors.Default
         ' e.suppresskeypress = True
+        '    Response.Enabled = False
     End Sub
 
     Private Sub DeleteFiles(e As KeyEventArgs)
@@ -1142,7 +1148,7 @@ Public Class MainForm
         ShiftDown = e.Shift
         CtrlDown = e.Control
         AltDown = e.Alt
-        If e.KeyData <> (Keys.F4 Or AltDown) Then
+        If e.KeyData <> (Keys.F4 And AltDown) Then
             UpdateButtonAppearance()
         End If
     End Sub
@@ -2249,7 +2255,11 @@ Public Class MainForm
 
 
     Private Sub ButtonFormToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ButtonFormToolStripMenuItem.Click
-        ButtonForm.Show()
+        Dim x As New ButtonForm
+        'x.MdiParent = Me
+        x.Show()
+        '        ButtonForm.Show()
+
     End Sub
 
 
@@ -2496,5 +2506,14 @@ Public Class MainForm
 
     Private Sub LoadFiles_DoWork(sender As Object, e As DoWorkEventArgs) Handles LoadFiles.DoWork
 
+    End Sub
+
+    Private Sub ToolStripTextBox1_Click_1(sender As Object, e As EventArgs) Handles AutoButton.Click
+        AutoButtonsToggle()
+
+    End Sub
+
+    Private Sub Response_Tick(sender As Object, e As EventArgs) Handles Response.Tick
+        Response.Enabled = False
     End Sub
 End Class

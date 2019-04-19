@@ -38,6 +38,9 @@ Module FileHandling
         DebugStartpoint(Media)
         'LabelStartPoint(Media)
         MainForm.UpdateFileInfo()
+        If M.MediaType <> Filetype.Movie Then
+            currentPicBox = M.Picture
+        End If
         If M.MediaPath <> "" Then My.Computer.Registry.CurrentUser.SetValue("File", M.MediaPath)
 
     End Sub
@@ -399,8 +402,11 @@ Module FileHandling
                     Case StateHandler.StateOptions.Move, StateHandler.StateOptions.Navigate
                         If Not currentPicBox.Image Is Nothing Then DisposePic(currentPicBox)
                         If strDest = "" Then
-                            Deletefile(m.FullName)
+                            Dim f As New IO.FileInfo(m.FullName)
+                            fm.DestinationPath = strDest
+                            fm.CheckFile(f)
                             'fm.DeleteFavourite(m.FullName)
+                            If fm.OkToDelete Then Deletefile(m.FullName)
                         Else
                             Dim f As New IO.FileInfo(m.FullName)
                             fm.DestinationPath = spath
@@ -778,6 +784,7 @@ Module FileHandling
     Public Sub HarvestBelow(d As DirectoryInfo)
         For Each di In d.EnumerateDirectories
             BurstFolder(di)
+
         Next
     End Sub
     Public Sub HarvestFolder(d As DirectoryInfo, Recurse As Boolean, Parent As Boolean)

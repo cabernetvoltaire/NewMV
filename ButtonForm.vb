@@ -5,6 +5,7 @@ Public Class ButtonForm
     Public sbtns As Button()
     Public lbls As Label()
 
+
     Public Sub New()
 
         ' This call is required by the designer.
@@ -34,7 +35,7 @@ Public Class ButtonForm
         For i = 0 To 7
             sbtns(i).Text = m.Buttons(i).FaceText
             lbls(i).Text = m.Buttons(i).Label
-
+            ToolTip1.SetToolTip(sbtns(i), buttons.CurrentRow.Buttons(i).Path)
         Next
 
     End Sub
@@ -44,7 +45,7 @@ Public Class ButtonForm
 
     End Sub
 
-    Private Sub RespondToKey(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+    Private Sub RespondToKey(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
         Select Case e.KeyCode
             Case Keys.F5, Keys.F6, Keys.F7, Keys.F8, Keys.F9, Keys.F10, Keys.F11, Keys.F12
                 If e.Shift Then

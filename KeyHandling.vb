@@ -49,7 +49,7 @@
     'Common Keys
     Public KeyBackUndo = Keys.Back
     Public KeyReStartSS = Keys.Space
-    Public KeyLoopToggle = Keys.OemCloseBrackets
+    Public KeyLoopToggle = Keys.OemCloseBrackets + Keys.Alt
     Public KeyTrueSize = Keys.Oemplus
     Public KeyCycleRandom = Keys.Pause
     Public KeyRotate = Keys.OemCloseBrackets

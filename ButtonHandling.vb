@@ -2,7 +2,7 @@
 
 Module ButtonHandling
     Public buttons As New ButtonSet
-
+    Public AutoButtons As Boolean = False
     Public nletts As Int16 = 36
     '   Public layers(nletts) As Byte
     ' Public currentlayer As Byte
@@ -106,7 +106,11 @@ Module ButtonHandling
     ''' Assigns all the buttons in a generation, beneath sPath, to the letter iAlpha
     ''' </summary>
     Public Sub AssignLinear(sPath As String, iAlpha As Integer, blnNext As Boolean)
-        If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
+        If AutoButtons Then
+        Else
+            If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
+
+        End If
 
         Dim d As New DirectoryInfo(sPath)
         Dim i As Byte
@@ -121,8 +125,11 @@ Module ButtonHandling
                 AssignButton(k, iAlpha + Int(i / 8), 1, di(i).FullName)
             Next
         End If
+        If AutoButtons Then
+        Else
+            KeyAssignmentsStore(ButtonFilePath)
 
-        KeyAssignmentsStore(ButtonFilePath)
+        End If
 
     End Sub
     Public Sub AssignAlphabetic(blntest As Boolean)
@@ -154,6 +161,10 @@ Module ButtonHandling
 
         Next
         KeyAssignmentsStore(ButtonFilePath)
+    End Sub
+    Public Sub AutoButtonsToggle()
+        AutoButtons = Not AutoButtons
+
     End Sub
     Public Sub AssignTree(strStart As String)
         If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub

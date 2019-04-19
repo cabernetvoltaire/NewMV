@@ -138,8 +138,8 @@
     <Compile Include="Duplicates.vb" />
     <Compile Include="FavouritesMinder.vb" />
     <Compile Include="FileNamesGrouper.vb" />
-    <Compile Include="FilterHandler.vb" />
     <Compile Include="Colors.vb" />
+    <Compile Include="FilterHandler.vb" />
     <Compile Include="FilterMove.vb" />
     <Compile Include="FindDuplicates.Designer.vb">
       <DependentUpon>FindDuplicates.vb</DependentUpon>
@@ -378,6 +378,7 @@
     <None Include="Resources\FileAccess_Alpha_frmMain_Icon1.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="FIlterHandler.cs" />
     <Content Include="Resources\Key_empty_Small.png" />
     <Content Include="Resources\MVSplash.PNG" />
     <None Include="Resources\Key_empty_Small1.png" />

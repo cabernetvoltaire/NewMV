@@ -175,6 +175,8 @@ Partial Class MainForm
         Me.LinearToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AlphaToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TreeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator12 = New System.Windows.Forms.ToolStripSeparator()
+        Me.AutoButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.HarvestFolderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeleteEmptyFoldersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HarvestFoldersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -224,6 +226,7 @@ Partial Class MainForm
         Me.tmrMovieSlideShow = New System.Windows.Forms.Timer(Me.components)
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
         Me.NewIndex = New System.Windows.Forms.Timer(Me.components)
+        Me.Response = New System.Windows.Forms.Timer(Me.components)
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1355,10 +1358,6 @@ Partial Class MainForm
         'tmrSlowMo
         '
         '
-        'ToolTip1
-        '
-        Me.ToolTip1.IsBalloon = True
-        '
         'tmrPumpFiles
         '
         Me.tmrPumpFiles.Interval = 2500
@@ -1567,7 +1566,7 @@ Partial Class MainForm
         '
         'ToolStripMenuItem10
         '
-        Me.ToolStripMenuItem10.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LinearToolStripMenuItem, Me.AlphaToolStripMenuItem, Me.TreeToolStripMenuItem})
+        Me.ToolStripMenuItem10.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LinearToolStripMenuItem, Me.AlphaToolStripMenuItem, Me.TreeToolStripMenuItem, Me.ToolStripSeparator12, Me.AutoButton})
         Me.ToolStripMenuItem10.Name = "ToolStripMenuItem10"
         Me.ToolStripMenuItem10.Size = New System.Drawing.Size(163, 34)
         Me.ToolStripMenuItem10.Text = "&Assign buttons"
@@ -1595,6 +1594,17 @@ Partial Class MainForm
             Or System.Windows.Forms.Keys.T), System.Windows.Forms.Keys)
         Me.TreeToolStripMenuItem.Size = New System.Drawing.Size(316, 34)
         Me.TreeToolStripMenuItem.Text = "&Tree"
+        '
+        'ToolStripSeparator12
+        '
+        Me.ToolStripSeparator12.Name = "ToolStripSeparator12"
+        Me.ToolStripSeparator12.Size = New System.Drawing.Size(313, 6)
+        '
+        'AutoButton
+        '
+        Me.AutoButton.Name = "AutoButton"
+        Me.AutoButton.Size = New System.Drawing.Size(316, 34)
+        Me.AutoButton.Text = "AutoButton"
         '
         'HarvestFolderToolStripMenuItem
         '
@@ -1924,6 +1934,9 @@ Partial Class MainForm
         'NewIndex
         '
         '
+        'Response
+        '
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(11.0!, 24.0!)
@@ -1934,6 +1947,7 @@ Partial Class MainForm
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.MenuStrip2)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.IsMdiContainer = True
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(6)
         Me.Name = "MainForm"
@@ -2205,4 +2219,7 @@ Partial Class MainForm
     Friend WithEvents PictureBox3 As PictureBox
     Friend WithEvents PictureBox2 As PictureBox
     Friend WithEvents NewIndex As Timer
+    Friend WithEvents ToolStripSeparator12 As ToolStripSeparator
+    Friend WithEvents AutoButton As ToolStripMenuItem
+    Friend WithEvents Response As Timer
 End Class

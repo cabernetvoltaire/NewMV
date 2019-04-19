@@ -383,6 +383,10 @@ Public Module General
             CurrentFolder = strPath
             ReDim FBCShown(0)
             NofShown = 0
+            If AutoButtons Then
+                AssignLinear(CurrentFolder, ButtfromAsc(Asc("0")), True)
+                ChangeButtonLetter(New KeyEventArgs(Keys.D0))
+            End If
             '   My.Computer.Registry.CurrentUser.SetValue("File", Media.MediaPath)
         End If
 
@@ -399,9 +403,10 @@ Public Module General
     End Sub
 
     Public Function FileLengthCheck(file As String) As Boolean
-        Dim m As New FileInfo(file)
-        If Len(m.FullName) > 247 Then
+
+        If Len(file) > 247 Then
             If MsgBox("Filename too long - truncate?", MsgBoxStyle.YesNo, "Filename too long") = MsgBoxResult.Yes Then
+                Dim m As New FileInfo(file)
                 Dim i As Integer = Len(m.FullName)
                 Dim l As Integer = Len(m.Directory.FullName)
                 If l > 247 Then

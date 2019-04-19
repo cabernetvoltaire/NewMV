@@ -72,13 +72,17 @@
     ''' <param name="f"></param>
     ''' <param name="destinationpath"></param>
     Public Sub Check(f As IO.FileInfo, destinationpath As String)
+        OkToDelete = False
         Dim m As String = "a"
         'm is a file in the favourites, and we have to update its target to the new destination.
         Dim bk As Long = 0
         While m IsNot Nothing
 
             m = FavesList.Find(Function(x) x.Contains(f.Name))
-            If m Is Nothing Then Exit While
+            If m Is Nothing Then
+                OkToDelete = True
+                Exit While
+            End If
             'Debug.Print(m)
             Dim minfo As New IO.FileInfo(m)
             'Get the bookmark
@@ -89,12 +93,23 @@
             Else
                 bk = 0
             End If
-            'Create a new shortcut where the old one was.
-            Dim sch As New ShortcutHandler(destinationpath, minfo.Directory.FullName, f.Name)
-            sch.MarkOffset = 0
-            Dim fn As String = sch.Create_ShortCut(bk)
-            'Remove the old shortcut
-            FavesList.Remove(m)
+            If destinationpath = "" Then
+                If MsgBox("There are links to this file. Delete?", MsgBoxStyle.YesNoCancel, "Delete file?") = MsgBoxResult.Yes Then
+                    OkToDelete = True
+                    DeleteFavourite(m)
+                Else
+                    OkToDelete = False
+                    Exit While
+                End If
+            Else
+                'Create a new shortcut where the old one was.
+                Dim sch As New ShortcutHandler(destinationpath, minfo.Directory.FullName, f.Name)
+                sch.MarkOffset = 0
+                Dim fn As String = sch.Create_ShortCut(bk)
+                'Remove the old shortcut
+                FavesList.Remove(m)
+            End If
         End While
     End Sub
+    Public Property OkToDelete As Boolean = True
 End Class

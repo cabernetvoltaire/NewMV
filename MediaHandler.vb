@@ -435,7 +435,7 @@ Public Class MediaHandler
                 ' mPlayer.Ctlcontrols.play()
                 'End If
                 Debug.Print(mPlayer.URL & ", duration " & mDuration & ", playposition" & mPlayPosition & " STOPPED")
-                If MainForm.tmrAutoTrail.Enabled = False And mPlayer.Equals(Media.Player) And Not LoopMovie Then
+                If MainForm.tmrAutoTrail.Enabled = False AndAlso mPlayer.Equals(Media.Player) AndAlso mType = Filetype.Movie AndAlso Not LoopMovie Then
                     MainForm.AdvanceFile(True, False)
                 Else
                     MediaJumpToMarker()

@@ -32,14 +32,10 @@ Public Class ButtonSet
         Set(ByVal value As Integer)
             Dim b = mCurrentLetter
             If b <> value Then
-
-                Dim c = InStr(alph, ButtfromAsc(value))
-                If c = 0 Then
-                Else
-                    mCurrentLetter = value
-                    mCurrentRow = CurrentSet(c - 1)
-                    RaiseEvent LetterChanged(value)
-                End If
+                Dim c = value
+                mCurrentLetter = value
+                mCurrentRow = CurrentSet(c)
+                RaiseEvent LetterChanged(value)
             Else
             End If
 

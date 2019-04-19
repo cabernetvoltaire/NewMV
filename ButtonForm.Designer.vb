@@ -22,6 +22,7 @@ Partial Class ButtonForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel10 = New System.Windows.Forms.Panel()
         Me.Label9 = New System.Windows.Forms.Label()
@@ -55,6 +56,7 @@ Partial Class ButtonForm
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.lbl1 = New System.Windows.Forms.Label()
         Me.btn1 = New System.Windows.Forms.Button()
+        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.TableLayoutPanel1.SuspendLayout()
         Me.Panel10.SuspendLayout()
         Me.Panel9.SuspendLayout()
@@ -472,6 +474,7 @@ Partial Class ButtonForm
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(2383, 230)
         Me.Controls.Add(Me.TableLayoutPanel1)
+        Me.KeyPreview = True
         Me.Name = "ButtonForm"
         Me.Text = "ButtonForm"
         Me.TableLayoutPanel1.ResumeLayout(False)
@@ -533,4 +536,5 @@ Partial Class ButtonForm
     Friend WithEvents Label7 As Label
     Friend WithEvents Button7 As Button
     Friend WithEvents PictureBox2 As PictureBox
+    Friend WithEvents ToolTip1 As ToolTip
 End Class
