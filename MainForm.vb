@@ -40,35 +40,19 @@ Public Class MainForm
         'Dir.Delete()
     End Sub
 
-
-
-    Public Sub ChangeFavourites()
-        'With a maintained list of files for the favourites folder
-        'check that a file to be moved is not on it. 
-        'if it is, change the link to point to the new position.
-    End Sub
     Public Sub OnSpeedChange(sender As Object, e As EventArgs) Handles SP.SpeedChanged
         Dim SH As SpeedHandler = CType(sender, SpeedHandler)
         If SH.Slideshow Then
             tbSpeed.Text = "Slide Interval=" & SH.Interval
         Else
             tbSpeed.Text = "Speed:" & SH.FrameRate & "fps"
-            SwitchSound(Not SH.Fullspeed)
+            SndH.SoundPlayer.settings.rate = SH.FrameRate / 30
+            SndH.Slow = Not SH.Fullspeed
 
         End If
     End Sub
     Public Sub SwitchSound(slow As Boolean)
-        If slow Then
-            Media.Player.settings.mute = True
-            SoundWMP.settings.mute = False
-            SoundWMP.URL = Media.Player.URL
-            SoundWMP.Ctlcontrols.currentPosition = Media.Position
-            SoundWMP.settings.rate = SP.FrameRate / 30
-        Else
-            SoundWMP.URL = ""
-            'Media.Player.settings.mute = False
-
-        End If
+        SndH.Slow = slow
     End Sub
 
 
@@ -168,7 +152,7 @@ Public Class MainForm
     ''' <param name="img"></param>
     Public Sub MovietoPic(img As Image)
         PreparePic(currentPicBox, pbxBlanker, img)
-        SwitchSound(False)
+        'SndH.Muted = True
         tbState.Text = ""
 
     End Sub
@@ -819,7 +803,9 @@ Public Class MainForm
                 With Media.Player
                     If .URL <> "" Then
                         If .playState = WMPLib.WMPPlayState.wmppsPaused Then
-                            Media.Speed.Unpause = True
+                            Media.Speed.Paused = True
+                            Media.Position = Media.Speed.PausedPosition
+
                             tmrSlowMo.Enabled = False
                             '                            .Ctlcontrols.currentPosition = Media.Position
                             '.settings.rate = 1
@@ -827,8 +813,10 @@ Public Class MainForm
                             Media.Speed.Fullspeed = True
                             SwitchSound(False)
                         Else
-                            Media.Speed.Unpause = False
+                            Media.Speed.Unpause = True
                             .Ctlcontrols.pause()
+                            Media.Speed.PausedPosition = .Ctlcontrols.currentPosition
+                            Media.Speed.PausedPosition = 0
                             Media.Speed.Fullspeed = False
                         End If
                     Else
@@ -948,6 +936,7 @@ Public Class MainForm
     End Sub
 
     Private Sub NavigateToFavourites()
+        CurrentFilterState.OldState = CurrentFilterState.State
         CurrentFilterState.State = FilterHandler.FilterState.LinkOnly
         ChangeFolder(FavesFolderPath)
 

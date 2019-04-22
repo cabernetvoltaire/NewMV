@@ -194,6 +194,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="SortHandler.vb" />
+    <Compile Include="Sound.vb" />
     <Compile Include="SplashScreen1.Designer.vb">
       <DependentUpon>SplashScreen1.vb</DependentUpon>
     </Compile>

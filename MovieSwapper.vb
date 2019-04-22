@@ -1,5 +1,6 @@
 ﻿Imports AxWMPLib
 Public Class MediaSwapper
+
     Public NextF As New NextFile
     Private mMedia1 As New MediaHandler("mMedia1")
     Private mMedia2 As New MediaHandler("mMedia2")
@@ -43,6 +44,7 @@ Public Class MediaSwapper
     Public Sub New(ByRef MP1 As AxWindowsMediaPlayer, ByRef MP2 As AxWindowsMediaPlayer, ByRef MP3 As AxWindowsMediaPlayer, ByRef PB1 As PictureBox, ByRef PB2 As PictureBox, ByRef PB3 As PictureBox)
         AssignPlayers(MP1, MP2, MP3)
         AssignPictures(PB1, PB2, PB3)
+
     End Sub
     Public Sub AssignPictures(ByRef PB1 As PictureBox, ByRef PB2 As PictureBox, ByRef PB3 As PictureBox)
         mMedia1.Picture = PB1

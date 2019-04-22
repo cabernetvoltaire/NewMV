@@ -371,6 +371,9 @@ Public Module General
     End Sub
 
     Public Sub ChangeFolder(strPath As String)
+        'If strPath <> FavesFolderPath Then
+        '    CurrentfilterState.State = CurrentfilterState.OldState
+        'End If
         If strPath = CurrentFolder Then
         Else
             If Not LastFolder.Contains(CurrentFolder) Then

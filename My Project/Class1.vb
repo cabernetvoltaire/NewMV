@@ -15,7 +15,19 @@
     Private mSpeed As Byte
     Public Property Fullspeed As Boolean = True
     Public Property Unpause As Boolean = False
-    Public Property Paused As Boolean = False
+    Private mPaused As Boolean = False
+    Public PausedPosition As Long
+    Public Property Paused() As Boolean
+        Get
+            Return mPaused
+        End Get
+        Set(ByVal value As Boolean)
+            mPaused = value
+            If mPaused Then
+                PausedPosition = Media.Player.Ctlcontrols.currentPosition
+            End If
+        End Set
+    End Property
     Public Property AbsoluteJump As Integer = 35
     Public Property FractionalJump As Integer = 8
     Public Property Speed() As Byte

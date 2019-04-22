@@ -4,6 +4,7 @@ Friend Module Mysettings
 
     Public PFocus As Byte = CtrlFocus.Tree
     Public Property ZoneSize As Decimal = 0.4
+
     Public Const OrientationId As Integer = &H112
     Public ButtonFilePath As String
 

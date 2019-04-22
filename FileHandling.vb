@@ -17,10 +17,10 @@ Module FileHandling
     Public t As Thread
     Public WithEvents MSFiles As New MediaSwapper(MainForm.MainWMP4, MainForm.MainWMP2, MainForm.MainWMP3, MainForm.PictureBox1, MainForm.PictureBox2, MainForm.PictureBox3)
     '   Public WithEvents MSShow As New MovieSwapper(MainForm.MainWMP, MainForm.MainWMP2)
-
     Public WithEvents Media As New MediaHandler("Media")
     Public fm As New FavouritesMinder("Q:\Favourites")
 
+    Public WithEvents SndH As New SoundController
     Public Sub OnMediaStartChanged(sender As Object, e As EventArgs) Handles Media.StartChanged
         MainForm.OnStartChanged(sender, e)
 
@@ -44,7 +44,15 @@ Module FileHandling
         If M.MediaPath <> "" Then My.Computer.Registry.CurrentUser.SetValue("File", M.MediaPath)
 
     End Sub
-    Public Sub OnMediaLoaded(M As MediaHandler) Handles MSFiles.LoadedMedia
+    Public Sub OnMediaLoaded(M As MediaHandler) Handles MSFiles.MediaShown
+        'Try
+        SndH.SoundPlayer = MainForm.SoundWMP
+        SndH.CurrentPlayer = Media.Player
+        SndH.SPH = MainForm.SP
+        'Catch ex As Exception
+        'MsgBox("Failed SNDH")
+        'End Try
+
         'M.Pause(True)
     End Sub
 

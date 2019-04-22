@@ -48,7 +48,7 @@
     Public Sub New()
         Me.State = FilterState.All
     End Sub
-    Public Property OldState As Byte
+    Public Property OldState As Byte = 0
     Public Property State() As Byte
         Get
             Return mState

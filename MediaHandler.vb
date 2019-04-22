@@ -14,7 +14,6 @@ Public Class MediaHandler
     Public WithEvents StartPoint As New StartPointHandler
     Public WithEvents Speed As New SpeedHandler
     Public DisplayerName As String
-    Private mPaused As Boolean
     Private mLoop As Boolean = False
     Private mType As Filetype
     Public Name As String = Me.Name
@@ -277,7 +276,8 @@ Public Class MediaHandler
 
     End Function
     Public Sub MediaJumpToMarker(Optional ToEnd As Boolean = False)
-        If mBookmark > -1 Then
+
+        If mBookmark > -1 And Speed.PausedPosition = 0 Then
             ' If False Then
             If StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
                 mPlayPosition = mBookmark
@@ -292,7 +292,13 @@ Public Class MediaHandler
                                     }
                 mPlayPosition = m.StartPoint
             Else
-                mPlayPosition = StartPoint.StartPoint
+                If Speed.PausedPosition <> 0 Then
+                    mPlayPosition = Speed.PausedPosition
+
+                Else
+                    mPlayPosition = StartPoint.StartPoint
+
+                End If
 
             End If
         End If
@@ -451,20 +457,14 @@ Public Class MediaHandler
                 Report("Duration:" & mDuration & vbCrLf & "Startpoint:" & StartPoint.StartPoint, 2)
                 MediaJumpToMarker()
                 Debug.Print(mPlayer.URL & " ` playstatehandler")
-                If mPaused Then
-                    mPaused = False
-                    Exit Sub
-                End If
+
                 If FullScreen.Changing Or Speed.Unpause Then 'Hold current position if switching to FS or back. 
-                    mPlayPosition = mPlayer.Ctlcontrols.currentPosition
+                    mPlayPosition = Speed.PausedPosition
                 End If
-                mPaused = False
             Case WMPLib.WMPPlayState.wmppsPaused ', WMPLib.WMPPlayState.wmppsTransitioning
                 If Not Speed.Fullspeed Then
-                    mPaused = False
                     MainForm.SwitchSound(True)
                 Else
-                    mPaused = True
 
                 End If
             Case Else
