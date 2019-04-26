@@ -39,6 +39,7 @@
         End Set
     End Property
     Private Sub SlowSound()
+        Exit Sub
         If mSlow Then
             CurrentPlayer.settings.mute = True
             SoundPlayer.settings.mute = False
@@ -65,8 +66,8 @@
         'SoundPlayer.settings.rate = SPH.FrameRate / 30
     End Sub
     Private Sub OnURLChange()
-        SoundPlayer.URL = CurrentPlayer.URL
-        SoundPlayer.settings.rate = CurrentPlayer.settings.rate
+        '  SoundPlayer.URL = CurrentPlayer.URL
+        ' SoundPlayer.settings.rate = CurrentPlayer.settings.rate
     End Sub
     Private Sub OnPosChange() Handles mCurrentPlayer.PositionChange
         SoundPlayer.Ctlcontrols.currentPosition = mCurrentPlayer.Ctlcontrols.currentPosition

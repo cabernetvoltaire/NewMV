@@ -121,7 +121,6 @@ Partial Class MainForm
         Me.chbInDir = New System.Windows.Forms.CheckBox()
         Me.chbNextFile = New System.Windows.Forms.CheckBox()
         Me.lbxGroups = New System.Windows.Forms.ListBox()
-        Me.CheckBox1 = New System.Windows.Forms.CheckBox()
         Me.lblAttributes = New System.Windows.Forms.Label()
         Me.lblNavigateState = New System.Windows.Forms.Label()
         Me.tmrUpdateFileList = New System.Windows.Forms.Timer(Me.components)
@@ -227,6 +226,9 @@ Partial Class MainForm
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
         Me.NewIndex = New System.Windows.Forms.Timer(Me.components)
         Me.Response = New System.Windows.Forms.Timer(Me.components)
+        Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.CheckBox1 = New System.Windows.Forms.CheckBox()
+        Me.chbPreviewLinks = New System.Windows.Forms.CheckBox()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -270,6 +272,7 @@ Partial Class MainForm
         Me.GroupBox1.SuspendLayout()
         CType(Me.FileSystemWatcher1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip2.SuspendLayout()
+        Me.GroupBox3.SuspendLayout()
         Me.SuspendLayout()
         '
         'FileToolStripMenuItem
@@ -1083,8 +1086,8 @@ Partial Class MainForm
         Me.FlowLayoutPanel1.Controls.Add(Me.GroupBox2)
         Me.FlowLayoutPanel1.Controls.Add(Me.GroupBox1)
         Me.FlowLayoutPanel1.Controls.Add(Me.lbxGroups)
-        Me.FlowLayoutPanel1.Controls.Add(Me.CheckBox1)
         Me.FlowLayoutPanel1.Controls.Add(Me.lblAttributes)
+        Me.FlowLayoutPanel1.Controls.Add(Me.GroupBox3)
         Me.FlowLayoutPanel1.Controls.Add(Me.lblNavigateState)
         Me.FlowLayoutPanel1.Location = New System.Drawing.Point(3, 3)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
@@ -1275,22 +1278,11 @@ Partial Class MainForm
         Me.lbxGroups.TabIndex = 45
         Me.ToolTip1.SetToolTip(Me.lbxGroups, "Click to select subfolders to create")
         '
-        'CheckBox1
-        '
-        Me.CheckBox1.AutoSize = True
-        Me.CheckBox1.Dock = System.Windows.Forms.DockStyle.Top
-        Me.CheckBox1.Location = New System.Drawing.Point(1825, 3)
-        Me.CheckBox1.Name = "CheckBox1"
-        Me.CheckBox1.Size = New System.Drawing.Size(302, 29)
-        Me.CheckBox1.TabIndex = 46
-        Me.CheckBox1.Text = "Show Attributes (loads slower)"
-        Me.CheckBox1.UseVisualStyleBackColor = True
-        '
         'lblAttributes
         '
         Me.lblAttributes.AutoSize = True
         Me.lblAttributes.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.lblAttributes.Location = New System.Drawing.Point(2133, 173)
+        Me.lblAttributes.Location = New System.Drawing.Point(1825, 173)
         Me.lblAttributes.Name = "lblAttributes"
         Me.lblAttributes.Size = New System.Drawing.Size(71, 25)
         Me.lblAttributes.TabIndex = 47
@@ -1299,7 +1291,7 @@ Partial Class MainForm
         'lblNavigateState
         '
         Me.lblNavigateState.AutoSize = True
-        Me.lblNavigateState.Location = New System.Drawing.Point(2210, 0)
+        Me.lblNavigateState.Location = New System.Drawing.Point(2151, 0)
         Me.lblNavigateState.Name = "lblNavigateState"
         Me.lblNavigateState.Size = New System.Drawing.Size(71, 25)
         Me.lblNavigateState.TabIndex = 48
@@ -1937,6 +1929,42 @@ Partial Class MainForm
         'Response
         '
         '
+        'GroupBox3
+        '
+        Me.GroupBox3.Controls.Add(Me.chbPreviewLinks)
+        Me.GroupBox3.Controls.Add(Me.CheckBox1)
+        Me.GroupBox3.Dock = System.Windows.Forms.DockStyle.Top
+        Me.GroupBox3.Location = New System.Drawing.Point(1903, 4)
+        Me.GroupBox3.Margin = New System.Windows.Forms.Padding(4)
+        Me.GroupBox3.Name = "GroupBox3"
+        Me.GroupBox3.Padding = New System.Windows.Forms.Padding(4)
+        Me.GroupBox3.Size = New System.Drawing.Size(241, 138)
+        Me.GroupBox3.TabIndex = 49
+        Me.GroupBox3.TabStop = False
+        Me.GroupBox3.Text = "Options"
+        '
+        'CheckBox1
+        '
+        Me.CheckBox1.AutoSize = True
+        Me.CheckBox1.Dock = System.Windows.Forms.DockStyle.Top
+        Me.CheckBox1.Location = New System.Drawing.Point(4, 26)
+        Me.CheckBox1.Name = "CheckBox1"
+        Me.CheckBox1.Size = New System.Drawing.Size(233, 29)
+        Me.CheckBox1.TabIndex = 47
+        Me.CheckBox1.Text = "Show Attributes (loads slower)"
+        Me.CheckBox1.UseVisualStyleBackColor = True
+        '
+        'chbPreviewLinks
+        '
+        Me.chbPreviewLinks.AutoSize = True
+        Me.chbPreviewLinks.Dock = System.Windows.Forms.DockStyle.Top
+        Me.chbPreviewLinks.Location = New System.Drawing.Point(4, 55)
+        Me.chbPreviewLinks.Name = "chbPreviewLinks"
+        Me.chbPreviewLinks.Size = New System.Drawing.Size(233, 29)
+        Me.chbPreviewLinks.TabIndex = 48
+        Me.chbPreviewLinks.Text = "Preview Links"
+        Me.chbPreviewLinks.UseVisualStyleBackColor = True
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(11.0!, 24.0!)
@@ -2010,6 +2038,8 @@ Partial Class MainForm
         CType(Me.FileSystemWatcher1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.MenuStrip2.ResumeLayout(False)
         Me.MenuStrip2.PerformLayout()
+        Me.GroupBox3.ResumeLayout(False)
+        Me.GroupBox3.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -2126,7 +2156,6 @@ Partial Class MainForm
     Friend WithEvents chbInDir As CheckBox
     Friend WithEvents chbNextFile As CheckBox
     Friend WithEvents lbxGroups As ListBox
-    Friend WithEvents CheckBox1 As CheckBox
     Friend WithEvents lblAttributes As Label
     Friend WithEvents tbxAbsolute As TextBox
     Friend WithEvents lblNavigateState As Label
@@ -2222,4 +2251,7 @@ Partial Class MainForm
     Friend WithEvents ToolStripSeparator12 As ToolStripSeparator
     Friend WithEvents AutoButton As ToolStripMenuItem
     Friend WithEvents Response As Timer
+    Friend WithEvents GroupBox3 As GroupBox
+    Friend WithEvents chbPreviewLinks As CheckBox
+    Friend WithEvents CheckBox1 As CheckBox
 End Class

@@ -7,6 +7,8 @@ Public Class MediaHandler
     Public Event MediaChanged(ByVal sender As Object, ByVal e As EventArgs)
     Public Event SpeedChanged(ByVal sender As Object, ByVal e As EventArgs)
     Public Event MediaNotFound(ByVal sender As Object, ByVal e As EventArgs)
+    Private WithEvents Sound As New AxWindowsMediaPlayer
+    Private Property mSndH As New SoundController
 
     Private WithEvents ResetPosition As New Timer
     Public WithEvents PositionUpdater As New Timer
@@ -158,6 +160,8 @@ Public Class MediaHandler
         PositionUpdater.Interval = 500
         PositionUpdater.Enabled = False
         ResetPosition.Interval = 1000
+        '    mSndH.SoundPlayer = Sound
+        '   mSndH.CurrentPlayer = Player
         '     StartPoint = Media.StartPoint
     End Sub
     Private mMediaDirectory As String
@@ -307,6 +311,7 @@ Public Class MediaHandler
         Else
 
             mPlayer.Ctlcontrols.currentPosition = mPlayPosition
+            'Sound.Ctlcontrols.currentPosition = mPlayPosition
         End If
         Debug.Print("MediaJumpMarker set" & mMediaPath & " position to " & mPlayPosition)
     End Sub
@@ -366,6 +371,7 @@ Public Class MediaHandler
             Else
                 Try
                     mPlayer.URL = URL
+                    Sound.URL = URL
                     LastURL = URL
                 Catch EX As Exception
 
@@ -450,7 +456,7 @@ Public Class MediaHandler
                 End If
             Case WMPLib.WMPPlayState.wmppsPlaying
                 'ReportTime("Playing")
-                MainForm.SwitchSound(False)
+                mSndH.Slow = False
                 PositionUpdater.Enabled = True
                 Duration = mPlayer.currentMedia.duration
                 StartPoint.Duration = mPlayer.currentMedia.duration
@@ -463,7 +469,7 @@ Public Class MediaHandler
                 End If
             Case WMPLib.WMPPlayState.wmppsPaused ', WMPLib.WMPPlayState.wmppsTransitioning
                 If Not Speed.Fullspeed Then
-                    MainForm.SwitchSound(True)
+                    mSndH.Slow = True
                 Else
 
                 End If

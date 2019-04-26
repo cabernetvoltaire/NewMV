@@ -313,9 +313,9 @@ Public Module General
         If lbx.Name = "lbxShowList" Then
             MainForm.CollapseShowlist(False)
             'Dim m As New ShowListForm
-            ShowListForm.Show()
+            'ShowListForm.Show()
 
-            ShowListForm.ItemList = lst
+            'ShowListForm.ItemList = lst
 
         End If
         '  lbx.Refresh()

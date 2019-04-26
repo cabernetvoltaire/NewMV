@@ -18,9 +18,9 @@ Module FileHandling
     Public WithEvents MSFiles As New MediaSwapper(MainForm.MainWMP4, MainForm.MainWMP2, MainForm.MainWMP3, MainForm.PictureBox1, MainForm.PictureBox2, MainForm.PictureBox3)
     '   Public WithEvents MSShow As New MovieSwapper(MainForm.MainWMP, MainForm.MainWMP2)
     Public WithEvents Media As New MediaHandler("Media")
-    Public fm As New FavouritesMinder("Q:\Favourites")
+    Public FaveMinder As New FavouritesMinder("Q:\Favourites")
 
-    Public WithEvents SndH As New SoundController
+    '  Public WithEvents SndH As New SoundController
     Public Sub OnMediaStartChanged(sender As Object, e As EventArgs) Handles Media.StartChanged
         MainForm.OnStartChanged(sender, e)
 
@@ -43,17 +43,18 @@ Module FileHandling
         End If
         If M.MediaPath <> "" Then My.Computer.Registry.CurrentUser.SetValue("File", M.MediaPath)
 
+
     End Sub
     Public Sub OnMediaLoaded(M As MediaHandler) Handles MSFiles.MediaShown
-        'Try
-        SndH.SoundPlayer = MainForm.SoundWMP
-        SndH.CurrentPlayer = Media.Player
-        SndH.SPH = MainForm.SP
-        'Catch ex As Exception
-        'MsgBox("Failed SNDH")
-        'End Try
+        ''Try
+        'SndH.SoundPlayer = MainForm.SoundWMP
+        'SndH.CurrentPlayer = Media.Player
+        'SndH.SPH = MainForm.SP
+        ''Catch ex As Exception
+        ''MsgBox("Failed SNDH")
+        ''End Try
 
-        'M.Pause(True)
+        ''M.Pause(True)
     End Sub
 
     Private Sub DebugStartpoint(M As MediaHandler)
@@ -298,8 +299,8 @@ Module FileHandling
                         Dim flist As New List(Of String)
                         GetFiles(dir, flist)
 
-                        fm.DestinationPath = strDest
-                        fm.CheckFiles(flist)
+                        FaveMinder.DestinationPath = strDest
+                        FaveMinder.CheckFiles(flist)
 
                         .MoveDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
 
@@ -411,14 +412,14 @@ Module FileHandling
                         If Not currentPicBox.Image Is Nothing Then DisposePic(currentPicBox)
                         If strDest = "" Then
                             Dim f As New IO.FileInfo(m.FullName)
-                            fm.DestinationPath = strDest
-                            fm.CheckFile(f)
+                            FaveMinder.DestinationPath = strDest
+                            FaveMinder.CheckFile(f)
                             'fm.DeleteFavourite(m.FullName)
-                            If fm.OkToDelete Then Deletefile(m.FullName)
+                            If FaveMinder.OkToDelete Then Deletefile(m.FullName)
                         Else
                             Dim f As New IO.FileInfo(m.FullName)
-                            fm.DestinationPath = spath
-                            fm.CheckFile(f)
+                            FaveMinder.DestinationPath = spath
+                            FaveMinder.CheckFile(f)
                             Try
                                 m.MoveTo(spath)
 
@@ -429,8 +430,8 @@ Module FileHandling
                     Case StateHandler.StateOptions.MoveLeavingLink
                         'Move, and place link here
                         Dim f As New IO.FileInfo(m.FullName)
-                        fm.DestinationPath = spath
-                        fm.CheckFile(f)
+                        FaveMinder.DestinationPath = spath
+                        FaveMinder.CheckFile(f)
                         m.MoveTo(spath)
                         CreateLink(m.FullName, CurrentFolder, f.Name, Bookmark:=Media.Position)
 

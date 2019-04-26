@@ -31,8 +31,15 @@ Public Class MainForm
     Public DraggedFolder As String
     Public CurrentFileList As New List(Of String)
     Public T As Thread
-
-
+    Public Sub PopulateLinkList(f As String)
+        Dim x As List(Of String) = FaveMinder.GetLinksOf(f)
+        '   MainForm.lbxGroups.Items.Clear()
+        If x.Count > 1 Then
+            FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
+        Else
+            lbxShowList.Items.Clear()
+        End If
+    End Sub
     Public Sub OnFolderMoved(ByVal path As String)
         '  tvMain2.RefreshTree(tvMain2.SelectedFolder)
         tvMain2.RemoveNode(path)
@@ -46,13 +53,11 @@ Public Class MainForm
             tbSpeed.Text = "Slide Interval=" & SH.Interval
         Else
             tbSpeed.Text = "Speed:" & SH.FrameRate & "fps"
-            SndH.SoundPlayer.settings.rate = SH.FrameRate / 30
-            SndH.Slow = Not SH.Fullspeed
 
         End If
     End Sub
     Public Sub SwitchSound(slow As Boolean)
-        SndH.Slow = slow
+        'SndH.Slow = slow
     End Sub
 
 
@@ -377,18 +382,19 @@ Public Class MainForm
     'End Function
     Private Function SpeedChange(e As KeyEventArgs) As KeyEventArgs
 
-        Dim blnPlaying As Boolean = Media.Player.URL <> ""
+        Dim blnPlaying As Boolean = Media.MediaType = Filetype.Movie
         If Not blnPlaying Then
+            tmrSlideShow.Enabled = True
+            Media.Speed.Slideshow = tmrSlideShow.Enabled
+            tmrSlideShow.Interval = Media.Speed.Interval
             Media.Speed.SSSpeed = e.KeyCode - KeySpeed1 'Set slideshow speed if pic showing, and start slideshow
             'PlaybackSpeed = 30
-            tmrSlideShow.Enabled = True
-            tmrSlideShow.Interval = Media.Speed.Interval
+
         Else
             Media.Speed.Speed = e.KeyCode - KeySpeed1
             PlaybackSpeed = 1000 / Media.Speed.FrameRate 'Otherwise, set playback speed 'TODO Options
             Media.Speed.Fullspeed = False
         End If
-
         If e.KeyCode = KeyToggleSpeed Then
             If blnPlaying Then
                 If Media.Player.playState = WMPLib.WMPPlayState.wmppsPaused And tmrSlowMo.Enabled = False Then
@@ -728,8 +734,8 @@ Public Class MainForm
                     SP.ChangeJump(False, e.KeyCode = KeySmallJumpUp)
 
                 End If
-                If AltDown Then
-                    If CtrlDown Then
+                If e.Alt Then
+                    If e.Control Then
                         SP.ChangeJump(False, e.KeyCode = KeySmallJumpUp)
                     Else
 
@@ -786,10 +792,7 @@ Public Class MainForm
                 e.SuppressKeyPress = True
 
             Case KeyLoopToggle
-                'If AltDown Then
-                If Media.MediaType = Filetype.Movie Then Media.LoopMovie = Not Media.LoopMovie
 
-                'End If
                 e.SuppressKeyPress = True
 
             Case KeyJumpAutoT
@@ -834,7 +837,12 @@ Public Class MainForm
             Case KeyRotateBack
                 RotatePic(currentPicBox, False)
             Case KeyRotate
-                RotatePic(currentPicBox, True)
+                If e.Alt Then
+                    If Media.MediaType = Filetype.Movie Then Media.LoopMovie = Not Media.LoopMovie
+                Else
+                    RotatePic(currentPicBox, True)
+
+                End If
 #End Region
 #Region "States"
 
@@ -913,7 +921,7 @@ Public Class MainForm
 
             Dim m As List(Of String) = ListfromListbox(lbx)
             If NavigateMoveState.State = StateHandler.StateOptions.Move Or NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
-                If lbx.Name = "lbxShowList" Then
+                If lbx.Name = "lbxShowList" And NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
                     For Each k In m
                         lbx.Items.Remove(k)
                     Next
@@ -1176,10 +1184,14 @@ Public Class MainForm
                     Debug.Print(vbCrLf & vbCrLf & "NEXT SELECTION ---------------------------------------")
                     MSFiles.Listbox = sender
                     MSFiles.ListIndex = i
+
                     'HighlightCurrent(lbxFiles.SelectedItem)
                     'Need a simple key option to highlight current.
                     'If sender.Equals(lbxShowList) Then HighlightCurrent(lbxShowList.SelectedItem)
                 End If
+            End If
+            If chbPreviewLinks.Checked AndAlso lbx.Name <> "lbxShowList" Then
+                PopulateLinkList(lbx.SelectedItem)
             End If
         End With
 
@@ -2074,7 +2086,8 @@ Public Class MainForm
     End Sub
 
     Private Sub AddCurrentFileToShowlistToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AddCurrentFileListToolStripMenuItem.Click
-        AddCurrentFilesToShowList()
+        AddCurrentFilesToShowList() 'This one
+
     End Sub
 
     Private Sub AddCurrentFilesToShowList()
@@ -2100,7 +2113,7 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub tbPercentage_ValueChanged(sender As Object, e As EventArgs) Handles tbPercentage.ValueChanged
+    Private Sub tbPercentage_ValueChanged(sender As Object, e As EventArgs)
         'StartPoint.State = StartPointHandler.StartTypes.ParticularPercentage
         'If Not Initialising Then Media.StartPoint.Percentage = tbPercentage.Value
 
@@ -2113,7 +2126,7 @@ Public Class MainForm
 
 
 
-    Private Sub AbsoluteTrackBar_ValueChanged(sender As Object, e As EventArgs) Handles tbAbsolute.ValueChanged
+    Private Sub AbsoluteTrackBar_ValueChanged(sender As Object, e As EventArgs)
         tbAbsolute.Maximum = Media.Duration
         tbAbsolute.TickFrequency = tbAbsolute.Maximum / 25
         ' StartPoint.Absolute = tbAbsolute.Value
@@ -2182,25 +2195,25 @@ Public Class MainForm
 
 
 
-    Private Sub tbAbsolute_MouseUp(sender As Object, e As MouseEventArgs) Handles tbAbsolute.MouseUp
-        Media.Startpoint.State = StartPointHandler.StartTypes.ParticularAbsolute
+    Private Sub tbAbsolute_MouseUp(sender As Object, e As MouseEventArgs)
+        Media.StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute
         Media.StartPoint.Absolute = tbAbsolute.Value
         '    MSFiles.SetStartpoints(Media.StartPoint)
         tbxAbsolute.Text = New TimeSpan(0, 0, tbAbsolute.Value).ToString("hh\:mm\:ss")
-        tbxPercentage.Text = Str(Media.Startpoint.Percentage) & "%"
-        tbPercentage.Value = Media.Startpoint.Percentage
+        tbxPercentage.Text = Str(Media.StartPoint.Percentage) & "%"
+        tbPercentage.Value = Media.StartPoint.Percentage
         Media.MediaJumpToMarker()
         'MSFiles.SetStartStates(Media.StartPoint)
         MSFiles.SetStartpoints(Media.StartPoint)
     End Sub
 
-    Private Sub tbPercentage_MouseUp(sender As Object, e As MouseEventArgs) Handles tbPercentage.MouseUp
+    Private Sub tbPercentage_MouseUp(sender As Object, e As MouseEventArgs)
         Media.StartPoint.State = StartPointHandler.StartTypes.ParticularPercentage
         Media.StartPoint.Percentage = tbPercentage.Value
         '  MSFiles.SetStartpoints(Media.StartPoint)
         tbxAbsolute.Text = New TimeSpan(0, 0, tbAbsolute.Value).ToString("hh\:mm\:ss")
         tbxPercentage.Text = Str(Media.StartPoint.Percentage) & "%"
-        tbPercentage.Value = Media.Startpoint.Percentage
+        tbPercentage.Value = Media.StartPoint.Percentage
 
         Media.MediaJumpToMarker()
         MSFiles.SetStartpoints(Media.StartPoint)
@@ -2388,8 +2401,8 @@ Public Class MainForm
         AdvanceFile(True, False)
     End Sub
 
-    Private Sub cbxStartPoint_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbxStartPoint.SelectedIndexChanged
-        Media.Startpoint.State = cbxStartPoint.SelectedIndex
+    Private Sub cbxStartPoint_SelectedIndexChanged(sender As Object, e As EventArgs)
+        Media.StartPoint.State = cbxStartPoint.SelectedIndex
     End Sub
 
     Private Sub btn8_DragEnter(sender As Object, e As DragEventArgs) Handles btn8.DragEnter, btn1.DragEnter
@@ -2438,7 +2451,7 @@ Public Class MainForm
         Else
             lbx = lbxFiles
         End If
-        Dim m As List(Of String) = FileHandling.fm.FavesList
+        Dim m As List(Of String) = FileHandling.FaveMinder.FavesList
 
         Dim current As New List(Of String)
         For Each f In lbx.Items

@@ -94,13 +94,13 @@
                 bk = 0
             End If
             If destinationpath = "" Then
-                If MsgBox("There are links to this file. Delete?", MsgBoxStyle.YesNoCancel, "Delete file?") = MsgBoxResult.Yes Then
+                If MsgBox(f.Name & " - There are links to this file. Delete?", MsgBoxStyle.YesNoCancel, "Delete file?") = MsgBoxResult.Yes Then
                     OkToDelete = True
                     DeleteFavourite(m)
                 Else
                     OkToDelete = False
-                    Exit While
                 End If
+                Exit While
             Else
                 'Create a new shortcut where the old one was.
                 Dim sch As New ShortcutHandler(destinationpath, minfo.Directory.FullName, f.Name)
@@ -111,5 +111,13 @@
             End If
         End While
     End Sub
+    Public Function GetLinksOf(Path As String) As List(Of String)
+        ' Exit Function
+        Dim finfo As New IO.FileInfo(Path)
+        Dim m As String = "a"
+        Dim list As New List(Of String)
+        list = FavesList.FindAll(Function(x) x.Contains(finfo.Name))
+        Return list
+    End Function
     Public Property OkToDelete As Boolean = True
 End Class
