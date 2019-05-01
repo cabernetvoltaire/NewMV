@@ -45,27 +45,42 @@
     ''' Searches in subfolders of original destination of each link
     ''' </summary>
     Public Property SearchPath As String
-    Public Sub FindOrphans(SearchPath As String)
-        ' Dim FoundParent As Boolean
-        '                Dim StartDest = New IO.DirectoryInfo(f.Directory.FullName)
+    Public Sub FindOrphans2(SearchPath As String)
         Dim StartDest = New IO.DirectoryInfo(SearchPath)
+        Dim FileList As IO.FileInfo() = StartDest.GetFiles("*", IO.SearchOption.AllDirectories)
+        Dim RealFileList As New List(Of String)
+        For Each m In FileList
+            RealFileList.Add(m.FullName)
+        Next
+        For Each n In mOrphanList
 
+        Next
+
+    End Sub
+    'Find Orphans
+    'With orphan list
+    'Get all putative destinations
+    '
+    Public Sub FindOrphans(SearchPath As String)
+
+        Dim StartDest = New IO.DirectoryInfo(SearchPath)
         While Not StartDest.Exists
             StartDest = StartDest.Parent
         End While
         'Check all the files in startdest, and put matches in Names
-        ' If Split(StartDest.FullName, "\").Length > 2 Then
+
         Dim Names As New Dictionary(Of String, String)
-            Dim FilesToCheck As IO.FileInfo() = StartDest.GetFiles("*", IO.SearchOption.AllDirectories)
-            For Each xx In FilesToCheck
-                If Not Names.ContainsKey(xx.Name) Then Names.Add(xx.Name, xx.FullName)
-            Next
+        Dim FilesToCheck As IO.FileInfo() = StartDest.GetFiles("*", IO.SearchOption.AllDirectories)
+        For Each xx In FilesToCheck
+            If Not Names.ContainsKey(xx.Name) Then Names.Add(xx.Name, xx.FullName)
+        Next
         'add names to foundparents
         For Each m In mOrphanList
+            'Get the target of the Orphan
             Dim s As String = LinkTarget(m)
             If s <> "" Then
-
                 Dim f As New IO.FileInfo(s)
+                'Find it in the Names dictionary
                 If Names.ContainsKey(f.Name) Then
                     If mFoundParents.ContainsKey(Names(f.Name)) Then
                         mFoundParents.Add(Names(f.Name) & "#" & Format(Int(Rnd() * 1000000), "######"), m)

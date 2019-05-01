@@ -3,6 +3,7 @@ Friend Module Mysettings
 
 
     Public PFocus As Byte = CtrlFocus.Tree
+
     Public Property ZoneSize As Decimal = 0.4
 
     Public Const OrientationId As Integer = &H112
@@ -96,8 +97,8 @@ Friend Module Mysettings
 
                 Dim s As String = .GetValue("File", "")
                 If s = "" Then s = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
-                'Media.Player = MainForm.MainWMP4
-                Media.MediaPath = s
+            'Media.Player = MainForm.MainWMP4
+            Media.MediaPath = s
 
             'Catch ex As Exception
             ' MsgBox(ex.Message)

@@ -27,17 +27,20 @@ Public Class MainForm
     Public WithEvents AT As New AutoTrailer
     ' Public WithEvents Response As New Timer
 
-
+    Public FocusControl As New Control
     Public DraggedFolder As String
     Public CurrentFileList As New List(Of String)
     Public T As Thread
     Public Sub PopulateLinkList(f As String)
+        If f = "" Then Exit Sub
         Dim x As List(Of String) = FaveMinder.GetLinksOf(f)
         '   MainForm.lbxGroups.Items.Clear()
         If x.Count > 1 Then
             FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
+            ControlSetFocus(lbxShowList)
         Else
             lbxShowList.Items.Clear()
+            ControlSetFocus(lbxFiles)
         End If
     End Sub
     Public Sub OnFolderMoved(ByVal path As String)
@@ -146,9 +149,7 @@ Public Class MainForm
         lbxFiles.BackColor = FilterColor
         lbxShowList.BackColor = FilterColor
 
-        If PFocus = CtrlFocus.Files Then lbxFiles.BackColor = MainColor
-        If PFocus = CtrlFocus.Tree Then tvMain2.BackColor = MainColor
-        If PFocus = CtrlFocus.ShowList Then lbxShowList.BackColor = MainColor
+        FocusControl.BackColor = MainColor
 
     End Sub
     ''' <summary>
@@ -301,29 +302,27 @@ Public Class MainForm
 
 
     Public Sub UpdatePlayOrder(blnShowBoxShown As Boolean)
-        If PFocus <> CtrlFocus.ShowList Then
+        If FocusControl IsNot lbxShowList Then
             Dim e = New DirectoryInfo(CurrentFolder)
             FillListbox(lbxFiles, e, False)
-            '   If Media.IsLink Then
             If lbxFiles.FindString(Media.MediaPath) <> -1 Then
                 lbxFiles.SelectedIndex = lbxFiles.FindString(Media.MediaPath)
             Else
                 If lbxFiles.Items.Count > 0 Then lbxFiles.SelectedIndex = 0
             End If
+        Else
+            If blnShowBoxShown Then
+                Dim s = lbxShowList.SelectedItem
 
+                Showlist = SetPlayOrder(PlayOrder.State, Showlist)
+                ReOrderListBox(lbxShowList, CurrentFilterState.State, Showlist)
+                Try
 
-        End If
-        If blnShowBoxShown And PFocus = CtrlFocus.ShowList Then
-            Dim s = lbxShowList.SelectedItem
-
-            Showlist = SetPlayOrder(PlayOrder.State, Showlist)
-            ReOrderListBox(lbxShowList, CurrentFilterState.State, Showlist)
-            Try
-
-                lbxShowList.SelectedIndex = lbxShowList.FindString(s)
-            Catch ex As Exception
-                Throw New FileNotFoundException
-            End Try
+                    lbxShowList.SelectedIndex = lbxShowList.FindString(s)
+                Catch ex As Exception
+                    Throw New FileNotFoundException
+                End Try
+            End If
         End If
 
     End Sub
@@ -519,38 +518,27 @@ Public Class MainForm
         End If
 
         Dim lbx As New ListBox
-        If PFocus = CtrlFocus.ShowList And Not CtrlDown Then
-            lbx = lbxShowList
+        If FocusControl Is lbxFiles Or FocusControl Is lbxShowList Then
+            lbx = FocusControl
         Else
-            lbx = lbxFiles
+            Exit Sub
         End If
-
         Dim count As Long
         count = lbx.Items.Count
         ReDim Preserve FBCShown(count) 'Boolean list of files shown so far. But why now? Shouldn't this be when the folder is changed?
         lbx.SelectionMode = SelectionMode.One
         If count = 0 Then Exit Sub 'if no filelist, then give up.
         If lbx.SelectedIndex = -1 Then lbx.SelectedIndex = 0
-
         If lbx.SelectedIndex = 0 And Not blnForward Then
             lbx.SelectedIndex = count - 1
         Else
             If count > 0 Then
-
                 If Random Then
-
-                    'Dim i As Int32
-                    'i = Int(Rnd() * (count))
-                    'While FBCShown(i) 'To avoid showing one already shown
-                    '    i = Int(Rnd() * (count))
-                    'End While
                     lbx.SelectedItem = MSFiles.NextItem
                 Else
                     lbx.SelectedIndex = (lbx.SelectedIndex + diff) Mod count
                 End If
             End If
-
-
         End If
         'FBCShown(lbx.SelectedIndex) = True
         NofShown += 1
@@ -691,22 +679,12 @@ Public Class MainForm
                 ''e.suppresskeypress by Treeview behaviour unless focus is elsewhere. 
                 ''We want the traverse keys always to work. 
                 ''  ControlSetFocus(tvMain2)
-                If PFocus = CtrlFocus.Tree Then
-                Else
-                    tvMain2.tvFiles_KeyDown(sender, e)
-                End If
+                tvMain2.tvFiles_KeyDown(sender, e)
             Case Keys.Left, Keys.Right, Keys.Up, Keys.Down
-                'Response.Enabled = True
-                'If Response.Enabled = False Then
-                If PFocus <> CtrlFocus.ShowList Then
-                    'SendKeys.SendWait("")
+                If FocusControl IsNot lbxShowList Then
                     ControlSetFocus(tvMain2)
-                    'SendKeys.Send("{DOWN}")
                     tvMain2.tvFiles_KeyDown(sender, e)
-                    tvMain2.tvFiles_KeyDown(sender, e)
-
                 End If
-                'End If
 
             Case KeyEscape
                 CancelDisplay()                'currentPicBox.Image.Dispose()
@@ -715,9 +693,7 @@ Public Class MainForm
             Case KeyToggleButtons
                 ToggleButtons()
             Case KeyNextFile, KeyPreviousFile, LKeyNextFile, LKeyPreviousFile
-                If PFocus <> CtrlFocus.ShowList Then
-                    ControlSetFocus(lbxFiles)
-                End If
+                If FocusControl IsNot lbxFiles Then ControlSetFocus(lbxFiles)
                 AdvanceFile(e.KeyCode = KeyNextFile, Random.NextSelect)
                 If e.Shift Then HighlightCurrent(Media.MediaPath)
                 e.SuppressKeyPress = True
@@ -1070,11 +1046,11 @@ Public Class MainForm
         PositionUpdater.Enabled = False
         tmrPicLoad.Interval = lngInterval * 15
         currentPicBox = PictureBox1
-        '  Media.Player = MainWMP2
+        Media.Player = MainWMP2
         '   Media.StartPoint.State = StartPointHandler.StartTypes.NearBeginning
         Media.Picture = currentPicBox
-        tbPercentage.Enabled = True
         PreferencesGet()
+        tbPercentage.Enabled = True
 
 
         AddHandler FileHandling.FolderMoved, AddressOf OnFolderMoved
@@ -1127,6 +1103,14 @@ Public Class MainForm
 
         Me.Visible = True
 
+    End Sub
+    Public Sub ControlSetFocus(control As Control)
+        ' Set focus to the control, if it can receive focus.
+        'Exit Sub
+        FocusControl = control
+        If control.CanFocus Then
+            control.Focus()
+        End If
     End Sub
 
 
@@ -1235,20 +1219,18 @@ Public Class MainForm
         Return Newlist
     End Function
 
-    Private Sub ControlEnter(sender As Object, e As EventArgs) Handles tvMain2.Enter, lbxShowList.Enter, lbxFiles.Enter
+    Private Sub ControlEnter(sender As Object, e As EventArgs) Handles lbxShowList.Enter, lbxFiles.Enter
         'PFocus = CtrlFocus.Tree
-        If sender.Equals(lbxShowList) Then
-            PFocus = CtrlFocus.ShowList
-        End If
-        If sender.Equals(lbxFiles) Then
-            PFocus = CtrlFocus.Files
-        End If
-        If sender.Equals(tvMain2) Then
-            PFocus = CtrlFocus.Tree
-        End If
+
+        FocusControl = sender
         SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
 
     End Sub
+    Private Sub TreeEnter(sender As Object, e As EventArgs) Handles tvMain2.Enter
+        'PFocus = CtrlFocus.Tree
+        SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
+    End Sub
+
     Protected Overrides Sub Finalize()
         MyBase.Finalize()
     End Sub
@@ -1417,6 +1399,7 @@ Public Class MainForm
     End Sub
 
     Public Sub UpdateFileInfo()
+        If Initialising Then Exit Sub
         If Media.MediaPath = "" Then Exit Sub
         If Not FileLengthCheck(Media.MediaPath) Then Exit Sub
         Dim f As New FileInfo(Media.MediaPath)
@@ -1475,13 +1458,13 @@ Public Class MainForm
             Return s
             Exit Function
         End If
-        If PFocus = CtrlFocus.Files Or PFocus = CtrlFocus.Tree Then
-            SelectFromListbox(lbxFiles, s, blnRegex)
-        ElseIf PFocus = CtrlFocus.ShowList Then
-            SelectFromListbox(lbxShowList, s, blnRegex)
-            'Return s
-            'Exit Function
+        Dim lbx As New ListBox
+        If FocusControl Is lbxFiles Or FocusControl Is lbxShowList Then
+            lbx = FocusControl
+        Else
+            lbx = lbxFiles
         End If
+        SelectFromListbox(lbx, s, blnRegex)
         UpdateFileInfo()
         lastselection = s
 
@@ -1646,15 +1629,16 @@ Public Class MainForm
     End Sub
 
 
-    Private Shared Sub ThumbnailsStart()
+    Private Sub ThumbnailsStart()
         Dim t As New Thumbnails
-        t.ThumbnailHeight = 70
-        If PFocus <> CtrlFocus.ShowList Then
-            t.List = Duplicatelist(FileboxContents)
+        t.ThumbnailHeight = 150
+        If FocusControl Is lbxFiles Or FocusControl Is lbxShowList Then
+            t.List = Duplicatelist(AllfromListbox(FocusControl))
         Else
-            t.List = Duplicatelist(Showlist)
+            t.List = Duplicatelist(AllfromListbox(lbxFiles))
 
         End If
+
         't.LayoutPanel = Thumbnails.FlowLayoutPanel1
         t.Text = CurrentFolder
         t.SetBounds(0, 0, 750, 900)
@@ -1731,22 +1715,12 @@ Public Class MainForm
 
     Private Function DeadLinksSelect() As List(Of String)
         Dim s As New List(Of String)
-        If PFocus <> CtrlFocus.ShowList Then
-            SelectDeadLinks(lbxFiles)
-            For Each m In lbxFiles.SelectedItems
-                s.Add(m.ToString)
-            Next
-
-        Else
-            SelectDeadLinks(lbxShowList)
-
-            For Each m In lbxShowList.SelectedItems
-                s.Add(m.ToString)
-            Next
-            '
-        End If
+        SelectDeadLinks(FocusControl)
+        Dim lbx As ListBox = FocusControl
+        For Each m In lbx.SelectedItems
+            s.Add(m.ToString)
+        Next
         Return s
-
         UpdateFileInfo()
 
 
@@ -2387,6 +2361,7 @@ Public Class MainForm
         Try
             If MsgBox("Make " & CurrentFolder & " the new Favourites folder?", MsgBoxStyle.OkCancel, "Assign Favourites folder") = MsgBoxResult.Ok Then
                 FavesFolderPath = CurrentFolder
+                FaveMinder.NewPath(FavesFolderPath)
                 PreferencesSave()
             End If
 
@@ -2517,5 +2492,9 @@ Public Class MainForm
 
     Private Sub Response_Tick(sender As Object, e As EventArgs) Handles Response.Tick
         Response.Enabled = False
+    End Sub
+
+    Private Sub DisplayedToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DisplayedToolStripMenuItem.Click
+        FaveMinder.RedirectShortCutList(New FileInfo(lbxFiles.SelectedItem), AllfromListbox(lbxShowList))
     End Sub
 End Class

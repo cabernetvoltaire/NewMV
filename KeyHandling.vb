@@ -70,13 +70,6 @@
 
 
     'Public CurrentFolder As New IO.DirectoryInfo(C:\)
-    Public Sub ControlSetFocus(control As Control)
-        ' Set focus to the control, if it can receive focus.
-        'Exit Sub
-        If control.CanFocus Then
-            control.Focus()
-        End If
-    End Sub
 
     Public Function GetMaxValue _
     (Of TEnum As {IComparable, IConvertible, IFormattable})() As TEnum

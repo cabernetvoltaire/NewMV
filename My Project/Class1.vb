@@ -13,9 +13,17 @@
         End Set
     End Property
     Private mSpeed As Byte
-    Public Property Fullspeed As Boolean = True
-    Public Property Unpause As Boolean = False
-    Private mPaused As Boolean = False
+    Public Property Fullspeed As Boolean
+    Public Property Unpause As Boolean
+        Get
+            Return _Unpause
+        End Get
+        Set
+            _Unpause = Value
+        End Set
+    End Property
+
+    Private mPaused As Boolean '= False
     Public PausedPosition As Long
     Public Property Paused() As Boolean
         Get
@@ -28,8 +36,24 @@
             End If
         End Set
     End Property
-    Public Property AbsoluteJump As Integer = 35
-    Public Property FractionalJump As Integer = 8
+    Public Property AbsoluteJump As Integer ' = 35
+        Get
+            Return _AbsoluteJump
+        End Get
+        Set
+            _AbsoluteJump = Value
+        End Set
+    End Property
+
+    Public Property FractionalJump As Integer ' = 8
+        Get
+            Return _FractionalJump
+        End Get
+        Set
+            _FractionalJump = Value
+        End Set
+    End Property
+
     Public Property Speed() As Byte
         Get
             Return mSpeed
@@ -65,6 +89,10 @@
     End Property
 
     Private mFrameRate As Integer
+    Private _Unpause As Boolean = False
+    Private _AbsoluteJump As Integer = 35
+    Private _FractionalJump As Integer = 8
+
     Public Property FrameRate() As Integer
         Get
             Return FrameRates(mSpeed)

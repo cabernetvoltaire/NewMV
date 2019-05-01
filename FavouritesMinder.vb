@@ -41,6 +41,10 @@
         mFavesList = Duplicatelist(templist)
     End Sub
     Public Sub New(path As String)
+        NewPath(path)
+    End Sub
+    Public Sub NewPath(path As String)
+        mFavesList.Clear()
         Dim faves As New IO.DirectoryInfo(path)
         If Not faves.Exists Then faves = IO.Directory.CreateDirectory(Environment.SpecialFolder.MyPictures & "\Favourites")
         For Each f In faves.GetFiles("*.lnk", IO.SearchOption.AllDirectories)
@@ -66,6 +70,20 @@
             Check(k, mDestPath)
         Next
     End Sub
+
+    Public Sub RedirectShortCutList(f As IO.FileInfo, shortcuts As List(Of String))
+        ReallocateShortCuts(f, shortcuts)
+    End Sub
+
+    Private Sub ReallocateShortCut(f As IO.FileInfo, m As String, bk As Long, minfo As IO.FileInfo)
+        Dim sch As New ShortcutHandler(f.FullName, minfo.DirectoryName, minfo.Name)
+        sch.MarkOffset = 0
+        Dim fn As String = sch.Create_ShortCut(bk)
+        'Remove the old shortcut
+        FavesList.Remove(m)
+        FavesList.Add(fn)
+    End Sub
+
     ''' <summary>
     ''' Finds f in the FavesList and makes it point to destinationpath, preserving the bookmark
     ''' </summary>
@@ -73,17 +91,25 @@
     ''' <param name="destinationpath"></param>
     Public Sub Check(f As IO.FileInfo, destinationpath As String)
         OkToDelete = False
-        Dim m As String = "a"
-        'm is a file in the favourites, and we have to update its target to the new destination.
-        Dim bk As Long = 0
-        While m IsNot Nothing
-
-            m = FavesList.Find(Function(x) x.Contains(f.Name))
-            If m Is Nothing Then
+        Dim mf As New List(Of String)
+        mf = FavesList.FindAll(Function(x) x.Contains(f.Name))
+        If mf.Count = 0 Then
+            OkToDelete = True
+        ElseIf destinationpath = "" Then
+            If MsgBox(f.Name & " - There are links to this file. Delete?", MsgBoxStyle.YesNoCancel, "Delete file?") = MsgBoxResult.Yes Then
                 OkToDelete = True
-                Exit While
+                FavesList.RemoveAll(Function(e) mf.Exists(Function(x) x = e))
+            Else
+                OkToDelete = False
             End If
-            'Debug.Print(m)
+        Else
+            ReallocateShortCuts(f, mf)
+        End If
+    End Sub
+
+    Private Sub ReallocateShortCuts(f As IO.FileInfo, mf As List(Of String))
+        Dim bk As Long = 0
+        For Each m In mf
             Dim minfo As New IO.FileInfo(m)
             'Get the bookmark
             If InStr(m, "%") <> 0 Then
@@ -93,25 +119,14 @@
             Else
                 bk = 0
             End If
-            If destinationpath = "" Then
-                If MsgBox(f.Name & " - There are links to this file. Delete?", MsgBoxStyle.YesNoCancel, "Delete file?") = MsgBoxResult.Yes Then
-                    OkToDelete = True
-                    DeleteFavourite(m)
-                Else
-                    OkToDelete = False
-                End If
-                Exit While
-            Else
-                'Create a new shortcut where the old one was.
-                Dim sch As New ShortcutHandler(destinationpath, minfo.Directory.FullName, f.Name)
-                sch.MarkOffset = 0
-                Dim fn As String = sch.Create_ShortCut(bk)
-                'Remove the old shortcut
-                FavesList.Remove(m)
-            End If
-        End While
+            'Create a new shortcut where the old one was.
+            ReallocateShortCut(f, m, bk, minfo)
+
+        Next
     End Sub
+
     Public Function GetLinksOf(Path As String) As List(Of String)
+
         ' Exit Function
         Dim finfo As New IO.FileInfo(Path)
         Dim m As String = "a"

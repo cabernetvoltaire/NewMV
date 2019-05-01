@@ -264,7 +264,9 @@
         pbx.Width = pbx.Image.Width
         pbx.Height = pbx.Image.Height
         'How does it exceeed the container, if at all?
-        bImageDimensionState = ClassifyImage(pbx.Parent.Width, pbx.Parent.Height, pbx.Width, pbx.Height)
+        If pbx.Parent IsNot Nothing Then
+            bImageDimensionState = ClassifyImage(pbx.Parent.Width, pbx.Parent.Height, pbx.Width, pbx.Height)
+        End If
         If Not iScreenstate = Screenstate.Fitted Then
         End If
 

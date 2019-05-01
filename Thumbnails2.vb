@@ -33,12 +33,11 @@ Public Class Thumbnails
 
 
         For Each f In mList
-            Dim mMedia As New MediaHandler("mMedia")
-            mMedia.MediaPath = f
+            pics(i) = New PictureBox
             Try
-                If mMedia.MediaType = Filetype.Pic Then
+
+                If FindType(f) = Filetype.Pic Then
                     Dim finfo = New IO.FileInfo(f)
-                    pics(i) = New PictureBox
                     flp.Controls.Add(pics(i))
                     flp.Update()
 
@@ -64,17 +63,13 @@ Public Class Thumbnails
 
                     End With
                 End If
-                '      Me.Refresh()
                 i += 1
             Catch ex As System.InvalidOperationException
                 Continue For
             End Try
+            '      Me.Refresh()
         Next
         flp2 = flp
-        '        flp2.Dock = DockStyle.Fill
-
-        '   flp2.SendToBack()
-        '  flp.Visible = False
 
     End Sub
     Private Sub flp_Mouseover(sender As Object, e As EventArgs)

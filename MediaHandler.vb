@@ -8,7 +8,8 @@ Public Class MediaHandler
     Public Event SpeedChanged(ByVal sender As Object, ByVal e As EventArgs)
     Public Event MediaNotFound(ByVal sender As Object, ByVal e As EventArgs)
     Private WithEvents Sound As New AxWindowsMediaPlayer
-    Private Property mSndH As New SoundController
+    Private Property mSndH As New SoundController 'With {.SoundPlayer = Sound, .CurrentPlayer = Player}
+
 
     Private WithEvents ResetPosition As New Timer
     Public WithEvents PositionUpdater As New Timer
@@ -156,12 +157,13 @@ Public Class MediaHandler
         End Set
     End Property
     Public Sub New(value As String)
+        '      Player = mPlayer
         Name = value
         PositionUpdater.Interval = 500
         PositionUpdater.Enabled = False
         ResetPosition.Interval = 1000
-        '    mSndH.SoundPlayer = Sound
-        '   mSndH.CurrentPlayer = Player
+        'mSndH.SoundPlayer = Sound
+        'mSndH.CurrentPlayer = Player
         '     StartPoint = Media.StartPoint
     End Sub
     Private mMediaDirectory As String
@@ -249,36 +251,7 @@ Public Class MediaHandler
 
     End Function
 
-    Private Function FindType(file As String) As Filetype
-        Try
-            Dim info As New IO.FileInfo(file)
-            Select Case LCase(info.Extension)
-                Case ""
-                    Return Filetype.Unknown
-                Case ".lnk"
-                    mIsLink = True
-                    IsLink = True
-                    Return Filetype.Link
-            End Select
 
-            Dim strExt = LCase(info.Extension)
-            If InStr(VIDEOEXTENSIONS, strExt) <> 0 Then
-                Return Filetype.Movie
-            ElseIf InStr(PICEXTENSIONS, strExt) <> 0 Then
-                Return Filetype.Pic
-            ElseIf InStr(".txt.prn.sty.doc", strExt) <> 0 Then
-                Return Filetype.Doc
-            Else
-                Return Filetype.Unknown
-
-
-            End If
-
-        Catch ex As Exception
-            Return Filetype.Unknown
-        End Try
-
-    End Function
     Public Sub MediaJumpToMarker(Optional ToEnd As Boolean = False)
 
         If mBookmark > -1 And Speed.PausedPosition = 0 Then
@@ -479,6 +452,7 @@ Public Class MediaHandler
     End Sub
     Private Sub OnSpeedChange(sender As Object, e As EventArgs) Handles Speed.SpeedChanged
         MainForm.OnSpeedChange(sender, e)
+
     End Sub
 
     Private Sub OnStartChange(sender As Object, e As EventArgs) Handles StartPoint.StartPointChanged, StartPoint.StateChanged
@@ -508,6 +482,7 @@ Public Class MediaHandler
     End Sub
     Public Sub PlaceResetter(ResetOn As Boolean)
         ResetPosition.Enabled = ResetOn
+        'Speed.Paused = ResetOn
         Exit Sub
         If ResetOn Then
             MediaJumpToMarker()

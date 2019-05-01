@@ -111,26 +111,26 @@ Public Module General
         If DestinationDirectory = CurrentFolder And Update Then MainForm.UpdatePlayOrder(False)
     End Sub
 
-    Public Function GetAllFilesBelow(DirectoryPath As String, ByVal FileList As List(Of String))
-        If DirectoryPath.Contains("RECYCLE") Then
-            Return FileList
-            Exit Function
-        End If
-        Dim m As New DirectoryInfo(DirectoryPath)
-        Try
-            For Each k In m.EnumerateDirectories
-                FileList = GetAllFilesBelow(k.FullName, FileList)
-            Next
+    'Public Function GetAllFilesBelow(DirectoryPath As String, ByVal FileList As List(Of String))
+    '    If DirectoryPath.Contains("RECYCLE") Then
+    '        Return FileList
+    '        Exit Function
+    '    End If
+    '    Dim m As New DirectoryInfo(DirectoryPath)
+    '    Try
+    '        For Each k In m.EnumerateDirectories
+    '            FileList = GetAllFilesBelow(k.FullName, FileList)
+    '        Next
 
-        Catch ex As System.UnauthorizedAccessException
-            Return FileList
-            Exit Function
-        End Try
-        For Each f In m.EnumerateFiles
-            FileList.Add(f.FullName)
-        Next
-        Return FileList
-    End Function
+    '    Catch ex As System.UnauthorizedAccessException
+    '        Return FileList
+    '        Exit Function
+    '    End Try
+    '    For Each f In m.EnumerateFiles
+    '        FileList.Add(f.FullName)
+    '    Next
+    '    Return FileList
+    'End Function
 
     ''' <summary>
     ''' Returns the path of the link defined in str
@@ -193,23 +193,8 @@ Public Module General
                 des = des & vbTab & "  type" & propItem.Type.ToString()
                 des = des & vbTab & "Length" & propItem.Len.ToString()
 
-                ' e.Graphics.DrawString("Property Item " + count.ToString(),
-                'font, blackBrush, X, Y)
-                ' Y += font.Height
 
-                ' e.Graphics.DrawString("   iD: 0x" & propItem.Id.ToString("x"),
-                'font, blackBrush, X, Y)
-                ' Y += font.Height
-
-                ' e.Graphics.DrawString("   type: " & propItem.Type.ToString(),
-                'font, blackBrush, X, Y)
-                ' Y += font.Height
-
-                ' e.Graphics.DrawString("   length: " & propItem.Len.ToString() &
-                ' " bytes", font, blackBrush, X, Y)
-                ' Y += font.Height
-
-                count += 1
+            count += 1
             Next propItem
             MsgBox(des)
         'MsgBox(PropertyItems(theImage))
@@ -230,17 +215,6 @@ Public Module General
     End Function
 #Region "List functions"
 
-    ''' <summary>
-    ''' Copies list from a lbx
-    ''' </summary>
-    ''' <param name="list"></param>
-    ''' <param name="lbx"></param>
-    Public Sub CopyList(ByVal list As List(Of String), lbx As ListBox)
-        list.Clear()
-        For Each m In lbx.Items
-            list.Add(m)
-        Next
-    End Sub
     ''' <summary>
     ''' Copies list from a sorted list2
     ''' </summary>
@@ -272,6 +246,14 @@ Public Module General
         Next
         Return s
     End Function
+    Public Function AllfromListbox(lbx As ListBox) As List(Of String)
+        Dim s As New List(Of String)
+        For Each l In lbx.Items
+            s.Add(l)
+        Next
+        Return s
+    End Function
+
     Public Function ListFromLinks(list As List(Of String)) As List(Of String)
         Dim s As New List(Of String)
         For Each l In list
@@ -326,6 +308,7 @@ Public Module General
 
         'MainForm.UpdateFileInfo()
     End Sub
+
     Private Sub CopyList(list As List(Of String), list2 As SortedList(Of Date, String))
         list.Clear()
         For Each m As KeyValuePair(Of Date, String) In list2
@@ -369,7 +352,34 @@ Public Module General
         Debug.Print(s)
         MainForm.lblNavigateState.Text = s
     End Sub
+    Public Function FindType(file As String) As Filetype
+        Try
+            Dim info As New IO.FileInfo(file)
+            Select Case LCase(info.Extension)
+                Case ""
+                    Return Filetype.Unknown
+                Case ".lnk"
+                    Return Filetype.Link
+            End Select
 
+            Dim strExt = LCase(info.Extension)
+            If InStr(VIDEOEXTENSIONS, strExt) <> 0 Then
+                Return Filetype.Movie
+            ElseIf InStr(PICEXTENSIONS, strExt) <> 0 Then
+                Return Filetype.Pic
+            ElseIf InStr(".txt.prn.sty.doc", strExt) <> 0 Then
+                Return Filetype.Doc
+            Else
+                Return Filetype.Unknown
+
+
+            End If
+
+        Catch ex As Exception
+            Return Filetype.Unknown
+        End Try
+
+    End Function
     Public Sub ChangeFolder(strPath As String)
         'If strPath <> FavesFolderPath Then
         '    CurrentfilterState.State = CurrentfilterState.OldState
@@ -434,6 +444,7 @@ Public Module General
         Dim NewListL As New SortedList(Of Long, String)
         Dim NewListD As New SortedList(Of DateTime, String)
         'frmMain.ListBox1.BringToFront()
+
         Try
             Select Case Order
                 Case SortHandler.Order.Name

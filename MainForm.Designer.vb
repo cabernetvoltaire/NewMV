@@ -229,6 +229,7 @@ Partial Class MainForm
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.CheckBox1 = New System.Windows.Forms.CheckBox()
         Me.chbPreviewLinks = New System.Windows.Forms.CheckBox()
+        Me.DisplayedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1875,6 +1876,7 @@ Partial Class MainForm
         '
         'RefreshSelectedLinksToolStripMenuItem
         '
+        Me.RefreshSelectedLinksToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DisplayedToolStripMenuItem})
         Me.RefreshSelectedLinksToolStripMenuItem.Name = "RefreshSelectedLinksToolStripMenuItem"
         Me.RefreshSelectedLinksToolStripMenuItem.Size = New System.Drawing.Size(391, 34)
         Me.RefreshSelectedLinksToolStripMenuItem.Text = "Refresh Selected Links"
@@ -1964,6 +1966,12 @@ Partial Class MainForm
         Me.chbPreviewLinks.TabIndex = 48
         Me.chbPreviewLinks.Text = "Preview Links"
         Me.chbPreviewLinks.UseVisualStyleBackColor = True
+        '
+        'DisplayedToolStripMenuItem
+        '
+        Me.DisplayedToolStripMenuItem.Name = "DisplayedToolStripMenuItem"
+        Me.DisplayedToolStripMenuItem.Size = New System.Drawing.Size(288, 34)
+        Me.DisplayedToolStripMenuItem.Text = "Displayed"
         '
         'MainForm
         '
@@ -2254,4 +2262,5 @@ Partial Class MainForm
     Friend WithEvents GroupBox3 As GroupBox
     Friend WithEvents chbPreviewLinks As CheckBox
     Friend WithEvents CheckBox1 As CheckBox
+    Friend WithEvents DisplayedToolStripMenuItem As ToolStripMenuItem
 End Class
