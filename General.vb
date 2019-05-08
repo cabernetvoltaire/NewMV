@@ -18,6 +18,8 @@ Public Module General
     Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif.lnk"
     Public separate As Boolean = False
     Public CurrentFolder As String
+    Public DirectoriesList As New List(Of String)
+
     Public Enum CtrlFocus As Byte
         Tree = 0
         Files = 1
@@ -87,30 +89,47 @@ Public Module General
         Return deadlinks
    End Function
     Public Sub CreateFavourite(Filepath As String)
-        CreateLink(Filepath, FavesFolderPath, "", Bookmark:=Media.Position)
-        Exit Sub
-
-
-    End Sub
-    Public Sub CreateLink(Filepath As String, DestinationDirectory As String, Name As String, Optional Update As Boolean = True, Optional Bookmark As Long = -1)
         Dim sh As New ShortcutHandler
+        CreateLink(sh, Filepath, FavesFolderPath, "", Bookmark:=Media.Position)
+        AllFaveMinder.NewPath("Q:\Favourites")
+    End Sub
+    Public Function LinkTargetExists(Linkfile As String) As Boolean
+        Dim f As String
+        f = LinkTarget(Linkfile)
+        If f = "" Then
+            Return False
+            Exit Function
+        End If
+        Dim Finfo = New FileInfo(f)
+        If Finfo.Exists Then
+            Return True
+        Else
+            Return False
+        End If
+
+    End Function
+    Public Sub CreateLink(Handler As ShortcutHandler, Filepath As String, DestinationDirectory As String, Name As String, Optional Update As Boolean = True, Optional Bookmark As Long = -1)
         Dim f As New FileInfo(Filepath)
         Dim dt As Date = f.CreationTime
-
-        'sh.Bookmark = Media.Position
-
-        sh.TargetPath = Filepath
-        sh.ShortcutPath = DestinationDirectory
+        Handler.TargetPath = Filepath
+        Handler.ShortcutPath = DestinationDirectory
         If Name = "" Then
-            sh.ShortcutName = f.Name
+            Handler.ShortcutName = f.Name
         Else
-            sh.ShortcutName = Name
+            Handler.ShortcutName = Name
         End If
-        sh.Create_ShortCut(Bookmark)
+        Handler.Create_ShortCut(Bookmark)
 
         If DestinationDirectory = CurrentFolder And Update Then MainForm.UpdatePlayOrder(False)
     End Sub
-
+    Public Function FilenameFromLink(n As String) As String
+        Dim currentlink = n
+        Dim parts() = currentlink.Split("\")
+        Dim filename = parts(parts.Length - 1)
+        Dim fparts() = filename.Split("%")
+        filename = fparts(0)
+        Return filename
+    End Function
     'Public Function GetAllFilesBelow(DirectoryPath As String, ByVal FileList As List(Of String))
     '    If DirectoryPath.Contains("RECYCLE") Then
     '        Return FileList
@@ -138,14 +157,39 @@ Public Module General
     ''' <param name="str"></param>
     ''' <returns></returns>
     Public Function LinkTarget(str As String) As String
-        'Dim f As IO.File(str)
 
         Try
             str = CreateObject("WScript.Shell").CreateShortcut(str).TargetPath
+            str = TryOtherDriveLetters(str)
             Return str
         Catch ex As Exception
             Return str
         End Try
+
+    End Function
+    Public Function GetDirectoriesList(path As String) As List(Of String)
+        Dim list As New List(Of String)
+        Dim root As New IO.DirectoryInfo(path)
+        For Each m In root.GetDirectories("*", SearchOption.AllDirectories)
+            Try
+                list.Add(m.FullName)
+
+            Catch ex As Exception
+
+            End Try
+
+        Next
+        Return list
+    End Function
+
+    Public Function TryOtherDriveLetters(str As String) As String
+        Dim driveletter As String = "A"
+        While Not My.Computer.FileSystem.FileExists(str)
+
+            str = str.Replace(Left(str, 2), driveletter & ":")
+            driveletter = Chr(Asc(driveletter) + 1)
+        End While
+        Return str
 
     End Function
 #End Region
@@ -567,7 +611,11 @@ Public Module General
         Return time
     End Function
 
+    Public Sub ReplaceListboxItem(lbx As ListBox, index As Integer, newitem As String)
+        lbx.Items(index).Remove
+        lbx.Items.Insert(index, newitem)
 
+    End Sub
 
 
     Public Function LoadImage(fname As String) As Image
@@ -631,14 +679,6 @@ Public Module General
         Return k
     End Function
 
-    Public Function ReturnListOfDirectories(ByVal list As List(Of String), strPath As String) As List(Of String)
-        Dim d As New DirectoryInfo(strPath)
-        For Each di In d.EnumerateDirectories
-            list.Add(di.Name)
-            list = ReturnListOfDirectories(list, di.Name)
-        Next
-        Return list
-    End Function
     Public Function ButtfromAsc(asc As Integer) As Integer
         Dim n As Integer
         If asc <= 57 Then

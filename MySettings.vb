@@ -74,6 +74,7 @@ Friend Module Mysettings
             .SetValue("LastButtonFile", ButtonFilePath)
             .SetValue("LastAlpha", iCurrentAlpha)
             .SetValue("Favourites", FavesFolderPath)
+            .SetValue("PreviewLinks", MainForm.chbPreviewLinks.Checked)
         End With
 
     End Sub
@@ -84,12 +85,12 @@ Friend Module Mysettings
             MainForm.ctrFileBoxes.SplitterDistance = .GetValue("VertSplit", MainForm.ctrFileBoxes.Height / 4)
                 MainForm.ctrMainFrame.SplitterDistance = .GetValue("HorSplit", MainForm.ctrFileBoxes.Width / 2)
                 ButtonFilePath = .GetValue("LastButtonFile", "")
-                MainForm.PlayOrder.State = .GetValue("SortOrder", 0)
-                MainForm.CurrentFilterState.State = .GetValue("Filter", 0)
-                Media.StartPoint.State = .GetValue("StartPoint", 0)
-                MainForm.NavigateMoveState.State = .GetValue("State", 0)
-                iCurrentAlpha = .GetValue("LastAlpha", 0)
-                FavesFolderPath = .GetValue("Favourites", CurrentFolder)
+            MainForm.CurrentFilterState.State = .GetValue("Filter", 0)
+            Media.StartPoint.State = .GetValue("StartPoint", 0)
+            MainForm.NavigateMoveState.State = .GetValue("State", 0)
+            MainForm.PlayOrder.State = .GetValue("SortOrder", 0)
+            iCurrentAlpha = .GetValue("LastAlpha", 0)
+            FavesFolderPath = .GetValue("Favourites", CurrentFolder)
                 Dim fol As New IO.DirectoryInfo(FavesFolderPath)
                 If fol.Exists = False Then
                     MainForm.FavouritesFolderToolStripMenuItem.PerformClick()
@@ -99,6 +100,7 @@ Friend Module Mysettings
                 If s = "" Then s = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
             'Media.Player = MainForm.MainWMP4
             Media.MediaPath = s
+            MainForm.chbPreviewLinks.Checked = .GetValue("PreviewLinks", False)
 
             'Catch ex As Exception
             ' MsgBox(ex.Message)

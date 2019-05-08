@@ -29,11 +29,12 @@ Public Class MediaHandler
             End If
             If mType = Filetype.Link Then
                 mIsLink = True
+                IsLink = True
                 mLinkPath = LinkTarget(mMediaPath)
                 mType = FindType(mLinkPath)
 
             Else
-                IsLink = False
+                mIsLink = False
             End If
             Return mType
         End Get
@@ -334,6 +335,26 @@ Public Class MediaHandler
         currentPicBox = mPicBox
         MainForm.MovietoPic(img)
         DisplayerName = mPicBox.Name
+    End Sub
+    Public Sub MovietoPic(img As Image)
+        PreparePic(currentPicBox, img)
+        'SndH.Muted = True
+
+    End Sub
+
+
+
+
+    Public Sub OrientPic(img As Image)
+        Select Case ImageOrientation(img)
+            Case ExifOrientations.BottomRight
+                img.RotateFlip(RotateFlipType.Rotate180FlipNone)
+            Case ExifOrientations.RightTop
+                img.RotateFlip(RotateFlipType.Rotate90FlipNone)
+            Case ExifOrientations.LeftBottom
+                img.RotateFlip(RotateFlipType.Rotate270FlipNone)
+
+        End Select
     End Sub
 
     Private Sub HandleMovie(URL As String)

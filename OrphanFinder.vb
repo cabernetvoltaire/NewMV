@@ -2,6 +2,7 @@
     Private mFolderPath As String
     Private mSHandler As New ShortcutHandler
     Public Event FoundParent As EventHandler
+    Public Event NewOrphanTesting As EventHandler
     Public TotalFoundCount As Integer
     ''' <summary>
     ''' 
@@ -29,10 +30,22 @@
             mOrphanList = value
         End Set
     End Property
+    Private mPathList As List(Of String)
+    Public WriteOnly Property PathList(root As String) As List(Of String)
+        Set(ByVal value As List(Of String))
+            If value IsNot mPathList Then
+                GetDirectoriesList(root)
+                mPathList = value
+            End If
+        End Set
+    End Property
     ''' <summary>
     ''' Dictionary containing (new parent,link) pairs
     ''' </summary>
     Private mFoundParents As New Dictionary(Of String, String)
+
+
+
     Public Property FoundParents() As Dictionary(Of String, String)
         Get
             Return mFoundParents
@@ -45,60 +58,37 @@
     ''' Searches in subfolders of original destination of each link
     ''' </summary>
     Public Property SearchPath As String
-    Public Sub FindOrphans2(SearchPath As String)
-        Dim StartDest = New IO.DirectoryInfo(SearchPath)
-        Dim FileList As IO.FileInfo() = StartDest.GetFiles("*", IO.SearchOption.AllDirectories)
-        Dim RealFileList As New List(Of String)
-        For Each m In FileList
-            RealFileList.Add(m.FullName)
-        Next
+    Public Sub FindOrphans()
+        'for each file in orphanlist
+        'change target to all possible directories.
         For Each n In mOrphanList
-
-        Next
-
-    End Sub
-    'Find Orphans
-    'With orphan list
-    'Get all putative destinations
-    '
-    Public Sub FindOrphans(SearchPath As String)
-
-        Dim StartDest = New IO.DirectoryInfo(SearchPath)
-        While Not StartDest.Exists
-            StartDest = StartDest.Parent
-        End While
-        'Check all the files in startdest, and put matches in Names
-
-        Dim Names As New Dictionary(Of String, String)
-        Dim FilesToCheck As IO.FileInfo() = StartDest.GetFiles("*", IO.SearchOption.AllDirectories)
-        For Each xx In FilesToCheck
-            If Not Names.ContainsKey(xx.Name) Then Names.Add(xx.Name, xx.FullName)
-        Next
-        'add names to foundparents
-        For Each m In mOrphanList
-            'Get the target of the Orphan
-            Dim s As String = LinkTarget(m)
-            If s <> "" Then
-                Dim f As New IO.FileInfo(s)
-                'Find it in the Names dictionary
-                If Names.ContainsKey(f.Name) Then
-                    If mFoundParents.ContainsKey(Names(f.Name)) Then
-                        mFoundParents.Add(Names(f.Name) & "#" & Format(Int(Rnd() * 1000000), "######"), m)
-                    Else
-                        mFoundParents.Add(Names(f.Name), m)
-                    End If
+            RaiseEvent NewOrphanTesting(Me, Nothing)
+            Dim filename As String = FilenameFromLink(n)
+            Dim i As Integer = 0
+            Dim max = DirectoriesList.Count
+            Dim newlink = DirectoriesList(0) & "\" & filename
+            While My.Computer.FileSystem.FileExists(newlink) = False And i < max
+                If Len(filename) > 8 Then
+                    newlink = DirectoriesList(i) & "\" & filename
                 End If
+                i += 1
+                'TODO: What about files which occur in multiple places, or different files with the same name?
+            End While
+            If My.Computer.FileSystem.FileExists(newlink) Then
+                mFoundParents.Add(n, newlink)
             End If
         Next
         If mFoundParents.Count <> 0 Then
             RaiseEvent FoundParent(Me, Nothing)
         End If
         Reunite()
-        If mFoundParents.Count = mOrphanList.Count Then
-
-        End If
-
     End Sub
+
+
+    'Find Orphans
+    'With orphan list
+    'Get all putative destinations
+    '
 
 
     Private Function CheckListForParents(ByVal list As List(Of String), f As IO.FileInfo) As Boolean
@@ -117,14 +107,15 @@
     Public Sub Reunite()
         TotalFoundCount = TotalFoundCount + mFoundParents.Count
         For Each m In mFoundParents
-            mSHandler.ShortcutName = m.Value
+            mSHandler.ShortcutName = m.Key
+            mSHandler.MarkOffset = 0
             Dim s As String = Right(m.Key, 7)
             Dim mn As String = m.Key
             If s(0) = "#" Then
                 mn = Replace(m.Key, s, "")
             End If
-            Dim f As New IO.FileInfo(mn)
-            If f.Exists = True Then mSHandler.ReAssign_ShortCutPath(mn, m.Value)
+            Dim f As New IO.FileInfo(m.Value)
+            If f.Exists = True Then mSHandler.ReAssign_ShortCutPath(m.Value, mn)
         Next
     End Sub
 End Class

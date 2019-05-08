@@ -122,6 +122,9 @@ Partial Class MainForm
         Me.chbNextFile = New System.Windows.Forms.CheckBox()
         Me.lbxGroups = New System.Windows.Forms.ListBox()
         Me.lblAttributes = New System.Windows.Forms.Label()
+        Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.chbPreviewLinks = New System.Windows.Forms.CheckBox()
+        Me.CheckBox1 = New System.Windows.Forms.CheckBox()
         Me.lblNavigateState = New System.Windows.Forms.Label()
         Me.tmrUpdateFileList = New System.Windows.Forms.Timer(Me.components)
         Me.tmrPicLoad = New System.Windows.Forms.Timer(Me.components)
@@ -213,8 +216,8 @@ Partial Class MainForm
         Me.DuplicatesToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ThumbnailsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SelectDeadLinksToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ReclaimDeadLinksToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RefreshSelectedLinksToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DisplayedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator11 = New System.Windows.Forms.ToolStripSeparator()
         Me.SelectNonFavouritsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ButtonFormToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -226,10 +229,7 @@ Partial Class MainForm
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
         Me.NewIndex = New System.Windows.Forms.Timer(Me.components)
         Me.Response = New System.Windows.Forms.Timer(Me.components)
-        Me.GroupBox3 = New System.Windows.Forms.GroupBox()
-        Me.CheckBox1 = New System.Windows.Forms.CheckBox()
-        Me.chbPreviewLinks = New System.Windows.Forms.CheckBox()
-        Me.DisplayedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SelectedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -271,9 +271,9 @@ Partial Class MainForm
         CType(Me.tbAbsolute, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbPercentage, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
+        Me.GroupBox3.SuspendLayout()
         CType(Me.FileSystemWatcher1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip2.SuspendLayout()
-        Me.GroupBox3.SuspendLayout()
         Me.SuspendLayout()
         '
         'FileToolStripMenuItem
@@ -1289,6 +1289,42 @@ Partial Class MainForm
         Me.lblAttributes.TabIndex = 47
         Me.lblAttributes.Text = "Label4"
         '
+        'GroupBox3
+        '
+        Me.GroupBox3.Controls.Add(Me.chbPreviewLinks)
+        Me.GroupBox3.Controls.Add(Me.CheckBox1)
+        Me.GroupBox3.Dock = System.Windows.Forms.DockStyle.Top
+        Me.GroupBox3.Location = New System.Drawing.Point(1903, 4)
+        Me.GroupBox3.Margin = New System.Windows.Forms.Padding(4)
+        Me.GroupBox3.Name = "GroupBox3"
+        Me.GroupBox3.Padding = New System.Windows.Forms.Padding(4)
+        Me.GroupBox3.Size = New System.Drawing.Size(241, 138)
+        Me.GroupBox3.TabIndex = 49
+        Me.GroupBox3.TabStop = False
+        Me.GroupBox3.Text = "Options"
+        '
+        'chbPreviewLinks
+        '
+        Me.chbPreviewLinks.AutoSize = True
+        Me.chbPreviewLinks.Dock = System.Windows.Forms.DockStyle.Top
+        Me.chbPreviewLinks.Location = New System.Drawing.Point(4, 55)
+        Me.chbPreviewLinks.Name = "chbPreviewLinks"
+        Me.chbPreviewLinks.Size = New System.Drawing.Size(233, 29)
+        Me.chbPreviewLinks.TabIndex = 48
+        Me.chbPreviewLinks.Text = "Preview Links"
+        Me.chbPreviewLinks.UseVisualStyleBackColor = True
+        '
+        'CheckBox1
+        '
+        Me.CheckBox1.AutoSize = True
+        Me.CheckBox1.Dock = System.Windows.Forms.DockStyle.Top
+        Me.CheckBox1.Location = New System.Drawing.Point(4, 26)
+        Me.CheckBox1.Name = "CheckBox1"
+        Me.CheckBox1.Size = New System.Drawing.Size(233, 29)
+        Me.CheckBox1.TabIndex = 47
+        Me.CheckBox1.Text = "Show Attributes (loads slower)"
+        Me.CheckBox1.UseVisualStyleBackColor = True
+        '
         'lblNavigateState
         '
         Me.lblNavigateState.AutoSize = True
@@ -1749,7 +1785,7 @@ Partial Class MainForm
         'Screen1ToolStripMenuItem
         '
         Me.Screen1ToolStripMenuItem.Name = "Screen1ToolStripMenuItem"
-        Me.Screen1ToolStripMenuItem.Size = New System.Drawing.Size(183, 34)
+        Me.Screen1ToolStripMenuItem.Size = New System.Drawing.Size(288, 34)
         Me.Screen1ToolStripMenuItem.Text = "Screen 1"
         '
         'Screen2ToolStripMenuItem
@@ -1757,7 +1793,7 @@ Partial Class MainForm
         Me.Screen2ToolStripMenuItem.Checked = True
         Me.Screen2ToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
         Me.Screen2ToolStripMenuItem.Name = "Screen2ToolStripMenuItem"
-        Me.Screen2ToolStripMenuItem.Size = New System.Drawing.Size(183, 34)
+        Me.Screen2ToolStripMenuItem.Size = New System.Drawing.Size(288, 34)
         Me.Screen2ToolStripMenuItem.Text = "Screen 2"
         '
         'OptionsToolStripMenuItem
@@ -1836,7 +1872,7 @@ Partial Class MainForm
         '
         'DuplicatesToolStripMenuItem
         '
-        Me.DuplicatesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DuplicatesToolStripMenuItem1, Me.ThumbnailsToolStripMenuItem, Me.SelectDeadLinksToolStripMenuItem, Me.ReclaimDeadLinksToolStripMenuItem, Me.RefreshSelectedLinksToolStripMenuItem, Me.ToolStripSeparator11, Me.SelectNonFavouritsToolStripMenuItem})
+        Me.DuplicatesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DuplicatesToolStripMenuItem1, Me.ThumbnailsToolStripMenuItem, Me.SelectDeadLinksToolStripMenuItem, Me.RefreshSelectedLinksToolStripMenuItem, Me.ToolStripSeparator11, Me.SelectNonFavouritsToolStripMenuItem})
         Me.DuplicatesToolStripMenuItem.Name = "DuplicatesToolStripMenuItem"
         Me.DuplicatesToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.D), System.Windows.Forms.Keys)
@@ -1868,18 +1904,18 @@ Partial Class MainForm
         Me.SelectDeadLinksToolStripMenuItem.Size = New System.Drawing.Size(391, 34)
         Me.SelectDeadLinksToolStripMenuItem.Text = "Select Dead &Links"
         '
-        'ReclaimDeadLinksToolStripMenuItem
-        '
-        Me.ReclaimDeadLinksToolStripMenuItem.Name = "ReclaimDeadLinksToolStripMenuItem"
-        Me.ReclaimDeadLinksToolStripMenuItem.Size = New System.Drawing.Size(391, 34)
-        Me.ReclaimDeadLinksToolStripMenuItem.Text = "Reclaim Dead Links"
-        '
         'RefreshSelectedLinksToolStripMenuItem
         '
-        Me.RefreshSelectedLinksToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DisplayedToolStripMenuItem})
+        Me.RefreshSelectedLinksToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SelectedToolStripMenuItem, Me.DisplayedToolStripMenuItem})
         Me.RefreshSelectedLinksToolStripMenuItem.Name = "RefreshSelectedLinksToolStripMenuItem"
         Me.RefreshSelectedLinksToolStripMenuItem.Size = New System.Drawing.Size(391, 34)
         Me.RefreshSelectedLinksToolStripMenuItem.Text = "Refresh Selected Links"
+        '
+        'DisplayedToolStripMenuItem
+        '
+        Me.DisplayedToolStripMenuItem.Name = "DisplayedToolStripMenuItem"
+        Me.DisplayedToolStripMenuItem.Size = New System.Drawing.Size(288, 34)
+        Me.DisplayedToolStripMenuItem.Text = "Displayed"
         '
         'ToolStripSeparator11
         '
@@ -1931,47 +1967,11 @@ Partial Class MainForm
         'Response
         '
         '
-        'GroupBox3
+        'SelectedToolStripMenuItem
         '
-        Me.GroupBox3.Controls.Add(Me.chbPreviewLinks)
-        Me.GroupBox3.Controls.Add(Me.CheckBox1)
-        Me.GroupBox3.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox3.Location = New System.Drawing.Point(1903, 4)
-        Me.GroupBox3.Margin = New System.Windows.Forms.Padding(4)
-        Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Padding = New System.Windows.Forms.Padding(4)
-        Me.GroupBox3.Size = New System.Drawing.Size(241, 138)
-        Me.GroupBox3.TabIndex = 49
-        Me.GroupBox3.TabStop = False
-        Me.GroupBox3.Text = "Options"
-        '
-        'CheckBox1
-        '
-        Me.CheckBox1.AutoSize = True
-        Me.CheckBox1.Dock = System.Windows.Forms.DockStyle.Top
-        Me.CheckBox1.Location = New System.Drawing.Point(4, 26)
-        Me.CheckBox1.Name = "CheckBox1"
-        Me.CheckBox1.Size = New System.Drawing.Size(233, 29)
-        Me.CheckBox1.TabIndex = 47
-        Me.CheckBox1.Text = "Show Attributes (loads slower)"
-        Me.CheckBox1.UseVisualStyleBackColor = True
-        '
-        'chbPreviewLinks
-        '
-        Me.chbPreviewLinks.AutoSize = True
-        Me.chbPreviewLinks.Dock = System.Windows.Forms.DockStyle.Top
-        Me.chbPreviewLinks.Location = New System.Drawing.Point(4, 55)
-        Me.chbPreviewLinks.Name = "chbPreviewLinks"
-        Me.chbPreviewLinks.Size = New System.Drawing.Size(233, 29)
-        Me.chbPreviewLinks.TabIndex = 48
-        Me.chbPreviewLinks.Text = "Preview Links"
-        Me.chbPreviewLinks.UseVisualStyleBackColor = True
-        '
-        'DisplayedToolStripMenuItem
-        '
-        Me.DisplayedToolStripMenuItem.Name = "DisplayedToolStripMenuItem"
-        Me.DisplayedToolStripMenuItem.Size = New System.Drawing.Size(288, 34)
-        Me.DisplayedToolStripMenuItem.Text = "Displayed"
+        Me.SelectedToolStripMenuItem.Name = "SelectedToolStripMenuItem"
+        Me.SelectedToolStripMenuItem.Size = New System.Drawing.Size(288, 34)
+        Me.SelectedToolStripMenuItem.Text = "Selected"
         '
         'MainForm
         '
@@ -2043,11 +2043,11 @@ Partial Class MainForm
         CType(Me.tbPercentage, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
+        Me.GroupBox3.ResumeLayout(False)
+        Me.GroupBox3.PerformLayout()
         CType(Me.FileSystemWatcher1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.MenuStrip2.ResumeLayout(False)
         Me.MenuStrip2.PerformLayout()
-        Me.GroupBox3.ResumeLayout(False)
-        Me.GroupBox3.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -2224,7 +2224,6 @@ Partial Class MainForm
     Friend WithEvents DuplicatesToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents ThumbnailsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SelectDeadLinksToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ReclaimDeadLinksToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ButtonFormToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ShowlistToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem2 As ToolStripMenuItem
@@ -2263,4 +2262,5 @@ Partial Class MainForm
     Friend WithEvents chbPreviewLinks As CheckBox
     Friend WithEvents CheckBox1 As CheckBox
     Friend WithEvents DisplayedToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents SelectedToolStripMenuItem As ToolStripMenuItem
 End Class

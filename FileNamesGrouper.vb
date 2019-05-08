@@ -2,6 +2,7 @@
     Public Event WordsParsed()
     Private RegexOptions() As String = {"[[A-Z|a-z]*[0-9]{3,}]|[\w]*", "(([A-Z|a-z]*[AEIOUY|aeiouy][A-Z|a-z]*[ |_|-|,]*)*)", "([A-Z|a-z]*[ |_|-]*)", "([A-Z|a-z]+[ |_|-]*)+"}
     Private mWordlist As New SortedList(Of String, Integer)
+    Private mOptionNumber
     Public Property WordList() As SortedList(Of String, Integer)
         Get
             Return mWordlist
@@ -53,7 +54,7 @@
         OutputList("ParseNames", mFilenames)
         For Each f In mFilenames
             ' For i = RegexOptions.Length - 1 To 0 Step -1
-            CreateWordList(f, RegexOptions(1))
+            CreateWordList(f, RegexOptions(mOptionNumber))
             '   StringParser(f, RegexOptions(2))
 
             'Next
@@ -194,6 +195,10 @@
             Next
         Next
         mWordlist = x
+    End Sub
+    Public Sub AdvanceOption()
+        mOptionNumber = (mOptionNumber + 1) Mod RegexOptions.Length
+
     End Sub
 #End Region
 

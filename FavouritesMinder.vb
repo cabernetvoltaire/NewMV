@@ -92,7 +92,7 @@
     Public Sub Check(f As IO.FileInfo, destinationpath As String)
         OkToDelete = False
         Dim mf As New List(Of String)
-        mf = FavesList.FindAll(Function(x) x.Contains(f.Name))
+        mf = FavesList.FindAll(Function(x) FilenameFromLink(x) = f.Name)
         If mf.Count = 0 Then
             OkToDelete = True
         ElseIf destinationpath = "" Then
@@ -131,7 +131,9 @@
         Dim finfo As New IO.FileInfo(Path)
         Dim m As String = "a"
         Dim list As New List(Of String)
-        list = FavesList.FindAll(Function(x) x.Contains(finfo.Name))
+        list = FavesList.FindAll(Function(x) FilenameFromLink(x) = finfo.Name)
+
+        'list = FavesList.FindAll(Function(x) x.Contains(finfo.Name))
         Return list
     End Function
     Public Property OkToDelete As Boolean = True

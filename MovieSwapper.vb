@@ -169,6 +169,9 @@ Public Class MediaSwapper
         mMedia1.Player.URL = ""
         mMedia2.Player.URL = ""
         mMedia3.Player.URL = ""
+        mMedia1.Picture.Image = Nothing
+        mMedia2.Picture.Image = Nothing
+        mMedia3.Picture.Image = Nothing
 
     End Sub
     Public Sub ResettersOff()

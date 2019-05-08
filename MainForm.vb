@@ -25,6 +25,7 @@ Public Class MainForm
     Private WithEvents Op As New OrphanFinder
     Public WithEvents SP As New SpeedHandler
     Public WithEvents AT As New AutoTrailer
+    Public WithEvents X As New OrphanFinder
     ' Public WithEvents Response As New Timer
 
     Public FocusControl As New Control
@@ -33,9 +34,9 @@ Public Class MainForm
     Public T As Thread
     Public Sub PopulateLinkList(f As String)
         If f = "" Then Exit Sub
-        Dim x As List(Of String) = FaveMinder.GetLinksOf(f)
+        Dim x As List(Of String) = AllFaveMinder.GetLinksOf(f)
         '   MainForm.lbxGroups.Items.Clear()
-        If x.Count > 1 Then
+        If x.Count >= 1 Then
             FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
             ControlSetFocus(lbxShowList)
         Else
@@ -77,7 +78,7 @@ Public Class MainForm
             PlayOrder.State = SortHandler.Order.Random
             Media.Startpoint.State = StartPointHandler.StartTypes.Random
         Else
-            PlayOrder.State = SortHandler.Order.DateTime
+            'PlayOrder.State = SortHandler.Order.DateTime
             '       StartPoint.State = StartPointHandler.StartTypes.NearBeginning
         End If
 
@@ -142,6 +143,7 @@ Public Class MainForm
                 CurrentFilterState.State = FilterHandler.FilterState.LinkOnly
             End If
         End If
+        If Not Initialising Then PreferencesSave()
     End Sub
     Private Sub SetControlColours(MainColor As Color, FilterColor As Color)
         tvMain2.BackColor = FilterColor
@@ -157,7 +159,7 @@ Public Class MainForm
     ''' </summary>
     ''' <param name="img"></param>
     Public Sub MovietoPic(img As Image)
-        PreparePic(currentPicBox, pbxBlanker, img)
+        PreparePic(currentPicBox, img)
         'SndH.Muted = True
         tbState.Text = ""
 
@@ -256,7 +258,7 @@ Public Class MainForm
     End Sub
 
     Public Sub CancelDisplay()
-        'MSFiles.URLSZero()
+        MSFiles.URLSZero()
         MSFiles.ResettersOff()
 
         If Media.Player.URL <> "" Then
@@ -319,8 +321,7 @@ Public Class MainForm
                 Try
 
                     lbxShowList.SelectedIndex = lbxShowList.FindString(s)
-                Catch ex As Exception
-                    Throw New FileNotFoundException
+                Catch ex As FileNotFoundException
                 End Try
             End If
         End If
@@ -360,11 +361,14 @@ Public Class MainForm
                     lbx.SelectedIndex = Rnd() * s
                 Else
                     If lbx.FindString(Media.MediaPath) = -1 Then
+
                         lbx.SelectedItem = lbx.FindString(Media.LinkPath)
 
                     Else
                         lbx.SelectedItem = lbx.FindString(Media.MediaPath)
-
+                    End If
+                    If lbx.SelectedItem Is Nothing Then
+                        lbx.SelectedIndex = 0 'PUt to beginning
                     End If
 
                 End If
@@ -523,6 +527,7 @@ Public Class MainForm
         Else
             Exit Sub
         End If
+        If CtrlDown Then lbx = lbxFiles
         Dim count As Long
         count = lbx.Items.Count
         ReDim Preserve FBCShown(count) 'Boolean list of files shown so far. But why now? Shouldn't this be when the folder is changed?
@@ -642,7 +647,7 @@ Public Class MainForm
             Case Keys.F4 And e.Alt
                 PreferencesSave()
                 e.SuppressKeyPress = True
-                Me.Close()
+                Application.Exit()
             Case Keys.F5, Keys.F6, Keys.F7, Keys.F8, Keys.F9, Keys.F10, Keys.F11, Keys.F12
                 HandleFunctionKeyDown(sender, e)
                 e.SuppressKeyPress = True
@@ -654,7 +659,7 @@ Public Class MainForm
 #Region "Alpha and Numeric"
 
             Case Keys.Enter And e.Control
-                If Media.IsLink Or PFocus = CtrlFocus.ShowList Then
+                If Media.IsLink Or FocusControl Is lbxShowList Then
                     HighlightCurrent(Media.LinkPath)
                     CurrentFilterState.State = FilterHandler.FilterState.All
                 End If
@@ -693,7 +698,7 @@ Public Class MainForm
             Case KeyToggleButtons
                 ToggleButtons()
             Case KeyNextFile, KeyPreviousFile, LKeyNextFile, LKeyPreviousFile
-                If FocusControl IsNot lbxFiles Then ControlSetFocus(lbxFiles)
+                If FocusControl IsNot lbxFiles And FocusControl IsNot lbxShowList Then ControlSetFocus(lbxFiles)
                 AdvanceFile(e.KeyCode = KeyNextFile, Random.NextSelect)
                 If e.Shift Then HighlightCurrent(Media.MediaPath)
                 e.SuppressKeyPress = True
@@ -1046,7 +1051,7 @@ Public Class MainForm
         PositionUpdater.Enabled = False
         tmrPicLoad.Interval = lngInterval * 15
         currentPicBox = PictureBox1
-        Media.Player = MainWMP2
+        'Media.Player = MainWMP2
         '   Media.StartPoint.State = StartPointHandler.StartTypes.NearBeginning
         Media.Picture = currentPicBox
         PreferencesGet()
@@ -1073,6 +1078,8 @@ Public Class MainForm
         NavigateMoveState.State = StateHandler.StateOptions.Navigate
         OnRandomChanged()
         '        PlayOrder.State = SortHandler.Order.DateTime
+        DirectoriesList = GetDirectoriesList("Q:Watch\")
+
         Initialising = False
         tmrPicLoad.Enabled = True
 
@@ -1136,6 +1143,7 @@ Public Class MainForm
     Private Sub frmMain_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
 
         PreferencesSave()
+        Application.Exit()
     End Sub
 
     Private Sub ClearShowList()
@@ -1158,7 +1166,7 @@ Public Class MainForm
         NewIndex.Enabled = True
 
     End Sub
-    Private Sub IndexHandler(sender As Object, e As EventArgs) Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged 'TODO Swapper
+    Public Sub IndexHandler(sender As Object, e As EventArgs) Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged 'TODO Swapper
         With sender
             Dim lbx As ListBox = CType(sender, ListBox)
             If lbx.SelectionMode = SelectionMode.One Then
@@ -1394,8 +1402,10 @@ Public Class MainForm
     End Sub
 
 
-    Private Sub lbxFiles_DoubleClick(sender As Object, e As EventArgs) Handles lbxFiles.DoubleClick
-        Process.Start("explorer.exe", lbxFiles.SelectedItem)
+    Private Sub lbxFiles_DoubleClick(sender As Object, e As EventArgs) Handles lbxFiles.DoubleClick, lbxShowList.DoubleClick
+        Dim lbx As New ListBox
+        lbx = CType(sender, ListBox)
+        Process.Start("explorer.exe", lbx.SelectedItem)
     End Sub
 
     Public Sub UpdateFileInfo()
@@ -1693,6 +1703,7 @@ Public Class MainForm
 
     End Sub
     Private Sub Groupfiles(ByVal m As FileNamesGrouper)
+        MSFiles.URLSZero()
         blnSuppressCreate = True
         For i As Integer = 0 To m.Groups.Count - 1
             If lbxGroups.SelectedIndices.Contains(i) Then
@@ -1715,12 +1726,12 @@ Public Class MainForm
 
     Private Function DeadLinksSelect() As List(Of String)
         Dim s As New List(Of String)
-        SelectDeadLinks(FocusControl)
-        Dim lbx As ListBox = FocusControl
-        For Each m In lbx.SelectedItems
-            s.Add(m.ToString)
-        Next
-        Return s
+        Dim lbx As ListBox = CType(FocusControl, ListBox)
+        SelectDeadLinks(lbx)
+        'For Each m In lbx.SelectedItems
+        '    s.Add(m.ToString)
+        'Next
+        'Return s
         UpdateFileInfo()
 
 
@@ -2037,7 +2048,7 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub cbxOrder_SelectedIndexChanged(sender As Object, e As EventArgs)
+    Private Sub cbxOrder_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbxOrder.SelectedIndexChanged
         If PlayOrder.State <> cbxOrder.SelectedIndex Then
             PlayOrder.State = cbxOrder.SelectedIndex
         End If
@@ -2113,9 +2124,6 @@ Public Class MainForm
         Random.NextSelect = chbNextFile.Checked
     End Sub
 
-    Private Sub chbInDir_CheckedChanged(sender As Object, e As EventArgs)
-        Random.OnDirChange = chbInDir.Checked
-    End Sub
 
 
     Private Sub FilterMoveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FilterMoveToolStripMenuItem.Click
@@ -2139,19 +2147,17 @@ Public Class MainForm
 
     Private Sub ReUniteFavesLinks()
         Dim s As List(Of String)
-        s = DeadLinksSelect()
-        Dim x As New OrphanFinder
-        x.OrphanList = s
-        Dim d As New IO.DirectoryInfo("Q:\Watch")
-        For Each di In d.EnumerateDirectories("*", SearchOption.AllDirectories)
-            If x.TotalFoundCount < x.OrphanList.Count Then
-                x.FindOrphans(di.FullName)
-            Else
-                Exit For
-            End If
-
-        Next
+        '        s = DeadLinksSelect()
+        s = ListfromListbox(CType(FocusControl, ListBox))
+        X.OrphanList = s
+        ProgressBarOn(s.Count)
+        X.FindOrphans()
+        ProgressBarOff()
         UpdatePlayOrder(False)
+    End Sub
+    Private Sub OnOrphanTest(sender As Object, e As EventArgs) Handles X.NewOrphanTesting
+        ProgressIncrement(1)
+
     End Sub
     Public Sub ReportAction(Msg As String)
         Console.WriteLine(Msg)
@@ -2194,7 +2200,7 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub ReclaimDeadLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ReclaimDeadLinksToolStripMenuItem.Click
+    Private Sub ReclaimDeadLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectedToolStripMenuItem.Click
         ReUniteFavesLinks()
 
     End Sub
@@ -2403,7 +2409,7 @@ Public Class MainForm
             files.Add(m)
         Next
         op2.OrphanList = files
-        op2.FindOrphans(CurrentFolder)
+        op2.FindOrphans()
     End Sub
 
     Private Sub CloneToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CloneToolStripMenuItem.Click
@@ -2412,6 +2418,7 @@ Public Class MainForm
     End Sub
 
     Private Sub lbxGroups_DoubleClick(sender As Object, e As EventArgs) Handles lbxGroups.DoubleClick
+        FNG.AdvanceOption()
         FNG.Filenames = CurrentFileList
     End Sub
 
@@ -2496,5 +2503,9 @@ Public Class MainForm
 
     Private Sub DisplayedToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DisplayedToolStripMenuItem.Click
         FaveMinder.RedirectShortCutList(New FileInfo(lbxFiles.SelectedItem), AllfromListbox(lbxShowList))
+    End Sub
+
+    Private Sub chbInDir_CheckedChanged(sender As Object, e As EventArgs) Handles chbInDir.CheckedChanged
+        Random.OnDirChange = chbInDir.Checked
     End Sub
 End Class

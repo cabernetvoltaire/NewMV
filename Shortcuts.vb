@@ -1,8 +1,7 @@
 ﻿Imports System.IO
 Imports IWshRuntimeLibrary
-Module Shortcuts
 
-    Public Class ShortcutHandler
+Public Class ShortcutHandler
         Public Sub New()
             Dim TargetPath As String = ""
             Dim ShortCutPath As String = ""
@@ -121,28 +120,13 @@ Module Shortcuts
 
 
 
-        Public Sub ReAssign_ShortCutPath(ByVal sTargetPath As String, sShortCutPath As String)
-            Dim d As New FileInfo(sShortCutPath)
+    Public Sub ReAssign_ShortCutPath(ByVal sTargetPath As String, sShortCutPath As String)
+        Dim d As New FileInfo(sShortCutPath)
 
-            CreateLink(sTargetPath, d.Directory.FullName, d.Name, False, Bookmark)
+        CreateLink(Me, sTargetPath, d.Directory.FullName, d.Name, False, Bookmark)
 
-        End Sub
+    End Sub
 
 
-    End Class
-    Public Function LinkTargetExists(Linkfile As String) As Boolean
-        Dim f As String
-        f = LinkTarget(Linkfile)
-        If f = "" Then
-            Return False
-            Exit Function
-        End If
-        Dim Finfo = New FileInfo(f)
-        If Finfo.Exists Then
-            Return True
-        Else
-            Return False
-        End If
+End Class
 
-    End Function
-End Module

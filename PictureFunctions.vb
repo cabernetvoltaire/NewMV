@@ -72,7 +72,7 @@
         iScreenstate = (iScreenstate + 1) Mod 2
         DisposePic(pic)
         Dim img As Image = GetImage(Media.MediaPath)
-        PreparePic(pic, picBlanker, img)
+        PreparePic(pic, img)
     End Sub
     Public Sub Mousewheel(sender As Object, e As MouseEventArgs)
         Dim pbx1 As PictureBox = CType(sender, PictureBox)
@@ -249,9 +249,10 @@
         GC.SuppressFinalize(box)
         box.Image = Nothing
     End Sub
-    Public Sub PreparePic(pbx As PictureBox, pbxBlanker As PictureBox, img As Image)
+    Public Sub PreparePic(pbx As PictureBox, img As Image)
+        Dim pbxBlanker As New PictureBox
+        pbxBlanker.Parent = pbx.Parent
         If img Is Nothing Then Exit Sub
-        If pbxBlanker Is Nothing Then Exit Sub
         If Not pbx.Image Is Nothing Then
             pbx.Image.Dispose()
         End If

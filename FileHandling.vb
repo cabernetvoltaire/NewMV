@@ -18,8 +18,8 @@ Module FileHandling
     Public WithEvents Media As New MediaHandler("Media")
     Public WithEvents MSFiles As New MediaSwapper(MainForm.MainWMP4, MainForm.MainWMP2, MainForm.MainWMP3, MainForm.PictureBox1, MainForm.PictureBox2, MainForm.PictureBox3)
     '   Public WithEvents MSShow As New MovieSwapper(MainForm.MainWMP, MainForm.MainWMP2)
+    Public AllFaveMinder As New FavouritesMinder("Q:\Favourites")
     Public FaveMinder As New FavouritesMinder("Q:\Favourites")
-
     '  Public WithEvents SndH As New SoundController
     Public Sub OnMediaStartChanged(sender As Object, e As EventArgs) Handles Media.StartChanged
         MainForm.OnStartChanged(sender, e)
@@ -74,23 +74,18 @@ Module FileHandling
                     'lbx1.SelectedIndex = (lbx1.SelectedIndex + 1) Mod (lbx1.Items.Count - 1) 'Signal action completed by advancing
                 Case StateHandler.StateOptions.MoveLeavingLink
                     MainForm.UpdatePlayOrder(False)
+                    '                    ReplaceListboxItem(lbx1, ind, f)
                     lbx1.SelectedItem = lbx1.Items(ind)
                 Case Else
                     lbx1.Items.Remove(f)
-                    'MSFiles.Listbox=lbx1
             End Select
             MSFiles.ResettersOff()
-            If lbx1.Items.Count > 0 Then
-
-            End If
-
         Next
         If lbx1.Items.Count <> 0 Then lbx1.SetSelected(Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0), True)
-        MSFiles.ListIndex = lbx1.SelectedIndex
+        MainForm.IndexHandler(lbx1, Nothing)
+
     End Sub
-    'Public Sub OnfileMoved(f As List(Of String), lbx As ListBox)
-    '    MainForm.OnFileMoved(f, lbx)
-    'End Sub
+
 
     Dim strFilterExtensions(6) As String
     Public Sub AssignExtensionFilters()
@@ -299,8 +294,8 @@ Module FileHandling
                         Dim flist As New List(Of String)
                         GetFiles(dir, flist)
 
-                        FaveMinder.DestinationPath = strDest
-                        FaveMinder.CheckFiles(flist)
+                        AllFaveMinder.DestinationPath = strDest
+                        AllFaveMinder.CheckFiles(flist)
 
                         .MoveDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
 
@@ -412,16 +407,17 @@ Module FileHandling
                         If Not currentPicBox.Image Is Nothing Then DisposePic(currentPicBox)
                         If strDest = "" Then
                             Dim f As New IO.FileInfo(m.FullName)
-                            FaveMinder.DestinationPath = strDest
-                            FaveMinder.CheckFile(f)
+                            AllFaveMinder.DestinationPath = strDest
+                            AllFaveMinder.CheckFile(f)
                             'fm.DeleteFavourite(m.FullName)
-                            If FaveMinder.OkToDelete Then Deletefile(m.FullName)
+                            If AllFaveMinder.OkToDelete Then Deletefile(m.FullName)
                         Else
                             Dim f As New IO.FileInfo(m.FullName)
-                            FaveMinder.DestinationPath = spath
-                            FaveMinder.CheckFile(f)
+                            AllFaveMinder.DestinationPath = spath
                             Try
                                 m.MoveTo(spath)
+
+                                AllFaveMinder.CheckFile(New IO.FileInfo(m.FullName))
 
                             Catch ex As Exception
                                 MsgBox(ex.Message)
@@ -430,15 +426,18 @@ Module FileHandling
                     Case StateHandler.StateOptions.MoveLeavingLink
                         'Move, and place link here
                         Dim f As New IO.FileInfo(m.FullName)
-                        FaveMinder.DestinationPath = spath
-                        FaveMinder.CheckFile(f)
+                        AllFaveMinder.DestinationPath = spath
+                        AllFaveMinder.CheckFile(f)
                         m.MoveTo(spath)
-                        CreateLink(m.FullName, CurrentFolder, f.Name, Bookmark:=Media.Position)
+                        Dim sh As New ShortcutHandler
+                        CreateLink(sh, m.FullName, CurrentFolder, f.Name, Bookmark:=Media.Position)
 
                     Case StateHandler.StateOptions.CopyLink
                         'Paste a link in destination
                         Dim fpath As New FileInfo(spath)
-                        CreateLink(m.FullName, fpath.Directory.FullName, m.Name, Bookmark:=Media.Position)
+                        Dim sh As New ShortcutHandler
+
+                        CreateLink(sh, m.FullName, fpath.Directory.FullName, m.Name, Bookmark:=Media.Position)
                     Case StateHandler.StateOptions.ExchangeLink
                         'Only works on links
                         Dim sh As New ShortcutHandler
@@ -447,7 +446,8 @@ Module FileHandling
                             Dim f As New IO.FileInfo(LinkTarget(m.FullName))
                             spath = f.FullName
                             f.MoveTo(CurrentFolder & "\" & f.Name)
-                            CreateLink(f.FullName, New FileInfo(spath).Directory.FullName, m.Name, Media.Bookmark)
+
+                            CreateLink(sh, f.FullName, New FileInfo(spath).Directory.FullName, m.Name, Media.Bookmark)
                             m.Delete()
                         End If
                     Case StateHandler.StateOptions.MoveOriginal
