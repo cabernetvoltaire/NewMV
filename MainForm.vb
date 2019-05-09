@@ -27,7 +27,8 @@ Public Class MainForm
     Public WithEvents AT As New AutoTrailer
     Public WithEvents X As New OrphanFinder
     ' Public WithEvents Response As New Timer
-
+    Public Linkpoints() As Long
+    Public LinkCounter As Integer
     Public FocusControl As New Control
     Public DraggedFolder As String
     Public CurrentFileList As New List(Of String)
@@ -35,13 +36,24 @@ Public Class MainForm
     Public Sub PopulateLinkList(f As String)
         If f = "" Then Exit Sub
         Dim x As List(Of String) = AllFaveMinder.GetLinksOf(f)
+        Dim i = 0
+        ReDim Linkpoints(x.Count - 1)
+        If x.Count = 0 Then chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Regular)
+        For Each m In x
+            Linkpoints(i) = BookmarkFromLinkName(m)
+            i += 1
+            chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Bold)
+        Next
+        Array.Sort(Linkpoints)
         '   MainForm.lbxGroups.Items.Clear()
-        If x.Count >= 1 Then
-            FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
-            ControlSetFocus(lbxShowList)
-        Else
-            lbxShowList.Items.Clear()
-            ControlSetFocus(lbxFiles)
+        If chbPreviewLinks.Checked Then
+            If x.Count >= 1 Then
+                FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
+                ControlSetFocus(lbxShowList)
+            Else
+                lbxShowList.Items.Clear()
+                ControlSetFocus(lbxFiles)
+            End If
         End If
     End Sub
     Public Sub OnFolderMoved(ByVal path As String)
@@ -591,11 +603,11 @@ Public Class MainForm
         Else
             iJumpFactor = 1
         End If
-
-        With Media.Player
+        If e.Alt Then
+            Media.Position = NextBookmark(e.KeyCode = KeyBigJumpOn)
+        Else
             Media.Position = Math.Min(Media.Duration, Media.Position + Media.Duration * Math.Sign(e.KeyCode - (KeyBigJumpOn + KeyBigJumpBack) / 2) / (iJumpFactor * Media.Speed.FractionalJump))
-        End With
-        '        JumpVideo(Media.Player, SoundWMP)
+        End If
 
     End Sub
     Public Sub JumpRandom(blnAutoTrail As Boolean)
@@ -700,7 +712,7 @@ Public Class MainForm
             Case KeyNextFile, KeyPreviousFile, LKeyNextFile, LKeyPreviousFile
                 If FocusControl IsNot lbxFiles And FocusControl IsNot lbxShowList Then ControlSetFocus(lbxFiles)
                 AdvanceFile(e.KeyCode = KeyNextFile, Random.NextSelect)
-                If e.Shift Then HighlightCurrent(Media.MediaPath)
+                If e.Shift Then HighlightCurrent(Media.MediaPath) 'Used for links only, to go to original file
                 e.SuppressKeyPress = True
                 tmrSlideShow.Enabled = False
                 tmrMovieSlideShow.Enabled = False
@@ -729,6 +741,7 @@ Public Class MainForm
                ' e.SuppressKeyPress = True
 
             Case KeyBigJumpOn, KeyBigJumpBack
+
                 MediaLargeJump(e)
                 e.SuppressKeyPress = True
 
@@ -885,6 +898,27 @@ Public Class MainForm
         ' e.suppresskeypress = True
         '    Response.Enabled = False
     End Sub
+
+    Private Function NextBookmark(Forward As Boolean) As Long
+        If Linkpoints.Length = 0 Then
+            Return Media.StartPoint.StartPoint
+            Exit Function
+        End If
+        If Forward Then
+            LinkCounter += 1
+        Else
+            LinkCounter -= 1
+        End If
+        If LinkCounter < 0 Then
+            LinkCounter = LinkCounter + Linkpoints.Length - 1
+        End If
+        If Linkpoints.Length = 1 Then
+            Return Linkpoints(0)
+        Else
+            Return Linkpoints((LinkCounter) Mod (Linkpoints.Length - 1))
+        End If
+
+    End Function
 
     Private Sub DeleteFiles(e As KeyEventArgs)
         'Use Movefiles with current selected list, and option to delete. 
@@ -1182,9 +1216,9 @@ Public Class MainForm
                     'If sender.Equals(lbxShowList) Then HighlightCurrent(lbxShowList.SelectedItem)
                 End If
             End If
-            If chbPreviewLinks.Checked AndAlso lbx.Name <> "lbxShowList" Then
-                PopulateLinkList(lbx.SelectedItem)
-            End If
+            ' If chbPreviewLinks.Checked AndAlso lbx.Name <> "lbxShowList" Then
+            If lbx.Name <> "lbxShowlist" Then PopulateLinkList(lbx.SelectedItem)
+            'End If
         End With
 
 

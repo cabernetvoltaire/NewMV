@@ -16,9 +16,12 @@ Public Module General
     End Enum
     Public VIDEOEXTENSIONS = ".divx.vob.webm.avi.flv.mov.m4p.mpeg.f4v.mpg.m4a.m4v.mkv.mp4.rm.ram.wmv.wav.mp3.3gp .lnk"
     Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif.lnk"
+    Public DirectoriesPath = "Q:\Directories.txt"
     Public separate As Boolean = False
     Public CurrentFolder As String
     Public DirectoriesList As New List(Of String)
+    Public Encrypted As Boolean = True
+
 
     Public Enum CtrlFocus As Byte
         Tree = 0
@@ -169,17 +172,23 @@ Public Module General
     End Function
     Public Function GetDirectoriesList(path As String) As List(Of String)
         Dim list As New List(Of String)
-        Dim root As New IO.DirectoryInfo(path)
-        For Each m In root.GetDirectories("*", SearchOption.AllDirectories)
-            Try
-                list.Add(m.FullName)
+        Dim pathfile As New IO.FileInfo(DirectoriesPath)
+        If pathfile.Exists Then
+            ReadListfromFile(list, DirectoriesPath, Encrypted)
+        Else
+            Dim root As New IO.DirectoryInfo(path)
+            For Each m In root.GetDirectories("*", SearchOption.AllDirectories)
+                Try
+                    list.Add(m.FullName)
 
-            Catch ex As Exception
+                Catch ex As Exception
 
-            End Try
+                End Try
 
-        Next
-        Return list
+            Next
+            WriteListToFile(list, DirectoriesPath, Encrypted)
+        End If
+        Return List
     End Function
 
     Public Function TryOtherDriveLetters(str As String) As String
@@ -616,7 +625,31 @@ Public Module General
         lbx.Items.Insert(index, newitem)
 
     End Sub
+    Public Sub WriteListToFile(list As List(Of String), filepath As String, Encrypted As Boolean)
+        Dim fs As New StreamWriter(New FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
+        For Each m In list
+            If Encrypted Then
+                fs.WriteLine(Encrypt(m, "Spunky"))
+            Else
+                fs.WriteLine(m)
+            End If
+        Next
+        fs.Close()
+    End Sub
+    Public Sub ReadListfromFile(list As List(Of String), filepath As String, Encrypted As Boolean)
+        Dim fs As New StreamReader(New FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Read))
 
+        Dim line As String
+        Do While fs.Peek <> -1
+            If Encrypted Then
+                line = Encrypt(fs.ReadLine, "Spunky")
+            Else
+                line = fs.ReadLine
+            End If
+            list.Add(line)
+        Loop
+        fs.Close()
+    End Sub
 
     Public Function LoadImage(fname As String) As Image
         Try
@@ -678,7 +711,24 @@ Public Module General
         Next
         Return k
     End Function
+    Private Function Encrypt(ByVal strInput As String, ByVal strKey As String) As String
+        Dim icount As Long
+        Dim lngPtr As Long
+        For icount = 1 To Len(strInput)
+            Mid(strInput, icount, 1) = Chr((Asc(Mid(strInput, icount, 1))) Xor (Asc(Mid(strKey, lngPtr + 1, 1))))
+            lngPtr = ((lngPtr + 1) Mod Len(strKey))
+        Next icount
+        Return strInput
+    End Function
+    Public Function BookmarkFromLinkName(path As String) As Long
+        Dim s() = path.Split("%")
+        If s.Length > 2 Then
+            Return s(s.Length - 2)
+        Else
+            Return 0
+        End If
 
+    End Function
     Public Function ButtfromAsc(asc As Integer) As Integer
         Dim n As Integer
         If asc <= 57 Then
