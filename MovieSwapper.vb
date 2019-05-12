@@ -14,7 +14,10 @@ Public Class MediaSwapper
     Public Event MediaNotFound(MH As MediaHandler)
     Public Property NextItem As String
     Public Event MediaShown(MH As MediaHandler)
-
+    ''' <summary>
+    ''' Assigns the listbox which this Media Swapper controls
+    ''' </summary>
+    ''' <returns></returns>
     Public Property Listbox() As ListBox
         Get
             Return mListbox
@@ -27,7 +30,10 @@ Public Class MediaSwapper
             Next
         End Set
     End Property
-
+    ''' <summary>
+    ''' Sets the listindex to make the currently shown medium.
+    ''' </summary>
+    ''' <returns></returns>
     Public Property ListIndex() As Integer
         Get
             Return mListIndex
@@ -190,6 +196,7 @@ Public Class MediaSwapper
         MuteAll()
         MHX.PlaceResetter(False)
         With MHX.Player
+
 
             '.Visible = True
             .BringToFront()

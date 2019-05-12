@@ -14,13 +14,16 @@ Public Module General
         RightBottom = 7
         LeftBottom = 8
     End Enum
-    Public VIDEOEXTENSIONS = ".divx.vob.webm.avi.flv.mov.m4p.mpeg.f4v.mpg.m4a.m4v.mkv.mp4.rm.ram.wmv.wav.mp3.3gp .lnk"
-    Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif.lnk"
-    Public DirectoriesPath = "Q:\Directories.txt"
-    Public separate As Boolean = False
+    Public VIDEOEXTENSIONS = ".divx.vob.webm.avi.flv.mov.m4p.mpeg.f4v.mpg.m4a.m4v.mkv.mp4.rm.ram.wmv.wav.mp3.3gp"
+    Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif"
+    Public DirectoriesPath
+    Public separate As Boolean = True
     Public CurrentFolder As String
     Public DirectoriesList As New List(Of String)
-    Public Encrypted As Boolean = True
+    Public Rootpath As String = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
+    Public GlobalFavesPath As String
+    Public Encrypted As Boolean = False
+    Public WithEvents Encrypter As New Encryption("Spunky")
 
 
     Public Enum CtrlFocus As Byte
@@ -76,13 +79,14 @@ Public Module General
     End Sub
     Public Function GetDeadLinks(lbx As ListBox) As List(Of String)
         Dim ls As New List(Of String)
+        ls = AllfromListbox(lbx)
         'ls = SelectFromListbox(lbx, ".lnk", False)
-        lbx.SelectedItems.Clear()
-        For Each fl In lbx.Items
-            If InStr(fl, ".lnk") <> 0 Then
-                ls.Add(fl)
-            End If
-        Next
+        'lbx.SelectedItems.Clear()
+        'For Each fl In lbx.Items
+        '    If InStr(fl, ".lnk") <> 0 Then
+        '        ls.Add(fl)
+        '    End If
+        'Next
         Dim deadlinks As New List(Of String)
         For Each f In ls
             If Not LinkTargetExists(f) Then
@@ -90,11 +94,12 @@ Public Module General
             End If
         Next
         Return deadlinks
-   End Function
+    End Function
     Public Sub CreateFavourite(Filepath As String)
         Dim sh As New ShortcutHandler
-        CreateLink(sh, Filepath, FavesFolderPath, "", Bookmark:=Media.Position)
-        AllFaveMinder.NewPath("Q:\Favourites")
+        CreateLink(sh, Filepath, CurrentFavesPath, "", Bookmark:=Media.Position)
+        AllFaveMinder.NewPath(GlobalFavespath)
+
     End Sub
     Public Function LinkTargetExists(Linkfile As String) As Boolean
         Dim f As String
@@ -170,6 +175,8 @@ Public Module General
         End Try
 
     End Function
+
+
     Public Function GetDirectoriesList(path As String) As List(Of String)
         Dim list As New List(Of String)
         Dim pathfile As New IO.FileInfo(DirectoriesPath)
@@ -188,7 +195,7 @@ Public Module General
             Next
             WriteListToFile(list, DirectoriesPath, Encrypted)
         End If
-        Return List
+        Return list
     End Function
 
     Public Function TryOtherDriveLetters(str As String) As String
@@ -229,27 +236,27 @@ Public Module General
         'Get the PropertyItems property from image.
         Dim propItems As PropertyItem() = theImage.PropertyItems
 
-            'Set up the display.
-            Dim font As New Font("Arial", 10)
-            Dim blackBrush As New SolidBrush(Color.Black)
-            Dim X As Integer = 0
-            Dim Y As Integer = 0
+        'Set up the display.
+        Dim font As New Font("Arial", 10)
+        Dim blackBrush As New SolidBrush(Color.Black)
+        Dim X As Integer = 0
+        Dim Y As Integer = 0
 
-            'For each PropertyItem in the array, display the id, type, and length.
-            Dim count As Integer = 0
-            Dim propItem As PropertyItem
-            Dim des As String = ""
+        'For each PropertyItem in the array, display the id, type, and length.
+        Dim count As Integer = 0
+        Dim propItem As PropertyItem
+        Dim des As String = ""
 
-            For Each propItem In propItems
-                des = des + vbCrLf & "Property Item " + count.ToString()
-                des = des & vbTab & "iD: 0x" & propItem.Id.ToString("x")
-                des = des & vbTab & "  type" & propItem.Type.ToString()
-                des = des & vbTab & "Length" & propItem.Len.ToString()
+        For Each propItem In propItems
+            des = des + vbCrLf & "Property Item " + count.ToString()
+            des = des & vbTab & "iD: 0x" & propItem.Id.ToString("x")
+            des = des & vbTab & "  type" & propItem.Type.ToString()
+            des = des & vbTab & "Length" & propItem.Len.ToString()
 
 
             count += 1
-            Next propItem
-            MsgBox(des)
+        Next propItem
+        MsgBox(des)
         'MsgBox(PropertyItems(theImage))
         'Catch ex As ArgumentException
         'MessageBox.Show("There was an error. Make sure the path to the image file is valid.")
@@ -621,15 +628,17 @@ Public Module General
     End Function
 
     Public Sub ReplaceListboxItem(lbx As ListBox, index As Integer, newitem As String)
-        lbx.Items(index).Remove
+        lbx.Items.RemoveAt(index)
         lbx.Items.Insert(index, newitem)
 
     End Sub
     Public Sub WriteListToFile(list As List(Of String), filepath As String, Encrypted As Boolean)
         Dim fs As New StreamWriter(New FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
+
         For Each m In list
             If Encrypted Then
-                fs.WriteLine(Encrypt(m, "Spunky"))
+
+                fs.WriteLine(Encrypter.EncryptData(m))
             Else
                 fs.WriteLine(m)
             End If
@@ -638,17 +647,19 @@ Public Module General
     End Sub
     Public Sub ReadListfromFile(list As List(Of String), filepath As String, Encrypted As Boolean)
         Dim fs As New StreamReader(New FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Read))
-
         Dim line As String
         Do While fs.Peek <> -1
+            line = fs.ReadLine
             If Encrypted Then
-                line = Encrypt(fs.ReadLine, "Spunky")
-            Else
-                line = fs.ReadLine
+                line = Encrypter.DecryptData(line)
             End If
             list.Add(line)
         Loop
         fs.Close()
+    End Sub
+
+    Public Sub OnNotEncrypted() Handles Encrypter.NotEncrypted
+        Encrypted = False
     End Sub
 
     Public Function LoadImage(fname As String) As Image

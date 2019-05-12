@@ -10,7 +10,7 @@ Public Class FullScreen
         InitialisePlayer(FSWMP2)
         MSFiles.AssignPlayers(FSWMP, FSWMP2, FSWMP3)
         MSFiles.AssignPictures(fullScreenPicBox, PictureBox1, PictureBox2)
-        MSFiles.ListIndex = FirstMediaIndex
+        MSFiles.ListIndex = MainForm.lbxFiles.SelectedIndex
 
     End Sub
     Private Sub InitialisePlayer(WMP As AxWindowsMediaPlayer)

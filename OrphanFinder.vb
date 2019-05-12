@@ -3,6 +3,7 @@
     Private mSHandler As New ShortcutHandler
     Public Event FoundParent As EventHandler
     Public Event NewOrphanTesting As EventHandler
+    Public Event ParentNotFound As EventHandler
     Public TotalFoundCount As Integer
     ''' <summary>
     ''' 
@@ -76,6 +77,10 @@
             End While
             If My.Computer.FileSystem.FileExists(newlink) Then
                 mFoundParents.Add(n, newlink)
+            Else
+
+                Dim s = filename & " was not found anywhere inside the hierarchy " & Rootpath
+                RaiseEvent ParentNotFound(Me, Nothing)
             End If
         Next
         If mFoundParents.Count <> 0 Then

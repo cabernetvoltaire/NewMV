@@ -22,7 +22,7 @@ Friend Module Mysettings
     Public blnLoopPlay As Boolean = True
     'Public blnChooseRandomFile As Boolean = True
     Public PlaybackSpeed As Double = 30
-    Public FavesFolderPath As String
+    Public CurrentFavesPath As String
 
     Public Autozoomrate As Decimal = 0.4
     Public iCurrentAlpha As Integer = 0
@@ -73,31 +73,75 @@ Friend Module Mysettings
             .SetValue("State", MainForm.NavigateMoveState.State)
             .SetValue("LastButtonFile", ButtonFilePath)
             .SetValue("LastAlpha", iCurrentAlpha)
-            .SetValue("Favourites", FavesFolderPath)
+            .SetValue("Favourites", CurrentFavesPath)
             .SetValue("PreviewLinks", MainForm.chbPreviewLinks.Checked)
+            .SetValue("RootScanPath", Rootpath)
+            .SetValue("Directories List", DirectoriesPath)
+            .SetValue("GlobalFaves", GlobalFavesPath)
         End With
 
     End Sub
+
+    Public Sub Preferences(GetPrefs As Boolean)
+        Dim M As New Dictionary(Of String, Object)
+
+        M.Add("VertSplit", MainForm.ctrFileBoxes.SplitterDistance)
+        M.Add("HorSplit", MainForm.ctrMainFrame.SplitterDistance)
+        M.Add("File", Media.MediaPath)
+        M.Add("Filter", MainForm.CurrentFilterState.State)
+        M.Add("SortOrder", MainForm.PlayOrder.State)
+        M.Add("StartPoint", Media.StartPoint.State)
+        M.Add("State", MainForm.NavigateMoveState.State)
+        M.Add("LastButtonFile", ButtonFilePath)
+        M.Add("LastAlpha", iCurrentAlpha)
+        M.Add("Favourites", CurrentFavesPath)
+        M.Add("PreviewLinks", MainForm.chbPreviewLinks.Checked)
+        M.Add("RootScanPath", Rootpath)
+        M.Add("Directories List", DirectoriesPath)
+
+        For Each s In M
+            If GetPrefs Then
+                Dim o As Object = GetObject(s.Value)
+                o = GetterSetter(s.Key, s.Value, True)
+            Else
+                GetterSetter(s.Key, s.Value, False)
+            End If
+        Next
+    End Sub
+    Private Function GetterSetter(Name As String, Value As Object, Getter As Boolean) As Object
+        With My.Computer.Registry.CurrentUser
+            If Getter Then
+                Return .GetValue(Name, Value)
+            Else
+                .SetValue(Name, Value)
+            End If
+        End With
+    End Function
     Public Sub PreferencesGet()
+        'Preferences(True)
+        'Exit Sub
         MainForm.ctrPicAndButtons.SplitterDistance = 9 * MainForm.ctrPicAndButtons.Height / 10
         With My.Computer.Registry.CurrentUser
-            ' Try
             MainForm.ctrFileBoxes.SplitterDistance = .GetValue("VertSplit", MainForm.ctrFileBoxes.Height / 4)
-                MainForm.ctrMainFrame.SplitterDistance = .GetValue("HorSplit", MainForm.ctrFileBoxes.Width / 2)
-                ButtonFilePath = .GetValue("LastButtonFile", "")
+            MainForm.ctrMainFrame.SplitterDistance = .GetValue("HorSplit", MainForm.ctrFileBoxes.Width / 2)
             MainForm.CurrentFilterState.State = .GetValue("Filter", 0)
             Media.StartPoint.State = .GetValue("StartPoint", 0)
             MainForm.NavigateMoveState.State = .GetValue("State", 0)
             MainForm.PlayOrder.State = .GetValue("SortOrder", 0)
             iCurrentAlpha = .GetValue("LastAlpha", 0)
-            FavesFolderPath = .GetValue("Favourites", CurrentFolder)
-                Dim fol As New IO.DirectoryInfo(FavesFolderPath)
-                If fol.Exists = False Then
-                    MainForm.FavouritesFolderToolStripMenuItem.PerformClick()
-                End If
+            ButtonFilePath = .GetValue("LastButtonFile", "")
+            CurrentFavesPath = .GetValue("Favourites", CurrentFolder)
+            Dim fol As New IO.DirectoryInfo(CurrentFavesPath)
+            DirectoriesPath = .GetValue("Directories List", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures))
+            GlobalFavesPath = .GetValue("GlobalFaves", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures))
+            Rootpath = .GetValue("Rootpath", Environment.GetFolderPath(Environment.SpecialFolder.MyComputer))
 
-                Dim s As String = .GetValue("File", "")
-                If s = "" Then s = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
+            If fol.Exists = False Then
+                MainForm.FavouritesFolderToolStripMenuItem.PerformClick()
+            End If
+
+            Dim s As String = .GetValue("File", "")
+            If s = "" Then s = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
             'Media.Player = MainForm.MainWMP4
             Media.MediaPath = s
             MainForm.chbPreviewLinks.Checked = .GetValue("PreviewLinks", False)
@@ -121,7 +165,7 @@ Friend Module Mysettings
 
 
                 Media.MediaPath = New IO.DirectoryInfo(CurrentFolder).EnumerateFiles("*", IO.SearchOption.AllDirectories).First.FullName
-                FavesFolderPath = s & "\Favourites\"
+                CurrentFavesPath = s & "\Favourites\"
                 '            strButtonfile=Media.MediaPath
             End With
             With MainForm

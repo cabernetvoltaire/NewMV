@@ -136,6 +136,7 @@
     </Compile>
     <Compile Include="DateMove.vb" />
     <Compile Include="Duplicates.vb" />
+    <Compile Include="Encryption.vb" />
     <Compile Include="FavouritesMinder.vb" />
     <Compile Include="FileNamesGrouper.vb" />
     <Compile Include="Colors.vb" />

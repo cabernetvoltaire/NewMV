@@ -16,10 +16,13 @@ Module FileHandling
     Public Event FileMoved(Files As List(Of String), lbx As ListBox)
     Public t As Thread
     Public WithEvents Media As New MediaHandler("Media")
-    Public WithEvents MSFiles As New MediaSwapper(MainForm.MainWMP4, MainForm.MainWMP2, MainForm.MainWMP3, MainForm.PictureBox1, MainForm.PictureBox2, MainForm.PictureBox3)
+    Public WithEvents MSFiles As New MediaSwapper(MainForm.MainWMP1, MainForm.MainWMP2, MainForm.MainWMP3, MainForm.PictureBox1, MainForm.PictureBox2, MainForm.PictureBox3)
     '   Public WithEvents MSShow As New MovieSwapper(MainForm.MainWMP, MainForm.MainWMP2)
+    'Public AllFaveMinder As New FavouritesMinder(GlobalFavesPath)
+    'Public FaveMinder As New FavouritesMinder(CurrentFavesPath)
     Public AllFaveMinder As New FavouritesMinder("Q:\Favourites")
     Public FaveMinder As New FavouritesMinder("Q:\Favourites")
+    '
     '  Public WithEvents SndH As New SoundController
     Public Sub OnMediaStartChanged(sender As Object, e As EventArgs) Handles Media.StartChanged
         MainForm.OnStartChanged(sender, e)
@@ -74,7 +77,7 @@ Module FileHandling
                     'lbx1.SelectedIndex = (lbx1.SelectedIndex + 1) Mod (lbx1.Items.Count - 1) 'Signal action completed by advancing
                 Case StateHandler.StateOptions.MoveLeavingLink
                     MainForm.UpdatePlayOrder(False)
-                    '                    ReplaceListboxItem(lbx1, ind, f)
+                    ReplaceListboxItem(lbx1, ind, f)
                     lbx1.SelectedItem = lbx1.Items(ind)
                 Case Else
                     lbx1.Items.Remove(f)
@@ -82,7 +85,9 @@ Module FileHandling
             MSFiles.ResettersOff()
         Next
         If lbx1.Items.Count <> 0 Then lbx1.SetSelected(Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0), True)
-        MainForm.IndexHandler(lbx1, Nothing)
+        ' If MSFiles.Listbox IsNot lbx1 Then MSFiles.Listbox = lbx1
+        'MSFiles.ListIndex = lbx1.SelectedIndex
+        '        MainForm.IndexHandler(lbx1, Nothing)
 
     End Sub
 
@@ -168,13 +173,14 @@ Module FileHandling
 
     Public Sub StoreList(list As List(Of String), Dest As String)
         If Dest = "" Then Exit Sub
-        Dim fs As New StreamWriter(New FileStream(Dest, FileMode.Create, FileAccess.Write))
-        'fs.WriteLine(list.Count)
-        For Each s In list
-            fs.WriteLine(s)
+        WriteListToFile(list, Dest, Encrypted)
+        'Dim fs As New StreamWriter(New FileStream(Dest, FileMode.Create, FileAccess.Write))
+        ''fs.WriteLine(list.Count)
+        'For Each s In list
+        '    fs.WriteLine(s)
 
-        Next
-        fs.Close()
+        'Next
+        'fs.Close()
     End Sub
     ''' <summary>
     ''' Loads Dest into List, and adds all to lbx. Any files not found are put in notlist, which can then be removed from the lbx
@@ -186,37 +192,27 @@ Module FileHandling
     Public Sub Getlist(list As List(Of String), Dest As String, lbx As ListBox)
 
         Dim notlist As New List(Of String)
-        Dim count As Long = 0
-
-
-        Dim fs As New StreamReader(New FileStream(Dest, FileMode.OpenOrCreate, FileAccess.Read))
-        'count = fs.ReadLine
-
-        Do While fs.Peek <> -1
-            Dim s As String = fs.ReadLine
-
+        ReadListfromFile(list, Dest, Encrypted)
+        For Each s In list
             Try
                 Dim f As New FileInfo(s)
                 If f.Exists Then
-                    list.Add(s)
-                    count += 1
                     lbx.Items.Add(s)
                 Else
                     notlist.Add(s)
                 End If
             Catch ex As System.IO.PathTooLongException
-                Continue Do
+                Continue For
             Catch ex As System.ArgumentException
                 ReportFault("Filehandling.Getlist", ex.Message)
                 Exit Sub
             End Try
-
-
             ProgressIncrement(40)
-        Loop
+        Next
+
+
 
         If lbx.Items.Count <> 0 Then lbx.TabStop = True
-        fs.Close()
         lngShowlistLines = Showlist.Count
 
         If notlist.Count = 0 Then Exit Sub
@@ -225,7 +221,7 @@ Module FileHandling
                 list.Remove(s)
             Next
             If MsgBox("Re-save list?", vbYesNo, "Metavisua") Then
-                StoreList(list, Dest)
+                WriteListToFile(list, Dest, Encrypted)
             End If
         End If
     End Sub
@@ -481,7 +477,7 @@ Module FileHandling
 
     Private Sub Movelink(f As IO.FileInfo, path As String)
         Dim links As New List(Of String)
-        Dim faves As New IO.DirectoryInfo(FavesFolderPath)
+        Dim faves As New IO.DirectoryInfo(CurrentFavesPath)
         For Each j In faves.GetFiles
             If links.Contains(j.FullName) Then
             Else

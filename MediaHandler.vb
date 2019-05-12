@@ -106,12 +106,12 @@ Public Class MediaHandler
             mFrameRate = mPlayer.network.frameRate
         End Set
     End Property
-    Private mMarkers As List(Of String)
-    Public Property Markers() As List(Of String)
+    Private mMarkers As New List(Of Long)
+    Public Property Markers() As List(Of Long)
         Get
             Return mMarkers
         End Get
-        Set(ByVal value As List(Of String))
+        Set(ByVal value As List(Of Long))
             mMarkers = value
         End Set
     End Property
@@ -252,17 +252,30 @@ Public Class MediaHandler
 
     End Function
 
-
+    Private mLinkCounter As Integer = 0
+    Public Function IncrementLinkCounter(Forward As Boolean) As Integer
+        If mMarkers.Count = 0 Then Exit Function
+        If Forward Then
+            mLinkCounter += 1
+        Else
+            mLinkCounter -= 1
+        End If
+        If mLinkCounter < 0 Then
+            mLinkCounter = mLinkCounter + mMarkers.Count
+        End If
+        mLinkCounter = mLinkCounter Mod (mMarkers.Count)
+        Return mLinkCounter
+    End Function
     Public Sub MediaJumpToMarker(Optional ToEnd As Boolean = False)
-
-        If mBookmark > -1 And Speed.PausedPosition = 0 Then
-            ' If False Then
+        'It's a link with a bookmark
+        If mBookmark > -1 And Speed.PausedPosition = 0 Then 'And mMarkers.Count = 0 Then
             If StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
                 mPlayPosition = mBookmark
             Else
                 mPlayPosition = StartPoint.StartPoint
             End If
         Else
+            'Not a link
             If ToEnd Then
                 Dim m As New StartPointHandler With {
                         .Duration = mDuration,
@@ -272,12 +285,17 @@ Public Class MediaHandler
             Else
                 If Speed.PausedPosition <> 0 Then
                     mPlayPosition = Speed.PausedPosition
-
                 Else
-                    mPlayPosition = StartPoint.StartPoint
-
+                    If mMarkers.Count <> 0 AndAlso StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
+                        Try
+                            mPlayPosition = mMarkers.Item(mLinkCounter)
+                        Catch ex As Exception
+                            mPlayPosition = StartPoint.StartPoint
+                        End Try
+                    Else
+                        mPlayPosition = StartPoint.StartPoint
+                    End If
                 End If
-
             End If
         End If
         If mPlayPosition > mDuration Then
@@ -315,6 +333,27 @@ Public Class MediaHandler
 
                 Exit Sub
         End Select
+    End Sub
+    Private Sub HandleMovie(URL As String)
+
+        Static LastURL As String
+        If URL <> LastURL Then
+            If mPlayer Is Nothing Then
+            Else
+                Try
+                    mPlayer.URL = URL
+                    Sound.URL = URL
+                    LastURL = URL
+                Catch EX As Exception
+
+                End Try
+
+            End If
+        Else
+            GetBookmark()
+            MediaJumpToMarker()
+        End If
+        DisplayerName = mPlayer.Name
     End Sub
     Public Sub HandlePic(path As String)
 
@@ -357,27 +396,6 @@ Public Class MediaHandler
         End Select
     End Sub
 
-    Private Sub HandleMovie(URL As String)
-
-        Static LastURL As String
-        If URL <> LastURL Then
-            If mPlayer Is Nothing Then
-            Else
-                Try
-                    mPlayer.URL = URL
-                    Sound.URL = URL
-                    LastURL = URL
-                Catch EX As Exception
-
-                End Try
-
-            End If
-        Else
-            GetBookmark()
-            MediaJumpToMarker()
-        End If
-        DisplayerName = mPlayer.Name
-    End Sub
 #End Region
 
 #Region "Event Handlers"

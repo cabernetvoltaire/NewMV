@@ -27,25 +27,37 @@ Public Class MainForm
     Public WithEvents AT As New AutoTrailer
     Public WithEvents X As New OrphanFinder
     ' Public WithEvents Response As New Timer
-    Public Linkpoints() As Long
     Public LinkCounter As Integer
     Public FocusControl As New Control
     Public DraggedFolder As String
     Public CurrentFileList As New List(Of String)
     Public T As Thread
-    Public Sub PopulateLinkList(f As String)
-        If f = "" Then Exit Sub
-        Dim x As List(Of String) = AllFaveMinder.GetLinksOf(f)
+
+    Public Sub OnParentNotFound(sender As Object, e As EventArgs) Handles X.ParentNotFound, Op.ParentNotFound
+        lbxReport.Items.Add("Not found")
+    End Sub
+
+    Public Sub PopulateLinkList(filepath As String)
+        If filepath = "" Then Exit Sub
+        Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
         Dim i = 0
-        ReDim Linkpoints(x.Count - 1)
-        If x.Count = 0 Then chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Regular)
-        For Each m In x
-            Linkpoints(i) = BookmarkFromLinkName(m)
-            i += 1
+        If x.Count = 0 Then
+            chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Regular)
+            chbPreviewLinks.Text = "Preview links"
+        Else
             chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Bold)
+            chbPreviewLinks.Text = "Preview links (" & x.Count & ")"
+        End If
+        Media.Markers.Clear()
+
+        For Each m In x
+            Dim n = BookmarkFromLinkName(m)
+            If n > 0 Then
+                Media.Markers.Add(n)
+                i += 1
+            End If
         Next
-        Array.Sort(Linkpoints)
-        '   MainForm.lbxGroups.Items.Clear()
+        Media.Markers.Sort()
         If chbPreviewLinks.Checked Then
             If x.Count >= 1 Then
                 FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
@@ -261,7 +273,6 @@ Public Class MainForm
             tbLastFile.Text = TimeOperation(True).TotalMilliseconds
             ProgressBarOn(lngListSizeBytes)
             Getlist(Showlist, path, lbxShowList)
-
             time = TimeOperation(False)
             loadrate = size / time.TotalMilliseconds
         End If
@@ -270,8 +281,8 @@ Public Class MainForm
     End Sub
 
     Public Sub CancelDisplay()
-        MSFiles.URLSZero()
-        MSFiles.ResettersOff()
+        '        MSFiles.URLSZero()
+        '       MSFiles.ResettersOff()
 
         If Media.Player.URL <> "" Then
             Media.Player.URL = ""
@@ -502,7 +513,7 @@ Public Class MainForm
 
         Else
             SplitterPlace(0.25)
-            MSFiles.AssignPlayers(MainWMP4, MainWMP2, MainWMP3)
+            MSFiles.AssignPlayers(MainWMP1, MainWMP2, MainWMP3)
             MSFiles.AssignPictures(PictureBox1, PictureBox2, PictureBox3)
             '   MSFiles.ListIndex = lbxFiles.SelectedIndex
             FullScreen.Close()
@@ -595,19 +606,16 @@ Public Class MainForm
         'tmrJumpVideo.Enabled = True
     End Sub
 
-    Public Sub MediaLargeJump(e As KeyEventArgs)
+    Public Sub MediaLargeJump(e As KeyEventArgs, Small As Boolean)
         Dim iJumpFactor As Integer
 
-        If e.Control Then  'Holding down ctrl reduces the jump distance by a factor
+        If Small Then  'Holding down ctrl reduces the jump distance by a factor
             iJumpFactor = 5
         Else
             iJumpFactor = 1
         End If
-        If e.Alt Then
-            Media.Position = NextBookmark(e.KeyCode = KeyBigJumpOn)
-        Else
-            Media.Position = Math.Min(Media.Duration, Media.Position + Media.Duration * Math.Sign(e.KeyCode - (KeyBigJumpOn + KeyBigJumpBack) / 2) / (iJumpFactor * Media.Speed.FractionalJump))
-        End If
+
+        Media.Position = Math.Min(Media.Duration, Media.Position + Media.Duration * Math.Sign(e.KeyCode - (KeyBigJumpOn + KeyBigJumpBack) / 2) / (iJumpFactor * Media.Speed.FractionalJump))
 
     End Sub
     Public Sub JumpRandom(blnAutoTrail As Boolean)
@@ -696,7 +704,10 @@ Public Class MainForm
                 ''e.suppresskeypress by Treeview behaviour unless focus is elsewhere. 
                 ''We want the traverse keys always to work. 
                 ''  ControlSetFocus(tvMain2)
-                tvMain2.tvFiles_KeyDown(sender, e)
+                If FocusControl IsNot tvMain2 Then
+                    tvMain2.tvFiles_KeyDown(sender, e)
+
+                End If
             Case Keys.Left, Keys.Right, Keys.Up, Keys.Down
                 If FocusControl IsNot lbxShowList Then
                     ControlSetFocus(tvMain2)
@@ -741,8 +752,13 @@ Public Class MainForm
                ' e.SuppressKeyPress = True
 
             Case KeyBigJumpOn, KeyBigJumpBack
+                Select Case e.Modifiers
+                    Case Keys.Alt
 
-                MediaLargeJump(e)
+                    Case Else
+                        MediaLargeJump(e, e.Modifiers = Keys.Control)
+
+                End Select
                 e.SuppressKeyPress = True
 
             Case KeyMarkFavourite
@@ -756,7 +772,7 @@ Public Class MainForm
                     NavigateToFavourites()
                 Else
                     CreateFavourite(Media.MediaPath)
-
+                    PopulateLinkList(Media.MediaPath)
                 End If
 
             Case KeyJumpToPoint
@@ -765,12 +781,16 @@ Public Class MainForm
                 e.SuppressKeyPress = True
             Case KeyMarkPoint, LKeyMarkPoint
                 'Addmarker(Media.MediaPath)
-                If Media.Bookmark = -1 Then
+                Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
+                Media.Bookmark = -1
+                Media.MediaJumpToMarker()
 
-                    Media.Bookmark = Media.Position
-                Else
-                    Media.Bookmark = -1
-                End If
+                'If Media.Bookmark = -1 Then
+
+                '    Media.Bookmark = Media.Position
+                'Else
+                '    Media.Bookmark = -1
+                'End If
                 e.SuppressKeyPress = True
 
             Case KeyMuteToggle
@@ -802,10 +822,9 @@ Public Class MainForm
                         If .playState = WMPLib.WMPPlayState.wmppsPaused Then
                             Media.Speed.Paused = True
                             Media.Position = Media.Speed.PausedPosition
+                            Media.Speed.PausedPosition = 0
 
                             tmrSlowMo.Enabled = False
-                            '                            .Ctlcontrols.currentPosition = Media.Position
-                            '.settings.rate = 1
                             .Ctlcontrols.play()
                             Media.Speed.Fullspeed = True
                             SwitchSound(False)
@@ -813,15 +832,12 @@ Public Class MainForm
                             Media.Speed.Unpause = True
                             .Ctlcontrols.pause()
                             Media.Speed.PausedPosition = .Ctlcontrols.currentPosition
-                            Media.Speed.PausedPosition = 0
                             Media.Speed.Fullspeed = False
                         End If
                     Else
                         tmrSlideShow.Enabled = Not tmrSlideShow.Enabled
                         Media.Speed.Slideshow = tmrSlideShow.Enabled
                     End If
-                    'blnSpeedRestart = True
-                    '  tbSpeed.Text = "SPEED (" & PlaybackSpeed * 100 & "%)"
                 End With
             Case KeySpeed1, KeySpeed2, KeySpeed3, KeySpeed3 + Keys.Control
                 SpeedChange(e)
@@ -900,22 +916,42 @@ Public Class MainForm
     End Sub
 
     Private Function NextBookmark(Forward As Boolean) As Long
-        If Linkpoints.Length = 0 Then
+        Return NextBookmark2(Forward)
+        Exit Function
+        'If Linkpoints.Length = 0 Then
+        '    Return Media.StartPoint.StartPoint
+        '    Exit Function
+        'End If
+        'If Forward Then
+        '    LinkCounter += 1
+        'Else
+        '    LinkCounter -= 1
+        'End If
+        'If LinkCounter < 0 Then
+        '    LinkCounter = LinkCounter + Linkpoints.Length - 1
+        'End If
+        'If Linkpoints.Length = 1 Then
+        '    Return Linkpoints(0)
+        'Else
+        '    Return Linkpoints((LinkCounter) Mod (Linkpoints.Length))
+        'End If
+
+    End Function
+    Private Function NextBookmark2(forward As Boolean) As Long
+        Dim count = Media.Markers.Count
+        If count = 0 Then
             Return Media.StartPoint.StartPoint
             Exit Function
         End If
-        If Forward Then
+        If forward Then
             LinkCounter += 1
         Else
-            LinkCounter -= 1
+            LinkCounter += 1
         End If
-        If LinkCounter < 0 Then
-            LinkCounter = LinkCounter + Linkpoints.Length - 1
-        End If
-        If Linkpoints.Length = 1 Then
-            Return Linkpoints(0)
+        If count = 1 Then
+            Return Media.Markers(0)
         Else
-            Return Linkpoints((LinkCounter) Mod (Linkpoints.Length - 1))
+            Return Media.Markers((LinkCounter) Mod (count))
         End If
 
     End Function
@@ -961,7 +997,7 @@ Public Class MainForm
     Private Sub NavigateToFavourites()
         CurrentFilterState.OldState = CurrentFilterState.State
         CurrentFilterState.State = FilterHandler.FilterState.LinkOnly
-        ChangeFolder(FavesFolderPath)
+        ChangeFolder(CurrentFavesPath)
 
         tvMain2.SelectedFolder = CurrentFolder
     End Sub
@@ -1052,16 +1088,16 @@ Public Class MainForm
     End Sub
 
     Sub SetupPlayers()
-        MainWMP4.stretchToFit = True
+        MainWMP1.stretchToFit = True
         MainWMP2.stretchToFit = True
         MainWMP3.stretchToFit = True
         'Media.Player.uiMode = "FULL"
         If Not separate Then
-            MainWMP4.Dock = DockStyle.Fill 'Swapper
+            MainWMP1.Dock = DockStyle.Fill 'Swapper
             MainWMP2.Dock = DockStyle.Fill
             MainWMP3.Dock = DockStyle.Fill
         End If
-        MainWMP4.settings.volume = 100
+        MainWMP1.settings.volume = 100
         MainWMP2.settings.volume = 100
         MainWMP3.settings.volume = 100
         If Not separate Then
@@ -1085,12 +1121,10 @@ Public Class MainForm
         PositionUpdater.Enabled = False
         tmrPicLoad.Interval = lngInterval * 15
         currentPicBox = PictureBox1
-        'Media.Player = MainWMP2
-        '   Media.StartPoint.State = StartPointHandler.StartTypes.NearBeginning
-        Media.Picture = currentPicBox
-        PreferencesGet()
         tbPercentage.Enabled = True
 
+        Media.Picture = currentPicBox
+        PreferencesGet()
 
         AddHandler FileHandling.FolderMoved, AddressOf OnFolderMoved
         AddHandler FileHandling.FileMoved, AddressOf OnFileMoved
@@ -1112,7 +1146,7 @@ Public Class MainForm
         NavigateMoveState.State = StateHandler.StateOptions.Navigate
         OnRandomChanged()
         '        PlayOrder.State = SortHandler.Order.DateTime
-        DirectoriesList = GetDirectoriesList("Q:Watch\")
+        DirectoriesList = GetDirectoriesList(Rootpath)
 
         Initialising = False
         tmrPicLoad.Enabled = True
@@ -1200,7 +1234,7 @@ Public Class MainForm
         NewIndex.Enabled = True
 
     End Sub
-    Public Sub IndexHandler(sender As Object, e As EventArgs) Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged 'TODO Swapper
+    Public Sub IndexHandler(sender As Object, e As EventArgs) Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged
         With sender
             Dim lbx As ListBox = CType(sender, ListBox)
             If lbx.SelectionMode = SelectionMode.One Then
@@ -1217,7 +1251,14 @@ Public Class MainForm
                 End If
             End If
             ' If chbPreviewLinks.Checked AndAlso lbx.Name <> "lbxShowList" Then
-            If lbx.Name <> "lbxShowlist" Then PopulateLinkList(lbx.SelectedItem)
+            If lbx.Name <> "lbxShowlist" Then
+                If Media.IsLink Then
+                    PopulateLinkList(Media.LinkPath)
+                Else
+                    PopulateLinkList(lbx.SelectedItem)
+
+                End If
+            End If
             'End If
         End With
 
@@ -2082,7 +2123,7 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub cbxOrder_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbxOrder.SelectedIndexChanged
+    Private Sub cbxOrder_SelectedIndexChanged(sender As Object, e As EventArgs)
         If PlayOrder.State <> cbxOrder.SelectedIndex Then
             PlayOrder.State = cbxOrder.SelectedIndex
         End If
@@ -2123,8 +2164,8 @@ Public Class MainForm
 
 
     Private Sub StartPointComboBox_SelectedIndexChanged_1(sender As Object, e As EventArgs)
-        If Media.Startpoint.State <> cbxStartPoint.SelectedIndex Then
-            Media.Startpoint.State = cbxStartPoint.SelectedIndex
+        If Media.StartPoint.State <> cbxStartPoint.SelectedIndex Then
+            Media.StartPoint.State = cbxStartPoint.SelectedIndex
 
 
         End If
@@ -2323,7 +2364,7 @@ Public Class MainForm
 
 
 
-    Private Sub cbxFilter_SelectedIndexChanged_1(sender As Object, e As EventArgs) Handles cbxFilter.SelectedIndexChanged
+    Private Sub cbxFilter_SelectedIndexChanged_1(sender As Object, e As EventArgs)
         CurrentFilterState.State = cbxFilter.SelectedIndex
     End Sub
 
@@ -2338,6 +2379,7 @@ Public Class MainForm
 
     Private Sub LoadListToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LoadListToolStripMenuItem.Click
         LoadShowList()
+
     End Sub
 
     Private Sub LevelFolders_Click(sender As Object, e As EventArgs) Handles PromoteFolderToolStripMenuItem.Click
@@ -2399,10 +2441,14 @@ Public Class MainForm
 
     Private Sub FavouritesFolderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FavouritesFolderToolStripMenuItem.Click
         Try
+            If CurrentFolder = "" Then
+                CurrentFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) & "\MVFavourites"
+            End If
             If MsgBox("Make " & CurrentFolder & " the new Favourites folder?", MsgBoxStyle.OkCancel, "Assign Favourites folder") = MsgBoxResult.Ok Then
-                FavesFolderPath = CurrentFolder
-                FaveMinder.NewPath(FavesFolderPath)
+                CurrentFavesPath = CurrentFolder
+                FaveMinder.NewPath(CurrentFavesPath)
                 PreferencesSave()
+
             End If
 
         Catch ex As Exception
@@ -2541,5 +2587,9 @@ Public Class MainForm
 
     Private Sub chbInDir_CheckedChanged(sender As Object, e As EventArgs) Handles chbInDir.CheckedChanged
         Random.OnDirChange = chbInDir.Checked
+    End Sub
+
+    Private Sub chbEncrypt_CheckedChanged(sender As Object, e As EventArgs) Handles chbEncrypt.CheckedChanged
+        Encrypted = chbEncrypt.Checked
     End Sub
 End Class

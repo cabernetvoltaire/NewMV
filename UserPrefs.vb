@@ -1,6 +1,4 @@
-﻿Imports MasaSam.Forms.Sample
-
-Public Class UserPrefs
+﻿Public Class UserPrefs
     Private mState As New StateHandler
     Public Property State() As StateHandler
         Get

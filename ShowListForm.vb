@@ -13,18 +13,7 @@
     End Property
     Private Sub IndexHandler(sender As Object, e As EventArgs) Handles ListBox1.SelectedIndexChanged
         With sender
-            Dim lbx As ListBox = CType(sender, ListBox)
-            If lbx.SelectionMode = SelectionMode.One Then
-                Dim i As Long = .SelectedIndex
-                If i = -1 Then
-                Else
-                    Debug.Print(vbCrLf & vbCrLf & "NEXT SELECTION ---------------------------------------")
-                    MSFiles.Listbox = sender
-                    MSFiles.ListIndex = i
-                    ' HighlightCurrent(lbxFiles.SelectedItem)
-                    ' MainForm.HighlightCurrent(ListBox1.SelectedItem)
-                End If
-            End If
+            MainForm.IndexHandler(sender, e)
         End With
 
 

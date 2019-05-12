@@ -83,7 +83,7 @@
 
 
             '  Media.MediaPath = New IO.DirectoryInfo(CurrentFolder).EnumerateFiles("*", IO.SearchOption.AllDirectories).First.FullName
-            FavesFolderPath = s & "\Favourites\"
+            CurrentFavesPath = s & "\Favourites\"
             ButtonFilePath = Media.MediaPath
         End With
         With MainForm

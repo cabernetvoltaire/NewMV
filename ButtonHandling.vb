@@ -382,12 +382,11 @@ Module ButtonHandling
         If path = "" Then Exit Sub
         ClearCurrentButtons()
         'Get the file path
-        Dim fs As New StreamReader(New FileStream(path, FileMode.OpenOrCreate, FileAccess.Read))
-        Dim s As String
+        Dim fs As New List(Of String)
+        ReadListfromFile(fs, path, Encrypted)
         Dim subs As String()
+        For Each s In fs
 
-        Do While fs.Peek <> -1
-            s = fs.ReadLine
             subs = s.Split("|")
 
             If subs.Length <> 4 Then
@@ -402,20 +401,14 @@ Module ButtonHandling
                 m.Path = (subs(2))
                 m.Label = (subs(3))
             End If
-        Loop
-
+        Next
         UpdateButtonAppearance()
-
-        fs.Close()
-        Exit Sub
-
 
     End Sub
     Public Sub KeyAssignmentsStore(path As String)
         Dim intLoop As Integer
         Dim iLetter As Integer
         Dim Okay As Boolean
-        Dim strEncrypted As String
         If path = "" Then
             Okay = False
         Else
@@ -436,24 +429,22 @@ Module ButtonHandling
                 End If
             End With
         End If
-
-        Dim fs As New StreamWriter(New FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
+        Dim fs As New List(Of String)
         Try
-
+            Dim s As String
             For iLetter = 0 To iAlphaCount - 1
                 For intLoop = 0 To 7
 
                     If strButtonFilePath(intLoop, iLetter, 1) <> "" Then
-                        strEncrypted = intLoop & "|" & iLetter & "|" & strButtonFilePath(intLoop, iLetter, 1) & "|" & strButtonCaptions(intLoop, iLetter, 1)
-                        fs.WriteLine(strEncrypted)
+                        s = intLoop & "|" & iLetter & "|" & strButtonFilePath(intLoop, iLetter, 1) & "|" & strButtonCaptions(intLoop, iLetter, 1)
+                        fs.Add(s)
                     End If
                 Next
             Next
+            WriteListToFile(fs, path, Encrypted)
         Catch ex As Exception
-            fs.Close()
 
         End Try
-        fs.Close()
         ButtonFilePath = path
 
 
