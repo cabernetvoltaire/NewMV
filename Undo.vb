@@ -8,6 +8,13 @@
 
     End Enum
 
+    Private Structure Filesource
+        Dim filename As String
+        Dim source As String
+
+    End Structure
+
+
     Private mSource As String
     Public Property Source() As String
         Get
@@ -28,7 +35,15 @@
             mDestination = value
         End Set
     End Property
-
+    Private mList As New List(Of String)
+    Public Property FileList() As List(Of String)
+        Get
+            Return mList
+        End Get
+        Set(ByVal value As List(Of String))
+            mList = value
+        End Set
+    End Property
     Private mAction As Functions
     Public Property Action() As Functions
         Get

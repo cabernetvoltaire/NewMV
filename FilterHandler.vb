@@ -65,59 +65,47 @@
     End Sub
     Private Function FilterLBList() As List(Of String)
         Dim lst As New List(Of String)
-        For Each f In mFileList
-            lst.Add(f)
-        Next
+        Try
 
-        Select Case CurrentfilterState.State
-            Case FilterHandler.FilterState.All
-            Case FilterHandler.FilterState.NoPicVid
-                For Each m In mFileList
-                    Dim f As New IO.FileInfo(m)
-                    If InStr(PICEXTENSIONS & VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
-                    Else
-                        lst.Remove(m)
-                    End If
-                Next
-            Case FilterHandler.FilterState.LinkOnly
 
-                For Each m In mFileList
-                    Dim f As New IO.FileInfo(m)
-                    If LCase(f.Extension) = ".lnk" Then
-                    Else
-                        lst.Remove(m)
-                    End If
-                    Next
+            For Each f In mFileList
+                lst.Add(f)
+            Next
+            For Each m In mFileList
+                Dim f As New IO.FileInfo(m)
+                Select Case CurrentfilterState.State
+                    Case FilterHandler.FilterState.All
+                    Case FilterHandler.FilterState.NoPicVid
+                        If InStr(PICEXTENSIONS & VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
+                        Else
+                            lst.Remove(m)
+                        End If
+                    Case FilterHandler.FilterState.LinkOnly
+                        If LCase(f.Extension) = ".lnk" Then
+                        Else
+                            lst.Remove(m)
+                        End If
+                    Case FilterHandler.FilterState.Piconly
+                        If InStr(PICEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
+                            lst.Remove(m)
+                        Else
+                        End If
+                    Case FilterHandler.FilterState.PicVid
+                        If InStr(PICEXTENSIONS & VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
+                            lst.Remove(m)
+                        Else
+                        End If
+                    Case FilterHandler.FilterState.Vidonly
+                        If InStr(VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
+                            lst.Remove(m)
+                        Else
+                        End If
+                End Select
+            Next
+        Catch ex As Exception
+            MsgBox("Error in file list" & ex.Message)
+        End Try
 
-            Case FilterHandler.FilterState.Piconly
-                For Each m In mFileList
-                    Dim f As New IO.FileInfo(m)
-
-                    If InStr(PICEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
-                        lst.Remove(m)
-                    Else
-                    End If
-                Next
-            Case FilterHandler.FilterState.PicVid
-                For Each m In mFileList
-                    Dim f As New IO.FileInfo(m)
-
-                    If InStr(PICEXTENSIONS & VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
-                        lst.Remove(m)
-                    Else
-                    End If
-                Next
-            Case FilterHandler.FilterState.Vidonly
-                    For Each m In mFileList
-                        Dim f As New IO.FileInfo(m)
-
-                    If InStr(VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
-                        lst.Remove(m)
-                    Else
-                    End If
-                Next
-
-        End Select
         Return lst
     End Function
 

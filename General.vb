@@ -17,13 +17,14 @@ Public Module General
     Public VIDEOEXTENSIONS = ".divx.vob.webm.avi.flv.mov.m4p.mpeg.f4v.mpg.m4a.m4v.mkv.mp4.rm.ram.wmv.wav.mp3.3gp"
     Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif"
     Public DirectoriesPath
-    Public separate As Boolean = True
+    Public separate As Boolean = False
     Public CurrentFolder As String
     Public DirectoriesList As New List(Of String)
     Public Rootpath As String = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
     Public GlobalFavesPath As String
     Public Encrypted As Boolean = False
     Public WithEvents Encrypter As New Encryption("Spunky")
+    Public UndoOperations As New Stack(Of Undo)
 
 
     Public Enum CtrlFocus As Byte
@@ -177,10 +178,10 @@ Public Module General
     End Function
 
 
-    Public Function GetDirectoriesList(path As String) As List(Of String)
+    Public Function GetDirectoriesList(path As String, Optional Force As Boolean = False) As List(Of String)
         Dim list As New List(Of String)
         Dim pathfile As New IO.FileInfo(DirectoriesPath)
-        If pathfile.Exists Then
+        If Not Force AndAlso pathfile.Exists Then
             ReadListfromFile(list, DirectoriesPath, Encrypted)
         Else
             Dim root As New IO.DirectoryInfo(path)
@@ -299,13 +300,33 @@ Public Module General
             list.Add(m.Value)
         Next
     End Sub
-    Public Function ListfromListbox(lbx As ListBox) As List(Of String)
+    Public Function ListfromSelectedInListbox(lbx As ListBox) As List(Of String)
         Dim s As New List(Of String)
         For Each l In lbx.SelectedItems
             s.Add(l)
         Next
         Return s
     End Function
+
+    Public Sub RefreshListbox(lbx As ListBox)
+        Dim list As New List(Of String)
+        list = AllfromListbox(lbx)
+        For Each m In list
+            Dim f As New IO.FileInfo(m)
+            If Not f.Exists Then
+                lbx.Items.Remove(m)
+            Else
+
+            End If
+        Next
+    End Sub
+    Public Sub RefreshListbox(lbx As ListBox, list As List(Of String))
+        For Each m In list
+            lbx.Items.Remove(m)
+        Next
+    End Sub
+
+
     Public Function AllfromListbox(lbx As ListBox) As List(Of String)
         Dim s As New List(Of String)
         For Each l In lbx.Items
@@ -537,7 +558,9 @@ Public Module General
                             NewListL.Add(l, file.FullName)
 
                         Catch ex As Exception
-                            MsgBox("Fail")
+                            MsgBox("Unhandled Error in SetPlayOrder" & vbCrLf & ex.Message)
+                        Catch ex As FileNotFoundException
+
 
                         End Try
                     Next

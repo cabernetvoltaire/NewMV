@@ -14,7 +14,7 @@ Module FileHandling
     Public Listbox As ListBox = MainForm.lbxFiles
     Public Event FolderMoved(Path As String)
     Public Event FileMoved(Files As List(Of String), lbx As ListBox)
-    Public t As Thread
+    Public WithEvents t As Thread
     Public WithEvents Media As New MediaHandler("Media")
     Public WithEvents MSFiles As New MediaSwapper(MainForm.MainWMP1, MainForm.MainWMP2, MainForm.MainWMP3, MainForm.PictureBox1, MainForm.PictureBox2, MainForm.PictureBox3)
     '   Public WithEvents MSShow As New MovieSwapper(MainForm.MainWMP, MainForm.MainWMP2)
@@ -80,10 +80,11 @@ Module FileHandling
                     ReplaceListboxItem(lbx1, ind, f)
                     lbx1.SelectedItem = lbx1.Items(ind)
                 Case Else
-                    lbx1.Items.Remove(f)
             End Select
             MSFiles.ResettersOff()
         Next
+        RefreshListbox(lbx1, files)
+
         If lbx1.Items.Count <> 0 Then lbx1.SetSelected(Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0), True)
         ' If MSFiles.Listbox IsNot lbx1 Then MSFiles.Listbox = lbx1
         'MSFiles.ListIndex = lbx1.SelectedIndex
@@ -287,6 +288,7 @@ Module FileHandling
                     Case StateHandler.StateOptions.Copy
                         .CopyDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
                     Case StateHandler.StateOptions.Move
+                        MainForm.CancelDisplay()
                         Dim flist As New List(Of String)
                         GetFiles(dir, flist)
 
@@ -333,6 +335,14 @@ Module FileHandling
     ''' <param name="strDest"></param>
     ''' <param name="lbx1"></param>
     Public Sub MoveFiles(files As List(Of String), strDest As String, lbx1 As ListBox, Optional Folder As Boolean = False)
+        Dim Fileundo As New Undo
+        With Fileundo
+            .FileList = files
+            .Action = Undo.Functions.MoveFiles
+            .Destination = strDest
+
+        End With
+        UndoOperations.Push(Fileundo)
 
 
         Dim s As String = strDest 'if strDest is empty then delete
@@ -342,10 +352,8 @@ Module FileHandling
         Select Case NavigateMoveState.State
             Case StateHandler.StateOptions.Copy, StateHandler.StateOptions.CopyLink
             Case Else
-
                 MainForm.CancelDisplay()
         End Select
-
 
         t = New Thread(New ThreadStart(Sub() MovingFiles(files, strDest, s)))
         t.IsBackground = True
@@ -467,6 +475,7 @@ Module FileHandling
                 End Select
             End With
         Next
+
         'RaiseEvent FileMoved(files, MainForm.lbxFiles)
     End Sub
     ''' <summary>
@@ -552,6 +561,7 @@ Module FileHandling
 
         MainForm.Cursor = Cursors.WaitCursor
         ProgressBarOn(1000)
+
         FindAllFilesBelow(d, list, extensions, False, s, blnRecurse, blnChooseOne)
 
         MainForm.Cursor = Cursors.Default
@@ -630,8 +640,9 @@ Module FileHandling
     Public Sub FindAllFilesBelow(d As DirectoryInfo, list As List(Of String), extensions As String, blnRemove As Boolean, strSearch As String, blnRecurse As Boolean, blnOneOnly As Boolean)
         '  MsgBox(CountSubFiles(d.FullName) & " files below")
         Dim x As New List(Of FileInfo)
+        If strSearch = "" Then strSearch = "*"
         If blnRecurse Then
-            For Each f In d.EnumerateFiles("*", SearchOption.AllDirectories)
+            For Each f In d.EnumerateFiles("*" & strSearch & "*", SearchOption.AllDirectories)
                 x.Add(f)
             Next
         Else
@@ -645,7 +656,7 @@ Module FileHandling
             If blnOneOnly Then
                 If folderpath = file.DirectoryName Then Continue For
             End If
-            Application.DoEvents()
+            ' Application.DoEvents()
             ProgressIncrement(1)
             Try
                 If InStr(LCase(extensions), LCase("NOT")) <> 0 Then
@@ -654,14 +665,11 @@ Module FileHandling
                         AddRemove(list, blnRemove, strSearch, file)
                     End If
                 Else
-
                     If InStr(extensions, LCase(file.Extension)) <> 0 And file.Extension <> "" Then 'File has an extension, and an appropriate one
                         AddRemove(list, blnRemove, strSearch, file)
-
                     Else
                         If extensions = "" Then
                             AddRemove(list, blnRemove, strSearch, file)
-
                         End If
                     End If
                 End If
@@ -673,19 +681,6 @@ Module FileHandling
 
             ProgressIncrement(1)
         Next
-        'If blnRecurse Then
-
-        '    For Each di In d.EnumerateDirectories
-        '        Try
-
-        '            FindAllFilesBelow(di, list, extensions, blnRemove, strSearch, blnRecurse, blnOneOnly)
-        '        Catch ex As UnauthorizedAccessException
-        '            Continue For
-        '        Catch ex As DirectoryNotFoundException
-        '            Continue For
-        '        End Try
-        '    Next
-        'End If
     End Sub
 
     Private Sub AddRemove(list As List(Of String), blnRemove As Boolean, strSearch As String, file As FileInfo)

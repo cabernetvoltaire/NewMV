@@ -36,7 +36,18 @@ Public Class MainForm
     Public Sub OnParentNotFound(sender As Object, e As EventArgs) Handles X.ParentNotFound, Op.ParentNotFound
         lbxReport.Items.Add("Not found")
     End Sub
+    Public Sub RemoveMarker(filepath As String, timecode As Long)
+        Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
+        For Each f In x
+            If BookmarkFromLinkName(f) = timecode Then
+                Dim file As New IO.FileInfo(f)
+                file.Delete()
+            End If
+        Next
+        AllFaveMinder.NewPath(GlobalFavesPath)
+        PopulateLinkList(filepath)
 
+    End Sub
     Public Sub PopulateLinkList(filepath As String)
         If filepath = "" Then Exit Sub
         Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
@@ -53,11 +64,15 @@ Public Class MainForm
         For Each m In x
             Dim n = BookmarkFromLinkName(m)
             If n > 0 Then
-                Media.Markers.Add(n)
+                If Media.Markers.Contains(n) Then
+                Else
+                    Media.Markers.Add(n)
+                End If
                 i += 1
             End If
         Next
         Media.Markers.Sort()
+
         If chbPreviewLinks.Checked Then
             If x.Count >= 1 Then
                 FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
@@ -283,10 +298,14 @@ Public Class MainForm
     Public Sub CancelDisplay()
         '        MSFiles.URLSZero()
         '       MSFiles.ResettersOff()
+        Try
 
-        If Media.Player.URL <> "" Then
-            Media.Player.URL = ""
-        End If
+            If Media.Player.URL <> "" Then
+                Media.Player.URL = ""
+            End If
+        Catch ex As Exception
+
+        End Try
         If currentPicBox.Visible Then
             currentPicBox.Image = Nothing
             GC.Collect()
@@ -365,6 +384,9 @@ Public Class MainForm
         '  flist.Clear()
         'for empty lists
         If e.EnumerateFiles.Count = 0 Then
+            If CurrentFilterState.State = FilterHandler.FilterState.LinkOnly Then
+                CurrentFilterState.State = FilterHandler.FilterState.All
+            End If
             lbx.Items.Add("If there is nothing showing here, check your filters")
             Exit Sub
         End If
@@ -679,9 +701,12 @@ Public Class MainForm
 #Region "Alpha and Numeric"
 
             Case Keys.Enter And e.Control
-                If Media.IsLink Or FocusControl Is lbxShowList Then
+                If Media.IsLink Then
                     HighlightCurrent(Media.LinkPath)
                     CurrentFilterState.State = FilterHandler.FilterState.All
+                ElseIf FocusControl Is lbxShowList Then
+                    HighlightCurrent(Media.MediaPath)
+
                 End If
             Case Keys.A To Keys.Z, Keys.D0 To Keys.D9
                 'If e.Alt Then Me.frmMain_KeyDown(Me, e)
@@ -781,16 +806,14 @@ Public Class MainForm
                 e.SuppressKeyPress = True
             Case KeyMarkPoint, LKeyMarkPoint
                 'Addmarker(Media.MediaPath)
-                Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
-                Media.Bookmark = -1
-                Media.MediaJumpToMarker()
-
-                'If Media.Bookmark = -1 Then
-
-                '    Media.Bookmark = Media.Position
-                'Else
-                '    Media.Bookmark = -1
-                'End If
+                If e.Modifiers = Keys.Alt Then
+                    Dim l As Long = Media.Markers(Media.IncrementLinkCounter(True) - 1)
+                    RemoveMarker(Media.MediaPath, l)
+                Else
+                    Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
+                    Media.Bookmark = -2
+                    Media.MediaJumpToMarker()
+                End If
                 e.SuppressKeyPress = True
 
             Case KeyMuteToggle
@@ -900,6 +923,7 @@ Public Class MainForm
 
             Case KeyReStartSS
                 If e.Shift Then
+                    tmrMovieSlideShow.Interval = 800
                     tmrMovieSlideShow.Enabled = Not tmrMovieSlideShow.Enabled
                     SP.Slideshow = Not tmrMovieSlideShow.Enabled
 
@@ -970,7 +994,7 @@ Public Class MainForm
                 lbx = lbxFiles
             End If
 
-            Dim m As List(Of String) = ListfromListbox(lbx)
+            Dim m As List(Of String) = ListfromSelectedInListbox(lbx)
             If NavigateMoveState.State = StateHandler.StateOptions.Move Or NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
                 If lbx.Name = "lbxShowList" And NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
                     For Each k In m
@@ -1147,7 +1171,7 @@ Public Class MainForm
         OnRandomChanged()
         '        PlayOrder.State = SortHandler.Order.DateTime
         DirectoriesList = GetDirectoriesList(Rootpath)
-
+        ControlSetFocus(lbxFiles)
         Initialising = False
         tmrPicLoad.Enabled = True
 
@@ -1252,19 +1276,23 @@ Public Class MainForm
             End If
             ' If chbPreviewLinks.Checked AndAlso lbx.Name <> "lbxShowList" Then
             If lbx.Name <> "lbxShowlist" Then
-                If Media.IsLink Then
-                    PopulateLinkList(Media.LinkPath)
-                Else
-                    PopulateLinkList(lbx.SelectedItem)
+                Try
 
-                End If
+                    If Media.IsLink Then
+                        PopulateLinkList(Media.LinkPath)
+                    Else
+                        PopulateLinkList(lbx.SelectedItem)
+
+                    End If
+                Catch ex As Exception
+
+                End Try
             End If
             'End If
         End With
 
 
     End Sub
-
 
     Private Sub tmrSlideShow_Tick(sender As Object, e As EventArgs) Handles tmrSlideShow.Tick
         'SP.Slideshow = True
@@ -1768,11 +1796,9 @@ Public Class MainForm
     'End Sub
 
     Public Sub BundleFiles(lbx1 As ListBox, strFolder As String)
-        If lbx1.SelectedItems.Count <= 1 Then
-            SelectSubList(False)
-        End If
+        SelectSubList(False)
         blnSuppressCreate = False
-        MoveFiles(ListfromListbox(lbx1), strFolder, lbx1)
+        MoveFiles(ListfromSelectedInListbox(lbx1), strFolder, lbx1)
         tvMain2.RefreshTree(CurrentFolder)
         tmrUpdateFileList.Enabled = True
 
@@ -1970,11 +1996,8 @@ Public Class MainForm
     End Sub
 
     Private Sub BundleToolStripMenuItem_Click_1(sender As Object, e As EventArgs) Handles BundleToolStripMenuItem.Click
-        If PFocus = CtrlFocus.ShowList Then
-            BundleFiles(lbxShowList, CurrentFolder)
-        Else
-            BundleFiles(lbxFiles, CurrentFolder)
-
+        If FocusControl IsNot tvMain2 Then
+            BundleFiles(FocusControl, CurrentFolder)
         End If
     End Sub
 
@@ -2033,7 +2056,7 @@ Public Class MainForm
         '  CancelDisplay() 'Need to cancel display to prevent 'already in use' problems when moving files or deleting them. 
         If (e.Shift And e.Control And e.Alt) Or strVisibleButtons(i) = "" Then
             'Assign button
-            AssignButton(i, iCurrentAlpha, 1, CurrentFolder, True) 'Just assign in all modes when all three control buttons held
+            AssignButton(i, iCurrentAlpha, 1, Media.MediaDirectory, True) 'Just assign in all modes when all three control buttons held
             'Always update the button file. 
             If My.Computer.FileSystem.FileExists(ButtonFilePath) Then
                 KeyAssignmentsStore(ButtonFilePath)
@@ -2062,9 +2085,9 @@ Public Class MainForm
             Else
 
                 If lbxShowList.Visible Then
-                    MoveFiles(ListfromListbox(lbxShowList), strVisibleButtons(i), lbxShowList)
+                    MoveFiles(ListfromSelectedInListbox(lbxShowList), strVisibleButtons(i), lbxShowList)
                 Else
-                    MoveFiles(ListfromListbox(lbxFiles), strVisibleButtons(i), lbxFiles)
+                    MoveFiles(ListfromSelectedInListbox(lbxFiles), strVisibleButtons(i), lbxFiles)
                 End If
             End If
         Else
@@ -2073,7 +2096,7 @@ Public Class MainForm
                 MovingFolder(tvMain2.SelectedFolder, strVisibleButtons(i))
 
             ElseIf e.Shift Then
-                MoveFiles(ListfromListbox(lbxFiles), strVisibleButtons(i), lbxFiles)
+                MoveFiles(ListfromSelectedInListbox(lbxFiles), strVisibleButtons(i), lbxFiles)
             Else
                 'SWITCH folder
                 If strVisibleButtons(i) <> CurrentFolder Then
@@ -2223,7 +2246,7 @@ Public Class MainForm
     Private Sub ReUniteFavesLinks()
         Dim s As List(Of String)
         '        s = DeadLinksSelect()
-        s = ListfromListbox(CType(FocusControl, ListBox))
+        s = ListfromSelectedInListbox(CType(FocusControl, ListBox))
         X.OrphanList = s
         ProgressBarOn(s.Count)
         X.FindOrphans()
@@ -2559,7 +2582,7 @@ Public Class MainForm
     End Sub
 
     Private Sub CreateListFromLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateListFromLinksToolStripMenuItem.Click
-        ListFromLinks(ListfromListbox(lbxFiles))
+        ListFromLinks(ListfromSelectedInListbox(lbxFiles))
     End Sub
 
     Private Sub NewIndex_Tick(sender As Object, e As EventArgs) Handles NewIndex.Tick
@@ -2591,5 +2614,19 @@ Public Class MainForm
 
     Private Sub chbEncrypt_CheckedChanged(sender As Object, e As EventArgs) Handles chbEncrypt.CheckedChanged
         Encrypted = chbEncrypt.Checked
+    End Sub
+
+    Private Sub ForceFavouritesReloadToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ForceFavouritesReloadToolStripMenuItem.Click
+        AllFaveMinder.NewPath(GlobalFavesPath)
+    End Sub
+
+    Private Sub ForceDirectoriesReloadToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ForceDirectoriesReloadToolStripMenuItem.Click
+        If MsgBox("Reload directories list? Could take a while!", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
+            GetDirectoriesList(Rootpath, True)
+        End If
+    End Sub
+
+    Private Sub btn1_Click(sender As Object, e As EventArgs) Handles btn1.Click
+
     End Sub
 End Class

@@ -134,7 +134,7 @@ Friend Module Mysettings
             Dim fol As New IO.DirectoryInfo(CurrentFavesPath)
             DirectoriesPath = .GetValue("Directories List", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures))
             GlobalFavesPath = .GetValue("GlobalFaves", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures))
-            Rootpath = .GetValue("Rootpath", Environment.GetFolderPath(Environment.SpecialFolder.MyComputer))
+            Rootpath = .GetValue("RootScanpath", Environment.GetFolderPath(Environment.SpecialFolder.MyComputer))
 
             If fol.Exists = False Then
                 MainForm.FavouritesFolderToolStripMenuItem.PerformClick()

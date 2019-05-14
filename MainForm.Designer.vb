@@ -233,6 +233,8 @@ Partial Class MainForm
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
         Me.NewIndex = New System.Windows.Forms.Timer(Me.components)
         Me.Response = New System.Windows.Forms.Timer(Me.components)
+        Me.ForceFavouritesReloadToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ForceDirectoriesReloadToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1587,7 +1589,7 @@ Partial Class MainForm
         '
         'PreferencesToolStripMenuItem
         '
-        Me.PreferencesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenToolStripMenuItem1, Me.ResetToolStripMenuItem, Me.SaveToolStripMenuItem1, Me.RestoreToolStripMenuItem, Me.ToolStripSeparator10, Me.FavouritesFolderToolStripMenuItem})
+        Me.PreferencesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenToolStripMenuItem1, Me.ResetToolStripMenuItem, Me.SaveToolStripMenuItem1, Me.RestoreToolStripMenuItem, Me.ToolStripSeparator10, Me.FavouritesFolderToolStripMenuItem, Me.ForceFavouritesReloadToolStripMenuItem, Me.ForceDirectoriesReloadToolStripMenuItem})
         Me.PreferencesToolStripMenuItem.Name = "PreferencesToolStripMenuItem"
         Me.PreferencesToolStripMenuItem.Size = New System.Drawing.Size(295, 34)
         Me.PreferencesToolStripMenuItem.Text = "Preferences"
@@ -2013,6 +2015,18 @@ Partial Class MainForm
         'Response
         '
         '
+        'ForceFavouritesReloadToolStripMenuItem
+        '
+        Me.ForceFavouritesReloadToolStripMenuItem.Name = "ForceFavouritesReloadToolStripMenuItem"
+        Me.ForceFavouritesReloadToolStripMenuItem.Size = New System.Drawing.Size(328, 34)
+        Me.ForceFavouritesReloadToolStripMenuItem.Text = "Force Favourites Reload"
+        '
+        'ForceDirectoriesReloadToolStripMenuItem
+        '
+        Me.ForceDirectoriesReloadToolStripMenuItem.Name = "ForceDirectoriesReloadToolStripMenuItem"
+        Me.ForceDirectoriesReloadToolStripMenuItem.Size = New System.Drawing.Size(328, 34)
+        Me.ForceDirectoriesReloadToolStripMenuItem.Text = "Force Directories Reload"
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(11.0!, 24.0!)
@@ -2308,4 +2322,6 @@ Partial Class MainForm
     Friend WithEvents cbxOrder As ComboBox
     Friend WithEvents Label3 As Label
     Friend WithEvents cbxFilter As ComboBox
+    Friend WithEvents ForceFavouritesReloadToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ForceDirectoriesReloadToolStripMenuItem As ToolStripMenuItem
 End Class

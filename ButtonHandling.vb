@@ -46,35 +46,36 @@ Module ButtonHandling
         FolderSelect.SendToBack()
     End Sub
     Private Sub ShowPreview(Sender As Object, e As EventArgs)
+
+
         ' Exit Sub
         Dim index As Byte = Val(Sender.Name.ToString(3))
 
-        If FolderSelect.Visible Then
-            If index - 1 <> FolderSelect.ButtonNumber Then
-            Else
-                FolderSelect.Hide()
+            If FolderSelect.Visible Then
+                If index - 1 <> FolderSelect.ButtonNumber Then
+                Else
+                    FolderSelect.Hide()
 
-                Exit Sub
+                    Exit Sub
+                End If
+
             End If
-
-        End If
-        FolderSelect.ButtonNumber = index - 1
-        FolderSelect.Alpha = iCurrentAlpha
-        FolderSelect.Show()
-        Dim s As String = buttons.CurrentRow.Buttons(index - 1).Path
-        If s = "" Then s = CurrentFolder
-        FolderSelect.Folder = s
-        Debug.Print("New Folder" & s)
-        '        x.Show()
-        Dim control As Control = CType(Sender, Control)
-
-        Dim startpoint As Point
-        startpoint.X = control.Left
-        startpoint.Y = control.Top
-        startpoint = control.PointToScreen(startpoint)
-        FolderSelect.Left = startpoint.X - FolderSelect.Width / 2
-        FolderSelect.Top = startpoint.Y - FolderSelect.Height
-        FolderSelect.BringToFront()
+            FolderSelect.ButtonNumber = index - 1
+            FolderSelect.Alpha = iCurrentAlpha
+            FolderSelect.Show()
+            Dim s As String = buttons.CurrentRow.Buttons(index - 1).Path
+            If s = "" Then s = CurrentFolder
+            FolderSelect.Folder = s
+            Debug.Print("New Folder" & s)
+            '        x.Show()
+            Dim control As Control = CType(Sender, Control)
+            Dim startpoint As Point
+            startpoint.X = control.Left
+            startpoint.Y = control.Top
+            startpoint = control.PointToScreen(startpoint)
+            FolderSelect.Left = startpoint.X - FolderSelect.Width / 2
+            FolderSelect.Top = startpoint.Y - FolderSelect.Height
+            FolderSelect.BringToFront()
         'FolderSelect.UpdateFolder()
     End Sub
 

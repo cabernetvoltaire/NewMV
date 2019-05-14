@@ -134,22 +134,26 @@ Public Class MediaHandler
             Else
                 mMediaPath = value
                 mType = FindType(value)
-                Dim f As New IO.FileInfo(value)
-                If f.Exists Then
-                    If mType = Filetype.Link Then
-                        mIsLink = True
-                        mLinkPath = LinkTarget(f.FullName)
-                    Else
-                        mIsLink = False
-                        mLinkPath = ""
-                    End If
-                    LoadMedia()
+                Try
+                    Dim f As New IO.FileInfo(value)
+                    If f.Exists Then
+                        If mType = Filetype.Link Then
+                            mIsLink = True
+                            mLinkPath = LinkTarget(f.FullName)
+                        Else
+                            mIsLink = False
+                            mLinkPath = ""
+                        End If
+                        LoadMedia()
 
-                    mMediaDirectory = f.Directory.FullName
-                Else
-                    mMediaPath = DefaultFile
-                    mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
-                End If
+                        mMediaDirectory = f.Directory.FullName
+                    Else
+                        mMediaPath = DefaultFile
+                        mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
+                    End If
+                Catch ex As Exception
+
+                End Try
 
                 RaiseEvent MediaChanged(Me, New EventArgs)
             End If
@@ -350,6 +354,7 @@ Public Class MediaHandler
 
             End If
         Else
+            mLinkCounter = 0
             GetBookmark()
             MediaJumpToMarker()
         End If
