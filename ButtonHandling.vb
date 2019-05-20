@@ -17,7 +17,7 @@ Module ButtonHandling
 
     Public lblDest() As Label = {MainForm.lbl1, MainForm.lbl2, MainForm.lbl3, MainForm.lbl4, MainForm.lbl5, MainForm.lbl6, MainForm.lbl7, MainForm.lbl8}
     Public Sub Buttons_Load()
-        buttons.CurrentLetter = ButtfromAsc(Asc("A"))
+        buttons.CurrentLetter = LetterNumberFromAscii(Asc("A"))
         For i As Byte = 0 To 7
             lblDest(i).Font = New Font(lblDest(i).Font, FontStyle.Bold)
         Next
@@ -51,31 +51,31 @@ Module ButtonHandling
         ' Exit Sub
         Dim index As Byte = Val(Sender.Name.ToString(3))
 
-            If FolderSelect.Visible Then
-                If index - 1 <> FolderSelect.ButtonNumber Then
-                Else
-                    FolderSelect.Hide()
+        If FolderSelect.Visible Then
+            If index - 1 <> FolderSelect.ButtonNumber Then
+            Else
+                FolderSelect.Hide()
 
-                    Exit Sub
-                End If
-
+                Exit Sub
             End If
-            FolderSelect.ButtonNumber = index - 1
-            FolderSelect.Alpha = iCurrentAlpha
-            FolderSelect.Show()
-            Dim s As String = buttons.CurrentRow.Buttons(index - 1).Path
-            If s = "" Then s = CurrentFolder
-            FolderSelect.Folder = s
-            Debug.Print("New Folder" & s)
-            '        x.Show()
-            Dim control As Control = CType(Sender, Control)
-            Dim startpoint As Point
-            startpoint.X = control.Left
-            startpoint.Y = control.Top
-            startpoint = control.PointToScreen(startpoint)
-            FolderSelect.Left = startpoint.X - FolderSelect.Width / 2
-            FolderSelect.Top = startpoint.Y - FolderSelect.Height
-            FolderSelect.BringToFront()
+
+        End If
+        FolderSelect.ButtonNumber = index - 1
+        FolderSelect.Alpha = iCurrentAlpha
+        FolderSelect.Show()
+        Dim s As String = buttons.CurrentRow.Buttons(index - 1).Path
+        If s = "" Then s = CurrentFolder
+        FolderSelect.Folder = s
+        Debug.Print("New Folder" & s)
+        '        x.Show()
+        Dim control As Control = CType(Sender, Control)
+        Dim startpoint As Point
+        startpoint.X = control.Left
+        startpoint.Y = control.Top
+        startpoint = control.PointToScreen(startpoint)
+        FolderSelect.Left = startpoint.X - FolderSelect.Width / 2
+        FolderSelect.Top = startpoint.Y - FolderSelect.Height
+        FolderSelect.BringToFront()
         'FolderSelect.UpdateFolder()
     End Sub
 
@@ -147,7 +147,7 @@ Module ButtonHandling
             Dim s As String = dlist.Item(i)
             Dim sht As String = New DirectoryInfo(s).Name
             Dim l As String = UCase(sht(0))
-            Dim k As Int16 = ButtfromAsc(Asc(l))
+            Dim k As Int16 = LetterNumberFromAscii(Asc(l))
             If k >= 0 AndAlso k < nletts Then
                 If (n(k) Mod 8) = 0 Then
                     layer += 1
@@ -187,7 +187,7 @@ Module ButtonHandling
 
             For Each di In dlist.Values
                 Dim l As String = UCase(di.Name(0))
-                Dim ButtonNumber As Int16 = ButtfromAsc(Asc(l))
+                Dim ButtonNumber As Int16 = LetterNumberFromAscii(Asc(l))
                 If ButtonNumber >= 0 AndAlso ButtonNumber < nletts Then
                     If exclude <> "" AndAlso InStr(di.Name, exclude) <> 0 Then
                     Else
@@ -270,7 +270,7 @@ Module ButtonHandling
     Public Sub ChangeButtonLetter(e As KeyEventArgs)
 
         MainForm.lblAlpha.Text = e.KeyCode.ToString
-        iCurrentAlpha = ButtfromAsc(e.KeyCode)
+        iCurrentAlpha = LetterNumberFromAscii(e.KeyCode)
         UpdateButtonAppearance()
 
     End Sub
@@ -285,7 +285,7 @@ Module ButtonHandling
     ''' This is for when we hold down CTRL or SHIFT and the appearance of the buttons schanges. 
     ''' </summary>
     Public Sub UpdateButtonAppearance()
-        MainForm.lblAlpha.Text = Chr(AscfromButt(iCurrentAlpha)).ToString
+        MainForm.lblAlpha.Text = Chr(AsciifromLetterNumber(iCurrentAlpha)).ToString
         For i = 0 To 7
             buttons.CurrentRow.Buttons(i).Path = strButtonFilePath(i, iCurrentAlpha, 1)
             Try
@@ -296,7 +296,7 @@ Module ButtonHandling
             End Try
         Next
         For i = 0 To 7
-            MainForm.lblAlpha.Text = Chr(AscfromButt(iCurrentAlpha)).ToString
+            MainForm.lblAlpha.Text = Chr(AsciifromLetterNumber(iCurrentAlpha)).ToString
             Dim s As String
             Dim f As String = strButtonFilePath(i, iCurrentAlpha, 1)
             MainForm.ToolTip1.SetToolTip(btnDest(i), f)
@@ -366,8 +366,7 @@ Module ButtonHandling
     Public Sub ClearCurrentButtons(b As ButtonSet)
         For Each row In b.CurrentSet
             For Each btn In row.Buttons
-                btn.Label = ""
-                btn.Path = ""
+                btn.Clear()
             Next
         Next
     End Sub

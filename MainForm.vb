@@ -32,6 +32,8 @@ Public Class MainForm
     Public DraggedFolder As String
     Public CurrentFileList As New List(Of String)
     Public T As Thread
+    Public FirstButtons As New ButtonForm
+
 
     Public Sub OnParentNotFound(sender As Object, e As EventArgs) Handles X.ParentNotFound, Op.ParentNotFound
         lbxReport.Items.Add("Not found")
@@ -138,7 +140,7 @@ Public Class MainForm
     Public Sub OnStartChanged(Sender As Object, e As EventArgs)
         'Media.Bookmark = -1
         tbxAbsolute.Text = New TimeSpan(0, 0, Media.StartPoint.StartPoint).ToString("hh\:mm\:ss")
-        tbxPercentage.Text = Int(100 * Media.StartPoint.StartPoint/ Media.StartPoint.Duration) & "%"
+        tbxPercentage.Text = Int(100 * Media.StartPoint.StartPoint / Media.StartPoint.Duration) & "%"
         tbPercentage.Value = Media.StartPoint.Percentage
         tbAbsolute.Maximum = Media.StartPoint.Duration
         tbAbsolute.Value = Media.StartPoint.StartPoint
@@ -218,26 +220,6 @@ Public Class MainForm
                 img.RotateFlip(RotateFlipType.Rotate270FlipNone)
 
         End Select
-    End Sub
-    Private Sub HandleMovie(URL As String)
-
-        'Static LastURL As String
-
-        ''If it is to jump to a random point, do not show first.
-        '' If blnRandom Then Media.Player.Visible = False
-        'If URL <> LastURL Then
-        '    '      Media.Player.Visible = False
-        '    Media.Player.URL = URL
-        '    LastURL = URL
-        'End If
-        ''  Media.Player.BringToFront()
-        'PicToMovie()
-
-        'If tmrSlideShow.Enabled Then
-        '    blnRestartSlideShowFlag = True
-        '    tmrSlideShow.Enabled = False
-
-        'End If
     End Sub
     Private Sub SaveShowlist()
         Dim path As String
@@ -346,27 +328,30 @@ Public Class MainForm
 
 
     Public Sub UpdatePlayOrder(blnShowBoxShown As Boolean)
+
+
+
         If FocusControl IsNot lbxShowList Then
-            Dim e = New DirectoryInfo(CurrentFolder)
-            FillListbox(lbxFiles, e, False)
-            If lbxFiles.FindString(Media.MediaPath) <> -1 Then
-                lbxFiles.SelectedIndex = lbxFiles.FindString(Media.MediaPath)
+                Dim e = New DirectoryInfo(CurrentFolder)
+                FillListbox(lbxFiles, e, False)
+                If lbxFiles.FindString(Media.MediaPath) <> -1 Then
+                    lbxFiles.SelectedIndex = lbxFiles.FindString(Media.MediaPath)
+                Else
+                    If lbxFiles.Items.Count > 0 Then lbxFiles.SelectedIndex = 0
+                End If
             Else
-                If lbxFiles.Items.Count > 0 Then lbxFiles.SelectedIndex = 0
-            End If
-        Else
-            If blnShowBoxShown Then
-                Dim s = lbxShowList.SelectedItem
+                If blnShowBoxShown Then
+                    Dim s = lbxShowList.SelectedItem
 
-                Showlist = SetPlayOrder(PlayOrder.State, Showlist)
-                ReOrderListBox(lbxShowList, CurrentFilterState.State, Showlist)
-                Try
+                    Showlist = SetPlayOrder(PlayOrder.State, Showlist)
+                    ReOrderListBox(lbxShowList, CurrentFilterState.State, Showlist)
+                    Try
 
-                    lbxShowList.SelectedIndex = lbxShowList.FindString(s)
-                Catch ex As FileNotFoundException
-                End Try
+                        lbxShowList.SelectedIndex = lbxShowList.FindString(s)
+                    Catch ex As FileNotFoundException
+                    End Try
+                End If
             End If
-        End If
 
     End Sub
     Public Sub ReOrderListBox(lbx As ListBox, FilterState As FilterHandler.FilterState, List As List(Of String))
@@ -375,53 +360,46 @@ Public Class MainForm
     End Sub
 
     Public Sub FillListbox(lbx As ListBox, e As DirectoryInfo, blnRandom As Boolean)
+
         If Not e.Exists Then Exit Sub
-        If e.Name = "My Computer" Then Exit Sub
-        'clear listbox
-        lbx.Items.Clear()
-        'clear list we just created?
-        Dim flist = CurrentFileList
-        '  flist.Clear()
-        'for empty lists
-        If e.EnumerateFiles.Count = 0 Then
-            If CurrentFilterState.State = FilterHandler.FilterState.LinkOnly Then
-                CurrentFilterState.State = FilterHandler.FilterState.All
-            End If
-            lbx.Items.Add("If there is nothing showing here, check your filters")
-            Exit Sub
-        End If
-        Try
-            flist = FilterLBList(e, flist)
-            flist = SetPlayOrder(PlayOrder.State, flist)
-
-            ' MainForm.FNG.Filenames = flist
-            ReOrderListBox(lbx, CurrentFilterState.State, flist)
-
-            lbx.Tag = e
-
-
-            If lbx.Items.Count <> 0 Then
-                If blnRandom Then
-                    Dim s As Long = lbx.Items.Count - 1
-                    lbx.SelectedIndex = Rnd() * s
-                Else
-                    If lbx.FindString(Media.MediaPath) = -1 Then
-
-                        lbx.SelectedItem = lbx.FindString(Media.LinkPath)
-
-                    Else
-                        lbx.SelectedItem = lbx.FindString(Media.MediaPath)
-                    End If
-                    If lbx.SelectedItem Is Nothing Then
-                        lbx.SelectedIndex = 0 'PUt to beginning
-                    End If
-
+            If e.Name = "My Computer" Then Exit Sub
+            'clear listbox
+            lbx.Items.Clear()
+            Dim flist = CurrentFileList
+            If e.EnumerateFiles.Count = 0 Then
+                If CurrentFilterState.State = FilterHandler.FilterState.LinkOnly Then
+                    CurrentFilterState.State = FilterHandler.FilterState.All
                 End If
+                lbx.Items.Add("If there is nothing showing here, check your filters")
+                Exit Sub
             End If
+            Try
+                flist = FilterLBList(e, flist)
+                flist = SetPlayOrder(PlayOrder.State, flist)
 
-        Catch ex As IOException
-            Exit Try
-        End Try
+                ' MainForm.FNG.Filenames = flist
+                ReOrderListBox(lbx, CurrentFilterState.State, flist)
+
+                lbx.Tag = e
+
+                If lbx.Items.Count <> 0 Then
+                    If blnRandom Then
+                        Dim s As Long = lbx.Items.Count - 1
+                        lbx.SelectedIndex = Rnd() * s
+                    Else
+                        If lbx.FindString(Media.MediaPath) = -1 Then
+                            lbx.SelectedItem = lbx.FindString(Media.LinkPath)
+                        Else
+                            lbx.SelectedItem = lbx.FindString(Media.MediaPath)
+                        End If
+                        If lbx.SelectedItem Is Nothing Then
+                            lbx.SelectedIndex = 0 'PUt to beginning
+                        End If
+                    End If
+                End If
+            Catch ex As IOException
+                Exit Try
+            End Try
 
     End Sub
 
@@ -807,8 +785,10 @@ Public Class MainForm
             Case KeyMarkPoint, LKeyMarkPoint
                 'Addmarker(Media.MediaPath)
                 If e.Modifiers = Keys.Alt Then
-                    Dim l As Long = Media.Markers(Media.IncrementLinkCounter(True) - 1)
-                    RemoveMarker(Media.MediaPath, l)
+                    Dim m As Integer = Media.FindNearestCounter(True)
+                    If m < 0 Then Exit Select
+                    Dim l As Long = Media.Markers(m)
+                    RemoveMarker(Media.LinkPath, l)
                 Else
                     Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
                     Media.Bookmark = -2
@@ -1153,6 +1133,19 @@ Public Class MainForm
         AddHandler FileHandling.FolderMoved, AddressOf OnFolderMoved
         AddHandler FileHandling.FileMoved, AddressOf OnFileMoved
         'Exit Sub
+        '        InitialiseButtons()
+        InitialiseButtonsOld()
+        NavigateMoveState.State = StateHandler.StateOptions.Navigate
+        OnRandomChanged()
+        '        PlayOrder.State = SortHandler.Order.DateTime
+        DirectoriesList = GetDirectoriesList(Rootpath)
+        ControlSetFocus(lbxFiles)
+        Initialising = False
+        tmrPicLoad.Enabled = True
+
+    End Sub
+
+    Private Sub InitialiseButtonsOld()
         Try
             KeyAssignmentsRestore(ButtonFilePath)
             If Not blnButtonsLoaded Then
@@ -1167,15 +1160,22 @@ Public Class MainForm
 
             Exit Try
         End Try
-        NavigateMoveState.State = StateHandler.StateOptions.Navigate
-        OnRandomChanged()
-        '        PlayOrder.State = SortHandler.Order.DateTime
-        DirectoriesList = GetDirectoriesList(Rootpath)
-        ControlSetFocus(lbxFiles)
-        Initialising = False
-        tmrPicLoad.Enabled = True
-
     End Sub
+
+    Private Sub InitialiseButtons()
+        'x.MdiParent = Me
+        FirstButtons.sbtns = {btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8}
+        FirstButtons.lbls = {lbl1, lbl2, lbl3, lbl4, lbl5, lbl6, lbl7, lbl8}
+        FirstButtons.LoadButtonSet(ButtonFilePath)
+        If Not blnButtonsLoaded Then
+            ToggleButtons()
+        End If
+        FirstButtons.TranscribeButtons(FirstButtons.buttons.CurrentRow)
+        FirstButtons.Show()
+        FirstButtons.Top = ctrPicAndButtons.Panel2.Top
+        FirstButtons.Left = ctrPicAndButtons.Panel2.Left
+    End Sub
+
     Public Sub WatchStart(path As String)
         'Exit Sub
         ' watchfolder = New System.IO.FileSystemWatcher()
@@ -1435,9 +1435,9 @@ Public Class MainForm
                         End If
 
                     End If
-                    HandleMovie(Media.LinkPath)
+                    'HandleMovie(Media.LinkPath)
                 Else
-                    HandleMovie(Media.MediaPath)
+                    'HandleMovie(Media.MediaPath)
                 End If
 
             Case Filetype.Pic
@@ -1702,7 +1702,8 @@ Public Class MainForm
         'PreferencesSave()
         lbxGroups.Items.Clear()
         'CurrentFolder = e.Directory.FullName
-
+        tmrUpdateFileList.Enabled = True
+        tmrUpdateFileList.Interval = 500
         FillListbox(lbxFiles, New DirectoryInfo(e.Directory.FullName), Random.OnDirChange)
 
     End Sub
@@ -2416,8 +2417,7 @@ Public Class MainForm
         ' Exit Sub
         ' If Media.Player Is Nothing Then Exit Sub
         If Media.Player.URL <> "" Then
-            '    Media.Position = Media.Player.Ctlcontrols.currentPosition
-            '   Media.Duration = Media.Player.currentMedia.duration
+
         End If
         '       End If
     End Sub
@@ -2629,4 +2629,5 @@ Public Class MainForm
     Private Sub btn1_Click(sender As Object, e As EventArgs) Handles btn1.Click
 
     End Sub
+
 End Class

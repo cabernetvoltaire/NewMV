@@ -163,11 +163,6 @@ Module FileHandling
         Return lst
     End Function
 
-    'Public Function FilterListBoxList(e As DirectoryInfo, ByVal lst As List(Of String))
-    '    lst = FilterLBList(e, lst)
-    '    '    Exit Function
-
-    'End Function
 
 
 
@@ -175,13 +170,7 @@ Module FileHandling
     Public Sub StoreList(list As List(Of String), Dest As String)
         If Dest = "" Then Exit Sub
         WriteListToFile(list, Dest, Encrypted)
-        'Dim fs As New StreamWriter(New FileStream(Dest, FileMode.Create, FileAccess.Write))
-        ''fs.WriteLine(list.Count)
-        'For Each s In list
-        '    fs.WriteLine(s)
 
-        'Next
-        'fs.Close()
     End Sub
     ''' <summary>
     ''' Loads Dest into List, and adds all to lbx. Any files not found are put in notlist, which can then be removed from the lbx

@@ -12,6 +12,17 @@
         'Current = False
         'Letter = "A"
     End Sub
+    Public Sub New(letter As Integer)
+        Dim S As String = "ABCDEFGH"
+        For i = 0 To 7
+            Buttons(i) = New MVButton
+            Buttons(i).FaceText = "f" & Str(i + 5)
+            Buttons(i).Label = S(i)
+        Next
+        mLetter = letter
+        'Current = False
+        'Letter = "A"
+    End Sub
     Private mCurrent As Boolean
     Public Property Current() As Boolean
         Get
@@ -25,17 +36,26 @@
 
         End Set
     End Property
-    Private mLetter As Keys
-    Public Property Letter() As Keys
+    Private mLetter As Integer
+    Public Property Letter() As Integer
         Get
             Return mLetter
         End Get
-        Set(ByVal value As Keys)
+        Set(ByVal value As Integer)
 
             mLetter = value
         End Set
     End Property
-
+    Public Function GetFirstFree() As Byte
+        For i = 0 To 7
+            '  Report(Buttons(i).Path, 1)
+            If Buttons(i).Path = "" Then
+                Return i
+                Exit Function
+            End If
+        Next
+        Return 8
+    End Function
     Private Function GetKey(value As Char) As Integer
         Dim alpha As String = "ABCDEFGHIJKLMNOPWRSTUVWXYZ"
         Dim i As Byte = InStr(alpha, value)
@@ -54,7 +74,7 @@
     Public Sub InitialiseButtons()
         Dim alph As String = "ABCDEFGH"
         For i As Byte = 0 To 7
-            Buttons(i).FaceText = "F" & Str(i + 5)
+            Buttons(i).FaceText = "f" & Str(i + 5)
             Buttons(i).Label = alph(i)
         Next
         End Sub

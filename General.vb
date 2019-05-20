@@ -478,7 +478,7 @@ Public Module General
             ReDim FBCShown(0)
             NofShown = 0
             If AutoButtons Then
-                AssignLinear(CurrentFolder, ButtfromAsc(Asc("0")), True)
+                AssignLinear(CurrentFolder, LetterNumberFromAscii(Asc("0")), True)
                 ChangeButtonLetter(New KeyEventArgs(Keys.D0))
             End If
             '   My.Computer.Registry.CurrentUser.SetValue("File", Media.MediaPath)
@@ -763,7 +763,24 @@ Public Module General
         End If
 
     End Function
-    Public Function ButtfromAsc(asc As Integer) As Integer
+
+    Public Function AdvanceArrayIndexModular(a As Array, i As Integer, Forward As Boolean)
+        If Forward Then
+            i = (i + 1) Mod a.Length
+        Else
+            i = (i - 1)
+            If i < 0 Then i = i + a.Length
+        End If
+        Return i
+    End Function
+    ''' <summary>
+    ''' Takes the Ascii for the letter
+    ''' translates it into an integer with A=0 and 9=36
+    ''' (0 is 27)
+    ''' </summary>
+    ''' <param name="asc"></param>
+    ''' <returns></returns>
+    Public Function LetterNumberFromAscii(asc As Integer) As Integer
         Dim n As Integer
         If asc <= 57 Then
             n = asc - 48 + 26
@@ -771,9 +788,10 @@ Public Module General
         Else
             n = asc - 65
         End If
+        If n < 0 Or n > 36 Then n = 27
         Return n
     End Function
-    Public Function AscfromButt(button As Integer) As Integer
+    Public Function AsciifromLetterNumber(button As Integer) As Integer
         Dim asc As Integer
         If button <= 25 Then
             asc = button + 65

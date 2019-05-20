@@ -175,6 +175,8 @@ Partial Class MainForm
         Me.RestoreToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator10 = New System.Windows.Forms.ToolStripSeparator()
         Me.FavouritesFolderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ForceFavouritesReloadToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ForceDirectoriesReloadToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CloneToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem10 = New System.Windows.Forms.ToolStripMenuItem()
         Me.LinearToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -233,8 +235,6 @@ Partial Class MainForm
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
         Me.NewIndex = New System.Windows.Forms.Timer(Me.components)
         Me.Response = New System.Windows.Forms.Timer(Me.components)
-        Me.ForceFavouritesReloadToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ForceDirectoriesReloadToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -677,7 +677,7 @@ Partial Class MainForm
         Me.ctrPicAndButtons.Panel2.CausesValidation = False
         Me.ctrPicAndButtons.Panel2.Controls.Add(Me.btnRow)
         Me.ctrPicAndButtons.Size = New System.Drawing.Size(2176, 1063)
-        Me.ctrPicAndButtons.SplitterDistance = 883
+        Me.ctrPicAndButtons.SplitterDistance = 882
         Me.ctrPicAndButtons.SplitterWidth = 7
         Me.ctrPicAndButtons.TabIndex = 6
         Me.ctrPicAndButtons.TabStop = False
@@ -756,7 +756,7 @@ Partial Class MainForm
         Me.PictureBox1.Location = New System.Drawing.Point(0, 0)
         Me.PictureBox1.Margin = New System.Windows.Forms.Padding(4)
         Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(2176, 883)
+        Me.PictureBox1.Size = New System.Drawing.Size(2176, 882)
         Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.PictureBox1.TabIndex = 1
         Me.PictureBox1.TabStop = False
@@ -791,7 +791,7 @@ Partial Class MainForm
         Me.btnRow.Name = "btnRow"
         Me.btnRow.RowCount = 1
         Me.btnRow.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.btnRow.Size = New System.Drawing.Size(2176, 173)
+        Me.btnRow.Size = New System.Drawing.Size(2176, 174)
         Me.btnRow.TabIndex = 3
         '
         'Panel8
@@ -802,7 +802,7 @@ Partial Class MainForm
         Me.Panel8.Location = New System.Drawing.Point(1967, 4)
         Me.Panel8.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel8.Name = "Panel8"
-        Me.Panel8.Size = New System.Drawing.Size(205, 165)
+        Me.Panel8.Size = New System.Drawing.Size(205, 166)
         Me.Panel8.TabIndex = 10
         '
         'lbl8
@@ -835,7 +835,7 @@ Partial Class MainForm
         Me.Panel7.Location = New System.Drawing.Point(1757, 4)
         Me.Panel7.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel7.Name = "Panel7"
-        Me.Panel7.Size = New System.Drawing.Size(202, 165)
+        Me.Panel7.Size = New System.Drawing.Size(202, 166)
         Me.Panel7.TabIndex = 9
         '
         'lbl7
@@ -868,7 +868,7 @@ Partial Class MainForm
         Me.Panel6.Location = New System.Drawing.Point(1547, 4)
         Me.Panel6.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel6.Name = "Panel6"
-        Me.Panel6.Size = New System.Drawing.Size(202, 165)
+        Me.Panel6.Size = New System.Drawing.Size(202, 166)
         Me.Panel6.TabIndex = 8
         '
         'lbl6
@@ -901,7 +901,7 @@ Partial Class MainForm
         Me.Panel5.Location = New System.Drawing.Point(1337, 4)
         Me.Panel5.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(202, 165)
+        Me.Panel5.Size = New System.Drawing.Size(202, 166)
         Me.Panel5.TabIndex = 7
         '
         'lbl5
@@ -934,7 +934,7 @@ Partial Class MainForm
         Me.Panel4.Location = New System.Drawing.Point(917, 4)
         Me.Panel4.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel4.Name = "Panel4"
-        Me.Panel4.Size = New System.Drawing.Size(202, 165)
+        Me.Panel4.Size = New System.Drawing.Size(202, 166)
         Me.Panel4.TabIndex = 5
         '
         'lbl4
@@ -967,7 +967,7 @@ Partial Class MainForm
         Me.Panel3.Location = New System.Drawing.Point(707, 4)
         Me.Panel3.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(202, 165)
+        Me.Panel3.Size = New System.Drawing.Size(202, 166)
         Me.Panel3.TabIndex = 4
         '
         'lbl3
@@ -1000,7 +1000,7 @@ Partial Class MainForm
         Me.Panel2.Location = New System.Drawing.Point(497, 4)
         Me.Panel2.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(202, 165)
+        Me.Panel2.Size = New System.Drawing.Size(202, 166)
         Me.Panel2.TabIndex = 3
         '
         'lbl2
@@ -1034,7 +1034,7 @@ Partial Class MainForm
         Me.Panel1.Location = New System.Drawing.Point(287, 4)
         Me.Panel1.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(202, 165)
+        Me.Panel1.Size = New System.Drawing.Size(202, 166)
         Me.Panel1.TabIndex = 2
         '
         'lbl1
@@ -1068,7 +1068,7 @@ Partial Class MainForm
         Me.lblAlpha.Location = New System.Drawing.Point(1127, 0)
         Me.lblAlpha.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblAlpha.Name = "lblAlpha"
-        Me.lblAlpha.Size = New System.Drawing.Size(202, 173)
+        Me.lblAlpha.Size = New System.Drawing.Size(202, 174)
         Me.lblAlpha.TabIndex = 11
         Me.lblAlpha.Text = "A"
         Me.lblAlpha.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -1597,37 +1597,49 @@ Partial Class MainForm
         'OpenToolStripMenuItem1
         '
         Me.OpenToolStripMenuItem1.Name = "OpenToolStripMenuItem1"
-        Me.OpenToolStripMenuItem1.Size = New System.Drawing.Size(260, 34)
+        Me.OpenToolStripMenuItem1.Size = New System.Drawing.Size(328, 34)
         Me.OpenToolStripMenuItem1.Text = "Open"
         '
         'ResetToolStripMenuItem
         '
         Me.ResetToolStripMenuItem.Name = "ResetToolStripMenuItem"
-        Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(260, 34)
+        Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(328, 34)
         Me.ResetToolStripMenuItem.Text = "Reset"
         '
         'SaveToolStripMenuItem1
         '
         Me.SaveToolStripMenuItem1.Name = "SaveToolStripMenuItem1"
-        Me.SaveToolStripMenuItem1.Size = New System.Drawing.Size(260, 34)
+        Me.SaveToolStripMenuItem1.Size = New System.Drawing.Size(328, 34)
         Me.SaveToolStripMenuItem1.Text = "Save"
         '
         'RestoreToolStripMenuItem
         '
         Me.RestoreToolStripMenuItem.Name = "RestoreToolStripMenuItem"
-        Me.RestoreToolStripMenuItem.Size = New System.Drawing.Size(260, 34)
+        Me.RestoreToolStripMenuItem.Size = New System.Drawing.Size(328, 34)
         Me.RestoreToolStripMenuItem.Text = "Restore"
         '
         'ToolStripSeparator10
         '
         Me.ToolStripSeparator10.Name = "ToolStripSeparator10"
-        Me.ToolStripSeparator10.Size = New System.Drawing.Size(257, 6)
+        Me.ToolStripSeparator10.Size = New System.Drawing.Size(325, 6)
         '
         'FavouritesFolderToolStripMenuItem
         '
         Me.FavouritesFolderToolStripMenuItem.Name = "FavouritesFolderToolStripMenuItem"
-        Me.FavouritesFolderToolStripMenuItem.Size = New System.Drawing.Size(260, 34)
+        Me.FavouritesFolderToolStripMenuItem.Size = New System.Drawing.Size(328, 34)
         Me.FavouritesFolderToolStripMenuItem.Text = "Favourites Folder"
+        '
+        'ForceFavouritesReloadToolStripMenuItem
+        '
+        Me.ForceFavouritesReloadToolStripMenuItem.Name = "ForceFavouritesReloadToolStripMenuItem"
+        Me.ForceFavouritesReloadToolStripMenuItem.Size = New System.Drawing.Size(328, 34)
+        Me.ForceFavouritesReloadToolStripMenuItem.Text = "Force Favourites Reload"
+        '
+        'ForceDirectoriesReloadToolStripMenuItem
+        '
+        Me.ForceDirectoriesReloadToolStripMenuItem.Name = "ForceDirectoriesReloadToolStripMenuItem"
+        Me.ForceDirectoriesReloadToolStripMenuItem.Size = New System.Drawing.Size(328, 34)
+        Me.ForceDirectoriesReloadToolStripMenuItem.Text = "Force Directories Reload"
         '
         'CloneToolStripMenuItem
         '
@@ -2014,18 +2026,6 @@ Partial Class MainForm
         '
         'Response
         '
-        '
-        'ForceFavouritesReloadToolStripMenuItem
-        '
-        Me.ForceFavouritesReloadToolStripMenuItem.Name = "ForceFavouritesReloadToolStripMenuItem"
-        Me.ForceFavouritesReloadToolStripMenuItem.Size = New System.Drawing.Size(328, 34)
-        Me.ForceFavouritesReloadToolStripMenuItem.Text = "Force Favourites Reload"
-        '
-        'ForceDirectoriesReloadToolStripMenuItem
-        '
-        Me.ForceDirectoriesReloadToolStripMenuItem.Name = "ForceDirectoriesReloadToolStripMenuItem"
-        Me.ForceDirectoriesReloadToolStripMenuItem.Size = New System.Drawing.Size(328, 34)
-        Me.ForceDirectoriesReloadToolStripMenuItem.Text = "Force Directories Reload"
         '
         'MainForm
         '

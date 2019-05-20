@@ -270,6 +270,30 @@ Public Class MediaHandler
         mLinkCounter = mLinkCounter Mod (mMarkers.Count)
         Return mLinkCounter
     End Function
+
+    Public Function FindNearestCounter(Last As Boolean) As Integer
+        If mMarkers.Count = 0 Then
+            Return -1
+            Exit Function
+        End If
+        Dim ret As Integer
+        Dim i As Integer = 0
+        For i = 1 To mMarkers.Count - 1
+            If mMarkers(i) > mPlayPosition Then
+                If Last Then
+                    ret = (i - 1)
+                Else
+                    ret = (i)
+                End If
+                Return ret
+                Exit For
+            End If
+        Next
+        Return -1
+
+    End Function
+
+
     Public Sub MediaJumpToMarker(Optional ToEnd As Boolean = False)
         'It's a link with a bookmark
         If mBookmark > -1 And Speed.PausedPosition = 0 Then 'And mMarkers.Count = 0 Then
@@ -290,7 +314,7 @@ Public Class MediaHandler
                 If Speed.PausedPosition <> 0 Then
                     mPlayPosition = Speed.PausedPosition
                 Else
-                    If mMarkers.Count <> 0 AndAlso StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
+                    If mMarkers.Count <> 0 Then ' StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
                         Try
                             mPlayPosition = mMarkers.Item(mLinkCounter)
                         Catch ex As Exception
@@ -404,6 +428,10 @@ Public Class MediaHandler
 #End Region
 
 #Region "Event Handlers"
+    Private Sub Uhoh() Handles mPlayer.ErrorEvent
+        MsgBox("Error in MediaPlayer")
+    End Sub
+
     Private Sub PlaystateChange(sender As Object, e As _WMPOCXEvents_PlayStateChangeEvent) Handles mPlayer.PlayStateChange
         'Dim lbl As New Label
         'lbl = MainForm.lblNavigateState

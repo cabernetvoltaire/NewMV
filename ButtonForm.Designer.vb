@@ -475,6 +475,7 @@ Partial Class ButtonForm
         Me.ClientSize = New System.Drawing.Size(2383, 230)
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.KeyPreview = True
+        Me.Location = New System.Drawing.Point(500, 1500)
         Me.Name = "ButtonForm"
         Me.Text = "ButtonForm"
         Me.TableLayoutPanel1.ResumeLayout(False)
