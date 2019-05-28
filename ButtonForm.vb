@@ -64,6 +64,7 @@ Public Class ButtonForm
     Private Sub RespondToKey(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
         Select Case e.KeyCode
             Case Keys.F5, Keys.F6, Keys.F7, Keys.F8, Keys.F9, Keys.F10, Keys.F11, Keys.F12
+                Debug.Print(e.KeyCode.ToString)
                 If e.Shift AndAlso e.Alt AndAlso e.Control Then
                     buttons.CurrentRow.Buttons(e.KeyCode - Keys.F5).Path = CurrentFolder
                     TranscribeButtons(buttons.CurrentRow)
@@ -198,17 +199,17 @@ Public Class ButtonForm
         Dim lst As New Dictionary(Of String, String)
         For Each d In e.EnumerateDirectories("*", SearchOption.AllDirectories)
             lst.Add(d.FullName, d.Name)
-            lst.Add(d.FullName, d.Name)
         Next
+        lst = lst.OrderBy(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(x) x.Value)
         For Each d In lst
 
-            Dim m As Char = UCase(d.Value(0))
-            m = UCase(m)
-            btnset.CurrentLetter = LetterNumberFromAscii(Asc(m))
-            Dim btn As MVButton
-            btn = btnset.FirstFree(btnset.CurrentLetter)
-            btn.Path = d.Key
-        Next
+                                                              Dim m As Char = UCase(d.Value(0))
+                                                              m = UCase(m)
+                                                              btnset.CurrentLetter = LetterNumberFromAscii(Asc(m))
+                                                              Dim btn As MVButton
+                                                              btn = btnset.FirstFree(btnset.CurrentLetter)
+                                                              btn.Path = d.Key
+                                                          Next
     End Sub
     Private Sub AssignTree(e As DirectoryInfo, btnset As ButtonSet)
         Dim i = 0

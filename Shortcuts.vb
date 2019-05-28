@@ -102,13 +102,17 @@ Public Class ShortcutHandler
                 Else
                     d.Create()
                 End If
-
+            Try
                 .TargetPath = sTargetPath
                 .Save()
 
+            Catch ex As Exception
+
+            End Try
 
 
-            End With
+
+        End With
 
             oShortcut = Nothing
             oShell = Nothing

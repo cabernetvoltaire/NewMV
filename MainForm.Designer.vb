@@ -105,6 +105,7 @@ Partial Class MainForm
         Me.btn1 = New System.Windows.Forms.Button()
         Me.lblAlpha = New System.Windows.Forms.Label()
         Me.emblem = New System.Windows.Forms.PictureBox()
+        Me.markers = New System.Windows.Forms.PictureBox()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
         Me.GroupFilters = New System.Windows.Forms.GroupBox()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -178,6 +179,7 @@ Partial Class MainForm
         Me.ForceFavouritesReloadToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ForceDirectoriesReloadToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CloneToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RemoveToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem10 = New System.Windows.Forms.ToolStripMenuItem()
         Me.LinearToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AlphaToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -271,6 +273,7 @@ Partial Class MainForm
         Me.Panel2.SuspendLayout()
         Me.Panel1.SuspendLayout()
         CType(Me.emblem, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.markers, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.FlowLayoutPanel1.SuspendLayout()
         Me.GroupFilters.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -766,30 +769,32 @@ Partial Class MainForm
         Me.btnRow.BackColor = System.Drawing.SystemColors.Control
         Me.btnRow.ColumnCount = 10
         Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13.04348!))
-        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661835!))
-        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661835!))
-        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661835!))
-        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661835!))
-        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661835!))
-        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661835!))
-        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661835!))
-        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661835!))
-        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661835!))
-        Me.btnRow.Controls.Add(Me.Panel8, 9, 0)
-        Me.btnRow.Controls.Add(Me.Panel7, 8, 0)
-        Me.btnRow.Controls.Add(Me.Panel6, 7, 0)
-        Me.btnRow.Controls.Add(Me.Panel5, 6, 0)
-        Me.btnRow.Controls.Add(Me.Panel4, 4, 0)
-        Me.btnRow.Controls.Add(Me.Panel3, 3, 0)
-        Me.btnRow.Controls.Add(Me.Panel2, 2, 0)
-        Me.btnRow.Controls.Add(Me.Panel1, 1, 0)
-        Me.btnRow.Controls.Add(Me.lblAlpha, 5, 0)
-        Me.btnRow.Controls.Add(Me.emblem, 0, 0)
+        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661837!))
+        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661837!))
+        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661837!))
+        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661837!))
+        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661837!))
+        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661837!))
+        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661837!))
+        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661837!))
+        Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661837!))
+        Me.btnRow.Controls.Add(Me.Panel8, 9, 1)
+        Me.btnRow.Controls.Add(Me.Panel7, 8, 1)
+        Me.btnRow.Controls.Add(Me.Panel6, 7, 1)
+        Me.btnRow.Controls.Add(Me.Panel5, 6, 1)
+        Me.btnRow.Controls.Add(Me.Panel4, 4, 1)
+        Me.btnRow.Controls.Add(Me.Panel3, 3, 1)
+        Me.btnRow.Controls.Add(Me.Panel2, 2, 1)
+        Me.btnRow.Controls.Add(Me.Panel1, 1, 1)
+        Me.btnRow.Controls.Add(Me.lblAlpha, 5, 1)
+        Me.btnRow.Controls.Add(Me.emblem, 0, 1)
+        Me.btnRow.Controls.Add(Me.markers, 0, 0)
         Me.btnRow.Dock = System.Windows.Forms.DockStyle.Fill
         Me.btnRow.Location = New System.Drawing.Point(0, 0)
         Me.btnRow.Margin = New System.Windows.Forms.Padding(4)
         Me.btnRow.Name = "btnRow"
-        Me.btnRow.RowCount = 1
+        Me.btnRow.RowCount = 2
+        Me.btnRow.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
         Me.btnRow.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.btnRow.Size = New System.Drawing.Size(2176, 174)
         Me.btnRow.TabIndex = 3
@@ -799,10 +804,10 @@ Partial Class MainForm
         Me.Panel8.Controls.Add(Me.lbl8)
         Me.Panel8.Controls.Add(Me.btn8)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel8.Location = New System.Drawing.Point(1967, 4)
+        Me.Panel8.Location = New System.Drawing.Point(1967, 24)
         Me.Panel8.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel8.Name = "Panel8"
-        Me.Panel8.Size = New System.Drawing.Size(205, 166)
+        Me.Panel8.Size = New System.Drawing.Size(205, 146)
         Me.Panel8.TabIndex = 10
         '
         'lbl8
@@ -832,10 +837,10 @@ Partial Class MainForm
         Me.Panel7.Controls.Add(Me.lbl7)
         Me.Panel7.Controls.Add(Me.btn7)
         Me.Panel7.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel7.Location = New System.Drawing.Point(1757, 4)
+        Me.Panel7.Location = New System.Drawing.Point(1757, 24)
         Me.Panel7.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel7.Name = "Panel7"
-        Me.Panel7.Size = New System.Drawing.Size(202, 166)
+        Me.Panel7.Size = New System.Drawing.Size(202, 146)
         Me.Panel7.TabIndex = 9
         '
         'lbl7
@@ -865,10 +870,10 @@ Partial Class MainForm
         Me.Panel6.Controls.Add(Me.lbl6)
         Me.Panel6.Controls.Add(Me.btn6)
         Me.Panel6.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel6.Location = New System.Drawing.Point(1547, 4)
+        Me.Panel6.Location = New System.Drawing.Point(1547, 24)
         Me.Panel6.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel6.Name = "Panel6"
-        Me.Panel6.Size = New System.Drawing.Size(202, 166)
+        Me.Panel6.Size = New System.Drawing.Size(202, 146)
         Me.Panel6.TabIndex = 8
         '
         'lbl6
@@ -898,10 +903,10 @@ Partial Class MainForm
         Me.Panel5.Controls.Add(Me.lbl5)
         Me.Panel5.Controls.Add(Me.btn5)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel5.Location = New System.Drawing.Point(1337, 4)
+        Me.Panel5.Location = New System.Drawing.Point(1337, 24)
         Me.Panel5.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(202, 166)
+        Me.Panel5.Size = New System.Drawing.Size(202, 146)
         Me.Panel5.TabIndex = 7
         '
         'lbl5
@@ -931,10 +936,10 @@ Partial Class MainForm
         Me.Panel4.Controls.Add(Me.lbl4)
         Me.Panel4.Controls.Add(Me.btn4)
         Me.Panel4.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel4.Location = New System.Drawing.Point(917, 4)
+        Me.Panel4.Location = New System.Drawing.Point(917, 24)
         Me.Panel4.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel4.Name = "Panel4"
-        Me.Panel4.Size = New System.Drawing.Size(202, 166)
+        Me.Panel4.Size = New System.Drawing.Size(202, 146)
         Me.Panel4.TabIndex = 5
         '
         'lbl4
@@ -964,10 +969,10 @@ Partial Class MainForm
         Me.Panel3.Controls.Add(Me.lbl3)
         Me.Panel3.Controls.Add(Me.btn3)
         Me.Panel3.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel3.Location = New System.Drawing.Point(707, 4)
+        Me.Panel3.Location = New System.Drawing.Point(707, 24)
         Me.Panel3.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(202, 166)
+        Me.Panel3.Size = New System.Drawing.Size(202, 146)
         Me.Panel3.TabIndex = 4
         '
         'lbl3
@@ -997,10 +1002,10 @@ Partial Class MainForm
         Me.Panel2.Controls.Add(Me.lbl2)
         Me.Panel2.Controls.Add(Me.btn2)
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel2.Location = New System.Drawing.Point(497, 4)
+        Me.Panel2.Location = New System.Drawing.Point(497, 24)
         Me.Panel2.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(202, 166)
+        Me.Panel2.Size = New System.Drawing.Size(202, 146)
         Me.Panel2.TabIndex = 3
         '
         'lbl2
@@ -1031,10 +1036,10 @@ Partial Class MainForm
         Me.Panel1.Controls.Add(Me.lbl1)
         Me.Panel1.Controls.Add(Me.btn1)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel1.Location = New System.Drawing.Point(287, 4)
+        Me.Panel1.Location = New System.Drawing.Point(287, 24)
         Me.Panel1.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(202, 166)
+        Me.Panel1.Size = New System.Drawing.Size(202, 146)
         Me.Panel1.TabIndex = 2
         '
         'lbl1
@@ -1065,10 +1070,10 @@ Partial Class MainForm
         '
         Me.lblAlpha.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lblAlpha.Font = New System.Drawing.Font("Microsoft Sans Serif", 48.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblAlpha.Location = New System.Drawing.Point(1127, 0)
+        Me.lblAlpha.Location = New System.Drawing.Point(1127, 20)
         Me.lblAlpha.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblAlpha.Name = "lblAlpha"
-        Me.lblAlpha.Size = New System.Drawing.Size(202, 174)
+        Me.lblAlpha.Size = New System.Drawing.Size(202, 154)
         Me.lblAlpha.TabIndex = 11
         Me.lblAlpha.Text = "A"
         Me.lblAlpha.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -1076,13 +1081,24 @@ Partial Class MainForm
         'emblem
         '
         Me.emblem.Image = Global.MasaSam.Forms.Sample.My.Resources.Resources.Untitled_1_copy1
-        Me.emblem.Location = New System.Drawing.Point(4, 4)
+        Me.emblem.Location = New System.Drawing.Point(4, 24)
         Me.emblem.Margin = New System.Windows.Forms.Padding(4)
         Me.emblem.Name = "emblem"
         Me.emblem.Size = New System.Drawing.Size(275, 145)
         Me.emblem.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.emblem.TabIndex = 12
         Me.emblem.TabStop = False
+        '
+        'markers
+        '
+        Me.markers.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.markers.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.btnRow.SetColumnSpan(Me.markers, 10)
+        Me.markers.Location = New System.Drawing.Point(3, 3)
+        Me.markers.Name = "markers"
+        Me.markers.Size = New System.Drawing.Size(2170, 14)
+        Me.markers.TabIndex = 13
+        Me.markers.TabStop = False
         '
         'FlowLayoutPanel1
         '
@@ -1448,7 +1464,7 @@ Partial Class MainForm
         '
         'FileToolStripMenuItem2
         '
-        Me.FileToolStripMenuItem2.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem2, Me.ToolStripMenuItem14, Me.SearchFunctionsToolStripMenuItem, Me.ToolStripSeparator5, Me.PreferencesToolStripMenuItem, Me.CloneToolStripMenuItem})
+        Me.FileToolStripMenuItem2.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem2, Me.ToolStripMenuItem14, Me.SearchFunctionsToolStripMenuItem, Me.ToolStripSeparator5, Me.PreferencesToolStripMenuItem, Me.CloneToolStripMenuItem, Me.RemoveToolStripMenuItem})
         Me.FileToolStripMenuItem2.Name = "FileToolStripMenuItem2"
         Me.FileToolStripMenuItem2.Size = New System.Drawing.Size(56, 34)
         Me.FileToolStripMenuItem2.Text = "&File"
@@ -1646,6 +1662,12 @@ Partial Class MainForm
         Me.CloneToolStripMenuItem.Name = "CloneToolStripMenuItem"
         Me.CloneToolStripMenuItem.Size = New System.Drawing.Size(295, 34)
         Me.CloneToolStripMenuItem.Text = "Clone"
+        '
+        'RemoveToolStripMenuItem
+        '
+        Me.RemoveToolStripMenuItem.Name = "RemoveToolStripMenuItem"
+        Me.RemoveToolStripMenuItem.Size = New System.Drawing.Size(295, 34)
+        Me.RemoveToolStripMenuItem.Text = "Remove ""(#)"""
         '
         'ToolStripMenuItem10
         '
@@ -2089,6 +2111,7 @@ Partial Class MainForm
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         CType(Me.emblem, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.markers, System.ComponentModel.ISupportInitialize).EndInit()
         Me.FlowLayoutPanel1.ResumeLayout(False)
         Me.FlowLayoutPanel1.PerformLayout()
         Me.GroupFilters.ResumeLayout(False)
@@ -2324,4 +2347,6 @@ Partial Class MainForm
     Friend WithEvents cbxFilter As ComboBox
     Friend WithEvents ForceFavouritesReloadToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ForceDirectoriesReloadToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents RemoveToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents markers As PictureBox
 End Class

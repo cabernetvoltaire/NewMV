@@ -382,7 +382,7 @@ Module FileHandling
                     spath = s & "\" & m.Name
 
                 End If
-                While .FileExists(spath) 'Existing path
+                While .FileExists(spath) AndAlso m.FullName <> spath 'Existing path
                     Dim x = m.Extension
                     Dim b = InStr(spath, "(")
                     If b = 0 Then
@@ -397,7 +397,7 @@ Module FileHandling
                     Case StateHandler.StateOptions.Copy
                         .CopyFile(m.FullName, spath)
                     Case StateHandler.StateOptions.Move, StateHandler.StateOptions.Navigate
-                        If Not currentPicBox.Image Is Nothing Then DisposePic(currentPicBox)
+                        'If Not currentPicBox.Image Is Nothing Then DisposePic(currentPicBox)
                         If strDest = "" Then
                             Dim f As New IO.FileInfo(m.FullName)
                             AllFaveMinder.DestinationPath = strDest
@@ -669,6 +669,9 @@ Module FileHandling
             End Try
 
             ProgressIncrement(1)
+        Next
+        For Each m In x
+            list.Add(m.FullName)
         Next
     End Sub
 

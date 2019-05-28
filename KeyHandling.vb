@@ -18,11 +18,12 @@
     Public KeySpeed3 = Keys.NumPad3
     Public KeySmallJumpDown = Keys.NumPad5
     Public KeySmallJumpUp = Keys.NumPad6
-    Public KeyJumpToPoint = Keys.NumPad7
+    Public KeyJumpToPoint = Keys.Insert
     Public KeyBigJumpBack = Keys.NumPad8
     Public KeyBigJumpOn = Keys.NumPad9
     Public KeyMarkPoint = Keys.NumPad4
-    Public KeyMarkFavourite = Keys.Insert
+    Public KeyMarkFavourite = Keys.NumPad7
+
 
     Public LKeyFullscreen = Keys.F + Keys.Control
     Public LKeyRandomize = Keys.R + Keys.Control

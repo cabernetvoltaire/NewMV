@@ -169,6 +169,7 @@
     </Compile>
     <Compile Include="KeyHandler.vb" />
     <Compile Include="ListBoxHandler.vb" />
+    <Compile Include="MarkPlacement.vb" />
     <Compile Include="MediaHandler.vb" />
     <Compile Include="MovieSwapper.vb" />
     <Compile Include="MVButton.vb" />
@@ -235,6 +236,12 @@
     </Compile>
     <Compile Include="MySettings.vb" />
     <Compile Include="Subsets.vb" />
+    <Compile Include="Test.Designer.vb">
+      <DependentUpon>Test.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Test.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Thumbnails2.designer.vb">
       <DependentUpon>Thumbnails2.vb</DependentUpon>
     </Compile>
@@ -305,6 +312,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SplashScreen1.resx">
       <DependentUpon>SplashScreen1.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Test.resx">
+      <DependentUpon>Test.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Thumbnails2.resx">
       <DependentUpon>Thumbnails2.vb</DependentUpon>

@@ -33,6 +33,9 @@ Public Class MainForm
     Public CurrentFileList As New List(Of String)
     Public T As Thread
     Public FirstButtons As New ButtonForm
+    Public bmp As Bitmap
+    Public ScraperProportion As Decimal = 0.965
+    Public Marks As New MarkPlacement
 
 
     Public Sub OnParentNotFound(sender As Object, e As EventArgs) Handles X.ParentNotFound, Op.ParentNotFound
@@ -52,6 +55,7 @@ Public Class MainForm
     End Sub
     Public Sub PopulateLinkList(filepath As String)
         If filepath = "" Then Exit Sub
+        Media.Markers.Clear()
         Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
         Dim i = 0
         If x.Count = 0 Then
@@ -61,7 +65,6 @@ Public Class MainForm
             chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Bold)
             chbPreviewLinks.Text = "Preview links (" & x.Count & ")"
         End If
-        Media.Markers.Clear()
 
         For Each m In x
             Dim n = BookmarkFromLinkName(m)
@@ -74,6 +77,13 @@ Public Class MainForm
             End If
         Next
         Media.Markers.Sort()
+        Marks.Duration = Media.Duration
+        Marks.Frame = markers
+        Marks.Markers = Media.Markers
+        Marks.Clear()
+        markers.Width = Media.Player.Width * ScraperProportion
+        markers.Left = Media.Player.Width * ((1 - ScraperProportion) / 2)
+        Marks.Create()
 
         If chbPreviewLinks.Checked Then
             If x.Count >= 1 Then
@@ -562,6 +572,7 @@ Public Class MainForm
         Else
             If count > 0 Then
                 If Random Then
+                    MSFiles.NextF.Randomised = True
                     lbx.SelectedItem = MSFiles.NextItem
                 Else
                     lbx.SelectedIndex = (lbx.SelectedIndex + diff) Mod count
@@ -588,7 +599,7 @@ Public Class MainForm
         Dim iJumpFactor As Integer
         Dim blnBack As Boolean = e.KeyCode < (KeySmallJumpUp + KeySmallJumpDown) / 2
         If e.Control Then
-            iJumpFactor = 5
+            iJumpFactor = 10
         ElseIf e.Shift Then
             'Changes the jumpsize while Shift held
             SP.ChangeJump(False, blnBack)
@@ -606,16 +617,19 @@ Public Class MainForm
         'tmrJumpVideo.Enabled = True
     End Sub
 
-    Public Sub MediaLargeJump(e As KeyEventArgs, Small As Boolean)
+    Public Sub MediaLargeJump(e As KeyEventArgs, Small As Boolean, Forward As Boolean)
         Dim iJumpFactor As Integer
 
         If Small Then  'Holding down ctrl reduces the jump distance by a factor
-            iJumpFactor = 5
+            iJumpFactor = 10
         Else
             iJumpFactor = 1
         End If
-
-        Media.Position = Math.Min(Media.Duration, Media.Position + Media.Duration * Math.Sign(e.KeyCode - (KeyBigJumpOn + KeyBigJumpBack) / 2) / (iJumpFactor * Media.Speed.FractionalJump))
+        If Forward Then
+            Media.Position = Math.Min(Media.Duration, Media.Position + Media.Duration / (iJumpFactor * Media.Speed.FractionalJump))
+        Else
+            Media.Position = Math.Min(Media.Duration, Media.Position - Media.Duration / (iJumpFactor * Media.Speed.FractionalJump))
+        End If
 
     End Sub
     Public Sub JumpRandom(blnAutoTrail As Boolean)
@@ -707,10 +721,11 @@ Public Class MainForm
                 ''e.suppresskeypress by Treeview behaviour unless focus is elsewhere. 
                 ''We want the traverse keys always to work. 
                 ''  ControlSetFocus(tvMain2)
-                If FocusControl IsNot tvMain2 Then
-                    tvMain2.tvFiles_KeyDown(sender, e)
+                'If FocusControl IsNot tvMain2 Then
+                tvMain2.Traverse(e.KeyCode = KeyTraverseTreeBack)
+                    '  tvMain2.tvFiles_KeyDown(sender, e)
 
-                End If
+                'End If
             Case Keys.Left, Keys.Right, Keys.Up, Keys.Down
                 If FocusControl IsNot lbxShowList Then
                     ControlSetFocus(tvMain2)
@@ -725,7 +740,12 @@ Public Class MainForm
                 ToggleButtons()
             Case KeyNextFile, KeyPreviousFile, LKeyNextFile, LKeyPreviousFile
                 If FocusControl IsNot lbxFiles And FocusControl IsNot lbxShowList Then ControlSetFocus(lbxFiles)
-                AdvanceFile(e.KeyCode = KeyNextFile, Random.NextSelect)
+                If e.Control Then
+                    AdvanceFile(e.KeyCode = KeyNextFile, True)
+                Else
+                    AdvanceFile(e.KeyCode = KeyNextFile, Random.NextSelect)
+
+                End If
                 If e.Shift Then HighlightCurrent(Media.MediaPath) 'Used for links only, to go to original file
                 e.SuppressKeyPress = True
                 tmrSlideShow.Enabled = False
@@ -759,7 +779,7 @@ Public Class MainForm
                     Case Keys.Alt
 
                     Case Else
-                        MediaLargeJump(e, e.Modifiers = Keys.Control)
+                        MediaLargeJump(e, e.Modifiers = Keys.Control, e.KeyCode = KeyBigJumpOn)
 
                 End Select
                 e.SuppressKeyPress = True
@@ -788,11 +808,18 @@ Public Class MainForm
                     Dim m As Integer = Media.FindNearestCounter(True)
                     If m < 0 Then Exit Select
                     Dim l As Long = Media.Markers(m)
-                    RemoveMarker(Media.LinkPath, l)
-                Else
+                    If Media.IsLink Then
+                        RemoveMarker(Media.LinkPath, l)
+                    Else
+                        RemoveMarker(Media.MediaPath, l)
+
+                    End If
+                ElseIf Media.Markers.Count <> 0 Then
                     Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
                     Media.Bookmark = -2
                     Media.MediaJumpToMarker()
+                Else
+                    MediaLargeJump(e, e.Modifiers = Keys.Control, True)
                 End If
                 e.SuppressKeyPress = True
 
@@ -1268,15 +1295,10 @@ Public Class MainForm
                     Debug.Print(vbCrLf & vbCrLf & "NEXT SELECTION ---------------------------------------")
                     MSFiles.Listbox = sender
                     MSFiles.ListIndex = i
-
-                    'HighlightCurrent(lbxFiles.SelectedItem)
-                    'Need a simple key option to highlight current.
-                    'If sender.Equals(lbxShowList) Then HighlightCurrent(lbxShowList.SelectedItem)
                 End If
             End If
-            ' If chbPreviewLinks.Checked AndAlso lbx.Name <> "lbxShowList" Then
-            If lbx.Name <> "lbxShowlist" Then
-                Try
+            '  If lbx.Name <> "lbxShowlist" Then
+            Try
 
                     If Media.IsLink Then
                         PopulateLinkList(Media.LinkPath)
@@ -1284,10 +1306,15 @@ Public Class MainForm
                         PopulateLinkList(lbx.SelectedItem)
 
                     End If
-                Catch ex As Exception
 
-                End Try
-            End If
+                Media.SetLink()
+
+
+
+            Catch ex As Exception
+                MsgBox(ex.Message)
+            End Try
+            ' End If
             'End If
         End With
 
@@ -1744,8 +1771,9 @@ Public Class MainForm
 
 
     Private Sub ThumbnailsStart()
-        Dim t As New Thumbnails
-        t.ThumbnailHeight = 150
+        Dim t As New Thumbnails With {
+            .ThumbnailHeight = 150
+        }
         If FocusControl Is lbxFiles Or FocusControl Is lbxShowList Then
             t.List = Duplicatelist(AllfromListbox(FocusControl))
         Else
@@ -2057,7 +2085,7 @@ Public Class MainForm
         '  CancelDisplay() 'Need to cancel display to prevent 'already in use' problems when moving files or deleting them. 
         If (e.Shift And e.Control And e.Alt) Or strVisibleButtons(i) = "" Then
             'Assign button
-            AssignButton(i, iCurrentAlpha, 1, Media.MediaDirectory, True) 'Just assign in all modes when all three control buttons held
+            AssignButton(i, iCurrentAlpha, 1, CurrentFolder, True) 'Just assign in all modes when all three control buttons held
             'Always update the button file. 
             If My.Computer.FileSystem.FileExists(ButtonFilePath) Then
                 KeyAssignmentsStore(ButtonFilePath)
@@ -2117,9 +2145,9 @@ Public Class MainForm
     End Sub
 
     Private Sub MovingFolder(Source As String, Dest As String)
-
-        T = New Thread(New ThreadStart(Sub() MoveFolder(Source, Dest)))
-        T.IsBackground = True
+        T = New Thread(New ThreadStart(Sub() MoveFolder(Source, Dest))) With {
+            .IsBackground = True
+        }
         T.SetApartmentState(ApartmentState.STA)
 
         T.Start()
@@ -2219,7 +2247,7 @@ Public Class MainForm
     End Sub
 
 
-    Private Sub chbNextFile_CheckedChanged(sender As Object, e As EventArgs)
+    Private Sub chbNextFile_CheckedChanged(sender As Object, e As EventArgs) Handles chbNextFile.CheckedChanged
         Random.NextSelect = chbNextFile.Checked
     End Sub
 
@@ -2629,5 +2657,22 @@ Public Class MainForm
     Private Sub btn1_Click(sender As Object, e As EventArgs) Handles btn1.Click
 
     End Sub
+
+    Private Sub RemoveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RemoveToolStripMenuItem.Click
+        For Each m In CurrentFileList
+            Dim f = New FileInfo(m)
+
+            If f.Exists Then
+                Dim r As New System.Text.RegularExpressions.Regex(m)
+
+
+            End If
+        Next
+    End Sub
+
+    Private Sub ctrPicAndButtons_Paint(sender As Object, e As PaintEventArgs) Handles ctrPicAndButtons.Paint
+
+    End Sub
+
 
 End Class

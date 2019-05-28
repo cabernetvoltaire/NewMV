@@ -256,7 +256,7 @@ Public Class MediaHandler
 
     End Function
 
-    Private mLinkCounter As Integer = 0
+    Private mLinkCounter As Integer = mMarkers.Count - 1
     Public Function IncrementLinkCounter(Forward As Boolean) As Integer
         If mMarkers.Count = 0 Then Exit Function
         If Forward Then
@@ -292,7 +292,15 @@ Public Class MediaHandler
         Return -1
 
     End Function
+    Public Sub SetLink(Optional num = 0)
+        If num = 0 Then
+            mLinkCounter = mMarkers.Count - 1
+        Else
+            mLinkCounter = num
 
+        End If
+
+    End Sub
 
     Public Sub MediaJumpToMarker(Optional ToEnd As Boolean = False)
         'It's a link with a bookmark
@@ -429,57 +437,12 @@ Public Class MediaHandler
 
 #Region "Event Handlers"
     Private Sub Uhoh() Handles mPlayer.ErrorEvent
-        MsgBox("Error in MediaPlayer")
+        'MsgBox("Error in MediaPlayer")
     End Sub
 
+    Private mResetCounter As Integer
     Private Sub PlaystateChange(sender As Object, e As _WMPOCXEvents_PlayStateChangeEvent) Handles mPlayer.PlayStateChange
-        'Dim lbl As New Label
-        'lbl = MainForm.lblNavigateState
-        'Select Case e.newState
 
-        '    Case 0 ' Undefined
-        '        lbl.Text = lbl.Text & vbCrLf & "Undefined"
-
-        '    Case 1 ' Stopped
-        '        lbl.Text = lbl.Text & vbCrLf & "Stopped"
-
-        '    Case 2 ' Paused
-        '        lbl.Text = lbl.Text & vbCrLf & "Paused"
-
-        '    Case 3 ' Playing
-        '        lbl.Text = lbl.Text & vbCrLf & "Playing"
-
-        '    Case 4 ' ScanForward
-        '        lbl.Text = lbl.Text & vbCrLf & "ScanForward"
-
-        '    Case 5 ' ScanReverse
-        '        lbl.Text = lbl.Text & vbCrLf & "ScanReverse"
-
-        '    Case 6 ' Buffering
-        '        lbl.Text = lbl.Text & vbCrLf & "Buffering"
-
-        '    Case 7 ' Waiting
-        '        lbl.Text = lbl.Text & vbCrLf & "Waiting"
-
-        '    Case 8 ' MediaEnded
-        '        lbl.Text = lbl.Text & vbCrLf & "MediaEnded"
-
-        '    Case 9 ' Transitioning
-        '        lbl.Text = lbl.Text & vbCrLf & "Transitioning"
-
-        '    Case 10 ' Ready
-        '        lbl.Text = lbl.Text & vbCrLf & "Ready"
-
-        '    Case 11 ' Reconnecting
-        '        lbl.Text = lbl.Text & vbCrLf & "Reconnecting"
-
-        '    Case 12 ' Last
-        '        lbl.Text = lbl.Text & vbCrLf & "Last"
-
-        '    Case Else
-        '        lbl.Text = lbl.Text & vbCrLf & ("Unknown State: " + e.newState.ToString())
-
-        'End Select
         Debug.Print(e.newState.ToString())
         Select Case e.newState
 
@@ -503,6 +466,7 @@ Public Class MediaHandler
                 'ReportTime("Playing")
                 mSndH.Slow = False
                 PositionUpdater.Enabled = True
+                mResetCounter = 0
                 Duration = mPlayer.currentMedia.duration
                 StartPoint.Duration = mPlayer.currentMedia.duration
                 Report("Duration:" & mDuration & vbCrLf & "Startpoint:" & StartPoint.StartPoint, 2)
@@ -535,13 +499,17 @@ Public Class MediaHandler
     End Sub
 
     Private Sub UpdatePosition() Handles PositionUpdater.Tick
+        ' If mResetCounter < 3 Then
         Try
-            mPlayPosition = mPlayer.Ctlcontrols.currentPosition
-            Duration = mPlayer.currentMedia.duration
-
+                mPlayPosition = mPlayer.Ctlcontrols.currentPosition
+                Duration = mPlayer.currentMedia.duration
+            '          mResetCounter += 1
         Catch ex As Exception
 
-        End Try
+            End Try
+        '    Else
+        '    PositionUpdater.Enabled = False
+        '    End If
 
     End Sub
     Private Sub ResetPos() Handles ResetPosition.Tick

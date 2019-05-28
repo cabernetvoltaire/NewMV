@@ -131,6 +131,7 @@ Class DateMove
 
                 Dim tgt As New IO.FileInfo(LinkTarget(f.FullName))
                 Dim parentname As String = tgt.Directory.Name
+                If parentname = tgt.Directory.Root.FullName Then parentname = ""
                 Dim m As New IO.DirectoryInfo(f.Directory.FullName & "\" & parentname)
                 If Not m.Exists Then
                     m.Create()
