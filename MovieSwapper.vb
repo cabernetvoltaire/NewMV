@@ -194,20 +194,46 @@ Public Class MediaSwapper
     End Sub
     Private Sub ShowPlayer(ByRef MHX As MediaHandler)
         MuteAll()
+        If Not separate Then
+            HideMedias(MHX)
+        End If
         MHX.PlaceResetter(False)
         With MHX.Player
 
 
-            '.Visible = True
+            .Visible = True
             .BringToFront()
             .settings.mute = Muted
         End With
         RaiseEvent MediaShown(MHX)
 
     End Sub
+    Public Sub ClickAllPics()
+        PicClick(mMedia1.Picture)
+        PicClick(mMedia2.Picture)
+        PicClick(mMedia3.Picture)
 
+    End Sub
+    Private Sub HideMedias(CurrentMH As MediaHandler)
+        Exit Sub
+        If mMedia1 IsNot CurrentMH Then
+            mMedia1.Picture.Visible = False
+            mMedia1.Player.Visible = False
+        End If
+        If mMedia2 IsNot CurrentMH Then
+            mMedia2.Picture.Visible = False
+            mMedia2.Player.Visible = False
+        End If
+        If mMedia3 IsNot CurrentMH Then
+            mMedia3.Picture.Visible = False
+            mMedia3.Player.Visible = False
+        End If
+
+    End Sub
     Private Sub ShowPicture(ByRef MHX As MediaHandler)
         MuteAll()
+        HideMedias(MHX)
+        MHX.Picture.Visible = True
         MHX.Picture.BringToFront()
         RaiseEvent MediaShown(MHX)
 

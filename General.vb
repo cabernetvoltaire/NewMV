@@ -98,7 +98,7 @@ Public Module General
     End Function
     Public Sub CreateFavourite(Filepath As String)
         Dim sh As New ShortcutHandler
-        CreateLink(sh, Filepath, CurrentFavesPath, "", Bookmark:=Media.Position)
+        CreateLink(sh, Filepath, CurrentFavesPath, "", False, Bookmark:=Media.Position)
         AllFaveMinder.NewPath(GlobalFavespath)
 
     End Sub
@@ -198,6 +198,19 @@ Public Module General
         End If
         Return list
     End Function
+
+    Public Sub FolderChooser(Message As String, DefaultFolderName As String)
+        Dim x As New FolderSelect
+
+        x.Show()
+        x.Text = Message
+        If CurrentFolder <> "" Then
+            x.Folder = CurrentFolder
+        Else
+            x.Folder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
+        End If
+        x.TextBox1.Text = DefaultFolderName
+    End Sub
 
     Public Function TryOtherDriveLetters(str As String) As String
         Dim driveletter As String = "A"

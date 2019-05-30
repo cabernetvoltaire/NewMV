@@ -1,7 +1,7 @@
 ﻿Public Module KeyHandling
     'Numpad options (not available on Laptop)
     Public KeyFullscreen = Keys.Scroll
-    Public KeyRandomize = Keys.Pause
+    Public KeySortOrder = Keys.Pause
     Public KeyTraverseTreeBack = Keys.Subtract
     Public KeyTraverseTree = Keys.Add
     Public KeyJumpAutoT = Keys.Divide

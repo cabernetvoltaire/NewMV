@@ -3,34 +3,31 @@ Friend Module Mysettings
 
 
     Public PFocus As Byte = CtrlFocus.Tree
-
+#Region "Literals"
     Public Property ZoneSize As Decimal = 0.4
-
     Public Const OrientationId As Integer = &H112
-    Public ButtonFilePath As String
+    Public iSSpeeds() As Integer = {1000, 300, 200}
+    Public iPlaybackSpeed() As Integer = {3, 15, 45}
+    Public PlaybackSpeed As Double = 30
+    Public Property blnJumpToMark As Boolean = False
+    Public Autozoomrate As Decimal = 0.4
+    Public iCurrentAlpha As Integer = 0
 
+#End Region
+
+#Region "Paths"
+    Public blnLoopPlay As Boolean = True
+    Public CurrentFavesPath As String
+    Public ButtonFilePath As String
+#End Region
+#Region "Stacks"
     Public LastPlayed As New Stack(Of String)
     Public LastFolder As New Stack(Of String)
 
-#Region "Options"
-
-    Public iSSpeeds() As Integer = {1000, 300, 200}
-    Public iPlaybackSpeed() As Integer = {3, 15, 45}
-
-    Public Property LastShowList As String
-    Public Property blnJumpToMark As Boolean = False
-    Public blnLoopPlay As Boolean = True
-    'Public blnChooseRandomFile As Boolean = True
-    Public PlaybackSpeed As Double = 30
-    Public CurrentFavesPath As String
-
-    Public Autozoomrate As Decimal = 0.4
-    Public iCurrentAlpha As Integer = 0
 #End Region
-
+    Public Property LastShowList As String
 #Region "Internal"
     Public Property blnSecondScreen As Boolean = True
-    'Public blnAutoAdvanceFolder As Boolean = True
     Public blnRestartSlideShowFlag As Boolean = False
     Public Property blnLink As Boolean
     Public Property lastselection As String
@@ -45,7 +42,6 @@ Friend Module Mysettings
     Public fType As Filetype
 
     Public Showlist As New List(Of String)
-    Public Oldlist As New List(Of String)
 
     Public blnDontShowRepeats As Boolean = True
     Public Sublist As New List(Of String)
@@ -81,32 +77,36 @@ Friend Module Mysettings
         End With
 
     End Sub
-
+    Public Structure RegistryEntry
+        Dim Name As String
+        Dim DefaultValue As Object
+        Dim VariableName As String
+    End Structure
+    Private Function AssignRegEntryValues(Name As String, DefaultValue As Object, VariableName As String) As RegistryEntry
+        Dim m As New RegistryEntry
+        m.Name = Name
+        m.DefaultValue = DefaultValue
+        m.VariableName = VariableName
+        Return m
+    End Function
     Public Sub Preferences(GetPrefs As Boolean)
-        Dim M As New Dictionary(Of String, Object)
+        Dim M As New List(Of RegistryEntry)
 
-        M.Add("VertSplit", MainForm.ctrFileBoxes.SplitterDistance)
-        M.Add("HorSplit", MainForm.ctrMainFrame.SplitterDistance)
-        M.Add("File", Media.MediaPath)
-        M.Add("Filter", MainForm.CurrentFilterState.State)
-        M.Add("SortOrder", MainForm.PlayOrder.State)
-        M.Add("StartPoint", Media.StartPoint.State)
-        M.Add("State", MainForm.NavigateMoveState.State)
-        M.Add("LastButtonFile", ButtonFilePath)
-        M.Add("LastAlpha", iCurrentAlpha)
-        M.Add("Favourites", CurrentFavesPath)
-        M.Add("PreviewLinks", MainForm.chbPreviewLinks.Checked)
-        M.Add("RootScanPath", Rootpath)
-        M.Add("Directories List", DirectoriesPath)
+        'M.Add(AssignRegEntryValues("VertSplit", MainForm.ctrFileBoxes.Height / 4, MainForm.ctrFileBoxes.SplitterDistance))
+        'M.Add(AssignRegEntryValues("HorSplit",, MainForm.ctrMainFrame.SplitterDistance))
+        'M.Add(AssignRegEntryValues("File",, Media.MediaPath))
+        'M.Add(AssignRegEntryValues("Filter",, MainForm.CurrentFilterState.State))
+        'M.Add(AssignRegEntryValues("SortOrder",, MainForm.PlayOrder.State))
+        'M.Add(AssignRegEntryValues("StartPoint",, Media.StartPoint.State))
+        'M.Add(AssignRegEntryValues("State", , MainForm.NavigateMoveState.State))
+        'M.Add(AssignRegEntryValues("LastButtonFile", ButtonFilePath))
+        'M.Add(AssignRegEntryValues("LastAlpha", iCurrentAlpha))
+        'M.Add(AssignRegEntryValues("Favourites", CurrentFavesPath))
+        'M.Add(AssignRegEntryValues("PreviewLinks", MainForm.chbPreviewLinks.Checked))
+        'M.Add(AssignRegEntryValues("RootScanPath", Rootpath))
+        'M.Add(AssignRegEntryValues("Directories List", DirectoriesPath))
 
-        For Each s In M
-            If GetPrefs Then
-                Dim o As Object = GetObject(s.Value)
-                o = GetterSetter(s.Key, s.Value, True)
-            Else
-                GetterSetter(s.Key, s.Value, False)
-            End If
-        Next
+
     End Sub
     Private Function GetterSetter(Name As String, Value As Object, Getter As Boolean) As Object
         With My.Computer.Registry.CurrentUser
@@ -120,64 +120,61 @@ Friend Module Mysettings
     Public Sub PreferencesGet()
         'Preferences(True)
         'Exit Sub
-        MainForm.ctrPicAndButtons.SplitterDistance = 9 * MainForm.ctrPicAndButtons.Height / 10
-        With My.Computer.Registry.CurrentUser
-            MainForm.ctrFileBoxes.SplitterDistance = .GetValue("VertSplit", MainForm.ctrFileBoxes.Height / 4)
-            MainForm.ctrMainFrame.SplitterDistance = .GetValue("HorSplit", MainForm.ctrFileBoxes.Width / 2)
-            MainForm.CurrentFilterState.State = .GetValue("Filter", 0)
-            Media.StartPoint.State = .GetValue("StartPoint", 0)
-            MainForm.NavigateMoveState.State = .GetValue("State", 0)
-            MainForm.PlayOrder.State = .GetValue("SortOrder", 0)
-            iCurrentAlpha = .GetValue("LastAlpha", 0)
-            ButtonFilePath = .GetValue("LastButtonFile", "")
-            CurrentFavesPath = .GetValue("Favourites", CurrentFolder)
-            Dim fol As New IO.DirectoryInfo(CurrentFavesPath)
-            DirectoriesPath = .GetValue("Directories List", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures))
-            GlobalFavesPath = .GetValue("GlobalFaves", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures))
-            Rootpath = .GetValue("RootScanpath", Environment.GetFolderPath(Environment.SpecialFolder.MyComputer))
+        Try
 
-            If fol.Exists = False Then
-                MainForm.FavouritesFolderToolStripMenuItem.PerformClick()
-            End If
+            MainForm.ctrPicAndButtons.SplitterDistance = 8.7 * MainForm.ctrPicAndButtons.Height / 10
+            With My.Computer.Registry.CurrentUser
+                MainForm.ctrFileBoxes.SplitterDistance = .GetValue("VertSplit", MainForm.ctrFileBoxes.Height / 4)
+                MainForm.ctrMainFrame.SplitterDistance = .GetValue("HorSplit", MainForm.ctrFileBoxes.Width / 2)
+                MainForm.CurrentFilterState.State = .GetValue("Filter", 0)
+                Media.StartPoint.State = .GetValue("StartPoint", 0)
+                MainForm.NavigateMoveState.State = .GetValue("State", 0)
+                MainForm.PlayOrder.State = .GetValue("SortOrder", 0)
+                iCurrentAlpha = .GetValue("LastAlpha", 0)
+                ButtonFilePath = .GetValue("LastButtonFile", "")
+                CurrentFavesPath = .GetValue("Favourites", CurrentFolder)
+                Dim fol As New IO.DirectoryInfo(CurrentFavesPath)
+                DirectoriesPath = .GetValue("Directories List", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures))
+                GlobalFavesPath = .GetValue("GlobalFaves", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures))
+                Rootpath = .GetValue("RootScanpath", Environment.GetFolderPath(Environment.SpecialFolder.MyComputer))
 
-            Dim s As String = .GetValue("File", "")
-            If s = "" Then s = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
-            'Media.Player = MainForm.MainWMP4
-            Media.MediaPath = s
-            MainForm.chbPreviewLinks.Checked = .GetValue("PreviewLinks", False)
+                If fol.Exists = False Then
+                    MainForm.FavouritesFolderToolStripMenuItem.PerformClick()
+                End If
+                DirectoriesList = GetDirectoriesList(Rootpath)
 
-            'Catch ex As Exception
-            ' MsgBox(ex.Message)
-            'PreferencesReset()
-            'End Try
+                Dim s As String = .GetValue("File", "")
+                If s = "" Then s = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
+                Media.MediaPath = s
+                MainForm.chbPreviewLinks.Checked = .GetValue("PreviewLinks", False)
 
 
-        End With
+
+            End With
+        Catch ex As Exception
+            PreferencesReset()
+        End Try
         MainForm.tssMoveCopy.Text = CurrentFolder
     End Sub
     Public Sub PreferencesReset()
         If MsgBox("Reset preferences?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
-
             With My.Computer.Registry.CurrentUser
                 Dim s As String = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
-                'CurrentFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
-                Dim fol As New IO.DirectoryInfo(CurrentFolder)
-
-
+                CurrentFolder = s
+                Dim fol As New IO.DirectoryInfo(s)
                 Media.MediaPath = New IO.DirectoryInfo(CurrentFolder).EnumerateFiles("*", IO.SearchOption.AllDirectories).First.FullName
-                CurrentFavesPath = s & "\Favourites\"
+                CurrentFavesPath = s & "\MVFavourites\"
                 '            strButtonfile=Media.MediaPath
             End With
             With MainForm
                 .ctrFileBoxes.SplitterDistance = .ctrFileBoxes.Height / 4
                 .ctrMainFrame.SplitterDistance = .ctrFileBoxes.Width / 2
 
-                .CurrentFilterState.State = .0
+                .CurrentFilterState.State = 0
                 .PlayOrder.State = 0
                 .NavigateMoveState.State = 0
                 iCurrentAlpha = 0
                 ButtonFilePath = ""
-                '.SetValue("LastButtonFolder", strButtonfile)
             End With
             Media.StartPoint.State = 0
             PreferencesSave()

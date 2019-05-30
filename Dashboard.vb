@@ -78,7 +78,7 @@
                     AddButton("Rotate Pic CCW", size, "[{]", i, 2, 2)
                 Case KeyRotate
                     AddButton("Rotate Pic CW", size, "[}]", i, 3, 2)
-                Case KeyRandomize
+                Case KeySortOrder
                     AddButton("Increment Play Order", size, "[PAUSE]", i, 5, 0)
                 Case KeyFilter 'Cycle through listbox filters
                     AddButton("Increment Filter", size, "[?]", i, 2, 4)

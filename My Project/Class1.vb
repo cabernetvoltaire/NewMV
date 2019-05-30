@@ -22,6 +22,16 @@
             _Unpause = Value
         End Set
     End Property
+    Public Sub PauseVideo(Pause As Boolean)
+        If Not Pause Then
+            Media.Player.Ctlcontrols.currentPosition = PausedPosition
+            Media.Player.Ctlcontrols.play()
+        Else
+            Media.Player.Ctlcontrols.pause()
+            mPaused = True
+        End If
+        Me.Paused = Pause
+    End Sub
 
     Private mPaused As Boolean '= False
     Public PausedPosition As Long
@@ -33,6 +43,8 @@
             mPaused = value
             If mPaused Then
                 PausedPosition = Media.Player.Ctlcontrols.currentPosition
+            Else
+                PausedPosition = 0
             End If
         End Set
     End Property

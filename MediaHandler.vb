@@ -215,19 +215,6 @@ Public Class MediaHandler
 #End Region
 
 #Region "Methods"
-    Public Sub Pause(Pause As Boolean)
-        Exit Sub
-        If Pause Then
-            mPlayer.Ctlcontrols.pause()
-            Speed.Paused = True
-            Speed.Fullspeed = False
-        Else
-            mPlayer.Ctlcontrols.play()
-            Speed.Fullspeed = True
-            Speed.Paused = False
-        End If
-
-    End Sub
 
     Private Sub GetBookmark()
         If InStr(mMediaPath, "%") <> 0 Then
@@ -293,7 +280,7 @@ Public Class MediaHandler
 
     End Function
     Public Sub SetLink(Optional num = 0)
-        If num = 0 Then
+        If num = 0 And mMarkers.Count > 0 Then
             mLinkCounter = mMarkers.Count - 1
         Else
             mLinkCounter = num
@@ -322,9 +309,10 @@ Public Class MediaHandler
                 If Speed.PausedPosition <> 0 Then
                     mPlayPosition = Speed.PausedPosition
                 Else
-                    If mMarkers.Count <> 0 Then ' StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
+                    If mMarkers.Count <> 0 And StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
                         Try
                             mPlayPosition = mMarkers.Item(mLinkCounter)
+                            Report("LinkCounter " & mLinkCounter & " at " & mMarkers.Item(mLinkCounter), 3)
                         Catch ex As Exception
                             mPlayPosition = StartPoint.StartPoint
                         End Try
@@ -437,12 +425,11 @@ Public Class MediaHandler
 
 #Region "Event Handlers"
     Private Sub Uhoh() Handles mPlayer.ErrorEvent
-        'MsgBox("Error in MediaPlayer")
+        MsgBox("Error in MediaPlayer")
     End Sub
 
     Private mResetCounter As Integer
     Private Sub PlaystateChange(sender As Object, e As _WMPOCXEvents_PlayStateChangeEvent) Handles mPlayer.PlayStateChange
-
         Debug.Print(e.newState.ToString())
         Select Case e.newState
 
@@ -475,6 +462,8 @@ Public Class MediaHandler
 
                 If FullScreen.Changing Or Speed.Unpause Then 'Hold current position if switching to FS or back. 
                     mPlayPosition = Speed.PausedPosition
+                    Speed.Paused = False
+                    Speed.PausedPosition = 0
                 End If
             Case WMPLib.WMPPlayState.wmppsPaused ', WMPLib.WMPPlayState.wmppsTransitioning
                 If Not Speed.Fullspeed Then
@@ -482,6 +471,7 @@ Public Class MediaHandler
                 Else
 
                 End If
+
             Case Else
 
         End Select
@@ -522,16 +512,6 @@ Public Class MediaHandler
     End Sub
     Public Sub PlaceResetter(ResetOn As Boolean)
         ResetPosition.Enabled = ResetOn
-        'Speed.Paused = ResetOn
-        Exit Sub
-        If ResetOn Then
-            MediaJumpToMarker()
-            mPlayer.Ctlcontrols.pause()
-        Else
-            mPlayer.Ctlcontrols.play()
-
-
-        End If
 
     End Sub
 

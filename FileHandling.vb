@@ -41,11 +41,14 @@ Module FileHandling
         DebugStartpoint(Media)
         'LabelStartPoint(Media)
         MainForm.UpdateFileInfo()
+        MainForm.Scrubber.Image = MainForm.Marks.Bitmap
+
         If M.MediaType <> Filetype.Movie Then
             currentPicBox = M.Picture
         End If
         If M.MediaPath <> "" Then My.Computer.Registry.CurrentUser.SetValue("File", M.MediaPath)
 
+        '  MainForm.DrawScrubberMarks()
 
     End Sub
     Public Sub OnMediaLoaded(M As MediaHandler) Handles MSFiles.MediaShown

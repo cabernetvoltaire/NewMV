@@ -105,7 +105,7 @@ Partial Class MainForm
         Me.btn1 = New System.Windows.Forms.Button()
         Me.lblAlpha = New System.Windows.Forms.Label()
         Me.emblem = New System.Windows.Forms.PictureBox()
-        Me.markers = New System.Windows.Forms.PictureBox()
+        Me.Scrubber = New System.Windows.Forms.PictureBox()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
         Me.GroupFilters = New System.Windows.Forms.GroupBox()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -273,7 +273,7 @@ Partial Class MainForm
         Me.Panel2.SuspendLayout()
         Me.Panel1.SuspendLayout()
         CType(Me.emblem, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.markers, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.Scrubber, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.FlowLayoutPanel1.SuspendLayout()
         Me.GroupFilters.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -788,7 +788,7 @@ Partial Class MainForm
         Me.btnRow.Controls.Add(Me.Panel1, 1, 1)
         Me.btnRow.Controls.Add(Me.lblAlpha, 5, 1)
         Me.btnRow.Controls.Add(Me.emblem, 0, 1)
-        Me.btnRow.Controls.Add(Me.markers, 0, 0)
+        Me.btnRow.Controls.Add(Me.Scrubber, 0, 0)
         Me.btnRow.Dock = System.Windows.Forms.DockStyle.Fill
         Me.btnRow.Location = New System.Drawing.Point(0, 0)
         Me.btnRow.Margin = New System.Windows.Forms.Padding(4)
@@ -1089,16 +1089,16 @@ Partial Class MainForm
         Me.emblem.TabIndex = 12
         Me.emblem.TabStop = False
         '
-        'markers
+        'Scrubber
         '
-        Me.markers.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.markers.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.btnRow.SetColumnSpan(Me.markers, 10)
-        Me.markers.Location = New System.Drawing.Point(3, 3)
-        Me.markers.Name = "markers"
-        Me.markers.Size = New System.Drawing.Size(2170, 14)
-        Me.markers.TabIndex = 13
-        Me.markers.TabStop = False
+        Me.Scrubber.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.Scrubber.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.btnRow.SetColumnSpan(Me.Scrubber, 10)
+        Me.Scrubber.Location = New System.Drawing.Point(3, 3)
+        Me.Scrubber.Name = "Scrubber"
+        Me.Scrubber.Size = New System.Drawing.Size(2170, 14)
+        Me.Scrubber.TabIndex = 13
+        Me.Scrubber.TabStop = False
         '
         'FlowLayoutPanel1
         '
@@ -1394,7 +1394,6 @@ Partial Class MainForm
         '
         'tmrUpdateFileList
         '
-        Me.tmrUpdateFileList.Interval = 500
         '
         'tmrPicLoad
         '
@@ -2111,7 +2110,7 @@ Partial Class MainForm
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         CType(Me.emblem, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.markers, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.Scrubber, System.ComponentModel.ISupportInitialize).EndInit()
         Me.FlowLayoutPanel1.ResumeLayout(False)
         Me.FlowLayoutPanel1.PerformLayout()
         Me.GroupFilters.ResumeLayout(False)
@@ -2348,5 +2347,5 @@ Partial Class MainForm
     Friend WithEvents ForceFavouritesReloadToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ForceDirectoriesReloadToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents RemoveToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents markers As PictureBox
+    Friend WithEvents Scrubber As PictureBox
 End Class

@@ -118,10 +118,6 @@ Public Class FolderSelect
         If Not My.Computer.FileSystem.DirectoryExists(Folder) Then
             CreateNewDirectory(fst1, Folder, False)
         End If
-        'PreMH.Player.URL = ""
-        'PreMH.Player.Dispose()
-        'PreMH.Picture.Dispose()
-        'GC.Collect()
         IsLoaded = False
     End Sub
     Private Sub fst1_Paint(sender As Object, e As PaintEventArgs) Handles fst1.Paint
@@ -151,5 +147,9 @@ Public Class FolderSelect
 
     Private Sub FolderSelect_MouseEnter(sender As Object, e As EventArgs) Handles Me.MouseEnter
         Me.BringToFront()
+    End Sub
+
+    Private Sub FolderSelect_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
     End Sub
 End Class

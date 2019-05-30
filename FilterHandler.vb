@@ -60,8 +60,14 @@
             RaiseEvent StateChanged(Me, New EventArgs)
         End Set
     End Property
-    Public Sub IncrementState()
-        Me.State = (Me.State + 1) Mod (FilterState.NoPicVid + 1)
+    Public Sub IncrementState(Limited As Boolean)
+        If Limited Then
+            Me.State = (Me.State + 1) Mod (FilterState.PicVid + 1)
+
+        Else
+            Me.State = (Me.State + 1) Mod (FilterState.NoPicVid + 1)
+
+        End If
     End Sub
     Private Function FilterLBList() As List(Of String)
         Dim lst As New List(Of String)
