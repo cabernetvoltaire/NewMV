@@ -425,7 +425,7 @@ Public Class MediaHandler
 
 #Region "Event Handlers"
     Private Sub Uhoh() Handles mPlayer.ErrorEvent
-        MsgBox("Error in MediaPlayer")
+        'MsgBox("Error in MediaPlayer")
     End Sub
 
     Private mResetCounter As Integer

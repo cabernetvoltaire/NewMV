@@ -95,15 +95,15 @@ Public Class MainForm
             Marks.Bar = Scrubber
             Marks.Clear()
             Marks.Markers = Media.Markers
-            Scrubber.Width = Media.Player.Width * ScrubberProportion
-            Scrubber.Left = Media.Player.Width * ((1 - ScrubberProportion) / 2)
+            Scrubber.Width = ctrPicAndButtons.Width * ScrubberProportion
+            Scrubber.Left = Scrubber.Width * ((1 - ScrubberProportion) / 2)
             'Scrubber.Visible = False
             If Marks.Markers.Count > 0 Then
                 Marks.Create()
-                'Scrubber.Visible = True
+                Scrubber.Visible = True
             End If
         End If
-        Scrubber.Image = Marks.Bitmap
+        'Scrubber.Image = Marks.Bitmap
 
 
     End Sub
@@ -1175,7 +1175,7 @@ Public Class MainForm
         ControlSetFocus(lbxFiles)
         Initialising = False
 
-        ' tmrPicLoad.Enabled = True
+        tmrPicLoad.Enabled = True
         'tvMain2.ForceFullBuild()
     End Sub
 
@@ -2698,5 +2698,9 @@ Public Class MainForm
         Scrubber.SuspendLayout()
 
 
+    End Sub
+
+    Private Sub Scrubber_Invalidated(sender As Object, e As InvalidateEventArgs) Handles Scrubber.Invalidated
+        '   Scrubber.SuspendLayout()
     End Sub
 End Class

@@ -1099,6 +1099,7 @@ Partial Class MainForm
         Me.Scrubber.Size = New System.Drawing.Size(2170, 14)
         Me.Scrubber.TabIndex = 13
         Me.Scrubber.TabStop = False
+        Me.Scrubber.Visible = False
         '
         'FlowLayoutPanel1
         '

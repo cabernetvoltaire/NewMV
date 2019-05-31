@@ -41,7 +41,7 @@ Module FileHandling
         DebugStartpoint(Media)
         'LabelStartPoint(Media)
         MainForm.UpdateFileInfo()
-        MainForm.Scrubber.Image = MainForm.Marks.Bitmap
+        '        MainForm.Scrubber.Image = MainForm.Marks.Bitmap
 
         If M.MediaType <> Filetype.Movie Then
             currentPicBox = M.Picture
