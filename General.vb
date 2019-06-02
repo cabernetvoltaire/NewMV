@@ -213,12 +213,14 @@ Public Module General
     End Sub
 
     Public Function TryOtherDriveLetters(str As String) As String
-        Dim driveletter As String = "A"
-        While Not My.Computer.FileSystem.FileExists(str)
+        If Len(str) <> 0 Then
+            Dim driveletter As String = "A"
+            While Not My.Computer.FileSystem.FileExists(str) And driveletter <> "Z"
+                str = str.Replace(Left(str, 2), driveletter & ":")
+                driveletter = Chr(Asc(driveletter) + 1)
 
-            str = str.Replace(Left(str, 2), driveletter & ":")
-            driveletter = Chr(Asc(driveletter) + 1)
-        End While
+            End While
+        End If
         Return str
 
     End Function

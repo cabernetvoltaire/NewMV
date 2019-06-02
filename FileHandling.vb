@@ -105,7 +105,12 @@ Module FileHandling
         strFilterExtensions(FilterHandler.FilterState.Vidonly) = VIDEOEXTENSIONS
         strFilterExtensions(FilterHandler.FilterState.NoPicVid) = PICEXTENSIONS & VIDEOEXTENSIONS & "NOT"
     End Sub
-
+    ''' <summary>
+    ''' Create a list from e and filter it
+    ''' </summary>
+    ''' <param name="e"></param>
+    ''' <param name="lst"></param>
+    ''' <returns></returns>
     Public Function FilterLBList(e As DirectoryInfo, ByRef lst As List(Of String)) As List(Of String)
         lst.Clear()
         For Each f In e.EnumerateFiles
@@ -114,56 +119,56 @@ Module FileHandling
         MainForm.CurrentFilterState.FileList = lst
         Return MainForm.CurrentFilterState.FileList
         Exit Function
-        lst.Clear()
+        'lst.Clear()
 
-        For Each f In e.EnumerateFiles
-            lst.Add(f.FullName)
-        Next
+        'For Each f In e.EnumerateFiles
+        '    lst.Add(f.FullName)
+        'Next
 
-        Select Case CurrentfilterState.State
-            Case FilterHandler.FilterState.All
-            Case FilterHandler.FilterState.NoPicVid
-                For Each f In e.EnumerateFiles
-                    If InStr(PICEXTENSIONS & VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
-                    Else
-                        lst.Remove(f.FullName)
-                    End If
-                Next
-            Case FilterHandler.FilterState.LinkOnly
+        'Select Case CurrentfilterState.State
+        '    Case FilterHandler.FilterState.All
+        '    Case FilterHandler.FilterState.NoPicVid
+        '        For Each f In e.EnumerateFiles
+        '            If InStr(PICEXTENSIONS & VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
+        '            Else
+        '                lst.Remove(f.FullName)
+        '            End If
+        '        Next
+        '    Case FilterHandler.FilterState.LinkOnly
 
-                For Each f In e.EnumerateFiles
-                    If LCase(f.Extension) = ".lnk" Then
-                    Else
-                        lst.Remove(f.FullName)
-                    End If
-                Next
-            Case FilterHandler.FilterState.Piconly
+        '        For Each f In e.EnumerateFiles
+        '            If LCase(f.Extension) = ".lnk" Then
+        '            Else
+        '                lst.Remove(f.FullName)
+        '            End If
+        '        Next
+        '    Case FilterHandler.FilterState.Piconly
 
-                For Each f In e.EnumerateFiles
-                    If InStr(PICEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
-                        lst.Remove(f.FullName)
-                    Else
-                    End If
-                Next
-            Case FilterHandler.FilterState.PicVid
+        '        For Each f In e.EnumerateFiles
+        '            If InStr(PICEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
+        '                lst.Remove(f.FullName)
+        '            Else
+        '            End If
+        '        Next
+        '    Case FilterHandler.FilterState.PicVid
 
-                For Each f In e.EnumerateFiles
-                    If InStr(PICEXTENSIONS & VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
-                        lst.Remove(f.FullName)
-                    Else
-                    End If
-                Next
-            Case FilterHandler.FilterState.Vidonly
+        '        For Each f In e.EnumerateFiles
+        '            If InStr(PICEXTENSIONS & VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
+        '                lst.Remove(f.FullName)
+        '            Else
+        '            End If
+        '        Next
+        '    Case FilterHandler.FilterState.Vidonly
 
-                For Each f In e.EnumerateFiles
-                    If InStr(VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
-                        lst.Remove(f.FullName)
-                    Else
-                    End If
-                Next
+        '        For Each f In e.EnumerateFiles
+        '            If InStr(VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
+        '                lst.Remove(f.FullName)
+        '            Else
+        '            End If
+        '        Next
 
-        End Select
-        Return lst
+        'End Select
+        'Return lst
     End Function
 
 

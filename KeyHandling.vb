@@ -1,29 +1,28 @@
 ﻿Public Module KeyHandling
     'Numpad options (not available on Laptop)
-    Public KeyFullscreen = Keys.Scroll
-    Public KeySortOrder = Keys.Pause
-    Public KeyTraverseTreeBack = Keys.Subtract
-    Public KeyTraverseTree = Keys.Add
-    Public KeyJumpAutoT = Keys.Divide
-    Public KeyMuteToggle = Keys.Decimal
+    Public KeyJumpToPoint = Keys.Insert
+    Public KeyCycleStartPoint = Keys.Home
+    Public KeyCycleFilter = Keys.Scroll
+    Public KeyCycleNavMoveState = Keys.End
+    Public KeyCycleSortOrder = Keys.Pause
+    Public KeyFullscreen = Keys.Scroll + Keys.Control
     Public KeyNextFile = Keys.PageDown
     Public KeyPreviousFile = Keys.PageUp
-    Public KeyZoomIn = Keys.OemPeriod
-    Public KeyFolderJump = Keys.Multiply
-    Public KeyCycleScope = Keys.Oem7
-    Public KeyCycleMode = Keys.OemOpenBrackets
-    Public KeyToggleSpeed = Keys.NumPad0
+
+    Public KeyJumpRandom = Keys.Divide
+    Public KeyTraverseTreeBack = Keys.Subtract
+    Public KeyTraverseTree = Keys.Add
+    Public KeyMarkFavourite = Keys.NumPad7
+    Public KeyBigJumpBack = Keys.NumPad8
+    Public KeyBigJumpOn = Keys.NumPad9
+    Public KeyJumpToMark = Keys.NumPad4
+    Public KeySmallJumpDown = Keys.NumPad5
+    Public KeySmallJumpUp = Keys.NumPad6
     Public KeySpeed1 = Keys.NumPad1
     Public KeySpeed2 = Keys.NumPad2
     Public KeySpeed3 = Keys.NumPad3
-    Public KeySmallJumpDown = Keys.NumPad5
-    Public KeySmallJumpUp = Keys.NumPad6
-    Public KeyJumpToPoint = Keys.Insert
-    Public KeyBigJumpBack = Keys.NumPad8
-    Public KeyBigJumpOn = Keys.NumPad9
-    Public KeyMarkPoint = Keys.NumPad4
-    Public KeyMarkFavourite = Keys.NumPad7
-
+    Public KeyToggleSpeed = Keys.NumPad0
+    Public KeyMuteToggle = Keys.Decimal
 
     Public LKeyFullscreen = Keys.F + Keys.Control
     Public LKeyRandomize = Keys.R + Keys.Control
@@ -52,20 +51,17 @@
     Public KeyReStartSS = Keys.Space
     Public KeyLoopToggle = Keys.OemCloseBrackets + Keys.Alt
     Public KeyTrueSize = Keys.Oemplus
-    Public KeyCycleRandom = Keys.Pause
     Public KeyRotate = Keys.OemCloseBrackets
     Public KeyRotateBack = Keys.OemOpenBrackets
-    Public KeyFilter = Keys.OemQuestion
     Public KeyAddFile = Keys.Oemtilde
 
     Public KeyZoomOut = Keys.Oemcomma
     Public KeyToggleThumbs = Keys.Oem3
+
     Public KeyToggleButtons = Keys.OemSemicolon
     Public KeyEscape = Keys.Escape
     Public KeySelect = Keys.F3
     Public KeyDelete = Keys.Delete
-    Public KeyMoveToggle = Keys.Oem7
-
 
 
 

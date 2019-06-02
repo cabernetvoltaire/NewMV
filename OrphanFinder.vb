@@ -18,7 +18,7 @@
         End Set
     End Property
 
-    Private mOrphanList As List(Of String)
+    Private mOrphanList As New List(Of String)
     ''' <summary>
     ''' List of potential orphans
     ''' </summary>
@@ -31,6 +31,9 @@
             mOrphanList = value
         End Set
     End Property
+    ''' <summary>
+    ''' Gets a list of all possible folders to be searched
+    ''' </summary>
     Private mPathList As List(Of String)
     Public WriteOnly Property PathList(root As String) As List(Of String)
         Set(ByVal value As List(Of String))
@@ -108,7 +111,22 @@
         Next
         Return False
     End Function
+    ''' <summary>
+    ''' Creates new links from the linklist, unless they already exist. 
+    ''' </summary>
+    ''' <param name="LinkList"></param>
+    Public Sub ImportLinks(LinkList As List(Of String))
+        mOrphanList.Clear()
 
+        For Each m In LinkList
+            Dim x As New IO.FileInfo(m)
+            If x.Exists Then
+            Else
+                mOrphanList.Add(m)
+            End If
+        Next
+        FindOrphans()
+    End Sub
     Public Sub Reunite()
         TotalFoundCount = TotalFoundCount + mFoundParents.Count
         For Each m In mFoundParents

@@ -60,11 +60,11 @@
                     AddButton("Make Favourite", size, "[INSERT]", i, insert, 1)
                 Case KeyJumpToPoint
                     AddButton("Jump to Marker", size, "[NUMPAD 7]", i, numleft, 2)
-                Case KeyMarkPoint
+                Case KeyJumpToMark
                     AddButton("Make Marker", size, "[NUMPAD 4]", i, numleft, 3)
                 Case KeyMuteToggle
                     AddButton("Toggle Mute", size, "[NUMPAD .]", i, numleft + 2, 5)
-                Case KeyJumpAutoT
+                Case KeyJumpRandom
                     AddButton("Jump Random", size, "[NUMPAD /]", i, numleft + 1, 1)
                 Case KeyToggleSpeed
                     AddButton("Toggle Speed", size, "[NUMPAD 0]", i, numleft, 5)
@@ -78,15 +78,15 @@
                     AddButton("Rotate Pic CCW", size, "[{]", i, 2, 2)
                 Case KeyRotate
                     AddButton("Rotate Pic CW", size, "[}]", i, 3, 2)
-                Case KeySortOrder
+                Case KeyCycleSortOrder
                     AddButton("Increment Play Order", size, "[PAUSE]", i, 5, 0)
-                Case KeyFilter 'Cycle through listbox filters
+                Case KeyCycleFilter 'Cycle through listbox filters
                     AddButton("Increment Filter", size, "[?]", i, 2, 4)
                 Case KeySelect
                     AddButton("Select Files", size, "[F3]", i, 2, 0)
                 Case KeyFullscreen
                     AddButton("Go Fullscreen", size, "[SCROLL]", i, 5, 0)
-                Case KeyMoveToggle
+                Case KeyCycleNavMoveState
                     AddButton("Mode Toggle", size, "[#]", i, 3, 3)
                 Case KeyTrueSize
                     AddButton("Pics Truesize", size, "[=+]", i, 2, 1)

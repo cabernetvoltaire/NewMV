@@ -23,9 +23,7 @@ Public Class ShortcutHandler
         Private sShortcutName As String
         Public Property TargetPath() As String
             Get
-                'If sTargetPath does not exist
-                'check in lower folders
-                'if fewer than 200 files
+               
                 Return sTargetPath
             End Get
             Set(ByVal value As String)

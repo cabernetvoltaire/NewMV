@@ -430,35 +430,23 @@ Public Class MediaHandler
 
     Private mResetCounter As Integer
     Private Sub PlaystateChange(sender As Object, e As _WMPOCXEvents_PlayStateChangeEvent) Handles mPlayer.PlayStateChange
-        Debug.Print(e.newState.ToString())
         Select Case e.newState
-
             Case WMPLib.WMPPlayState.wmppsStopped
                 mPlayer.Ctlcontrols.play()
-
             Case WMPLib.WMPPlayState.wmppsMediaEnded
-                'Debug.Print("Ended:" & StartPoint.StartPoint & " " & StartPoint.Duration)
-                '  If mLoop Then
-                ' mPlayer.Ctlcontrols.play()
-                'End If
-                Debug.Print(mPlayer.URL & ", duration " & mDuration & ", playposition" & mPlayPosition & " STOPPED")
                 If MainForm.tmrAutoTrail.Enabled = False AndAlso mPlayer.Equals(Media.Player) AndAlso mType = Filetype.Movie AndAlso Not LoopMovie Then
                     MainForm.AdvanceFile(True, False)
                 Else
                     MediaJumpToMarker()
-                    ' mPlayer.Ctlcontrols.play()
-
                 End If
+
             Case WMPLib.WMPPlayState.wmppsPlaying
-                'ReportTime("Playing")
                 mSndH.Slow = False
                 PositionUpdater.Enabled = True
                 mResetCounter = 0
                 Duration = mPlayer.currentMedia.duration
                 StartPoint.Duration = mPlayer.currentMedia.duration
-                Report("Duration:" & mDuration & vbCrLf & "Startpoint:" & StartPoint.StartPoint, 2)
                 MediaJumpToMarker()
-                Debug.Print(mPlayer.URL & " ` playstatehandler")
 
                 If FullScreen.Changing Or Speed.Unpause Then 'Hold current position if switching to FS or back. 
                     mPlayPosition = Speed.PausedPosition
@@ -468,8 +456,6 @@ Public Class MediaHandler
             Case WMPLib.WMPPlayState.wmppsPaused ', WMPLib.WMPPlayState.wmppsTransitioning
                 If Not Speed.Fullspeed Then
                     mSndH.Slow = True
-                Else
-
                 End If
 
             Case Else
@@ -477,6 +463,7 @@ Public Class MediaHandler
         End Select
     End Sub
     Private Sub OnSpeedChange(sender As Object, e As EventArgs) Handles Speed.SpeedChanged
+
         MainForm.OnSpeedChange(sender, e)
 
     End Sub

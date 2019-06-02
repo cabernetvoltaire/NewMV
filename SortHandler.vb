@@ -73,10 +73,10 @@
     End Sub
 
     Public Sub Toggle()
-        If Me.State = Order.Original Then
+        If Me.State <> Order.Random Then
             Me.State = Order.Random
         Else
-            Me.State = Order.Original
+            Me.State = Order.DateTime
         End If
     End Sub
 End Class

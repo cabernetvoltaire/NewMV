@@ -14,6 +14,8 @@
     Public Property ShiftDown As Boolean
     Public Property CtrlDown As Boolean
     Public Property AltDown As Boolean
+    Public Property KeyDownFlag As Boolean
+
 #End Region
 
 #Region "Enums and structures"

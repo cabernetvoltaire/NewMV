@@ -1,23 +1,23 @@
 ﻿Public Class StartPointHandler
     Public Enum StartTypes As Byte
-        NearBeginning
+        Beginning
         ParticularAbsolute
         ParticularPercentage
         Random
         NearEnd
-        Beginning
+        NearBeginning
     End Enum
 
     Public Event StateChanged(sender As Object, e As EventArgs)
     Public Event StartPointChanged(sender As Object, e As EventArgs)
     Public Event JumpKey()
     Private mOrder = {
-        "Near Beginning",
+        "Beginning",
         "Particular(s)",
         "Particular(%)",
         "Random",
         "Near End",
-        "Beginning"
+        "Near Beginning"
     }
     Private mDescList As New List(Of String)
     Public Sub New(Optional ByVal StartPercentage As Byte = 50, Optional ByVal StartAbsolute As Byte = 65)
@@ -126,8 +126,8 @@
 
         End Set
     End Property
-    Public Sub IncrementState()
-        State = (State + 1) Mod 6
+    Public Sub IncrementState(max As Byte)
+        State = (State + 1) Mod max
     End Sub
 
 

@@ -118,9 +118,7 @@ Public Class MediaSwapper
         Select Case MH.MediaType
             Case Filetype.Movie
                 MH.Player.Visible = True
-                '           If MH.MediaType = Filetype.Movie Then
                 MH.PlaceResetter(True)
-                '          End If
                 RaiseEvent LoadedMedia(MH) 'Currently does nothing.
             Case Filetype.Pic
                 MH.PlaceResetter(False)
