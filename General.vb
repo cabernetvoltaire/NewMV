@@ -360,7 +360,7 @@ Public Module General
             End If
 
         Next
-        FillShowbox(MainForm.lbxShowList, 0, s)
+        MainForm.FillShowbox(MainForm.lbxShowList, 0, s)
         Return s
     End Function
     ''' <summary>
@@ -370,40 +370,6 @@ Public Module General
     ''' <param name="Filter"></param>
     ''' <param name="lst"></param>
     '''
-    Public Sub FillShowbox(lbx As ListBox, Filter As Byte, ByVal lst As List(Of String))
-
-
-        If lst.Count = 0 Then Exit Sub
-        If lst.Count > 1000 Then
-            ProgressBarOn(lst.Count)
-        End If
-
-
-        lbx.Items.Clear()
-        MainForm.CurrentFilterState.FileList = lst
-        lst = MainForm.CurrentFilterState.FileList
-        For Each s In lst
-            lbx.Items.Add(s)
-
-            'ProgressIncrement(1)
-        Next
-
-        If lbx.Name = "lbxShowList" Then
-            MainForm.CollapseShowlist(False)
-            'Dim m As New ShowListForm
-            'ShowListForm.Show()
-
-            'ShowListForm.ItemList = lst
-
-        End If
-        '  lbx.Refresh()
-        '        lbx.TabStop = True
-        ProgressBarOff()
-
-
-
-        'MainForm.UpdateFileInfo()
-    End Sub
 
     Private Sub CopyList(list As List(Of String), list2 As SortedList(Of Date, String))
         list.Clear()

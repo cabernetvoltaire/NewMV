@@ -11,6 +11,7 @@ Public Class MainForm
 
 
     Public Initialising As Boolean = True
+    Public ButtonsHidden As Boolean = False
     Public defaultcolour As Color = Color.Aqua
     Public movecolour As Color = Color.Orange
     Public sound As New AxWindowsMediaPlayer
@@ -356,28 +357,25 @@ Public Class MainForm
 
 
     Public Sub UpdatePlayOrder(blnShowBoxShown As Boolean)
-        'LBH.SortOrder = PlayOrder
 
         If FocusControl IsNot lbxShowList Then
             Dim e = New DirectoryInfo(CurrentFolder)
+            FBH.SortOrder = PlayOrder
             FillFileBox(lbxFiles, e, False)
             FBH.SetNamed(Media.MediaPath)
-            'If lbxFiles.FindString(Media.MediaPath) <> -1 Then
-            '    lbxFiles.SelectedIndex = lbxFiles.FindString(Media.MediaPath)
-            'Else
-            '    If lbxFiles.Items.Count > 0 Then lbxFiles.SelectedIndex = 0
-            'End If
+
         Else
             If blnShowBoxShown Then
                 Dim s = lbxShowList.SelectedItem
-
-                Showlist = SetPlayOrder(PlayOrder.State, Showlist)
-                ReOrderListBox(lbxShowList, CurrentFilterState.State, Showlist)
-                Try
-
-                    lbxShowList.SelectedIndex = lbxShowList.FindString(s)
-                Catch ex As FileNotFoundException
-                End Try
+                LBH.SortOrder = PlayOrder
+                LBH.FillBox()
+                LBH.SetNamed(s)
+                '                Showlist = SetPlayOrder(PlayOrder.State, Showlist)
+                '           ReOrderListBox(lbxShowList, CurrentFilterState.State, Showlist)
+                '             Try
+                '                   lbxShowList.SelectedIndex = lbxShowList.FindString(s)
+                '              Catch ex As FileNotFoundException
+                '            End Try
             End If
         End If
 
@@ -393,45 +391,45 @@ Public Class MainForm
 
         Exit Sub
 
-        If Not Dir.Exists Then Exit Sub
-        If Dir.Name = "My Computer" Then Exit Sub
-        'clear listbox
-        lbx.Items.Clear()
-        Dim flist = CurrentFileList
-        If Dir.EnumerateFiles.Count = 0 Then
-            If CurrentFilterState.State = FilterHandler.FilterState.LinkOnly Then
-                CurrentFilterState.State = FilterHandler.FilterState.All 'Switch back out if come from link only folder
-            End If
-            lbx.Items.Add("If there is nothing showing here, check your filters")
-            Exit Sub
-        End If
-        Try
-            flist = FilterLBList(Dir, flist)
-            flist = SetPlayOrder(PlayOrder.State, flist)
+        'If Not Dir.Exists Then Exit Sub
+        'If Dir.Name = "My Computer" Then Exit Sub
+        ''clear listbox
+        'lbx.Items.Clear()
+        'Dim flist = CurrentFileList
+        'If Dir.EnumerateFiles.Count = 0 Then
+        '    If CurrentFilterState.State = FilterHandler.FilterState.LinkOnly Then
+        '        CurrentFilterState.State = FilterHandler.FilterState.All 'Switch back out if come from link only folder
+        '    End If
+        '    lbx.Items.Add("If there is nothing showing here, check your filters")
+        '    Exit Sub
+        'End If
+        'Try
+        '    flist = FilterLBList(Dir, flist)
+        '    flist = SetPlayOrder(PlayOrder.State, flist)
 
-            ' MainForm.FNG.Filenames = flist
-            ReOrderListBox(lbx, CurrentFilterState.State, flist)
+        '    ' MainForm.FNG.Filenames = flist
+        '    ReOrderListBox(lbx, CurrentFilterState.State, flist)
 
-            lbx.Tag = Dir
+        '    lbx.Tag = Dir
 
-            If lbx.Items.Count <> 0 Then
-                If blnRandom Then
-                    Dim s As Long = lbx.Items.Count - 1
-                    lbx.SelectedIndex = Rnd() * s
-                Else
-                    If lbx.FindString(Media.MediaPath) = -1 Then
-                        lbx.SelectedItem = lbx.FindString(Media.LinkPath)
-                    Else
-                        lbx.SelectedItem = lbx.FindString(Media.MediaPath)
-                    End If
-                    If lbx.SelectedItem Is Nothing Then
-                        lbx.SelectedIndex = 0 'PUt to beginning
-                    End If
-                End If
-            End If
-        Catch ex As IOException
-            Exit Try
-        End Try
+        '    If lbx.Items.Count <> 0 Then
+        '        If blnRandom Then
+        '            Dim s As Long = lbx.Items.Count - 1
+        '            lbx.SelectedIndex = Rnd() * s
+        '        Else
+        '            If lbx.FindString(Media.MediaPath) = -1 Then
+        '                lbx.SelectedItem = lbx.FindString(Media.LinkPath)
+        '            Else
+        '                lbx.SelectedItem = lbx.FindString(Media.MediaPath)
+        '            End If
+        '            If lbx.SelectedItem Is Nothing Then
+        '                lbx.SelectedIndex = 0 'PUt to beginning
+        '            End If
+        '        End If
+        '    End If
+        'Catch ex As IOException
+        '    Exit Try
+        'End Try
 
     End Sub
 
@@ -611,6 +609,7 @@ Public Class MainForm
     End Sub
 
     Public Sub CollapseShowlist(Collapse As Boolean)
+        ButtonsHidden = Collapse
         MasterContainer.Panel2Collapsed = Collapse
         lbxFiles.SelectionMode = SelectionMode.One
         MasterContainer.SplitterDistance = MasterContainer.Height / 3
@@ -794,7 +793,7 @@ Public Class MainForm
                 ToggleButtons()
             Case KeyNextFile, KeyPreviousFile, LKeyNextFile, LKeyPreviousFile
                 If FocusControl IsNot lbxFiles And FocusControl IsNot lbxShowList Then ControlSetFocus(lbxFiles)
-                If e.Control Then
+                If e.Alt Then
                     AdvanceFile(e.KeyCode = KeyNextFile, True)
                 Else
                     AdvanceFile(e.KeyCode = KeyNextFile, Random.NextSelect)
@@ -927,12 +926,6 @@ Public Class MainForm
                 SelectSubList(False)
 
             Case KeyFullscreen
-                If ShiftDown Then
-                    blnSecondScreen = True
-                Else
-                    blnSecondScreen = False
-                End If
-                GoFullScreen(Not blnFullScreen)
                 e.SuppressKeyPress = True
 
             Case KeyCycleSortOrder
@@ -945,8 +938,17 @@ Public Class MainForm
                 End If
 
             Case KeyCycleFilter 'Cycle through listbox filters
-                CurrentFilterState.IncrementState(Not e.Shift)
+                If e.Alt Then
+                    If ShiftDown Then
+                        blnSecondScreen = True
+                    Else
+                        blnSecondScreen = False
+                    End If
+                    GoFullScreen(Not blnFullScreen)
 
+                Else
+                    CurrentFilterState.IncrementState(Not e.Shift)
+                End If
                 e.SuppressKeyPress = True
 
             Case KeyCycleNavMoveState
@@ -1013,29 +1015,30 @@ Public Class MainForm
 
     Private Sub DeleteFiles(e As KeyEventArgs)
         'Use Movefiles with current selected list, and option to delete. 
-        Dim lbx As ListBox
+        Dim lbx As New ListBox
         CancelDisplay()
         If e.Shift Then
-
             DeleteFolder(tvMain2, NavigateMoveState.State = StateHandler.StateOptions.Navigate)
         Else
             If FocusControl Is tvMain2 Then
             Else
-
                 lbx = FocusControl
-
             End If
 
             Dim m As List(Of String) = ListfromSelectedInListbox(lbx)
-            If NavigateMoveState.State = StateHandler.StateOptions.Move Or NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
-                If lbx.Name = "lbxShowList" And NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
-                    For Each k In m
-                        lbx.Items.Remove(k)
-                    Next
-                Else
-                    MoveFiles(m, "", lbx)
-                End If
+            If lbx Is lbxShowList And NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
+                LBH.RemoveItems(m)
+            Else
+                MoveFiles(m, "", lbx)
             End If
+
+            'If NavigateMoveState.State = StateHandler.StateOptions.Move Or NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
+            '    If lbx.Name = "lbxShowList" And NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
+            '        FBH.RemoveItems(m)
+            '    Else
+            '        MoveFiles(m, "", lbx)
+            '    End If
+            'End If
         End If
     End Sub
 
@@ -1080,10 +1083,7 @@ Public Class MainForm
             '  FillListbox(lbxFiles, New DirectoryInfo(s), False)
         End If
         'Select file in filelist
-        If lbxFiles.SelectedItem <> strPath Then
-            Dim m As Integer = lbxFiles.FindString(strPath)
-            If m <> -1 Then lbxFiles.SelectedIndex = lbxFiles.FindString(strPath)
-        End If
+        FBH.SetNamed(strPath)
         Att.DestinationLabel = lblAttributes
         If Not tmrSlideShow.Enabled And CheckBox1.Checked Then
             Att.UpdateLabel(strPath)
@@ -1091,10 +1091,11 @@ Public Class MainForm
             Att.Text = ""
         End If
 
-        If Not MasterContainer.Panel2Collapsed Then 'Showlist is visible
+        If Not ButtonsHidden Then 'Showlist is visible
             'Select in the showlist unless CTRL held
-            If PFocus = CtrlFocus.ShowList AndAlso Not CtrlDown Then
-                If lbxShowList.FindString(strPath) <> -1 Then lbxShowList.SelectedIndex = lbxShowList.FindString(strPath)
+            If FocusControl Is lbxShowList AndAlso Not CtrlDown Then
+                LBH.SetNamed(strPath)
+                '                If lbxShowList.FindString(strPath) <> -1 Then lbxShowList.SelectedIndex = lbxShowList.FindString(strPath)
             End If
         End If
 
@@ -1103,8 +1104,9 @@ Public Class MainForm
     Private Sub AddFiles(blnRecurse As Boolean)
         ProgressBarOn(1000)
 
-        AddFilesToCollection(Showlist, "", blnRecurse)
-        FillShowbox(lbxShowList, CurrentFilterState.State, Showlist)
+        Showlist = AddFilesToCollection("", blnRecurse)
+        LBH.FillBox(Showlist)
+        '        FillShowbox(lbxShowList, CurrentFilterState.State, Showlist)
         ProgressBarOff()
     End Sub
 
@@ -1192,7 +1194,8 @@ Public Class MainForm
         '        PlayOrder.State = SortHandler.Order.DateTime
         ControlSetFocus(lbxFiles)
         Initialising = False
-
+        FBH.ListBox = lbxFiles
+        LBH.ListBox = lbxShowList
         tmrPicLoad.Enabled = True
         'tvMain2.ForceFullBuild()
     End Sub
@@ -1691,7 +1694,25 @@ Public Class MainForm
         'SetControlColours(blnMoveMode)
 
     End Sub
+    Public Sub AddCurrentType(Recurse As Boolean)
+        Showlist = AddFilesToCollection(strFilterExtensions(CurrentFilterState.State), Recurse)
+        FillShowbox(lbxShowList, CurrentFilterState.State, Showlist)
 
+    End Sub
+    Public Sub FillShowbox(lbx As ListBox, Filter As Byte, ByVal lst As List(Of String))
+
+        If lst.Count = 0 Then Exit Sub
+        If lst.Count > 1000 Then
+            ProgressBarOn(lst.Count)
+        End If
+        LBH.Filter.State = Filter
+        LBH.FillBox(lst)
+
+        If lbx.Name = "lbxShowList" Then
+            CollapseShowlist(False)
+        End If
+        ProgressBarOff()
+    End Sub
 
 
     Private Sub AddCurrentAndSubfoldersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AddCurrentAndSubfoldersToolStripMenuItem.Click

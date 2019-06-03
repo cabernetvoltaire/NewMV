@@ -14,6 +14,7 @@
     End Property
 
     Private mListbox As New ListBox
+
     Public Property ListBox() As ListBox
         Get
             Return mListbox
@@ -27,7 +28,6 @@
     Public Sub FilterList()
         With Filter
             .FileList = ItemList
-            'ItemList.Clear()
             ItemList = .FileList
         End With
     End Sub
@@ -37,15 +37,21 @@
         End With
 
     End Sub
-    Public Sub FillBox()
+    Public Sub FillBox(Optional List As List(Of String) = Nothing)
         ListBox.Items.Clear()
         FilterList()
         OrderList()
-
+        If List IsNot Nothing Then ItemList = List
         For Each f In ItemList
             ListBox.Items.Add(f)
         Next
         'SetFirst()
+    End Sub
+    Public Sub RemoveItems(List As List(Of String))
+        For Each m In List
+            ListBox.Items.Remove(m)
+        Next
+        SetFirst()
     End Sub
     Public Sub SetFirst()
         If ListBox.Items.Count > 0 Then
@@ -57,6 +63,7 @@
         End If
     End Sub
     Public Sub SetNamed(Name As String)
+        If ListBox.SelectedItem = Name Then Exit Sub
         If ListBox.Items.Count > 0 Then
             Dim i = ListBox.FindString(Name)
             If i > -1 Then
