@@ -79,7 +79,7 @@ Module FileHandling
                 Case StateHandler.StateOptions.Copy, StateHandler.StateOptions.CopyLink
                     'lbx1.SelectedIndex = (lbx1.SelectedIndex + 1) Mod (lbx1.Items.Count - 1) 'Signal action completed by advancing
                 Case StateHandler.StateOptions.MoveLeavingLink
-                    MainForm.UpdatePlayOrder(False)
+                    MainForm.UpdatePlayOrder(MainForm.FBH)
                     ReplaceListboxItem(lbx1, ind, f)
                     lbx1.SelectedItem = lbx1.Items(ind)
                 Case Else

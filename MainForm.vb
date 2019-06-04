@@ -206,7 +206,14 @@ Public Class MainForm
         SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
         If lbxFiles.Items.Count = 0 And CurrentFilterState.State <> FilterHandler.FilterState.All Then lbxFiles.Items.Add("If there is nothing showing here, check the filters")
         If sender IsNot NavigateMoveState Then
-            If Not Initialising Then UpdatePlayOrder(Showlist.Count > 0)
+            If Not Initialising Then
+                If Showlist.Count > 0 Then
+                    UpdatePlayOrder(LBH)
+                Else
+                    UpdatePlayOrder(FBH)
+
+                End If
+            End If
         Else
             If NavigateMoveState.State = StateHandler.StateOptions.ExchangeLink Then
                 CurrentFilterState.State = FilterHandler.FilterState.LinkOnly
@@ -356,28 +363,31 @@ Public Class MainForm
     End Sub
 
 
-    Public Sub UpdatePlayOrder(blnShowBoxShown As Boolean)
-
-        If FocusControl IsNot lbxShowList Then
+    Public Sub UpdatePlayOrder(LBHandler As ListBoxHandler)
+        LBHandler.SortOrder = PlayOrder
+        If LBHandler Is LBH Then
+            Dim s = lbxShowList.SelectedItem
+            LBH.FillBox()
+            LBH.SetNamed(s)
+        Else
             Dim e = New DirectoryInfo(CurrentFolder)
-            FBH.SortOrder = PlayOrder
             FillFileBox(lbxFiles, e, False)
             FBH.SetNamed(Media.MediaPath)
-
-        Else
-            If blnShowBoxShown Then
-                Dim s = lbxShowList.SelectedItem
-                LBH.SortOrder = PlayOrder
-                LBH.FillBox()
-                LBH.SetNamed(s)
-                '                Showlist = SetPlayOrder(PlayOrder.State, Showlist)
-                '           ReOrderListBox(lbxShowList, CurrentFilterState.State, Showlist)
-                '             Try
-                '                   lbxShowList.SelectedIndex = lbxShowList.FindString(s)
-                '              Catch ex As FileNotFoundException
-                '            End Try
-            End If
         End If
+
+        'If FocusControl IsNot lbxShowList Then
+        '    Dim e = New DirectoryInfo(CurrentFolder)
+        '    FBH.SortOrder = PlayOrder
+        '    FillFileBox(lbxFiles, e, False)
+        '    FBH.SetNamed(Media.MediaPath)
+        'Else
+        '    If blnShowBoxShown Then
+        '        Dim s = lbxShowList.SelectedItem
+        '        LBH.SortOrder = PlayOrder
+        '        LBH.FillBox()
+        '        LBH.SetNamed(s)
+        '    End If
+        'End If
 
     End Sub
     Public Sub ReOrderListBox(lbx As ListBox, FilterState As FilterHandler.FilterState, List As List(Of String))
@@ -386,6 +396,7 @@ Public Class MainForm
     End Sub
 
     Public Sub FillFileBox(lbx As ListBox, Dir As DirectoryInfo, blnRandom As Boolean)
+        FBH.Random = Random
         FBH.ListBox = lbx
         FBH.DirectoryPath = Dir.FullName
 
@@ -843,7 +854,7 @@ Public Class MainForm
                         Dim finfo As New IO.FileInfo(Media.MediaPath)
                         Dim s As String = Media.UpdateBookmark(Media.MediaPath, Media.Position)
                         finfo.MoveTo(s)
-                        UpdatePlayOrder(False)
+                        UpdatePlayOrder(FBH)
                     End If
                 ElseIf e.Alt Then
                     NavigateToFavourites()
@@ -958,6 +969,7 @@ Public Class MainForm
                     ToggleMove()
                 End If
             Case KeyCycleStartPoint
+                If e.Control Then Exit Sub
                 If e.Shift Then
                     Media.StartPoint.IncrementState(6)
                 Else
@@ -1065,7 +1077,10 @@ Public Class MainForm
         blnLoopPlay = Not blnLoopPlay
     End Sub
 
+    Public Sub OnTVMainReady(sender As Object, e As EventArgs) Handles tvMain2.TreeBuilt
+        HighlightCurrent(Media.MediaPath)
 
+    End Sub
 
 
     Public Sub HighlightCurrent(strPath As String)
@@ -1077,6 +1092,7 @@ Public Class MainForm
         Dim finfo As New FileInfo(strPath)
         'Change the tree
         Dim s As String = Path.GetDirectoryName(strPath)
+        '  tvMain2.Validate()
 
         If tvMain2.SelectedFolder <> s Then
             tvMain2.SelectedFolder = s 'Only change tree if it needs changing
@@ -1196,7 +1212,8 @@ Public Class MainForm
         Initialising = False
         FBH.ListBox = lbxFiles
         LBH.ListBox = lbxShowList
-        tmrPicLoad.Enabled = True
+        '   HighlightCurrent(Media.MediaPath) 'Swapper
+        'tmrPicLoad.Enabled = True
         'tvMain2.ForceFullBuild()
     End Sub
 
@@ -1270,6 +1287,7 @@ Public Class MainForm
 
 
     Public Sub frmMain_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+
         KeyDownFlag = True
         ShiftDown = e.Shift
         CtrlDown = e.Control
@@ -2265,36 +2283,6 @@ Public Class MainForm
     End Sub
 
 
-    Private Sub StartPointComboBox_SelectedIndexChanged_1(sender As Object, e As EventArgs)
-        If Media.StartPoint.State <> cbxStartPoint.SelectedIndex Then
-            Media.StartPoint.State = cbxStartPoint.SelectedIndex
-
-
-        End If
-
-
-    End Sub
-
-    Private Sub tbPercentage_ValueChanged(sender As Object, e As EventArgs)
-        'StartPoint.State = StartPointHandler.StartTypes.ParticularPercentage
-        'If Not Initialising Then Media.StartPoint.Percentage = tbPercentage.Value
-
-    End Sub
-
-
-
-
-
-
-
-
-    Private Sub AbsoluteTrackBar_ValueChanged(sender As Object, e As EventArgs)
-        tbAbsolute.Maximum = Media.Duration
-        tbAbsolute.TickFrequency = tbAbsolute.Maximum / 25
-        ' StartPoint.Absolute = tbAbsolute.Value
-
-
-    End Sub
 
 
     Private Sub chbNextFile_CheckedChanged(sender As Object, e As EventArgs) Handles chbNextFile.CheckedChanged
@@ -2330,7 +2318,7 @@ Public Class MainForm
         ProgressBarOn(s.Count)
         X.FindOrphans()
         ProgressBarOff()
-        UpdatePlayOrder(False)
+        UpdatePlayOrder(FBH)
     End Sub
     Private Sub OnOrphanTest(sender As Object, e As EventArgs) Handles X.NewOrphanTesting
         ProgressIncrement(1)
@@ -2443,7 +2431,11 @@ Public Class MainForm
 
     Private Sub tmrUpdateFileList_Tick(sender As Object, e As EventArgs) Handles tmrUpdateFileList.Tick
         FillFileBox(lbxFiles, New DirectoryInfo(CurrentFolder), Random.OnDirChange)
-        FBH.SetFirst()
+        If Media.MediaPath = "" Then
+            FBH.SetFirst()
+        Else
+            FBH.SetNamed(Media.MediaPath)
+        End If
         tmrUpdateFileList.Enabled = False
     End Sub
     Private Sub ChangedTree() Handles tvMain2.DirectorySelected
@@ -2749,7 +2741,7 @@ Public Class MainForm
     End Sub
 
     Private Sub MainForm_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
-        Scrubber.Image = Marks.Bitmap
+        '  Scrubber.Image = Marks.Bitmap
     End Sub
 
     Private Sub lbxFiles_KeyDown(sender As Object, e As KeyEventArgs) Handles lbxFiles.KeyDown

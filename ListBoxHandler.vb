@@ -39,9 +39,9 @@
     End Sub
     Public Sub FillBox(Optional List As List(Of String) = Nothing)
         ListBox.Items.Clear()
+        If List IsNot Nothing Then ItemList = List
         FilterList()
         OrderList()
-        If List IsNot Nothing Then ItemList = List
         For Each f In ItemList
             ListBox.Items.Add(f)
         Next

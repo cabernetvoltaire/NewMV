@@ -721,7 +721,7 @@ Partial Class MainForm
         'MainWMP3
         '
         Me.MainWMP3.Enabled = True
-        Me.MainWMP3.Location = New System.Drawing.Point(628, 391)
+        Me.MainWMP3.Location = New System.Drawing.Point(460, 394)
         Me.MainWMP3.Margin = New System.Windows.Forms.Padding(4)
         Me.MainWMP3.Name = "MainWMP3"
         Me.MainWMP3.OcxState = CType(resources.GetObject("MainWMP3.OcxState"), System.Windows.Forms.AxHost.State)

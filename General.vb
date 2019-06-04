@@ -129,7 +129,7 @@ Public Module General
         End If
         Handler.Create_ShortCut(Bookmark)
 
-        If DestinationDirectory = CurrentFolder And Update Then MainForm.UpdatePlayOrder(False)
+        If DestinationDirectory = CurrentFolder And Update Then MainForm.UpdatePlayOrder(MainForm.FBH)
     End Sub
     Public Function FilenameFromLink(n As String) As String
         Dim currentlink = n

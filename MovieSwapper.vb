@@ -6,6 +6,7 @@ Public Class MediaSwapper
     Private mMedia2 As New MediaHandler("mMedia2")
     Private mMedia3 As New MediaHandler("mMedia3")
 
+
     Private mFileList As New List(Of String) '
     Private mListIndex As Integer
     Private mListbox As New ListBox
@@ -48,6 +49,7 @@ Public Class MediaSwapper
         End Set
     End Property
     Public Sub New(ByRef MP1 As AxWindowsMediaPlayer, ByRef MP2 As AxWindowsMediaPlayer, ByRef MP3 As AxWindowsMediaPlayer, ByRef PB1 As PictureBox, ByRef PB2 As PictureBox, ByRef PB3 As PictureBox)
+
         AssignPlayers(MP1, MP2, MP3)
         AssignPictures(PB1, PB2, PB3)
 
@@ -64,28 +66,7 @@ Public Class MediaSwapper
         mMedia3.Player = MP3
 
     End Sub
-    Private Function FindMH(path As String) As MediaHandler
-        If mMedia1.MediaPath = path Then
-            Return mMedia1
-        ElseIf mMedia2.MediaPath = path Then
-            Return mMedia2
-        ElseIf mMedia3.MediaPath = path Then
-            Return mMedia3
-        Else
-            Return Nothing
-        End If
-    End Function
-    Private Function FreeMH(c As String, p As String, n As String) As MediaHandler
-        If mMedia1.MediaPath <> c And mMedia1.MediaPath <> p And mMedia1.MediaPath <> n Then
-            Return mMedia1
-        ElseIf mMedia2.MediaPath <> c And mMedia2.MediaPath <> p And mMedia2.MediaPath <> n Then
-            Return mMedia2
-        ElseIf mMedia3.MediaPath <> c And mMedia3.MediaPath <> p And mMedia3.MediaPath <> n Then
-            Return mMedia3
-        Else
-            Return Nothing
-        End If
-    End Function
+
     Private Sub SetIndex(index As Integer)
         Dim Current As String
         Dim Nxt As String

@@ -148,6 +148,7 @@ Public Class MediaHandler
 
                         mMediaDirectory = f.Directory.FullName
                     Else
+                        '   LoadMedia()
                         mMediaPath = DefaultFile
                         mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
                     End If
@@ -478,12 +479,16 @@ Public Class MediaHandler
     Private Sub UpdatePosition() Handles PositionUpdater.Tick
         ' If mResetCounter < 3 Then
         Try
+            If Speed.Paused Then
+
+            Else
                 mPlayPosition = mPlayer.Ctlcontrols.currentPosition
                 Duration = mPlayer.currentMedia.duration
+            End If
             '          mResetCounter += 1
         Catch ex As Exception
 
-            End Try
+        End Try
         '    Else
         '    PositionUpdater.Enabled = False
         '    End If

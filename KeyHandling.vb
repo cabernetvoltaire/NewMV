@@ -1,9 +1,9 @@
 ﻿Public Module KeyHandling
     'Numpad options (not available on Laptop)
     Public KeyJumpToPoint = Keys.Insert
-    Public KeyCycleStartPoint = Keys.Home
+    Public KeyCycleStartPoint = Keys.OemQuestion
     Public KeyCycleFilter = Keys.Scroll
-    Public KeyCycleNavMoveState = Keys.End
+    Public KeyCycleNavMoveState = Keys.Oem7
     Public KeyCycleSortOrder = Keys.Pause
     Public KeyFullscreen = Keys.Scroll + Keys.Control
     Public KeyNextFile = Keys.PageDown
