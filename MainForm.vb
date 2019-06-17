@@ -28,7 +28,6 @@ Public Class MainForm
     Public WithEvents AT As New AutoTrailer
     Public WithEvents X As New OrphanFinder
     ' Public WithEvents Response As New Timer
-    Public LinkCounter As Integer
     Public FocusControl As New Control
     Public DraggedFolder As String
     Public CurrentFileList As New List(Of String)
@@ -52,10 +51,10 @@ Public Class MainForm
             End If
         Next
         AllFaveMinder.NewPath(GlobalFavesPath)
-        PopulateLinkList(filepath)
+        PopulateLinkList(filepath, Media)
 
     End Sub
-    Public Sub PopulateLinkList(filepath As String)
+    Public Sub PopulateLinkList(filepath As String, Media As MediaHandler)
         If filepath = "" Then Exit Sub
         Media.Markers.Clear()
         Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
@@ -533,30 +532,25 @@ Public Class MainForm
         FullScreen.Changing = True
         If blnGo Then
             Dim s As String = Media.MediaPath
-            'MSFiles.URLSZero()
-            'MSFiles.AssignPlayers(FullScreen.FSWMP, FullScreen.FSWMP2, FullScreen.FSWMP3)
-            ' MSFiles.AssignPictures(FullScreen.fullScreenPicBox, FullScreen.fullScreenPicBox, FullScreen.fullScreenPicBox)
-            '  FullScreen.FSWMP = Media.Player
             Dim screen As Screen
             If blnSecondScreen Then
                 screen = Screen.AllScreens(1)
-
             Else
                 screen = Screen.AllScreens(0)
                 SplitterPlace(0.75)
             End If
             FullScreen.StartPosition = FormStartPosition.CenterScreen
-
             FullScreen.Location = screen.Bounds.Location + New Point(100, 100)
             Media.Player.Size = screen.Bounds.Size
-
             FullScreen.FirstMediaIndex = lbxFiles.SelectedIndex
             FullScreen.Show()
-
+            CancelDisplay()
         Else
             SplitterPlace(0.25)
             MSFiles.AssignPlayers(MainWMP1, MainWMP2, MainWMP3)
             MSFiles.AssignPictures(PictureBox1, PictureBox2, PictureBox3)
+
+
             '   MSFiles.ListIndex = lbxFiles.SelectedIndex
             FullScreen.Close()
             FullScreen.Changing = False
@@ -575,6 +569,7 @@ Public Class MainForm
 
 
     Public Sub AdvanceFile(blnForward As Boolean, Optional Random As Boolean = False)
+
         'Advance using whichever control has focus 
         'Unless control pressed, in which case, always advance lbxfiles. 
         Dim diff As Integer
@@ -871,7 +866,7 @@ Public Class MainForm
                     DrawScrubberMarks()
                 Else
                     CreateFavourite(Media.MediaPath)
-                    PopulateLinkList(Media.MediaPath)
+                    PopulateLinkList(Media.MediaPath, Media)
                 End If
 
             Case KeyJumpToPoint
@@ -881,13 +876,20 @@ Public Class MainForm
             Case KeyJumpToMark, LKeyMarkPoint
                 'Addmarker(Media.MediaPath)
                 If Media.Markers.Count <> 0 Then
-                    Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
+                    ' Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
+                    If e.Alt Then
+                        Media.LinkCounter = Media.RandomCounter
+                    Else
+                        Media.LinkCounter = Media.FindNearestCounter(e.Modifiers = Keys.Control)
+                    End If
                     Media.Bookmark = -2
                     Media.MediaJumpToMarker()
+
                 Else
                     MediaLargeJump(e, e.Modifiers = Keys.Control, True)
                     'JumpRandom(e.Control And e.Shift)
                 End If
+                e.Handled = True
                 e.SuppressKeyPress = True
 
             Case KeyMuteToggle
@@ -1006,24 +1008,24 @@ Public Class MainForm
 
 
 
-    Private Function NextBookmark2(forward As Boolean) As Long
-        Dim count = Media.Markers.Count
-        If count = 0 Then
-            Return Media.StartPoint.StartPoint
-            Exit Function
-        End If
-        If forward Then
-            LinkCounter += 1
-        Else
-            LinkCounter += 1
-        End If
-        If count = 1 Then
-            Return Media.Markers(0)
-        Else
-            Return Media.Markers((LinkCounter) Mod (count))
-        End If
+    'Private Function NextBookmark2(forward As Boolean) As Long
+    '    Dim count = Media.Markers.Count
+    '    If count = 0 Then
+    '        Return Media.StartPoint.StartPoint
+    '        Exit Function
+    '    End If
+    '    If forward Then
+    '        LinkCounter += 1
+    '    Else
+    '        LinkCounter += 1
+    '    End If
+    '    If count = 1 Then
+    '        Return Media.Markers(0)
+    '    Else
+    '        Return Media.Markers((LinkCounter) Mod (count))
+    '    End If
 
-    End Function
+    'End Function
 
     Private Sub DeleteFiles(e As KeyEventArgs)
         'Use Movefiles with current selected list, and option to delete. 
@@ -1167,9 +1169,23 @@ Public Class MainForm
         MainWMP3.stretchToFit = True
         'Media.Player.uiMode = "FULL"
         If Not separate Then
+
             MainWMP1.Dock = DockStyle.Fill 'Swapper
             MainWMP2.Dock = DockStyle.Fill
             MainWMP3.Dock = DockStyle.Fill
+        Else
+            'MainWMP1.stretchToFit = False
+            'MainWMP2.stretchToFit = False
+            'MainWMP3.stretchToFit = False
+            ''MainWMP1.Width = 620
+            'MainWMP1.Height = 491
+            'MainWMP2.Size = MainWMP1.Size
+            'MainWMP3.Size = MainWMP1.Size
+
+            'MainWMP1.Dock = DockStyle.Left 'Swapper
+            'MainWMP2.Dock = DockStyle.Right
+            'MainWMP3.Dock = DockStyle.Bottom
+
         End If
         MainWMP1.settings.volume = 100
         MainWMP2.settings.volume = 100
@@ -1193,7 +1209,7 @@ Public Class MainForm
         CollapseShowlist(True)
         SetupPlayers()
         PositionUpdater.Enabled = False
-        tmrPicLoad.Interval = lngInterval * 15
+        'tmrPicLoad.Interval = lngInterval * 15
         currentPicBox = PictureBox1
         Media.Picture = currentPicBox
         tbPercentage.Enabled = True
@@ -1310,6 +1326,9 @@ Public Class MainForm
         If e.KeyData <> (Keys.F4 And AltDown) Then
             UpdateButtonAppearance()
         End If
+        e.Handled = True
+        e.SuppressKeyPress = True
+
     End Sub
     Private Sub frmMain_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
 
@@ -1353,14 +1372,14 @@ Public Class MainForm
             End If
             '  If lbx.Name <> "lbxShowlist" Then
 
+
             If Media.IsLink Then
-                PopulateLinkList(Media.LinkPath)
+                PopulateLinkList(Media.LinkPath, Media)
             Else
-                PopulateLinkList(lbx.SelectedItem)
+                PopulateLinkList(Media.MediaPath, Media)
             End If
 
             Media.SetLink(0)
-
 
 
         End With
@@ -1422,20 +1441,6 @@ Public Class MainForm
 
 
 
-    Private Sub AllSubFoldersToolStripMenuItem_Click(sender As Object, e As EventArgs)
-        AddFiles(True)
-    End Sub
-
-
-    Private Sub CurrentOnlyToolStripMenuItem3_Click(sender As Object, e As EventArgs)
-        AddFiles(False)
-    End Sub
-
-    Private Sub AllSubfoldersToolStripMenuItem1_Click(sender As Object, e As EventArgs)
-        AddFiles(True)
-    End Sub
-
-
     'Public Sub UpdateBoxes(strold As String, strnew As String)
 
     '    lbxFiles.Items.Remove(strold)
@@ -1489,71 +1494,52 @@ Public Class MainForm
         ' ToolStripButton3_Click(Me, e)
         tmrInitialise.Enabled = False
     End Sub
-    Public Sub LoadMedia(sender As Object, e As EventArgs) Handles tmrPicLoad.Tick 'TODO Only used for first loads. 
-        '  If T.IsAlive Then Exit Sub
-        Debug.Print("")
+    'Public Sub LoadMedia(sender As Object, e As EventArgs) Handles tmrPicLoad.Tick 'TODO Only used for first loads. 
+    '    '  If T.IsAlive Then Exit Sub
+    '    Debug.Print("")
 
-        ReportTime("PicLoadTick")
-        HighlightCurrent(Media.MediaPath) 'Swapper
-        fType = Media.MediaType
+    '    ReportTime("PicLoadTick")
+    '    HighlightCurrent(Media.MediaPath) 'Swapper
+    '    fType = Media.MediaType
 
-        Select Case fType
-            Case Filetype.Doc
+    '    Select Case fType
+    '        Case Filetype.Doc
 
-            Case Filetype.Movie
+    '        Case Filetype.Movie
 
-                If Media.IsLink Then
-                    If Media.Bookmark <> -1 Then
-                        If Media.StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
-                            Media.StartPoint.Absolute = Media.Bookmark
-                        End If
+    '            If Media.IsLink Then
+    '                If Media.Bookmark <> -1 Then
+    '                    If Media.StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
+    '                        Media.StartPoint.Absolute = Media.Bookmark
+    '                    End If
 
-                    End If
-                    'HandleMovie(Media.LinkPath)
-                Else
-                    'HandleMovie(Media.MediaPath)
-                End If
+    '                End If
+    '                'HandleMovie(Media.LinkPath)
+    '            Else
+    '                'HandleMovie(Media.MediaPath)
+    '            End If
 
-            Case Filetype.Pic
-                If Media.IsLink Then
-                    HandlePic(Media.LinkPath)
-                Else
-                    HandlePic(Media.MediaPath)
-                End If
+    '        Case Filetype.Pic
+    '            If Media.IsLink Then
+    '                HandlePic(Media.LinkPath)
+    '            Else
+    '                HandlePic(Media.MediaPath)
+    '            End If
 
 
-            Case Filetype.Unknown
-                tbLastFile.Text = "Unhandled file:" & Media.MediaPath
+    '        Case Filetype.Unknown
+    '            tbLastFile.Text = "Unhandled file:" & Media.MediaPath
 
-                tmrPicLoad.Enabled = False
-                Exit Sub
-        End Select
-        'MainWMP.fullScreen = blnFullScreen
-        If Media.MediaPath <> "" Then My.Computer.Registry.CurrentUser.SetValue("File", Media.MediaPath)
-        tmrPicLoad.Enabled = False
-        'If FullScreen.Changing Then FullScreen.Changing = False
-    End Sub
+    '            tmrPicLoad.Enabled = False
+    '            Exit Sub
+    '    End Select
+    '    'MainWMP.fullScreen = blnFullScreen
+    '    If Media.MediaPath <> "" Then My.Computer.Registry.CurrentUser.SetValue("File", Media.MediaPath)
+    '    tmrPicLoad.Enabled = False
+    '    'If FullScreen.Changing Then FullScreen.Changing = False
+    'End Sub
 
-    Public Sub HandlePic(path As String)
 
-        Dim img As Image
-        If Not currentPicBox.Image Is Nothing Then
-            DisposePic(currentPicBox)
-        End If
-        img = GetImage(path)
-        If img Is Nothing Then
-            tmrPicLoad.Enabled = False
-            Exit Sub
-        End If
-        'If blnFullScreen Then FullScreen.PictureBox1.Image = img
-        OrientPic(img)
-        'Resume if in middle of slideshow
-        If blnRestartSlideShowFlag Then
-            tmrSlideShow.Enabled = True
-            blnRestartSlideShowFlag = False
-        End If
-        MovietoPic(img)
-    End Sub
     ''' <summary>
     ''' Jumps video to NewPosition
     ''' </summary>
@@ -1893,7 +1879,11 @@ Public Class MainForm
     'End Sub
 
     Public Sub BundleFiles(lbx1 As ListBox, strFolder As String)
-        SelectSubList(False)
+        If lbx1.SelectedItems.Count > 1 Then
+        Else
+            SelectSubList(False)
+
+        End If
         blnSuppressCreate = False
         MoveFiles(ListfromSelectedInListbox(lbx1), strFolder, lbx1)
         tvMain2.RefreshTree(CurrentFolder)
@@ -2583,9 +2573,8 @@ Public Class MainForm
     End Sub
 
     Private Sub btn8_DragDrop(sender As Object, e As DragEventArgs) Handles btn8.DragDrop, btn1.DragDrop
-        If sender = btn1 Then
-            AssignButton(1, e.Data.GetData(DataFormats.Text).ToString)
-        End If
+        Dim i As Integer = Val(sender.name(3))
+        AssignButton(i - 1, e.Data.GetData(DataFormats.Text).ToString)
     End Sub
 
     Private Sub RefreshSelectedLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RefreshSelectedLinksToolStripMenuItem.Click
@@ -2611,7 +2600,7 @@ Public Class MainForm
 
     Private Sub lbxGroups_DoubleClick(sender As Object, e As EventArgs) Handles lbxGroups.DoubleClick
         FNG.AdvanceOption()
-        FNG.Filenames = CurrentFileList
+        FNG.Filenames = FBH.ItemList
     End Sub
 
     Private Sub MainWMP2_PlayStateChange(sender As Object, e As _WMPOCXEvents_PlayStateChangeEvent) 'Handles MainWMP2.PlayStateChange
@@ -2760,5 +2749,22 @@ Public Class MainForm
         '   Scrubber.SuspendLayout()
     End Sub
 
+    Private Sub HideDeadLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HideDeadLinksToolStripMenuItem.Click
+        SelectDeadLinks(lbxFiles)
+        FBH.RemoveItems(ListfromSelectedInListbox(lbxFiles))
+    End Sub
 
+    Private Sub InvertSelectionToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles InvertSelectionToolStripMenuItem.Click
+        FBH.InvertSelected()
+    End Sub
+
+    Private Sub chbSeparate_CheckedChanged(sender As Object, e As EventArgs) Handles chbSeparate.CheckedChanged
+        'separate = chbSeparate.Checked
+        'SetupPlayers()
+
+    End Sub
+
+    Private Sub lbxGroups_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbxGroups.SelectedIndexChanged
+
+    End Sub
 End Class

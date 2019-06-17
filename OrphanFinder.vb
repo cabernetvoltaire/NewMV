@@ -79,7 +79,9 @@
                 'TODO: What about files which occur in multiple places, or different files with the same name?
             End While
             If My.Computer.FileSystem.FileExists(newlink) Then
-                mFoundParents.Add(n, newlink)
+                If Not mFoundParents.ContainsKey(n) Then
+                    mFoundParents.Add(n, newlink)
+                End If
             Else
 
                 Dim s = filename & " was not found anywhere inside the hierarchy " & Rootpath

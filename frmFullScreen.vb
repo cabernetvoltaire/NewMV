@@ -8,7 +8,12 @@ Public Class FullScreen
         InitialisePlayer(FSWMP)
         InitialisePlayer(FSWMP3)
         InitialisePlayer(FSWMP2)
+
         MSFiles.AssignPlayers(FSWMP, FSWMP2, FSWMP3)
+        FSWMP.URL = MainForm.MainWMP1.URL
+        FSWMP2.URL = MainForm.MainWMP2.URL
+        FSWMP3.URL = MainForm.MainWMP3.URL
+
         MSFiles.AssignPictures(fullScreenPicBox, PictureBox1, PictureBox2)
         MSFiles.ListIndex = MainForm.lbxFiles.SelectedIndex
 

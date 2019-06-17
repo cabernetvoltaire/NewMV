@@ -23,6 +23,15 @@
             mListbox = value
         End Set
     End Property
+    Private Property mCurrentIndex As Integer
+    Public Property CurrentIndex() As Integer
+        Get
+            Return mCurrentIndex
+        End Get
+        Set(ByVal value As Integer)
+            mCurrentIndex = value
+        End Set
+    End Property
 #End Region
 #Region "Methods"
     Public Sub FilterList()
@@ -46,6 +55,25 @@
             ListBox.Items.Add(f)
         Next
         'SetFirst()
+    End Sub
+    Public Sub InvertSelected()
+        MsgBox("Needs fixing")
+        Exit Sub
+        ListBox.SelectionMode = SelectionMode.MultiSimple
+        Dim selected As New List(Of String)
+        For Each m In ListBox.SelectedItems
+            selected.Add(m)
+        Next
+
+        ListBox.ClearSelected()
+        Dim All As New ListBox.ObjectCollection(ListBox)
+        For Each x In All
+            If selected.Contains(x) Then
+            Else
+                ListBox.SelectedItems.Add(x)
+            End If
+        Next
+
     End Sub
     Public Sub RemoveItems(List As List(Of String))
         For Each m In List

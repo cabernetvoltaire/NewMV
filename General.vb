@@ -279,7 +279,12 @@ Public Module General
         'End Try
 
     End Sub
-
+    Public Sub TransferURLS(MS1 As MediaSwapper, MS2 As MediaSwapper)
+        MS1.Media1 = MS2.Media1
+        MS1.Media2 = MS2.Media2
+        MS1.Media3 = MS2.Media3
+        MS1.ListIndex = MS2.ListIndex
+    End Sub
     Public Function TimeOperation(blnStart As Boolean) As TimeSpan
         Static StartTime As Date
         If blnStart Then
@@ -538,9 +543,9 @@ Public Module General
                             End While
                             NewListL.Add(l, file.FullName)
 
+                        Catch ex As FileNotFoundException
                         Catch ex As Exception
                             MsgBox("Unhandled Error in SetPlayOrder" & vbCrLf & ex.Message)
-                        Catch ex As FileNotFoundException
 
 
                         End Try

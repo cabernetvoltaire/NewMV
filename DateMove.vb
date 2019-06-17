@@ -19,6 +19,7 @@ Class DateMove
     End Enum
     Private MonthNames As String() = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}
     Private SizeNames As String() = {"Size 0- Tiny", "Size 1-Small", "Size 2-Medium", "Size 3-Large", "Size 4-Very Large", "Size 5-Gigantic"}
+    Private AlphaName As String() = {"A-F", "G-L", "M-R", "S-Z"}
     Public Property Folder() As String
         Get
             Return mFolder
@@ -155,14 +156,14 @@ Class DateMove
         Next
         RaiseEvent FilesMoved(Nothing, Nothing)
     End Sub
-    Private Sub GetFoldersBelow(folderpath As String, recurse As Boolean)
+    'Private Sub GetFoldersBelow(folderpath As String, recurse As Boolean)
 
-        Dim s As New IO.DirectoryInfo(folderpath)
-        For Each m In s.GetDirectories
-            If recurse Then GetFoldersBelow(m.FullName, recurse)
-            mFolders.Add(m)
-        Next
+    '    Dim s As New IO.DirectoryInfo(folderpath)
+    '    For Each m In s.GetDirectories
+    '        If recurse Then GetFoldersBelow(m.FullName, recurse)
+    '        mFolders.Add(m)
+    '    Next
 
-    End Sub
+    'End Sub
 End Class
 

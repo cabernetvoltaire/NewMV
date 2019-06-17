@@ -12,7 +12,7 @@ Public Class MediaHandler
 
 
     Private WithEvents ResetPosition As New Timer
-    Public WithEvents PositionUpdater As New Timer
+    Public WithEvents PositionUpdater As New Timer With {.Interval = 100}
     Private DefaultFile As String = "C:\exiftools.exe"
     Public WithEvents StartPoint As New StartPointHandler
     Public WithEvents Speed As New SpeedHandler
@@ -165,7 +165,7 @@ Public Class MediaHandler
     Public Sub New(value As String)
         '      Player = mPlayer
         Name = value
-        PositionUpdater.Interval = 500
+        ' PositionUpdater.Interval = 500
         PositionUpdater.Enabled = False
         ResetPosition.Interval = 1000
         'mSndH.SoundPlayer = Sound
@@ -243,22 +243,52 @@ Public Class MediaHandler
         Return path
 
     End Function
+    Private Property mlinkcounter As Integer
+#Region "Linkhandling"
 
-    Private mLinkCounter As Integer = mMarkers.Count - 1
+    Public Property LinkCounter As Integer
+        Get
+            Return mlinkcounter
+        End Get
+        Set
+            mlinkcounter = Value
+        End Set
+    End Property
+
     Public Function IncrementLinkCounter(Forward As Boolean) As Integer
         If mMarkers.Count = 0 Then Exit Function
         If Forward Then
-            mLinkCounter += 1
+            mlinkcounter += 1
         Else
-            mLinkCounter -= 1
+            mlinkcounter -= 1
         End If
-        If mLinkCounter < 0 Then
-            mLinkCounter = mLinkCounter + mMarkers.Count
+        If mlinkcounter < 0 Then
+            mlinkcounter = mlinkcounter + mMarkers.Count
         End If
-        mLinkCounter = mLinkCounter Mod (mMarkers.Count)
-        Return mLinkCounter
-    End Function
+        mlinkcounter = mlinkcounter Mod (mMarkers.Count)
 
+        Return mlinkcounter
+    End Function
+    Public Function RandomCounter() As Integer
+        Static done As New List(Of Integer)
+
+        If mMarkers.Count = 0 Then
+            Return -1
+            Exit Function
+        End If
+        Dim ret As Integer
+        ret = Int(Rnd() * mMarkers.Count)
+        While done.Contains(ret) And done.Count < mMarkers.Count
+            ret = Int(Rnd() * mMarkers.Count)
+        End While
+        If done.Count = mMarkers.Count Then
+            done.Clear()
+            ret = Int(Rnd() * mMarkers.Count)
+
+        End If
+        done.Add(ret)
+        Return ret
+    End Function
     Public Function FindNearestCounter(Last As Boolean) As Integer
         If mMarkers.Count = 0 Then
             Return -1
@@ -266,29 +296,33 @@ Public Class MediaHandler
         End If
         Dim ret As Integer
         Dim i As Integer = 0
-        For i = 1 To mMarkers.Count - 1
-            If mMarkers(i) > mPlayPosition Then
-                If Last Then
-                    ret = (i - 1)
-                Else
-                    ret = (i)
+        For i = 0 To mMarkers.Count - 1
+            If Last Then
+                If mMarkers(i) > mPlayPosition - 5 Then
+                    ret = i - 1
+                    Return ret
                 End If
-                Return ret
-                Exit For
+            Else
+                If mMarkers(i) > mPlayPosition + 5 Then
+                    ret = i
+                    Return ret
+                End If
             End If
         Next
-        Return -1
+        Return 0
 
     End Function
     Public Sub SetLink(Optional num = 0)
         If num = 0 And mMarkers.Count > 0 Then
-            mLinkCounter = mMarkers.Count - 1
+            'mLinkCounter = mMarkers.Count - 1
+            mlinkcounter = 0
         Else
-            mLinkCounter = num
+            mlinkcounter = num
 
         End If
 
     End Sub
+#End Region
 
     Public Sub MediaJumpToMarker(Optional ToEnd As Boolean = False)
         'It's a link with a bookmark
@@ -300,7 +334,7 @@ Public Class MediaHandler
             End If
         Else
             'Not a link
-            If ToEnd Then
+            If ToEnd Then 'Special Case where jump to end button pressed
                 Dim m As New StartPointHandler With {
                         .Duration = mDuration,
                         .State = StartPointHandler.StartTypes.NearEnd
@@ -312,8 +346,9 @@ Public Class MediaHandler
                 Else
                     If mMarkers.Count <> 0 And StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
                         Try
-                            mPlayPosition = mMarkers.Item(mLinkCounter)
-                            Report("LinkCounter " & mLinkCounter & " at " & mMarkers.Item(mLinkCounter), 3)
+                            mPlayPosition = mMarkers.Item(mlinkcounter)
+                            '                            If mPlayer Is Media.Player Then MsgBox(mPlayPosition)
+                            Report("LinkCounter " & mlinkcounter & " at " & mMarkers.Item(mlinkcounter), 3)
                         Catch ex As Exception
                             mPlayPosition = StartPoint.StartPoint
                         End Try
@@ -324,9 +359,8 @@ Public Class MediaHandler
             End If
         End If
         If mPlayPosition > mDuration Then
-            Report(mPlayPosition & "Over-reach" & mDuration, 2, False)
+            Report(mPlayPosition & "Over-reach" & mDuration, 0, False)
         Else
-
             mPlayer.Ctlcontrols.currentPosition = mPlayPosition
             'Sound.Ctlcontrols.currentPosition = mPlayPosition
         End If
@@ -370,7 +404,7 @@ Public Class MediaHandler
                     Sound.URL = URL
                     LastURL = URL
                 Catch EX As Exception
-
+                    Debug.Print(EX.Message)
                 End Try
 
             End If
@@ -407,9 +441,6 @@ Public Class MediaHandler
 
     End Sub
 
-
-
-
     Public Sub OrientPic(img As Image)
         Select Case ImageOrientation(img)
             Case ExifOrientations.BottomRight
@@ -426,10 +457,11 @@ Public Class MediaHandler
 
 #Region "Event Handlers"
     Private Sub Uhoh() Handles mPlayer.ErrorEvent
-        'MsgBox("Error in MediaPlayer")
+        MsgBox("Error in MediaPlayer")
     End Sub
 
     Private mResetCounter As Integer
+
     Private Sub PlaystateChange(sender As Object, e As _WMPOCXEvents_PlayStateChangeEvent) Handles mPlayer.PlayStateChange
         Select Case e.newState
             Case WMPLib.WMPPlayState.wmppsStopped
@@ -445,8 +477,8 @@ Public Class MediaHandler
                 mSndH.Slow = False
                 PositionUpdater.Enabled = True
                 mResetCounter = 0
-                Duration = mPlayer.currentMedia.duration
-                StartPoint.Duration = mPlayer.currentMedia.duration
+                mDuration = mPlayer.currentMedia.duration
+                StartPoint.Duration = mDuration
                 MediaJumpToMarker()
 
                 If FullScreen.Changing Or Speed.Unpause Then 'Hold current position if switching to FS or back. 
@@ -475,15 +507,18 @@ Public Class MediaHandler
         RaiseEvent StartChanged(sender, e)
 
     End Sub
-
+    ''' <summary>
+    ''' Ensures mPlayPosition is always up to date (to within interval)
+    ''' </summary>
     Private Sub UpdatePosition() Handles PositionUpdater.Tick
+        ' Exit Sub
         ' If mResetCounter < 3 Then
         Try
             If Speed.Paused Then
 
             Else
                 mPlayPosition = mPlayer.Ctlcontrols.currentPosition
-                Duration = mPlayer.currentMedia.duration
+                mDuration = mPlayer.currentMedia.duration
             End If
             '          mResetCounter += 1
         Catch ex As Exception
@@ -495,6 +530,7 @@ Public Class MediaHandler
 
     End Sub
     Private Sub ResetPos() Handles ResetPosition.Tick
+        ' PositionUpdater.Enabled = False
         Try
             MediaJumpToMarker()
         Catch ex As Exception
@@ -503,6 +539,7 @@ Public Class MediaHandler
 
     End Sub
     Public Sub PlaceResetter(ResetOn As Boolean)
+        'MediaJumpToMarker()
         ResetPosition.Enabled = ResetOn
 
     End Sub

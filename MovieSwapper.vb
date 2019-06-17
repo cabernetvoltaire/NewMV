@@ -2,9 +2,9 @@
 Public Class MediaSwapper
 
     Public NextF As New NextFile
-    Private mMedia1 As New MediaHandler("mMedia1")
-    Private mMedia2 As New MediaHandler("mMedia2")
-    Private mMedia3 As New MediaHandler("mMedia3")
+    Public Media1 As New MediaHandler("mMedia1")
+    Public Media2 As New MediaHandler("mMedia2")
+    Public Media3 As New MediaHandler("mMedia3")
 
 
     Private mFileList As New List(Of String) '
@@ -55,15 +55,15 @@ Public Class MediaSwapper
 
     End Sub
     Public Sub AssignPictures(ByRef PB1 As PictureBox, ByRef PB2 As PictureBox, ByRef PB3 As PictureBox)
-        mMedia1.Picture = PB1
-        mMedia2.Picture = PB2
-        mMedia3.Picture = PB3
+        Media1.Picture = PB1
+        Media2.Picture = PB2
+        Media3.Picture = PB3
 
     End Sub
     Public Sub AssignPlayers(ByRef MP1 As AxWindowsMediaPlayer, ByRef MP2 As AxWindowsMediaPlayer, ByRef MP3 As AxWindowsMediaPlayer)
-        mMedia1.Player = MP1
-        mMedia2.Player = MP2
-        mMedia3.Player = MP3
+        Media1.Player = MP1
+        Media2.Player = MP2
+        Media3.Player = MP3
 
     End Sub
 
@@ -83,12 +83,12 @@ Public Class MediaSwapper
         Prev = NextF.PreviousItem
 
         Select Case Current
-            Case mMedia2.MediaPath
-                RotateMedia(mMedia2, mMedia3, mMedia1)
-            Case mMedia3.MediaPath
-                RotateMedia(mMedia3, mMedia1, mMedia2)
+            Case Media2.MediaPath
+                RotateMedia(Media2, Media3, Media1)
+            Case Media3.MediaPath
+                RotateMedia(Media3, Media1, Media2)
             Case Else
-                RotateMedia(mMedia1, mMedia2, mMedia3)
+                RotateMedia(Media1, Media2, Media3)
         End Select
         oldindex = index
     End Sub
@@ -126,9 +126,9 @@ Public Class MediaSwapper
 
     End Sub
     Public Sub SetStartStates(ByRef SH As StartPointHandler)
-        mMedia1.StartPoint.State = SH.State
-        mMedia2.StartPoint.State = SH.State
-        mMedia3.StartPoint.State = SH.State
+        Media1.StartPoint.State = SH.State
+        Media2.StartPoint.State = SH.State
+        Media3.StartPoint.State = SH.State
 
 
     End Sub
@@ -139,11 +139,11 @@ Public Class MediaSwapper
         'dur = mMedia1.StartPoint.Duration
         'dur = mMedia3.StartPoint.Duration
         'dur = mMedia2.StartPoint.Duration
-        mMedia1.StartPoint = SH
+        Media1.StartPoint = SH
 
-        mMedia2.StartPoint = SH
+        Media2.StartPoint = SH
 
-        mMedia3.StartPoint = SH
+        Media3.StartPoint = SH
         '  SetIndex(ListIndex)
         'mMedia2.StartPoint.Duration = dur
         ' mMedia1.StartPoint.Duration = dur
@@ -151,24 +151,24 @@ Public Class MediaSwapper
 
     End Sub
     Public Sub URLSZero()
-        mMedia1.Player.URL = ""
-        mMedia2.Player.URL = ""
-        mMedia3.Player.URL = ""
-        mMedia1.Picture.Image = Nothing
-        mMedia2.Picture.Image = Nothing
-        mMedia3.Picture.Image = Nothing
+        Media1.Player.URL = ""
+        Media2.Player.URL = ""
+        Media3.Player.URL = ""
+        Media1.Picture.Image = Nothing
+        Media2.Picture.Image = Nothing
+        Media3.Picture.Image = Nothing
 
     End Sub
     Public Sub ResettersOff()
-        mMedia1.PlaceResetter(False)
-        mMedia2.PlaceResetter(False)
-        mMedia3.PlaceResetter(False)
+        Media1.PlaceResetter(False)
+        Media2.PlaceResetter(False)
+        Media3.PlaceResetter(False)
     End Sub
 
     Public Sub MuteAll()
-        mMedia1.Player.settings.mute = True
-        mMedia2.Player.settings.mute = True
-        mMedia3.Player.settings.mute = True
+        Media1.Player.settings.mute = True
+        Media2.Player.settings.mute = True
+        Media3.Player.settings.mute = True
 
     End Sub
     Private Sub ShowPlayer(ByRef MHX As MediaHandler)
@@ -188,24 +188,24 @@ Public Class MediaSwapper
 
     End Sub
     Public Sub ClickAllPics()
-        PicClick(mMedia1.Picture)
-        PicClick(mMedia2.Picture)
-        PicClick(mMedia3.Picture)
+        PicClick(Media1.Picture)
+        PicClick(Media2.Picture)
+        PicClick(Media3.Picture)
 
     End Sub
     Private Sub HideMedias(CurrentMH As MediaHandler)
         Exit Sub
-        If mMedia1 IsNot CurrentMH Then
-            mMedia1.Picture.Visible = False
-            mMedia1.Player.Visible = False
+        If Media1 IsNot CurrentMH Then
+            Media1.Picture.Visible = False
+            Media1.Player.Visible = False
         End If
-        If mMedia2 IsNot CurrentMH Then
-            mMedia2.Picture.Visible = False
-            mMedia2.Player.Visible = False
+        If Media2 IsNot CurrentMH Then
+            Media2.Picture.Visible = False
+            Media2.Player.Visible = False
         End If
-        If mMedia3 IsNot CurrentMH Then
-            mMedia3.Picture.Visible = False
-            mMedia3.Player.Visible = False
+        If Media3 IsNot CurrentMH Then
+            Media3.Picture.Visible = False
+            Media3.Player.Visible = False
         End If
 
     End Sub

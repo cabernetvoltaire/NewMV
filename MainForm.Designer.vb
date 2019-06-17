@@ -125,6 +125,7 @@ Partial Class MainForm
         Me.lbxGroups = New System.Windows.Forms.ListBox()
         Me.lblAttributes = New System.Windows.Forms.Label()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.chbSeparate = New System.Windows.Forms.CheckBox()
         Me.chbEncrypt = New System.Windows.Forms.CheckBox()
         Me.chbPreviewLinks = New System.Windows.Forms.CheckBox()
         Me.CheckBox1 = New System.Windows.Forms.CheckBox()
@@ -207,6 +208,7 @@ Partial Class MainForm
         Me.ByLinkFolderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PromoteFolderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FilterMoveToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.InvertSelectionToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FullScreenToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.Screen1ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Screen2ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -228,6 +230,7 @@ Partial Class MainForm
         Me.DisplayedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator11 = New System.Windows.Forms.ToolStripSeparator()
         Me.SelectNonFavouritsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.HideDeadLinksToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ButtonFormToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ShowlistToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DashboardToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -1055,6 +1058,7 @@ Partial Class MainForm
         '
         'btn1
         '
+        Me.btn1.AllowDrop = True
         Me.btn1.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btn1.Location = New System.Drawing.Point(48, 18)
         Me.btn1.Margin = New System.Windows.Forms.Padding(4)
@@ -1324,6 +1328,7 @@ Partial Class MainForm
         '
         'GroupBox3
         '
+        Me.GroupBox3.Controls.Add(Me.chbSeparate)
         Me.GroupBox3.Controls.Add(Me.chbEncrypt)
         Me.GroupBox3.Controls.Add(Me.chbPreviewLinks)
         Me.GroupBox3.Controls.Add(Me.CheckBox1)
@@ -1332,10 +1337,21 @@ Partial Class MainForm
         Me.GroupBox3.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupBox3.Name = "GroupBox3"
         Me.GroupBox3.Padding = New System.Windows.Forms.Padding(4)
-        Me.GroupBox3.Size = New System.Drawing.Size(241, 138)
+        Me.GroupBox3.Size = New System.Drawing.Size(241, 163)
         Me.GroupBox3.TabIndex = 49
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Options"
+        '
+        'chbSeparate
+        '
+        Me.chbSeparate.AutoSize = True
+        Me.chbSeparate.Dock = System.Windows.Forms.DockStyle.Top
+        Me.chbSeparate.Location = New System.Drawing.Point(4, 113)
+        Me.chbSeparate.Name = "chbSeparate"
+        Me.chbSeparate.Size = New System.Drawing.Size(233, 29)
+        Me.chbSeparate.TabIndex = 53
+        Me.chbSeparate.Text = "Separate"
+        Me.chbSeparate.UseVisualStyleBackColor = True
         '
         'chbEncrypt
         '
@@ -1394,9 +1410,6 @@ Partial Class MainForm
         Me.ToolTip1.SetToolTip(Me.lbxReport, "Click to select subfolders to create")
         '
         'tmrUpdateFileList
-        '
-        '
-        'tmrPicLoad
         '
         '
         'tmrJumpVideo
@@ -1713,7 +1726,7 @@ Partial Class MainForm
         '
         'HarvestFolderToolStripMenuItem
         '
-        Me.HarvestFolderToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteEmptyFoldersToolStripMenuItem, Me.HarvestFoldersToolStripMenuItem, Me.ToolStripSeparator8, Me.BundleToolStripMenuItem, Me.BurstFolderToolStripMenuItem, Me.ToolStripSeparator9, Me.GroupToolStripMenuItem, Me.PromoteFolderToolStripMenuItem, Me.FilterMoveToolStripMenuItem})
+        Me.HarvestFolderToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteEmptyFoldersToolStripMenuItem, Me.HarvestFoldersToolStripMenuItem, Me.ToolStripSeparator8, Me.BundleToolStripMenuItem, Me.BurstFolderToolStripMenuItem, Me.ToolStripSeparator9, Me.GroupToolStripMenuItem, Me.PromoteFolderToolStripMenuItem, Me.FilterMoveToolStripMenuItem, Me.InvertSelectionToolStripMenuItem})
         Me.HarvestFolderToolStripMenuItem.Name = "HarvestFolderToolStripMenuItem"
         Me.HarvestFolderToolStripMenuItem.Size = New System.Drawing.Size(157, 34)
         Me.HarvestFolderToolStripMenuItem.Text = "&Folder Actions"
@@ -1850,6 +1863,12 @@ Partial Class MainForm
         Me.FilterMoveToolStripMenuItem.Size = New System.Drawing.Size(426, 34)
         Me.FilterMoveToolStripMenuItem.Text = "Filter &Move"
         '
+        'InvertSelectionToolStripMenuItem
+        '
+        Me.InvertSelectionToolStripMenuItem.Name = "InvertSelectionToolStripMenuItem"
+        Me.InvertSelectionToolStripMenuItem.Size = New System.Drawing.Size(426, 34)
+        Me.InvertSelectionToolStripMenuItem.Text = "Invert Selection"
+        '
         'FullScreenToolStripMenuItem1
         '
         Me.FullScreenToolStripMenuItem1.CheckOnClick = True
@@ -1948,7 +1967,7 @@ Partial Class MainForm
         '
         'DuplicatesToolStripMenuItem
         '
-        Me.DuplicatesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DuplicatesToolStripMenuItem1, Me.ThumbnailsToolStripMenuItem, Me.SelectDeadLinksToolStripMenuItem, Me.RefreshSelectedLinksToolStripMenuItem, Me.ToolStripSeparator11, Me.SelectNonFavouritsToolStripMenuItem})
+        Me.DuplicatesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DuplicatesToolStripMenuItem1, Me.ThumbnailsToolStripMenuItem, Me.SelectDeadLinksToolStripMenuItem, Me.RefreshSelectedLinksToolStripMenuItem, Me.ToolStripSeparator11, Me.SelectNonFavouritsToolStripMenuItem, Me.HideDeadLinksToolStripMenuItem})
         Me.DuplicatesToolStripMenuItem.Name = "DuplicatesToolStripMenuItem"
         Me.DuplicatesToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.D), System.Windows.Forms.Keys)
@@ -2009,6 +2028,12 @@ Partial Class MainForm
         Me.SelectNonFavouritsToolStripMenuItem.Name = "SelectNonFavouritsToolStripMenuItem"
         Me.SelectNonFavouritsToolStripMenuItem.Size = New System.Drawing.Size(391, 34)
         Me.SelectNonFavouritsToolStripMenuItem.Text = "Select Non-Favourites"
+        '
+        'HideDeadLinksToolStripMenuItem
+        '
+        Me.HideDeadLinksToolStripMenuItem.Name = "HideDeadLinksToolStripMenuItem"
+        Me.HideDeadLinksToolStripMenuItem.Size = New System.Drawing.Size(391, 34)
+        Me.HideDeadLinksToolStripMenuItem.Text = "Hide Dead Links"
         '
         'ButtonFormToolStripMenuItem
         '
@@ -2349,4 +2374,7 @@ Partial Class MainForm
     Friend WithEvents ForceDirectoriesReloadToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents RemoveToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents Scrubber As PictureBox
+    Friend WithEvents HideDeadLinksToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents InvertSelectionToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents chbSeparate As CheckBox
 End Class

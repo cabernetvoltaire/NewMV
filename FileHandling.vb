@@ -35,13 +35,14 @@ Module FileHandling
 
     Public Sub OnMediaShown(M As MediaHandler) Handles MSFiles.MediaShown
         Media = M
-        MSFiles.SetStartStates(Media.StartPoint)
+        ' MSFiles.SetStartStates(Media.StartPoint)
         '  Media.MediaJumpToMarker()
         Debug.Print("On Media Shown")
         DebugStartpoint(Media)
         'LabelStartPoint(Media)
+
         MainForm.UpdateFileInfo()
-        '        MainForm.Scrubber.Image = MainForm.Marks.Bitmap
+        '   MainForm.Scrubber.Image = MainForm.Marks.Bitmap
 
         If M.MediaType <> Filetype.Movie Then
             currentPicBox = M.Picture
@@ -51,16 +52,9 @@ Module FileHandling
         '  MainForm.DrawScrubberMarks()
 
     End Sub
-    Public Sub OnMediaLoaded(M As MediaHandler) Handles MSFiles.MediaShown
-        ''Try
-        'SndH.SoundPlayer = MainForm.SoundWMP
-        'SndH.CurrentPlayer = Media.Player
-        'SndH.SPH = MainForm.SP
-        ''Catch ex As Exception
-        ''MsgBox("Failed SNDH")
-        ''End Try
-
-        ''M.Pause(True)
+    Public Sub OnMediaLoaded(M As MediaHandler) Handles MSFiles.LoadedMedia
+        MainForm.PopulateLinkList(M.MediaPath, M)
+        M.SetLink()
     End Sub
 
     Private Sub DebugStartpoint(M As MediaHandler)

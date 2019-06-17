@@ -102,7 +102,7 @@
 
     Private mFrameRate As Integer
     Private _Unpause As Boolean = False
-    Private _AbsoluteJump As Integer = 15
+    Private _AbsoluteJump As Integer = 35
     Private _FractionalJump As Integer = 8
 
     Public Property FrameRate() As Integer
