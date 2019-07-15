@@ -264,44 +264,44 @@ Module FileHandling
     Public Sub MoveFolder(strDir As String, strDest As String)
         MoveFolderNew(strDir, strDest)
         Exit Sub
-        If strDest = "" Then
-            Dim k As New DirectoryInfo(strDir)
-            k.Delete(True)
+        'If strDest = "" Then
+        '    Dim k As New DirectoryInfo(strDir)
+        '    k.Delete(True)
 
-        End If
-        Try
-            With My.Computer.FileSystem
-                Dim dir = New DirectoryInfo(strDir)
-                Dim s As String = dir.Name
-                Dim f As New DirectoryInfo(dir.Parent.FullName)
-                Dim destdir = New DirectoryInfo(strDest)
-                Select Case NavigateMoveState.State
-                    Case StateHandler.StateOptions.Copy
-                        .CopyDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
-                    Case StateHandler.StateOptions.Move
-                        MainForm.CancelDisplay()
-                        Dim flist As New List(Of String)
-                        GetFiles(dir, flist)
+        'End If
+        'Try
+        '    With My.Computer.FileSystem
+        '        Dim dir = New DirectoryInfo(strDir)
+        '        Dim s As String = dir.Name
+        '        Dim f As New DirectoryInfo(dir.Parent.FullName)
+        '        Dim destdir = New DirectoryInfo(strDest)
+        '        Select Case NavigateMoveState.State
+        '            Case StateHandler.StateOptions.Copy
+        '                .CopyDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
+        '            Case StateHandler.StateOptions.Move
+        '                MainForm.CancelDisplay()
+        '                Dim flist As New List(Of String)
+        '                GetFiles(dir, flist)
 
-                        AllFaveMinder.DestinationPath = strDest
-                        AllFaveMinder.CheckFiles(flist)
+        '                AllFaveMinder.DestinationPath = strDest
+        '                AllFaveMinder.CheckFiles(flist)
 
-                        .MoveDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
+        '                .MoveDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
 
 
-                    Case StateHandler.StateOptions.MoveLeavingLink
-                        'Create link directory?
-                        .MoveDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
+        '            Case StateHandler.StateOptions.MoveLeavingLink
+        '                'Create link directory?
+        '                .MoveDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
 
-                    Case StateHandler.StateOptions.CopyLink
-                        'Creat link directory?
+        '            Case StateHandler.StateOptions.CopyLink
+        '                'Creat link directory?
 
-                End Select
-                UpdateButton(strDir, strDest & "\" & s) 'todo doesnt handle sub-tree
-            End With
-        Catch ex As Exception
-            MsgBox(ex.Message) '
-        End Try
+        '        End Select
+        '        UpdateButton(strDir, strDest & "\" & s) 'todo doesnt handle sub-tree
+        '    End With
+        'Catch ex As Exception
+        '    MsgBox(ex.Message) '
+        'End Try
 
     End Sub
 
@@ -490,21 +490,7 @@ Module FileHandling
     End Sub
 
 
-    Public Sub MoveFiles(list As List(Of String), Destination As String)
-        With My.Computer.FileSystem
-            For Each f In list
-                If Len(f) < 200 Then
-                    Dim m = New IO.FileInfo(f)
-                    Try
-                        .MoveFile(m.FullName, Destination & "\" & m.Name)
 
-                    Catch ex As Exception
-                        Continue For
-                    End Try
-                End If
-            Next
-        End With
-    End Sub
 
     Public Function CreateNewDirectory(tv As FileSystemTree, strDest As String, blnAsk As Boolean) As String
         Dim blnCreate As Boolean = True

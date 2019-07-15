@@ -30,20 +30,20 @@
     Public Property NextItem As String
         Get
             If Randomised Then
-                mNextItem = Listbox.Items(Int(Rnd() * (mListCount - 1)))
+                mNextItem = mListbox.Items(Int(Rnd() * (mListCount - 1)))
             Else
                 If mListCount > 1 Then
                     If Forwards Then
-                        mNextItem = Listbox.Items((mCurrentIndex + 1) Mod (mListCount))
+                        mNextItem = mListbox.Items((mCurrentIndex + 1) Mod (mListCount))
                     Else
                         If mCurrentIndex = 0 Then
                             mCurrentIndex = mListCount
                         Else
-                            mNextItem = Listbox.Items((mCurrentIndex - 1) Mod (mListCount))
+                            mNextItem = mListbox.Items((mCurrentIndex - 1) Mod (mListCount))
                         End If
                     End If
                 Else
-                    mNextItem = Listbox.Items(0)
+                    mNextItem = mListbox.Items(0)
 
                 End If
             End If
@@ -78,7 +78,8 @@
                 ' End If
                 Return mPreviousItem
             Catch ex As Exception
-
+                MsgBox("Exception in nextfile - previous item")
+                Return 0
             End Try
         End Get
         Set(value As String)

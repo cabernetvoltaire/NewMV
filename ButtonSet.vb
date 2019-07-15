@@ -51,7 +51,10 @@ Public Class ButtonSet
         Dim x As New List(Of ButtonRow)
         x = CurrentSet.FindAll(Function(m) m.Letter = letter)
         Dim count As Integer = x.Count
-        If count = 1 Then Exit Function
+        If count = 1 Then
+            Return mCurrentRow
+            Exit Function
+        End If
         Dim nextindex As Integer
         nextindex = x.IndexOf(mCurrentRow)
         nextindex = (nextindex + 1) Mod count

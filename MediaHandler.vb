@@ -256,7 +256,10 @@ Public Class MediaHandler
     End Property
 
     Public Function IncrementLinkCounter(Forward As Boolean) As Integer
-        If mMarkers.Count = 0 Then Exit Function
+        If mMarkers.Count = 0 Then
+            Return 0
+            Exit Function
+        End If
         If Forward Then
             mlinkcounter += 1
         Else
@@ -344,7 +347,7 @@ Public Class MediaHandler
                 If Speed.PausedPosition <> 0 Then
                     mPlayPosition = Speed.PausedPosition
                 Else
-                    If mMarkers.Count <> 0 And StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
+                    If mMarkers.Count <> 0 Then 'And StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Or StartPoint.State=StartPointHandler.StartTypes. Then
                         Try
                             mPlayPosition = mMarkers.Item(mlinkcounter)
                             '                            If mPlayer Is Media.Player Then MsgBox(mPlayPosition)
@@ -457,7 +460,7 @@ Public Class MediaHandler
 
 #Region "Event Handlers"
     Private Sub Uhoh() Handles mPlayer.ErrorEvent
-        MsgBox("Error in MediaPlayer")
+        ' MsgBox("Error in MediaPlayer")
     End Sub
 
     Private mResetCounter As Integer

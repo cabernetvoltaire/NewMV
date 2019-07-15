@@ -627,17 +627,13 @@ Public Class MainForm
         Dim blnBack As Boolean = e.KeyCode < (KeySmallJumpUp + KeySmallJumpDown) / 2
         If e.Control Then
             iJumpFactor = 10
-        ElseIf e.Shift Then
-            'Changes the jumpsize while Shift held
-            SP.ChangeJump(False, blnBack)
         Else
-            'Ordinary jump
             iJumpFactor = 1
         End If
         If blnBack Then
-            Media.Position = Media.Position - Media.Speed.AbsoluteJump / iJumpFactor
+            Media.Position = Media.Position - SP.AbsoluteJump / iJumpFactor
         Else
-            Media.Position = Media.Position + Media.Speed.AbsoluteJump / iJumpFactor
+            Media.Position = Media.Position + SP.AbsoluteJump / iJumpFactor
         End If
         ' blnRandomStartPoint = False
         '   JumpVideo(Media.Player, SoundWMP)
@@ -653,9 +649,9 @@ Public Class MainForm
             iJumpFactor = 1
         End If
         If Forward Then
-            Media.Position = Math.Min(Media.Duration, Media.Position + Media.Duration / (iJumpFactor * Media.Speed.FractionalJump))
+            Media.Position = Math.Min(Media.Duration, Media.Position + Media.Duration / (iJumpFactor * SP.FractionalJump))
         Else
-            Media.Position = Math.Min(Media.Duration, Media.Position - Media.Duration / (iJumpFactor * Media.Speed.FractionalJump))
+            Media.Position = Math.Min(Media.Duration, Media.Position - Media.Duration / (iJumpFactor * SP.FractionalJump))
         End If
 
     End Sub
@@ -754,6 +750,7 @@ Public Class MainForm
 #Region "Alpha and Numeric"
 
             Case Keys.Enter And e.Control
+                Dim Source As String
                 If Media.IsLink Then
                     HighlightCurrent(Media.LinkPath)
                     CurrentFilterState.State = FilterHandler.FilterState.All
@@ -805,7 +802,7 @@ Public Class MainForm
                     AdvanceFile(e.KeyCode = KeyNextFile, Random.NextSelect)
 
                 End If
-                If e.Shift Then HighlightCurrent(Media.MediaPath) 'Used for links only, to go to original file
+                If e.Shift Then HighlightCurrent(Media.LinkPath) 'Used for links only, to go to original file
                 e.SuppressKeyPress = True
                 tmrSlideShow.Enabled = False
                 tmrMovieSlideShow.Enabled = False
@@ -816,10 +813,6 @@ Public Class MainForm
 
 #Region "Video Navigation"
             Case KeySmallJumpDown, KeySmallJumpUp, LKeySmallJumpDown, LKeySmallJumpUp
-                If e.KeyData = KeySmallJumpUp And e.Alt And e.Control Then
-                    SP.ChangeJump(False, e.KeyCode = KeySmallJumpUp)
-
-                End If
                 If e.Alt Then
                     If e.Control Then
                         SP.ChangeJump(False, e.KeyCode = KeySmallJumpUp)
@@ -834,14 +827,17 @@ Public Class MainForm
                ' e.SuppressKeyPress = True
 
             Case KeyBigJumpOn, KeyBigJumpBack
-                Select Case e.Modifiers
-                    Case Keys.Alt
+                If e.Alt Then
+                    If e.Control Then
+                        SP.ChangeJump(True, e.KeyCode = KeyBigJumpOn)
+                    Else
 
-                    Case Else
-                        MediaLargeJump(e, e.Modifiers = Keys.Control, e.KeyCode = KeyBigJumpOn)
+                    End If
+                Else
+                    MediaLargeJump(e, e.Modifiers = Keys.Control, e.KeyCode = KeyBigJumpOn)
+                End If
 
-                End Select
-                e.SuppressKeyPress = True
+                'e.SuppressKeyPress = True
 
             Case KeyMarkFavourite
                 If e.Control And e.Alt Then
@@ -1783,7 +1779,7 @@ Public Class MainForm
         lbxGroups.Items.Clear()
         CurrentFolder = e.Directory.FullName
         tmrUpdateFileList.Enabled = True
-        tmrUpdateFileList.Interval = 300
+        tmrUpdateFileList.Interval = 100
         ' FillListbox(lbxFiles, New DirectoryInfo(CurrentFolder), Random.OnDirChange)
 
 
@@ -1912,18 +1908,12 @@ Public Class MainForm
 
 
 
-    Private Function DeadLinksSelect() As List(Of String)
+    Private Sub DeadLinksSelect()
         Dim s As New List(Of String)
         Dim lbx As ListBox = CType(FocusControl, ListBox)
         SelectDeadLinks(lbx)
-        'For Each m In lbx.SelectedItems
-        '    s.Add(m.ToString)
-        'Next
-        'Return s
         UpdateFileInfo()
-
-
-    End Function
+    End Sub
 
 
 
@@ -2421,11 +2411,15 @@ Public Class MainForm
 
     Private Sub tmrUpdateFileList_Tick(sender As Object, e As EventArgs) Handles tmrUpdateFileList.Tick
         FillFileBox(lbxFiles, New DirectoryInfo(CurrentFolder), Random.OnDirChange)
-        If Media.MediaPath = "" Then
+        If Random.OnDirChange Then
             FBH.SetFirst()
         Else
             FBH.SetNamed(Media.MediaPath)
         End If
+        'If Media.MediaPath = "" Then
+        'FBH.SetFirst()
+        'Else
+        'End If
         tmrUpdateFileList.Enabled = False
     End Sub
     Private Sub ChangedTree() Handles tvMain2.DirectorySelected
@@ -2767,4 +2761,6 @@ Public Class MainForm
     Private Sub lbxGroups_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbxGroups.SelectedIndexChanged
 
     End Sub
+
+
 End Class

@@ -167,6 +167,30 @@ Module ButtonHandling
         AutoButtons = Not AutoButtons
 
     End Sub
+    Public Sub AssignSize(Start As String)
+        If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
+        Dim dlist As New SortedList(Of String, DirectoryInfo)
+        Dim plist As New SortedList(Of Integer, DirectoryInfo)
+        Dim exclude As String = ""
+        exclude = InputBox("String to exclude from folders?", "")
+        Dim d As New DirectoryInfo(Start)
+        For Each di In d.EnumerateDirectories
+            If InStr(di.Name, exclude) = 0 Then
+                plist.Add(GetDirSize(di.Name, 0), di)
+            End If
+        Next
+
+    End Sub
+
+    Public Function GetDirSize(RootFolder As String, TotalSize As Long) As Long
+        Dim FolderInfo = New IO.DirectoryInfo(RootFolder)
+        For Each File In FolderInfo.GetFiles : TotalSize += File.Length
+        Next
+        For Each SubFolderInfo In FolderInfo.GetDirectories : GetDirSize(SubFolderInfo.FullName, TotalSize)
+        Next
+        Return TotalSize
+    End Function
+
     Public Sub AssignTree(strStart As String)
         If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
 
@@ -176,7 +200,11 @@ Module ButtonHandling
         exclude = InputBox("String to exclude from folders?", "")
         Dim d As New DirectoryInfo(strStart)
         For Each di In d.EnumerateDirectories
-            dlist.Add(di.Name, di)
+            If exclude = "" Or InStr(di.Name, exclude) = 0 Then
+                MsgBox(di.Name & "is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###"))
+                dlist.Add(di.Name, di)
+            End If
+
         Next
         Dim i As Int16 = 0
 

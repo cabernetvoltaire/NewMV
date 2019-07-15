@@ -110,6 +110,7 @@
             Next
         Catch ex As Exception
             MsgBox("Error in file list" & ex.Message)
+            Return Nothing
             Exit Function
         End Try
 

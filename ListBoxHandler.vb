@@ -137,9 +137,11 @@ Public Class FileboxHandler
     Public Sub GetFiles()
         ItemList.Clear()
         Dim dir As New IO.DirectoryInfo(DirectoryPath)
-        For Each f In dir.GetFiles
-            ItemList.Add(f.FullName)
-        Next
+        If dir.Exists Then
+            For Each f In dir.GetFiles
+                ItemList.Add(f.FullName)
+            Next
+        End If
     End Sub
     Public Sub New(Lbx As ListBox)
         MyBase.New(Lbx)

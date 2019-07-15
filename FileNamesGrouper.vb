@@ -1,6 +1,6 @@
 ﻿Public Class FileNamesGrouper
     Public Event WordsParsed()
-    Private RegexOptions() As String = {"[[A-Z|a-z]*[0-9]{3,}]|[\w]*", "(([A-Z|a-z]*[AEIOUY|aeiouy][A-Z|a-z]*[ |_|-|,]*)*)", "([A-Z|a-z]*[ |_|-]*)", "([A-Z|a-z]+[ |_|-]*)+", "([0-9]+){3}"}
+    Private RegexOptions() As String = {"[A-Z|a-z]*[ ]", "[[A-Z|a-z]*[0-9]{3,}]|[\w]*", "(([A-Z|a-z]*[AEIOUY|aeiouy][A-Z|a-z]*[ |_|-|,]*)*)", "([A-Z|a-z]*[ |_|-]*)", "([A-Z|a-z]+[ |_|-]*)+", "([0-9]+){3}"}
     Private mWordlist As New SortedList(Of String, Integer)
     Private mOptionNumber
     Public Property WordList() As SortedList(Of String, Integer)
@@ -76,7 +76,7 @@
     End Sub
 
     Private Sub OutputList(s As String, x As Object)
-        Exit Sub
+        'Exit Sub
         Debug.Print(" ")
         Debug.Print(UCase(s))
         For Each m In x

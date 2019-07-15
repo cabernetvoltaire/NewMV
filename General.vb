@@ -169,7 +169,11 @@ Public Module General
 
         Try
             str = CreateObject("WScript.Shell").CreateShortcut(str).TargetPath
-            str = TryOtherDriveLetters(str)
+            Dim f As New IO.FileInfo(str)
+            If f.Exists Then
+            Else
+                str = TryOtherDriveLetters(str)
+            End If
             Return str
         Catch ex As Exception
             Return str
@@ -213,13 +217,23 @@ Public Module General
     End Sub
 
     Public Function TryOtherDriveLetters(str As String) As String
-        If Len(str) <> 0 Then
-            Dim driveletter As String = "A"
-            While Not My.Computer.FileSystem.FileExists(str) And driveletter <> "Z"
-                str = str.Replace(Left(str, 2), driveletter & ":")
-                driveletter = Chr(Asc(driveletter) + 1)
 
-            End While
+        If Len(str) <> 0 Then
+            Dim original = str
+            Dim driveletter As String = "A"
+            For i = Asc("A") To Asc("Z")
+                driveletter = Chr(i)
+                str = str.Replace(Left(str, 2), driveletter & ":")
+                If My.Computer.FileSystem.FileExists(str) Then
+                    Return str
+                    Exit Function
+                End If
+            Next
+            Return original
+            'While Not My.Computer.FileSystem.FileExists(str) And driveletter <> Asc("Z") + 1
+            '    str = str.Replace(Left(str, 2), driveletter & ":")
+            '    driveletter = Chr(Asc(driveletter) + 1)
+            'End While
         End If
         Return str
 
@@ -368,13 +382,7 @@ Public Module General
         MainForm.FillShowbox(MainForm.lbxShowList, 0, s)
         Return s
     End Function
-    ''' <summary>
-    ''' Fill a listbox with a list, ignores the filter - dunno why
-    ''' </summary>
-    ''' <param name="lbx"></param>
-    ''' <param name="Filter"></param>
-    ''' <param name="lst"></param>
-    '''
+
 
     Private Sub CopyList(list As List(Of String), list2 As SortedList(Of Date, String))
         list.Clear()
@@ -687,6 +695,7 @@ Public Module General
                 Return Nothing
             End Try
         Catch ex As Exception
+            Return Nothing
         End Try
 
 
