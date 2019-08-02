@@ -13,6 +13,8 @@ Public Class MediaHandler
 
     Private WithEvents ResetPosition As New Timer
     Public WithEvents PositionUpdater As New Timer With {.Interval = 100}
+    Public WithEvents PositionUpdaterCanceller As New Timer With {.Interval = 5000}
+
     Private DefaultFile As String = "C:\exiftools.exe"
     Public WithEvents StartPoint As New StartPointHandler
     Public WithEvents Speed As New SpeedHandler
@@ -157,6 +159,7 @@ Public Class MediaHandler
                 End Try
 
                 RaiseEvent MediaChanged(Me, New EventArgs)
+
             End If
 
 
@@ -347,7 +350,7 @@ Public Class MediaHandler
                 If Speed.PausedPosition <> 0 Then
                     mPlayPosition = Speed.PausedPosition
                 Else
-                    If mMarkers.Count <> 0 Then 'And StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Or StartPoint.State=StartPointHandler.StartTypes. Then
+                    If mMarkers.Count <> 0 And StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then 'Or StartPoint.State=StartPointHandler.StartTypes. Then
                         Try
                             mPlayPosition = mMarkers.Item(mlinkcounter)
                             '                            If mPlayer Is Media.Player Then MsgBox(mPlayPosition)
@@ -479,7 +482,8 @@ Public Class MediaHandler
             Case WMPLib.WMPPlayState.wmppsPlaying
                 mSndH.Slow = False
                 PositionUpdater.Enabled = True
-                mResetCounter = 0
+                PositionUpdaterCanceller.Enabled = True
+                ' mResetCounter = 0
                 mDuration = mPlayer.currentMedia.duration
                 StartPoint.Duration = mDuration
                 MediaJumpToMarker()
@@ -515,6 +519,7 @@ Public Class MediaHandler
     ''' </summary>
     Private Sub UpdatePosition() Handles PositionUpdater.Tick
         ' Exit Sub
+        ' Exit Sub
         ' If mResetCounter < 3 Then
         Try
             If Speed.Paused Then
@@ -545,6 +550,10 @@ Public Class MediaHandler
         'MediaJumpToMarker()
         ResetPosition.Enabled = ResetOn
 
+    End Sub
+
+    Private Sub PositionUpdaterCanceller_Tick(sender As Object, e As EventArgs) Handles PositionUpdaterCanceller.Tick
+        PositionUpdater.Enabled = False
     End Sub
 
 

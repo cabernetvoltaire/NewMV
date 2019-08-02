@@ -240,6 +240,7 @@ Partial Class MainForm
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
         Me.NewIndex = New System.Windows.Forms.Timer(Me.components)
         Me.Response = New System.Windows.Forms.Timer(Me.components)
+        Me.TBFractionAbsolute = New System.Windows.Forms.ToolStripStatusLabel()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -401,7 +402,7 @@ Partial Class MainForm
         '
         Me.StatusStrip1.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.StatusStrip1.ImageScalingSize = New System.Drawing.Size(28, 28)
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSPB, Me.tbFiles, Me.tbFilter, Me.tbRandom, Me.tsslPicState, Me.tbZoom, Me.tbSpeed, Me.tbStartpoint, Me.tbShowfile, Me.tbButton, Me.tbLastFile, Me.tbDate, Me.tbState})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSPB, Me.tbFiles, Me.tbFilter, Me.tbRandom, Me.tsslPicState, Me.tbZoom, Me.tbSpeed, Me.tbStartpoint, Me.tbShowfile, Me.tbButton, Me.tbLastFile, Me.tbDate, Me.tbState, Me.TBFractionAbsolute})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 1090)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Padding = New System.Windows.Forms.Padding(2, 0, 12, 0)
@@ -415,7 +416,7 @@ Partial Class MainForm
         Me.TSPB.Name = "TSPB"
         Me.TSPB.Size = New System.Drawing.Size(410, 24)
         Me.TSPB.Step = 1
-        Me.TSPB.Style = System.Windows.Forms.ProgressBarStyle.Continuous
+        Me.TSPB.Style = System.Windows.Forms.ProgressBarStyle.Marquee
         Me.TSPB.Visible = False
         '
         'tbFiles
@@ -1839,7 +1840,7 @@ Partial Class MainForm
         'Screen1ToolStripMenuItem
         '
         Me.Screen1ToolStripMenuItem.Name = "Screen1ToolStripMenuItem"
-        Me.Screen1ToolStripMenuItem.Size = New System.Drawing.Size(252, 30)
+        Me.Screen1ToolStripMenuItem.Size = New System.Drawing.Size(163, 30)
         Me.Screen1ToolStripMenuItem.Text = "Screen 1"
         '
         'Screen2ToolStripMenuItem
@@ -1847,7 +1848,7 @@ Partial Class MainForm
         Me.Screen2ToolStripMenuItem.Checked = True
         Me.Screen2ToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
         Me.Screen2ToolStripMenuItem.Name = "Screen2ToolStripMenuItem"
-        Me.Screen2ToolStripMenuItem.Size = New System.Drawing.Size(252, 30)
+        Me.Screen2ToolStripMenuItem.Size = New System.Drawing.Size(163, 30)
         Me.Screen2ToolStripMenuItem.Text = "Screen 2"
         '
         'OptionsToolStripMenuItem
@@ -1968,13 +1969,13 @@ Partial Class MainForm
         'SelectedToolStripMenuItem
         '
         Me.SelectedToolStripMenuItem.Name = "SelectedToolStripMenuItem"
-        Me.SelectedToolStripMenuItem.Size = New System.Drawing.Size(252, 30)
+        Me.SelectedToolStripMenuItem.Size = New System.Drawing.Size(174, 30)
         Me.SelectedToolStripMenuItem.Text = "Selected"
         '
         'DisplayedToolStripMenuItem
         '
         Me.DisplayedToolStripMenuItem.Name = "DisplayedToolStripMenuItem"
-        Me.DisplayedToolStripMenuItem.Size = New System.Drawing.Size(252, 30)
+        Me.DisplayedToolStripMenuItem.Size = New System.Drawing.Size(174, 30)
         Me.DisplayedToolStripMenuItem.Text = "Displayed"
         '
         'ToolStripSeparator11
@@ -2032,6 +2033,12 @@ Partial Class MainForm
         '
         'Response
         '
+        '
+        'TBFractionAbsolute
+        '
+        Me.TBFractionAbsolute.Name = "TBFractionAbsolute"
+        Me.TBFractionAbsolute.Size = New System.Drawing.Size(242, 25)
+        Me.TBFractionAbsolute.Text = "Fraction: (F)ths Absolute: (A)s"
         '
         'MainForm
         '
@@ -2336,4 +2343,5 @@ Partial Class MainForm
     Friend WithEvents HideDeadLinksToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents InvertSelectionToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents chbSeparate As CheckBox
+    Friend WithEvents TBFractionAbsolute As ToolStripStatusLabel
 End Class

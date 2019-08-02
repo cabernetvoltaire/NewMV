@@ -816,6 +816,7 @@ Public Class MainForm
                 If e.Alt Then
                     If e.Control Then
                         SP.ChangeJump(False, e.KeyCode = KeySmallJumpUp)
+                        UpdateFileInfo()
                     Else
 
                         SpeedIncrease(e)
@@ -830,6 +831,7 @@ Public Class MainForm
                 If e.Alt Then
                     If e.Control Then
                         SP.ChangeJump(True, e.KeyCode = KeyBigJumpOn)
+                        UpdateFileInfo()
                     Else
 
                     End If
@@ -1299,15 +1301,18 @@ Public Class MainForm
 
 
     Public Sub frmMain_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
-
-        KeyDownFlag = True
-        ShiftDown = e.Shift
-        CtrlDown = e.Control
-        UpdateButtonAppearance()
-        HandleKeys(sender, e)
-        If e.KeyCode = KeyBackUndo Then
-            e.SuppressKeyPress = True
-        End If
+        Try
+            KeyDownFlag = True
+            ShiftDown = e.Shift
+            CtrlDown = e.Control
+            UpdateButtonAppearance()
+            HandleKeys(sender, e)
+            If e.KeyCode = KeyBackUndo Then
+                e.SuppressKeyPress = True
+            End If
+        Catch ex As Exception
+            MsgBox(ex.Message)
+        End Try
     End Sub
     Private Sub frmMain_KeyUp(sender As Object, e As KeyEventArgs) Handles MyBase.KeyUp
         KeyDownFlag = False
@@ -1319,8 +1324,12 @@ Public Class MainForm
 
         End If
 
-        If e.KeyData <> (Keys.F4 And AltDown) Then
-            UpdateButtonAppearance()
+        If e.KeyData <> (Keys.F4 Or AltDown) Then
+            Try
+                UpdateButtonAppearance()
+            Catch ex As Exception
+
+            End Try
         End If
         e.Handled = True
         e.SuppressKeyPress = True
@@ -1403,7 +1412,9 @@ Public Class MainForm
             Dim dt As New Date
             'avoid the updating of the write time
             dt = finfo.LastWriteTime
-            .Save(Media.MediaPath)
+            Dim b As Bitmap = currentPicBox.Image
+
+            b.Save(Media.MediaPath)
             finfo.LastWriteTime = dt
 
         End With
@@ -1599,6 +1610,8 @@ Public Class MainForm
         tbShowfile.Text = "SHOWFILE: " & LastShowList
         '   tbSpeed.Text = tbSpeed.Text = "SPEED (" & PlaybackSpeed & "fps)"
         tbButton.Text = "BUTTONFILE: " & ButtonFilePath
+        TBFractionAbsolute.Text = "Fraction: " & Str(SP.FractionalJump) & "ths Absolute:" & Str(SP.AbsoluteJump) & "s"
+
         tbZoom.Text = iZoomFactor
         If Random.StartPointFlag Then
             tbStartpoint.Text = "START:RANDOM"
@@ -2251,7 +2264,7 @@ Public Class MainForm
     End Sub
 
     Private Sub AddCurrentFilesToShowList()
-        For Each f In lbxFiles.SelectedItems
+        For Each f In lbxFiles.Items
             AddSingleFileToList(Showlist, f)
         Next
         FillShowbox(lbxShowList, CurrentFilterState.State, Showlist)

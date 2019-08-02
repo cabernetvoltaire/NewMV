@@ -674,6 +674,14 @@ Public Module General
         Loop
         fs.Close()
     End Sub
+    Public Function GetDirSize(RootFolder As String, TotalSize As Long) As Long
+        Dim FolderInfo = New IO.DirectoryInfo(RootFolder)
+        For Each File In FolderInfo.GetFiles : TotalSize += File.Length
+        Next
+        For Each SubFolderInfo In FolderInfo.GetDirectories : GetDirSize(SubFolderInfo.FullName, TotalSize)
+        Next
+        Return TotalSize
+    End Function
 
     Public Sub OnNotEncrypted() Handles Encrypter.NotEncrypted
         Encrypted = False

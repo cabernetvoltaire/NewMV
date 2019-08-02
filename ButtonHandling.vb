@@ -182,14 +182,7 @@ Module ButtonHandling
 
     End Sub
 
-    Public Function GetDirSize(RootFolder As String, TotalSize As Long) As Long
-        Dim FolderInfo = New IO.DirectoryInfo(RootFolder)
-        For Each File In FolderInfo.GetFiles : TotalSize += File.Length
-        Next
-        For Each SubFolderInfo In FolderInfo.GetDirectories : GetDirSize(SubFolderInfo.FullName, TotalSize)
-        Next
-        Return TotalSize
-    End Function
+
 
     Public Sub AssignTree(strStart As String)
         If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub

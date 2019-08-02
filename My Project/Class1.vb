@@ -28,9 +28,10 @@
             Media.Player.Ctlcontrols.play()
         Else
             Media.Player.Ctlcontrols.pause()
-            mPaused = True
+            PausedPosition = Media.Player.Ctlcontrols.currentPosition
         End If
-        Me.Paused = Pause
+        mPaused = Pause
+
     End Sub
 
     Private mPaused As Boolean '= False
