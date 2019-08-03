@@ -1354,38 +1354,39 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub Listbox_SelectedIndexChanged(sender As Object, e As EventArgs) 'Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged 'TODO Swapper
+    Private Sub Listbox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged 'TODO Swapper
         NewIndex.Enabled = False
 
-        NewIndex.Interval = 10
+        NewIndex.Interval = 100
         NewIndex.Enabled = True
 
     End Sub
-    Public Sub IndexHandler(sender As Object, e As EventArgs) Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged
+    Public Sub IndexHandler(sender As Object, e As EventArgs) 'Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged
         ' If KeyDownFlag Then Exit Sub
 
         With sender
-            Dim lbx As ListBox = CType(sender, ListBox)
-            If lbx.SelectionMode = SelectionMode.One Then
-                Dim i As Long = .SelectedIndex
-                If i = -1 Then
-                Else
-                    Debug.Print(vbCrLf & vbCrLf & "NEXT SELECTION ---------------------------------------")
-                    MSFiles.Listbox = sender
-                    MSFiles.ListIndex = i
+            If TypeOf (sender) Is ListBox Then
+                Dim lbx As ListBox = CType(sender, ListBox)
+                If lbx.SelectionMode = SelectionMode.One Then
+                    Dim i As Long = .SelectedIndex
+                    If i = -1 Then
+                    Else
+                        Debug.Print(vbCrLf & vbCrLf & "NEXT SELECTION ---------------------------------------")
+                        MSFiles.Listbox = sender
+                        MSFiles.ListIndex = i
+                    End If
                 End If
+                '  If lbx.Name <> "lbxShowlist" Then
+
+
+                If Media.IsLink Then
+                    PopulateLinkList(Media.LinkPath, Media)
+                Else
+                    PopulateLinkList(Media.MediaPath, Media)
+                End If
+
+                Media.SetLink(0)
             End If
-            '  If lbx.Name <> "lbxShowlist" Then
-
-
-            If Media.IsLink Then
-                PopulateLinkList(Media.LinkPath, Media)
-            Else
-                PopulateLinkList(Media.MediaPath, Media)
-            End If
-
-            Media.SetLink(0)
-
 
         End With
 
@@ -2674,7 +2675,7 @@ Public Class MainForm
 
     Private Sub NewIndex_Tick(sender As Object, e As EventArgs) Handles NewIndex.Tick
 
-        IndexHandler(lbxFiles, e)
+        IndexHandler(FocusControl, e)
         NewIndex.Enabled = False
     End Sub
 

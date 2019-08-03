@@ -9,7 +9,6 @@ Friend Module Mysettings
     Public iSSpeeds() As Integer = {1000, 300, 200}
     Public iPlaybackSpeed() As Integer = {3, 15, 45}
     Public PlaybackSpeed As Double = 30
-    Public Property blnJumpToMark As Boolean = False
     Public Autozoomrate As Decimal = 0.4
     Public iCurrentAlpha As Integer = 0
 
@@ -62,7 +61,7 @@ Friend Module Mysettings
         With My.Computer.Registry.CurrentUser
             .SetValue("VertSplit", MainForm.ctrFileBoxes.SplitterDistance)
             .SetValue("HorSplit", MainForm.ctrMainFrame.SplitterDistance)
-            .SetValue("File", Media.MediaPath)
+            .SetValue("File", CurrentFolder)
             .SetValue("Filter", MainForm.CurrentFilterState.State)
             .SetValue("SortOrder", MainForm.PlayOrder.State)
             .SetValue("StartPoint", Media.StartPoint.State)
@@ -133,15 +132,19 @@ Friend Module Mysettings
                 iCurrentAlpha = .GetValue("LastAlpha", 0)
                 ButtonFilePath = .GetValue("LastButtonFile", "")
                 CurrentFavesPath = .GetValue("Favourites", CurrentFolder)
-                Dim fol As New IO.DirectoryInfo(CurrentFavesPath)
+                Dim fol As New IO.DirectoryInfo(CurrentFavesPath) 'TODO This whole thing is a mess
                 DirectoriesPath = .GetValue("Directories List", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures))
                 GlobalFavesPath = .GetValue("GlobalFaves", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures))
                 Rootpath = .GetValue("RootScanpath", Environment.GetFolderPath(Environment.SpecialFolder.MyComputer))
-
+                Dim folroot As New IO.DirectoryInfo(Rootpath)
+                If folroot.Exists Then
+                    DirectoriesList = GetDirectoriesList(Rootpath)
+                Else
+                    Rootpath = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer)
+                End If
                 If fol.Exists = False Then
                     MainForm.FavouritesFolderToolStripMenuItem.PerformClick()
                 End If
-                DirectoriesList = GetDirectoriesList(Rootpath)
 
                 Dim s As String = .GetValue("File", "")
                 If s = "" Then s = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
@@ -162,7 +165,7 @@ Friend Module Mysettings
                 Dim s As String = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
                 CurrentFolder = s
                 Dim fol As New IO.DirectoryInfo(s)
-                Media.MediaPath = New IO.DirectoryInfo(CurrentFolder).EnumerateFiles("*", IO.SearchOption.AllDirectories).First.FullName
+                'Media.MediaPath = New IO.DirectoryInfo(CurrentFolder).EnumerateFiles("*", IO.SearchOption.AllDirectories).First.FullName
                 CurrentFavesPath = s & "\MVFavourites\"
                 '            strButtonfile=Media.MediaPath
             End With
