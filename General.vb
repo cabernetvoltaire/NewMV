@@ -188,16 +188,13 @@ Public Module General
         If Not Force AndAlso pathfile.Exists Then
             ReadListfromFile(list, DirectoriesPath, Encrypted)
         Else
-            Dim root As New IO.DirectoryInfo(path)
-            For Each m In root.GetDirectories("*", SearchOption.AllDirectories)
-                Try
+            Try
+                Dim root As New IO.DirectoryInfo(path)
+                For Each m In root.GetDirectories("*", SearchOption.AllDirectories)
                     list.Add(m.FullName)
-
-                Catch ex As Exception
-
-                End Try
-
-            Next
+                Next
+            Catch ex As Exception
+            End Try
             WriteListToFile(list, DirectoriesPath, Encrypted)
         End If
         Return list

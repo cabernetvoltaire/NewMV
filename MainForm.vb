@@ -2749,8 +2749,6 @@ Public Class MainForm
 
     Private Sub Scrubber_Paint(sender As Object, e As PaintEventArgs) Handles Scrubber.Paint
         Scrubber.SuspendLayout()
-
-
     End Sub
 
     Private Sub Scrubber_Invalidated(sender As Object, e As InvalidateEventArgs) Handles Scrubber.Invalidated
