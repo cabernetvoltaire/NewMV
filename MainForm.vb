@@ -34,11 +34,16 @@ Public Class MainForm
     Public T As Thread
     Public FirstButtons As New ButtonForm
     Public bmp As Bitmap
-    Public ScrubberProportion As Decimal = 0.965
+    Public ScrubberProportion As Decimal = 0.97
     Public Marks As New MarkPlacement
     Public speedkeys = {KeySpeed1, KeySpeed2, KeySpeed3}
-    Public FBH As New FileboxHandler(lbxFiles)
-    Public LBH As New ListBoxHandler(lbxShowList)
+    Public WithEvents FBH As New FileboxHandler(lbxFiles)
+    Public WithEvents LBH As New ListBoxHandler(lbxShowList)
+    Public Sub OnListboxFilled(sender As Object) Handles FBH.ListBoxFilled
+
+    End Sub
+
+
     Public Sub OnParentNotFound(sender As Object, e As EventArgs) Handles X.ParentNotFound, Op.ParentNotFound
         lbxReport.Items.Add("Not found")
     End Sub
@@ -61,33 +66,36 @@ Public Class MainForm
         Dim i = 0
         If x.Count = 0 Then
             chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Regular)
-            chbPreviewLinks.Text = "Preview links"
-        Else
-            chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Bold)
-            chbPreviewLinks.Text = "Preview links (" & x.Count & ")"
-        End If
-
-        For Each m In x
-            Dim n = BookmarkFromLinkName(m)
-            If n > 0 Then
-                If Media.Markers.Contains(n) Then
-                Else
-                    Media.Markers.Add(n)
-                End If
-                i += 1
-            End If
-        Next
-        Media.Markers.Sort()
-        If chbPreviewLinks.Checked Then
-            If x.Count >= 1 Then
-                FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
-                ControlSetFocus(lbxShowList)
-            Else
+            chbPreviewLinks.Text = "Preview links (None)"
+            Scrubber.BackColor = Me.BackColor
+            If chbPreviewLinks.Checked Then
                 lbxShowList.Items.Clear()
                 ControlSetFocus(lbxFiles)
             End If
+        Else
+            chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Bold)
+            chbPreviewLinks.Text = "Preview links (" & x.Count & ")"
+            Scrubber.BackColor = Color.HotPink
+            If chbPreviewLinks.Checked Then
+                FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
+            End If
+            For Each m In x
+                Dim n = BookmarkFromLinkName(m)
+                If n > 0 Then
+                    If Media.Markers.Contains(n) Then
+                    Else
+                        Media.Markers.Add(n)
+                    End If
+                    i += 1
+                End If
+            Next
+            Media.Markers.Sort()
+
+            DrawScrubberMarks()
         End If
-        DrawScrubberMarks()
+
+
+
     End Sub
 
     Public Sub DrawScrubberMarks()
@@ -104,7 +112,9 @@ Public Class MainForm
                 Scrubber.Visible = True
             End If
         End If
+
         'Scrubber.Image = Marks.Bitmap
+
 
 
     End Sub
@@ -376,7 +386,7 @@ Public Class MainForm
 
         'If FocusControl IsNot lbxShowList Then
         '    Dim e = New DirectoryInfo(CurrentFolder)
-        '    FBH.SortOrder = PlayOrder
+        '   + FBH.SortOrder = PlayOrder
         '    FillFileBox(lbxFiles, e, False)
         '    FBH.SetNamed(Media.MediaPath)
         'Else
@@ -542,16 +552,16 @@ Public Class MainForm
             FullScreen.StartPosition = FormStartPosition.CenterScreen
             FullScreen.Location = screen.Bounds.Location + New Point(100, 100)
             Media.Player.Size = screen.Bounds.Size
-            FullScreen.FirstMediaIndex = lbxFiles.SelectedIndex
+            FullScreen.FirstMediaIndex = MSFiles.Listbox.SelectedIndex
+            MSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
             FullScreen.Show()
             CancelDisplay()
         Else
             SplitterPlace(0.25)
             MSFiles.AssignPlayers(MainWMP1, MainWMP2, MainWMP3)
             MSFiles.AssignPictures(PictureBox1, PictureBox2, PictureBox3)
+            MSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
 
-
-            '   MSFiles.ListIndex = lbxFiles.SelectedIndex
             FullScreen.Close()
             FullScreen.Changing = False
         End If
@@ -773,15 +783,7 @@ Public Class MainForm
 
 #Region "Control Keys"
             Case KeyTraverseTree, KeyTraverseTreeBack
-                ''e.suppresskeypress by Treeview behaviour unless focus is elsewhere. 
-                ''We want the traverse keys always to work. 
-                ''  ControlSetFocus(tvMain2)
-                If FocusControl IsNot tvMain2 Then
-                    '  tvMain2.Traverse(e.KeyCode = KeyTraverseTreeBack)
-                End If
-                        '  tvMain2.tvFiles_KeyDown(sender, e)
 
-            'End If
             Case Keys.Left, Keys.Right, Keys.Up, Keys.Down
                 If FocusControl IsNot lbxShowList Then
                     ControlSetFocus(tvMain2)
@@ -803,6 +805,7 @@ Public Class MainForm
 
                 End If
                 If e.Shift Then HighlightCurrent(Media.LinkPath) 'Used for links only, to go to original file
+                If FocusControl Is lbxShowList Then HighlightCurrent(Media.MediaPath)
                 e.SuppressKeyPress = True
                 tmrSlideShow.Enabled = False
                 tmrMovieSlideShow.Enabled = False
@@ -865,6 +868,7 @@ Public Class MainForm
                 Else
                     CreateFavourite(Media.MediaPath)
                     PopulateLinkList(Media.MediaPath, Media)
+                    DrawScrubberMarks()
                 End If
 
             Case KeyJumpToPoint
@@ -1207,7 +1211,7 @@ Public Class MainForm
         CollapseShowlist(True)
         SetupPlayers()
         PositionUpdater.Enabled = False
-        'tmrPicLoad.Interval = lngInterval * 15
+
         currentPicBox = PictureBox1
         Media.Picture = currentPicBox
         tbPercentage.Enabled = True
@@ -1216,19 +1220,14 @@ Public Class MainForm
 
         AddHandler FileHandling.FolderMoved, AddressOf OnFolderMoved
         AddHandler FileHandling.FileMoved, AddressOf OnFileMoved
-        'Exit Sub
-        '        InitialiseButtons()
+
         InitialiseButtonsOld()
         NavigateMoveState.State = StateHandler.StateOptions.Navigate
         OnRandomChanged()
-        '        PlayOrder.State = SortHandler.Order.DateTime
         ControlSetFocus(lbxFiles)
         Initialising = False
         FBH.ListBox = lbxFiles
         LBH.ListBox = lbxShowList
-        '   HighlightCurrent(Media.MediaPath) 'Swapper
-        'tmrPicLoad.Enabled = True
-        'tvMain2.ForceFullBuild()
     End Sub
 
     Private Sub InitialiseButtonsOld()
@@ -1296,6 +1295,9 @@ Public Class MainForm
         If control.CanFocus Then
             control.Focus()
         End If
+        If TypeOf (control) Is ListBox Then
+            MSFiles.Listbox = control
+        End If
     End Sub
 
 
@@ -1355,9 +1357,11 @@ Public Class MainForm
     End Sub
 
     Private Sub Listbox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged 'TODO Swapper
+
         NewIndex.Enabled = False
 
         NewIndex.Interval = 100
+
         NewIndex.Enabled = True
 
     End Sub
@@ -1376,15 +1380,6 @@ Public Class MainForm
                         MSFiles.ListIndex = i
                     End If
                 End If
-                '  If lbx.Name <> "lbxShowlist" Then
-
-
-                If Media.IsLink Then
-                    PopulateLinkList(Media.LinkPath, Media)
-                Else
-                    PopulateLinkList(Media.MediaPath, Media)
-                End If
-
                 Media.SetLink(0)
             End If
 
@@ -2256,6 +2251,7 @@ Public Class MainForm
     End Sub
 
     Private Sub lbxFiles_MouseMove(sender As Object, e As MouseEventArgs) Handles lbxFiles.MouseMove
+        ' lbxFiles.DoDragDrop(lbxFiles.IndexFromPoint(e.Location), DragDropEffects.Copy)
         'MouseHoverInfo(lbxFiles, ToolTip1)
     End Sub
 
@@ -2733,13 +2729,6 @@ Public Class MainForm
         Next
     End Sub
 
-    Private Sub ctrPicAndButtons_Paint(sender As Object, e As PaintEventArgs) Handles ctrPicAndButtons.Paint
-
-    End Sub
-
-    Private Sub MainForm_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
-        '  Scrubber.Image = Marks.Bitmap
-    End Sub
 
     Private Sub lbxFiles_KeyDown(sender As Object, e As KeyEventArgs) Handles lbxFiles.KeyDown
         If e.KeyCode = KeyTraverseTree Or e.KeyCode = KeyTraverseTreeBack Then
@@ -2747,13 +2736,7 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub Scrubber_Paint(sender As Object, e As PaintEventArgs) Handles Scrubber.Paint
-        Scrubber.SuspendLayout()
-    End Sub
 
-    Private Sub Scrubber_Invalidated(sender As Object, e As InvalidateEventArgs) Handles Scrubber.Invalidated
-        '   Scrubber.SuspendLayout()
-    End Sub
 
     Private Sub HideDeadLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HideDeadLinksToolStripMenuItem.Click
         SelectDeadLinks(lbxFiles)
@@ -2774,5 +2757,12 @@ Public Class MainForm
 
     End Sub
 
+    Private Sub lbxFiles_MouseDown(sender As Object, e As MouseEventArgs) Handles lbxFiles.MouseDown
 
+    End Sub
+
+    Private Sub MainForm_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
+        DrawScrubberMarks()
+
+    End Sub
 End Class

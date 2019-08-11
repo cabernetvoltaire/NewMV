@@ -50,11 +50,16 @@ Module FileHandling
         If M.MediaPath <> "" Then My.Computer.Registry.CurrentUser.SetValue("File", M.MediaPath)
 
         '  MainForm.DrawScrubberMarks()
+        If M.IsLink Then
+            MainForm.PopulateLinkList(M.LinkPath, M)
+        Else
+            MainForm.PopulateLinkList(M.MediaPath, M)
 
+        End If
+        M.SetLink(0)
     End Sub
     Public Sub OnMediaLoaded(M As MediaHandler) Handles MSFiles.LoadedMedia
-        MainForm.PopulateLinkList(M.MediaPath, M)
-        M.SetLink()
+
     End Sub
 
     Private Sub DebugStartpoint(M As MediaHandler)

@@ -110,13 +110,15 @@
 #End Region
 #Region "Methods"
     Public Sub MouseMove(sender As Object, e As MouseEventArgs)
-        Dim pbx1 As PictureBox = CType(sender, PictureBox)
-        Dim mouse As Point
-        mouse.X = e.X
-        mouse.Y = e.Y
-        mouse.X = mouse.X + pbx1.Left
-        mouse.Y = mouse.Y + pbx1.Top
-        If Not ShiftDown Then MovePic(mouse, pbx1, pbx1.Parent)
+        If TypeOf (sender) Is PictureBox Then
+            Dim pbx1 As PictureBox = CType(sender, PictureBox)
+            Dim mouse As Point
+            mouse.X = e.X
+            mouse.Y = e.Y
+            mouse.X = mouse.X + pbx1.Left
+            mouse.Y = mouse.Y + pbx1.Top
+            If Not ShiftDown Then MovePic(mouse, pbx1, pbx1.Parent)
+        End If
     End Sub
     Public Sub MovePic(mouse As Point, inside As Control, outside As Control)
         Dim x As Long

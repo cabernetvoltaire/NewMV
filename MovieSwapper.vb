@@ -14,6 +14,7 @@ Public Class MediaSwapper
     Public Event LoadedMedia(MH As MediaHandler)
     Public Event MediaNotFound(MH As MediaHandler)
     Public Property NextItem As String
+    Public Property PreviousItem As String
     Public Event MediaShown(MH As MediaHandler)
     ''' <summary>
     ''' Assigns the listbox which this Media Swapper controls
@@ -66,7 +67,10 @@ Public Class MediaSwapper
         Media3.Player = MP3
 
     End Sub
-
+    ''' <summary>
+    ''' Loads the media marked index, and puts the previous and next files into the other two media handlers
+    ''' </summary>
+    ''' <param name="index"></param>
     Private Sub SetIndex(index As Integer)
         Dim Current As String
         Dim Nxt As String
@@ -83,6 +87,7 @@ Public Class MediaSwapper
         Prev = NextF.PreviousItem
 
         Select Case Current
+
             Case Media2.MediaPath
                 RotateMedia(Media2, Media3, Media1)
             Case Media3.MediaPath
@@ -90,6 +95,8 @@ Public Class MediaSwapper
             Case Else
                 RotateMedia(Media1, Media2, Media3)
         End Select
+
+
         oldindex = index
     End Sub
 
@@ -134,20 +141,13 @@ Public Class MediaSwapper
     End Sub
     Public Sub SetStartpoints(ByRef SH As StartPointHandler)
         SetStartStates(SH)
-        '  Dim dur As Long
 
-        'dur = mMedia1.StartPoint.Duration
-        'dur = mMedia3.StartPoint.Duration
-        'dur = mMedia2.StartPoint.Duration
         Media1.StartPoint = SH
 
         Media2.StartPoint = SH
 
         Media3.StartPoint = SH
-        '  SetIndex(ListIndex)
-        'mMedia2.StartPoint.Duration = dur
-        ' mMedia1.StartPoint.Duration = dur
-        'mMedia3.StartPoint.Duration = dur
+
 
     End Sub
     Public Sub URLSZero()
@@ -217,4 +217,5 @@ Public Class MediaSwapper
         RaiseEvent MediaShown(MHX)
 
     End Sub
+
 End Class

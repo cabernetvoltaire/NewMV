@@ -71,7 +71,7 @@ Friend Module Mysettings
             .SetValue("Favourites", CurrentFavesPath)
             .SetValue("PreviewLinks", MainForm.chbPreviewLinks.Checked)
             .SetValue("RootScanPath", Rootpath)
-            .SetValue("Directories List", DirectoriesPath)
+            .SetValue("Directories List", DirectoriesListFile)
             .SetValue("GlobalFaves", GlobalFavesPath)
         End With
 
@@ -123,17 +123,24 @@ Friend Module Mysettings
 
             MainForm.ctrPicAndButtons.SplitterDistance = 8.7 * MainForm.ctrPicAndButtons.Height / 10
             With My.Computer.Registry.CurrentUser
+                'Appearance
                 MainForm.ctrFileBoxes.SplitterDistance = .GetValue("VertSplit", MainForm.ctrFileBoxes.Height / 4)
                 MainForm.ctrMainFrame.SplitterDistance = .GetValue("HorSplit", MainForm.ctrFileBoxes.Width / 2)
+                'States
                 MainForm.CurrentFilterState.State = .GetValue("Filter", 0)
                 Media.StartPoint.State = .GetValue("StartPoint", 0)
                 MainForm.NavigateMoveState.State = .GetValue("State", 0)
                 MainForm.PlayOrder.State = .GetValue("SortOrder", 0)
                 iCurrentAlpha = .GetValue("LastAlpha", 0)
+
+                'Files
                 ButtonFilePath = .GetValue("LastButtonFile", "")
                 CurrentFavesPath = .GetValue("Favourites", CurrentFolder)
+
                 Dim fol As New IO.DirectoryInfo(CurrentFavesPath) 'TODO This whole thing is a mess
-                DirectoriesPath = .GetValue("Directories List", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures))
+
+                DirectoriesListFile = .GetValue("Directories List", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures))
+                'All .lnk files in this hierarchy get recognised and changed when files are moved. 
                 GlobalFavesPath = .GetValue("GlobalFaves", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures))
                 Rootpath = .GetValue("RootScanpath", Environment.GetFolderPath(Environment.SpecialFolder.MyComputer))
                 Dim folroot As New IO.DirectoryInfo(Rootpath)

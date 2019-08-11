@@ -15,12 +15,16 @@ Public Class FullScreen
         FSWMP3.URL = MainForm.MainWMP3.URL
 
         MSFiles.AssignPictures(fullScreenPicBox, PictureBox1, PictureBox2)
-        MSFiles.ListIndex = MainForm.lbxFiles.SelectedIndex
+        MSFiles.ListIndex = FirstMediaIndex
 
     End Sub
+
     Private Sub InitialisePlayer(WMP As AxWindowsMediaPlayer)
         WMP.uiMode = "None"
-        WMP.Dock = DockStyle.Fill
+        If separate Then
+        Else
+            WMP.Dock = DockStyle.Fill
+        End If
         WMP.settings.mute = True
 
     End Sub
@@ -31,6 +35,7 @@ Public Class FullScreen
 
         If e.KeyCode = Keys.Escape Then
             MainForm.GoFullScreen(False)
+
             ' RaiseEvent FullScreenClosing()
         End If
 
@@ -77,6 +82,5 @@ Public Class FullScreen
                 PicClick(fullScreenPicBox)
         End Select
     End Sub
-
 
 End Class

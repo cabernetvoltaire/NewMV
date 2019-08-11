@@ -56,6 +56,7 @@ Partial Class MainForm
         Me.tbLastFile = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbDate = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbState = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.TBFractionAbsolute = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tssFolderInfo = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tssMoveCopy = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tssFilter = New System.Windows.Forms.ToolStripStatusLabel()
@@ -240,7 +241,6 @@ Partial Class MainForm
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
         Me.NewIndex = New System.Windows.Forms.Timer(Me.components)
         Me.Response = New System.Windows.Forms.Timer(Me.components)
-        Me.TBFractionAbsolute = New System.Windows.Forms.ToolStripStatusLabel()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -493,6 +493,12 @@ Partial Class MainForm
         Me.tbState.Name = "tbState"
         Me.tbState.Size = New System.Drawing.Size(0, 25)
         '
+        'TBFractionAbsolute
+        '
+        Me.TBFractionAbsolute.Name = "TBFractionAbsolute"
+        Me.TBFractionAbsolute.Size = New System.Drawing.Size(242, 25)
+        Me.TBFractionAbsolute.Text = "Fraction: (F)ths Absolute: (A)s"
+        '
         'tssFolderInfo
         '
         Me.tssFolderInfo.Name = "tssFolderInfo"
@@ -621,6 +627,7 @@ Partial Class MainForm
         '
         'lbxFiles
         '
+        Me.lbxFiles.AllowDrop = True
         Me.lbxFiles.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lbxFiles.FormattingEnabled = True
         Me.lbxFiles.ItemHeight = 20
@@ -695,7 +702,7 @@ Partial Class MainForm
         'PictureBox3
         '
         Me.PictureBox3.BackColor = System.Drawing.Color.Black
-        Me.PictureBox3.Location = New System.Drawing.Point(7, 7)
+        Me.PictureBox3.Location = New System.Drawing.Point(291, 376)
         Me.PictureBox3.Name = "PictureBox3"
         Me.PictureBox3.Size = New System.Drawing.Size(327, 333)
         Me.PictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -748,10 +755,9 @@ Partial Class MainForm
         'PictureBox1
         '
         Me.PictureBox1.BackColor = System.Drawing.Color.Black
-        Me.PictureBox1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.PictureBox1.Location = New System.Drawing.Point(0, 0)
         Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(1781, 733)
+        Me.PictureBox1.Size = New System.Drawing.Size(705, 596)
         Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.PictureBox1.TabIndex = 1
         Me.PictureBox1.TabStop = False
@@ -2033,12 +2039,6 @@ Partial Class MainForm
         '
         'Response
         '
-        '
-        'TBFractionAbsolute
-        '
-        Me.TBFractionAbsolute.Name = "TBFractionAbsolute"
-        Me.TBFractionAbsolute.Size = New System.Drawing.Size(242, 25)
-        Me.TBFractionAbsolute.Text = "Fraction: (F)ths Absolute: (A)s"
         '
         'MainForm
         '

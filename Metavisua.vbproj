@@ -204,6 +204,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="StartPointHandler.vb" />
+    <Compile Include="StartUp.vb" />
     <Compile Include="StateHandler.vb" />
     <Compile Include="frmFullScreen.Designer.vb">
       <DependentUpon>frmFullScreen.vb</DependentUpon>

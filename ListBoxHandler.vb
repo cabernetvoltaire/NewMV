@@ -4,6 +4,8 @@
     Public Property Filter As New FilterHandler
     Public Property Random As New RandomHandler
     Private mItemList As New List(Of String)
+    Public Event ListBoxFilled(l As ListBox)
+
     Public Property ItemList() As List(Of String)
         Get
             Return mItemList
@@ -54,6 +56,7 @@
         For Each f In ItemList
             ListBox.Items.Add(f)
         Next
+        RaiseEvent ListBoxFilled(ListBox)
         'SetFirst()
     End Sub
     Public Sub InvertSelected()

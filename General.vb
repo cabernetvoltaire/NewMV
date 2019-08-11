@@ -16,7 +16,7 @@ Public Module General
     End Enum
     Public VIDEOEXTENSIONS = ".divx.vob.webm.avi.flv.mov.m4p.mpeg.f4v.mpg.m4a.m4v.mkv.mp4.rm.ram.wmv.wav.mp3.3gp"
     Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif"
-    Public DirectoriesPath
+    Public DirectoriesListFile
     Public separate As Boolean = False
     Public CurrentFolder As String
     Public DirectoriesList As New List(Of String)
@@ -99,7 +99,7 @@ Public Module General
     Public Sub CreateFavourite(Filepath As String)
         Dim sh As New ShortcutHandler
         CreateLink(sh, Filepath, CurrentFavesPath, "", False, Bookmark:=Media.Position)
-        AllFaveMinder.NewPath(GlobalFavespath)
+        AllFaveMinder.NewPath(GlobalFavesPath)
 
     End Sub
     Public Function LinkTargetExists(Linkfile As String) As Boolean
@@ -184,9 +184,9 @@ Public Module General
 
     Public Function GetDirectoriesList(path As String, Optional Force As Boolean = False) As List(Of String)
         Dim list As New List(Of String)
-        Dim pathfile As New IO.FileInfo(DirectoriesPath)
+        Dim pathfile As New IO.FileInfo(DirectoriesListFile)
         If Not Force AndAlso pathfile.Exists Then
-            ReadListfromFile(list, DirectoriesPath, Encrypted)
+            ReadListfromFile(list, DirectoriesListFile, Encrypted)
         Else
             Try
                 Dim root As New IO.DirectoryInfo(path)
@@ -194,8 +194,9 @@ Public Module General
                     list.Add(m.FullName)
                 Next
             Catch ex As Exception
+
             End Try
-            WriteListToFile(list, DirectoriesPath, Encrypted)
+            WriteListToFile(list, DirectoriesListFile, Encrypted)
         End If
         Return list
     End Function

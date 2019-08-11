@@ -487,6 +487,7 @@ Public Class MediaHandler
                 mDuration = mPlayer.currentMedia.duration
                 StartPoint.Duration = mDuration
                 MediaJumpToMarker()
+                MainForm.DrawScrubberMarks()
 
                 If FullScreen.Changing Or Speed.Unpause Then 'Hold current position if switching to FS or back. 
                     mPlayPosition = Speed.PausedPosition
@@ -509,8 +510,7 @@ Public Class MediaHandler
     End Sub
 
     Private Sub OnStartChange(sender As Object, e As EventArgs) Handles StartPoint.StartPointChanged, StartPoint.StateChanged
-        '  MediaJumpToMarker()
-        '  reportStartpoint(Me)
+
         RaiseEvent StartChanged(sender, e)
 
     End Sub
@@ -555,6 +555,7 @@ Public Class MediaHandler
     Private Sub PositionUpdaterCanceller_Tick(sender As Object, e As EventArgs) Handles PositionUpdaterCanceller.Tick
         PositionUpdater.Enabled = False
     End Sub
+
 
 
 

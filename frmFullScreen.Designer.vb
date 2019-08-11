@@ -44,6 +44,7 @@ Partial Class FullScreen
         '
         Me.FSWMP.Enabled = True
         Me.FSWMP.Location = New System.Drawing.Point(0, 0)
+        Me.FSWMP.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.FSWMP.Name = "FSWMP"
         Me.FSWMP.OcxState = CType(resources.GetObject("FSWMP.OcxState"), System.Windows.Forms.AxHost.State)
         Me.FSWMP.Size = New System.Drawing.Size(1123, 720)
@@ -54,9 +55,10 @@ Partial Class FullScreen
         'FSBlanker
         '
         Me.FSBlanker.BackColor = System.Drawing.Color.Maroon
-        Me.FSBlanker.Location = New System.Drawing.Point(394, 310)
+        Me.FSBlanker.Location = New System.Drawing.Point(322, 258)
+        Me.FSBlanker.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.FSBlanker.Name = "FSBlanker"
-        Me.FSBlanker.Size = New System.Drawing.Size(1193, 660)
+        Me.FSBlanker.Size = New System.Drawing.Size(976, 550)
         Me.FSBlanker.TabIndex = 19
         Me.FSBlanker.TabStop = False
         Me.FSBlanker.Visible = False
@@ -65,10 +67,10 @@ Partial Class FullScreen
         '
         Me.fullScreenPicBox.BackColor = System.Drawing.Color.Black
         Me.fullScreenPicBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.fullScreenPicBox.Location = New System.Drawing.Point(608, 637)
+        Me.fullScreenPicBox.Location = New System.Drawing.Point(611, 247)
         Me.fullScreenPicBox.Margin = New System.Windows.Forms.Padding(0)
         Me.fullScreenPicBox.Name = "fullScreenPicBox"
-        Me.fullScreenPicBox.Size = New System.Drawing.Size(1920, 1080)
+        Me.fullScreenPicBox.Size = New System.Drawing.Size(923, 635)
         Me.fullScreenPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.fullScreenPicBox.TabIndex = 18
         Me.fullScreenPicBox.TabStop = False
@@ -78,9 +80,10 @@ Partial Class FullScreen
         '
         Me.FSWMP2.Enabled = True
         Me.FSWMP2.Location = New System.Drawing.Point(399, 180)
+        Me.FSWMP2.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.FSWMP2.Name = "FSWMP2"
         Me.FSWMP2.OcxState = CType(resources.GetObject("FSWMP2.OcxState"), System.Windows.Forms.AxHost.State)
-        Me.FSWMP2.Size = New System.Drawing.Size(1123, 720)
+        Me.FSWMP2.Size = New System.Drawing.Size(908, 596)
         Me.FSWMP2.TabIndex = 20
         Me.FSWMP2.TabStop = False
         Me.FSWMP2.UseWaitCursor = True
@@ -88,7 +91,8 @@ Partial Class FullScreen
         'FSWMP3
         '
         Me.FSWMP3.Enabled = True
-        Me.FSWMP3.Location = New System.Drawing.Point(671, 348)
+        Me.FSWMP3.Location = New System.Drawing.Point(707, 130)
+        Me.FSWMP3.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.FSWMP3.Name = "FSWMP3"
         Me.FSWMP3.OcxState = CType(resources.GetObject("FSWMP3.OcxState"), System.Windows.Forms.AxHost.State)
         Me.FSWMP3.Size = New System.Drawing.Size(1123, 720)
@@ -100,10 +104,10 @@ Partial Class FullScreen
         '
         Me.PictureBox1.BackColor = System.Drawing.Color.Black
         Me.PictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.PictureBox1.Location = New System.Drawing.Point(8, 8)
+        Me.PictureBox1.Location = New System.Drawing.Point(206, 75)
         Me.PictureBox1.Margin = New System.Windows.Forms.Padding(0)
         Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(1920, 1080)
+        Me.PictureBox1.Size = New System.Drawing.Size(953, 551)
         Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.PictureBox1.TabIndex = 22
         Me.PictureBox1.TabStop = False
@@ -113,10 +117,10 @@ Partial Class FullScreen
         '
         Me.PictureBox2.BackColor = System.Drawing.Color.Black
         Me.PictureBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.PictureBox2.Location = New System.Drawing.Point(16, 16)
+        Me.PictureBox2.Location = New System.Drawing.Point(13, 13)
         Me.PictureBox2.Margin = New System.Windows.Forms.Padding(0)
         Me.PictureBox2.Name = "PictureBox2"
-        Me.PictureBox2.Size = New System.Drawing.Size(1920, 1080)
+        Me.PictureBox2.Size = New System.Drawing.Size(662, 545)
         Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.PictureBox2.TabIndex = 23
         Me.PictureBox2.TabStop = False
@@ -124,11 +128,11 @@ Partial Class FullScreen
         '
         'FullScreen
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(11.0!, 24.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoSize = True
         Me.BackColor = System.Drawing.Color.Black
-        Me.ClientSize = New System.Drawing.Size(1920, 1080)
+        Me.ClientSize = New System.Drawing.Size(1571, 900)
         Me.Controls.Add(Me.PictureBox2)
         Me.Controls.Add(Me.PictureBox1)
         Me.Controls.Add(Me.FSWMP3)
@@ -138,6 +142,7 @@ Partial Class FullScreen
         Me.Controls.Add(Me.FSWMP)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.KeyPreview = True
+        Me.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.Name = "FullScreen"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Form1"
