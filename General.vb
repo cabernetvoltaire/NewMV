@@ -489,7 +489,8 @@ Public Module General
     End Sub
 
     Public Function FileLengthCheck(file As String) As Boolean
-
+        Return True
+        Exit Function
         If Len(file) > 247 Then
             If MsgBox("Filename too long - truncate?", MsgBoxStyle.YesNo, "Filename too long") = MsgBoxResult.Yes Then
                 Dim m As New FileInfo(file)
@@ -506,7 +507,7 @@ Public Module General
                 End If
             End If
         End If
-        Return True
+        Return False
     End Function
 
 

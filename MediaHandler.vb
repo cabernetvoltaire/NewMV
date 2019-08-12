@@ -350,7 +350,7 @@ Public Class MediaHandler
                 If Speed.PausedPosition <> 0 Then
                     mPlayPosition = Speed.PausedPosition
                 Else
-                    If mMarkers.Count <> 0 And StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then 'Or StartPoint.State=StartPointHandler.StartTypes. Then
+                    If mMarkers.Count <> 0 Then 'And StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then 'Or StartPoint.State=StartPointHandler.StartTypes. Then
                         Try
                             mPlayPosition = mMarkers.Item(mlinkcounter)
                             '                            If mPlayer Is Media.Player Then MsgBox(mPlayPosition)
@@ -487,7 +487,7 @@ Public Class MediaHandler
                 mDuration = mPlayer.currentMedia.duration
                 StartPoint.Duration = mDuration
                 MediaJumpToMarker()
-                MainForm.DrawScrubberMarks()
+                ' MainForm.DrawScrubberMarks()
 
                 If FullScreen.Changing Or Speed.Unpause Then 'Hold current position if switching to FS or back. 
                     mPlayPosition = Speed.PausedPosition
@@ -518,9 +518,7 @@ Public Class MediaHandler
     ''' Ensures mPlayPosition is always up to date (to within interval)
     ''' </summary>
     Private Sub UpdatePosition() Handles PositionUpdater.Tick
-        ' Exit Sub
-        ' Exit Sub
-        ' If mResetCounter < 3 Then
+
         Try
             If Speed.Paused Then
 
@@ -528,13 +526,8 @@ Public Class MediaHandler
                 mPlayPosition = mPlayer.Ctlcontrols.currentPosition
                 mDuration = mPlayer.currentMedia.duration
             End If
-            '          mResetCounter += 1
         Catch ex As Exception
-
         End Try
-        '    Else
-        '    PositionUpdater.Enabled = False
-        '    End If
 
     End Sub
     Private Sub ResetPos() Handles ResetPosition.Tick

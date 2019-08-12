@@ -578,7 +578,34 @@ Public Class MainForm
     End Sub
 
 
+
     Public Sub AdvanceFile(blnForward As Boolean, Optional Random As Boolean = False)
+        Dim LBHH As New FileboxHandler(LBH.ListBox)
+        If FocusControl Is lbxShowList Or CtrlDown Then
+            LBHH = LBH
+        Else
+            LBHH = FBH
+        End If
+        Dim count = LBHH.ItemList.Count
+        ReDim Preserve FBCShown(count)
+        If Random Then
+            MSFiles.NextF.Randomised = True
+            LBHH.ListBox.SelectedItem = MSFiles.NextItem
+        Else
+            LBHH.IncrementIndex(blnForward)
+
+        End If
+
+        NofShown += 1
+        If NofShown >= count Then 'Re-sets when all shown. Quite nice. 
+            ReDim FBCShown(count)
+            NofShown = 0
+        End If
+
+
+    End Sub
+
+    Public Sub AdvanceFile2(blnForward As Boolean, Optional Random As Boolean = False)
 
         'Advance using whichever control has focus 
         'Unless control pressed, in which case, always advance lbxfiles. 
@@ -594,7 +621,7 @@ Public Class MainForm
         If FocusControl Is lbxFiles Or FocusControl Is lbxShowList Then
             lbx = FocusControl
         Else
-            Exit Sub
+            lbx = lbxFiles
         End If
         If CtrlDown Then lbx = lbxFiles
         Dim count As Long
@@ -783,6 +810,9 @@ Public Class MainForm
 
 #Region "Control Keys"
             Case KeyTraverseTree, KeyTraverseTreeBack
+                If FocusControl IsNot tvMain2 Then
+                    ' tvMain2.Traverse(e.KeyCode = KeyTraverseTreeBack)
+                End If
 
             Case Keys.Left, Keys.Right, Keys.Up, Keys.Down
                 If FocusControl IsNot lbxShowList Then
@@ -797,7 +827,10 @@ Public Class MainForm
             Case KeyToggleButtons
                 ToggleButtons()
             Case KeyNextFile, KeyPreviousFile, LKeyNextFile, LKeyPreviousFile
-                If FocusControl IsNot lbxFiles And FocusControl IsNot lbxShowList Then ControlSetFocus(lbxFiles)
+                If FocusControl IsNot lbxFiles And FocusControl IsNot lbxShowList Then
+                    ControlSetFocus(lbxFiles)
+                    FBH.IncrementIndex(e.KeyCode = KeyNextFile)
+                End If
                 If e.Alt Then
                     AdvanceFile(e.KeyCode = KeyNextFile, True)
                 Else
@@ -1365,25 +1398,33 @@ Public Class MainForm
         NewIndex.Enabled = True
 
     End Sub
-    Public Sub IndexHandler(sender As Object, e As EventArgs) 'Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged
+    Public Sub IndexHandler(sender As Object, e As EventArgs) ' Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged
         ' If KeyDownFlag Then Exit Sub
 
-        With sender
-            If TypeOf (sender) Is ListBox Then
-                Dim lbx As ListBox = CType(sender, ListBox)
-                If lbx.SelectionMode = SelectionMode.One Then
-                    Dim i As Long = .SelectedIndex
-                    If i = -1 Then
-                    Else
-                        Debug.Print(vbCrLf & vbCrLf & "NEXT SELECTION ---------------------------------------")
-                        MSFiles.Listbox = sender
-                        MSFiles.ListIndex = i
-                    End If
-                End If
-                Media.SetLink(0)
-            End If
+        Dim lbx As ListBox
+        If TypeOf (sender) Is ListBox Then
+            lbx = sender
 
-        End With
+        Else
+            lbx = lbxFiles
+        End If
+
+        If lbx.SelectionMode = SelectionMode.One Then
+            Dim i As Long = lbx.SelectedIndex
+            If i = -1 Then
+            Else
+                Debug.Print(vbCrLf & vbCrLf & "NEXT SELECTION ---------------------------------------")
+                MSFiles.Listbox = lbx
+                MSFiles.ListIndex = i
+            End If
+        End If
+        If Media.IsLink Then
+            PopulateLinkList(Media.LinkPath, Media)
+        Else
+            PopulateLinkList(Media.MediaPath, Media)
+        End If
+        Media.SetLink(0)
+
 
 
     End Sub
@@ -1788,7 +1829,7 @@ Public Class MainForm
         lbxGroups.Items.Clear()
         CurrentFolder = e.Directory.FullName
         tmrUpdateFileList.Enabled = True
-        tmrUpdateFileList.Interval = 100
+        tmrUpdateFileList.Interval = 200
         ' FillListbox(lbxFiles, New DirectoryInfo(CurrentFolder), Random.OnDirChange)
 
 
@@ -2432,9 +2473,9 @@ Public Class MainForm
         'End If
         tmrUpdateFileList.Enabled = False
     End Sub
-    Private Sub ChangedTree() Handles tvMain2.DirectorySelected
-        ChangeFolder(tvMain2.SelectedFolder)
-    End Sub
+    'Private Sub ChangedTree() Handles tvMain2.DirectorySelected
+    '    ChangeFolder(tvMain2.SelectedFolder)
+    'End Sub
 
 
     Private Sub ToolStripMenuItem8_Click(sender As Object, e As EventArgs) Handles CalendarToolStripMenuItem.Click
