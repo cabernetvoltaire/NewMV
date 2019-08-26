@@ -241,6 +241,7 @@ Partial Class MainForm
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
         Me.NewIndex = New System.Windows.Forms.Timer(Me.components)
         Me.Response = New System.Windows.Forms.Timer(Me.components)
+        Me.DatabaseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -2021,6 +2022,7 @@ Partial Class MainForm
         '
         'ExperimentToolStripMenuItem
         '
+        Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DatabaseToolStripMenuItem})
         Me.ExperimentToolStripMenuItem.Name = "ExperimentToolStripMenuItem"
         Me.ExperimentToolStripMenuItem.Size = New System.Drawing.Size(112, 29)
         Me.ExperimentToolStripMenuItem.Text = "Experiment"
@@ -2039,6 +2041,12 @@ Partial Class MainForm
         '
         'Response
         '
+        '
+        'DatabaseToolStripMenuItem
+        '
+        Me.DatabaseToolStripMenuItem.Name = "DatabaseToolStripMenuItem"
+        Me.DatabaseToolStripMenuItem.Size = New System.Drawing.Size(252, 30)
+        Me.DatabaseToolStripMenuItem.Text = "Database"
         '
         'MainForm
         '
@@ -2344,4 +2352,5 @@ Partial Class MainForm
     Friend WithEvents InvertSelectionToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents chbSeparate As CheckBox
     Friend WithEvents TBFractionAbsolute As ToolStripStatusLabel
+    Friend WithEvents DatabaseToolStripMenuItem As ToolStripMenuItem
 End Class

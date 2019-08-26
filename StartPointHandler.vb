@@ -94,7 +94,7 @@
     Private mStartPoint As Long
     Public ReadOnly Property StartPoint() As Long
         Get
-            GetStartPoint()
+            ' GetStartPoint()
             Return mStartPoint
         End Get
 

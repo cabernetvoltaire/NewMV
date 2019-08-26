@@ -49,6 +49,7 @@
 
     End Sub
     Public Sub IncrementIndex(Forward As Boolean)
+        If ListBox.Items.Count = 0 Then Exit Sub
         If Forward Then
             ListBox.SelectedIndex = (ListBox.SelectedIndex + 1) Mod ListBox.Items.Count
         Else
@@ -110,10 +111,11 @@
         If ListBox.SelectedItem = Name Then Exit Sub
         If ListBox.Items.Count > 0 Then
             Dim i = ListBox.FindString(Name)
+
             If i > -1 Then
                 ListBox.SelectedIndex = ListBox.FindString(Name)
             Else
-                ListBox.SelectedIndex = 0
+                'ListBox.SelectedIndex = 0
             End If
         End If
     End Sub
