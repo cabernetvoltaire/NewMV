@@ -5,6 +5,7 @@
     Public Property Random As New RandomHandler
     Private mItemList As New List(Of String)
     Public Event ListBoxFilled(l As ListBox)
+    Public Event ListboxChanged(l As ListBox)
 
     Public Property ItemList() As List(Of String)
         Get
@@ -92,11 +93,16 @@
 
     End Sub
     Public Sub RemoveItems(List As List(Of String))
+        Dim i = ListBox.FindString(List(0))
         For Each m In List
             ListBox.Items.Remove(m)
+            RaiseEvent LIstboxChanged(mListbox)
         Next
-
-        SetFirst()
+        If i > ListBox.Items.Count - 1 Then
+            SetIndex(ListBox.Items.Count - 1)
+        Else
+            SetIndex(i)
+        End If
     End Sub
     Public Sub SetFirst()
         If ListBox.Items.Count > 0 Then
@@ -106,6 +112,9 @@
                 ListBox.SelectedIndex = 0
             End If
         End If
+    End Sub
+    Public Sub SetIndex(num As Integer)
+        ListBox.SelectedIndex = num
     End Sub
     Public Sub SetNamed(Name As String)
         If ListBox.SelectedItem = Name Then Exit Sub

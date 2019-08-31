@@ -247,11 +247,11 @@
     '    PreparePic(pic, picBlanker, img)
     'End Sub
     Public Sub DisposePic(box As PictureBox)
-
-        box.Image.Dispose()
-
-        GC.SuppressFinalize(box)
-        box.Image = Nothing
+        If box.Image IsNot Nothing Then
+            box.Image.Dispose()
+            GC.SuppressFinalize(box)
+            box.Image = Nothing
+        End If
     End Sub
     Public Sub PreparePic(pbx As PictureBox, img As Image)
         Dim pbxBlanker As New PictureBox

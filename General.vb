@@ -18,6 +18,7 @@ Public Module General
     Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif"
     Public DirectoriesListFile
     Public separate As Boolean = False
+
     Public CurrentFolder As String
     Public DirectoriesList As New List(Of String)
     Public Rootpath As String = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
@@ -172,7 +173,11 @@ Public Module General
             Dim f As New IO.FileInfo(str)
             If f.Exists Then
             Else
+                Dim x = str
                 str = TryOtherDriveLetters(str)
+                If str = x Then
+                    Report(str & "target not found", 1, True)
+                End If
             End If
             Return str
         Catch ex As Exception
@@ -215,9 +220,9 @@ Public Module General
     End Sub
 
     Public Function TryOtherDriveLetters(str As String) As String
+        Dim original = str
 
         If Len(str) <> 0 Then
-            Dim original = str
             Dim driveletter As String = "A"
             For i = Asc("A") To Asc("Z")
                 driveletter = Chr(i)
@@ -227,11 +232,7 @@ Public Module General
                     Exit Function
                 End If
             Next
-            Return original
-            'While Not My.Computer.FileSystem.FileExists(str) And driveletter <> Asc("Z") + 1
-            '    str = str.Replace(Left(str, 2), driveletter & ":")
-            '    driveletter = Chr(Asc(driveletter) + 1)
-            'End While
+            str = original
         End If
         Return str
 
@@ -340,18 +341,7 @@ Public Module General
         Return s
     End Function
 
-    Public Sub RefreshListbox(lbx As ListBox)
-        Dim list As New List(Of String)
-        list = AllfromListbox(lbx)
-        For Each m In list
-            Dim f As New IO.FileInfo(m)
-            If Not f.Exists Then
-                lbx.Items.Remove(m)
-            Else
 
-            End If
-        Next
-    End Sub
     Public Sub RefreshListbox(lbx As ListBox, list As List(Of String))
         For Each m In list
             lbx.Items.Remove(m)

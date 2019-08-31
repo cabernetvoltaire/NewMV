@@ -46,7 +46,14 @@ Module FileHandling
             currentPicBox = M.Picture
         End If
         If M.MediaPath <> "" Then My.Computer.Registry.CurrentUser.SetValue("File", M.MediaPath)
+        If M.Markers.Count > 0 Then
+            Dim t As TimeSpan = TimeSpan.FromSeconds(M.Markers.Item(M.LinkCounter))
+            Dim s As String = t.ToString(Format("mm\:ss"))
 
+            MainForm.tbReport.Text = "LinkCounter " & M.LinkCounter & " at " & s
+        Else
+            MainForm.tbReport.Text = ""
+        End If
 
     End Sub
     Public Sub OnMediaLoaded(M As MediaHandler) Handles MSFiles.LoadedMedia
@@ -76,7 +83,7 @@ Module FileHandling
             End Select
             MSFiles.ResettersOff()
         Next
-        RefreshListbox(lbx1, files)
+        MainForm.FBH.RemoveItems(files)
 
         If lbx1.Items.Count <> 0 Then lbx1.SetSelected(Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0), True)
         ' If MSFiles.Listbox IsNot lbx1 Then MSFiles.Listbox = lbx1
@@ -405,14 +412,14 @@ Module FileHandling
                         Else
                             Dim f As New IO.FileInfo(m.FullName)
                             AllFaveMinder.DestinationPath = spath
-                            'Try
-                            m.MoveTo(spath)
+                            Try
+                                m.MoveTo(spath)
 
                                 AllFaveMinder.CheckFile(New IO.FileInfo(m.FullName))
 
-                            'Catch ex As Exception
-                            'MsgBox(ex.Message)
-                            'End Try
+                            Catch ex As Exception
+                                MsgBox(ex.Message)
+                            End Try
                         End If
                     Case StateHandler.StateOptions.MoveLeavingLink
                         'Move, and place link here

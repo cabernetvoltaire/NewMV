@@ -39,8 +39,8 @@ Public Class MainForm
     Public speedkeys = {KeySpeed1, KeySpeed2, KeySpeed3}
     Public WithEvents FBH As New FileboxHandler(lbxFiles)
     Public WithEvents LBH As New ListBoxHandler(lbxShowList)
-    Public Sub OnListboxFilled(sender As Object) Handles FBH.ListBoxFilled
-
+    Public Sub OnListboxChanged(sender As Object) Handles FBH.ListboxChanged
+        ' NewIndex.Enabled = True
     End Sub
 
 
@@ -59,9 +59,14 @@ Public Class MainForm
         PopulateLinkList(filepath, Media)
 
     End Sub
+
+
     Public Sub PopulateLinkList(filepath As String, Media As MediaHandler)
         If filepath = "" Then Exit Sub
-        Media.Markers.Clear()
+        Media.ClearMarkers()
+        For Each m In Media.Markers
+            Report(m, 0)
+        Next
         Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
         Dim i = 0
         If x.Count = 0 Then
@@ -81,19 +86,19 @@ Public Class MainForm
             If chbPreviewLinks.Checked Then
                 FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
             End If
-            For Each m In x
-                Dim n = BookmarkFromLinkName(m)
-                If n > 0 Then
-                    If Media.Markers.Contains(n) Then
-                    Else
-                        Media.Markers.Add(n)
-                    End If
-                    i += 1
-                End If
-            Next
-            Media.Markers.Sort()
 
         End If
+        For Each m In x
+            Dim n = BookmarkFromLinkName(m)
+            If n > 0 Then
+                If Media.Markers.Contains(n) Or n = -1 Then
+                Else
+                    Media.Markers.Add(n)
+                End If
+                i += 1
+            End If
+        Next
+        Media.Markers.Sort()
         DrawScrubberMarks()
 
 
@@ -332,11 +337,9 @@ Public Class MainForm
                 Media.Player.URL = ""
             End If
         Catch ex As Exception
-
         End Try
         If currentPicBox.Visible Then
-            currentPicBox.Image = Nothing
-            GC.Collect()
+            DisposePic(currentPicBox)
         End If
         tmrMovieSlideShow.Enabled = False
         tmrSlideShow.Enabled = False
@@ -548,17 +551,24 @@ Public Class MainForm
                 screen = Screen.AllScreens(1)
             Else
                 screen = Screen.AllScreens(0)
-                SplitterPlace(0.75)
             End If
             FullScreen.StartPosition = FormStartPosition.CenterScreen
             FullScreen.Location = screen.Bounds.Location + New Point(100, 100)
             Media.Player.Size = screen.Bounds.Size
-            FullScreen.FirstMediaIndex = MSFiles.Listbox.SelectedIndex
-            MSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
-            FullScreen.Show()
             CancelDisplay()
+
+            FullScreen.Show()
+
+            'MSFiles.AssignPlayers(FullScreen.FSWMP, FullScreen.FSWMP2, FullScreen.FSWMP3)
+            'MSFiles.AssignPictures(FullScreen.fullScreenPicBox, FullScreen.PictureBox1, FullScreen.PictureBox2)
+            'FullScreen.FirstMediaIndex = MSFiles.Listbox.SelectedIndex
+            'MSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
+            'MainWMP1.URL = ""
+            'MainWMP2.URL = ""
+            'MainWMP3.URL = ""
+
+            'CancelDisplay()
         Else
-            SplitterPlace(0.25)
             MSFiles.AssignPlayers(MainWMP1, MainWMP2, MainWMP3)
             MSFiles.AssignPictures(PictureBox1, PictureBox2, PictureBox3)
             MSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
@@ -866,13 +876,13 @@ Public Class MainForm
             Case KeyJumpToMark, LKeyMarkPoint
                 'Addmarker(Media.MediaPath)
                 If Media.Markers.Count <> 0 Then
-                    ' Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
+                    '    Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
                     If e.Alt Then
                         Media.LinkCounter = Media.RandomCounter
                     Else
                         Media.LinkCounter = Media.FindNearestCounter(e.Modifiers = Keys.Control)
                     End If
-                    'Media.Bookmark = -2
+                    Media.Bookmark = -2
                     Media.MediaJumpToMarker()
 
                 Else
@@ -1354,7 +1364,6 @@ Public Class MainForm
         Dim lbx As ListBox
         If TypeOf (sender) Is ListBox Then
             lbx = sender
-
         Else
             lbx = lbxFiles
         End If
@@ -1363,19 +1372,21 @@ Public Class MainForm
             Dim i As Long = lbx.SelectedIndex
             If i = -1 Then
             Else
-                Debug.Print(vbCrLf & vbCrLf & "NEXT SELECTION ---------------------------------------")
+                If blnFullScreen Then
+                    FullScreen.FSFiles.Listbox = lbx
+                    FullScreen.FSFiles.ListIndex = i
+                End If
                 MSFiles.Listbox = lbx
                 MSFiles.ListIndex = i
             End If
         End If
+
         If Media.IsLink Then
             PopulateLinkList(Media.LinkPath, Media)
         Else
             PopulateLinkList(Media.MediaPath, Media)
         End If
         Media.SetLink(0)
-
-
 
     End Sub
 
