@@ -135,14 +135,14 @@ Public Class MediaSwapper
         End Select
 
     End Sub
-    Public Sub SetStartStates(SH As StartPointHandler)
+    Public Sub SetStartStates(ByRef SH As StartPointHandler)
         Media1.StartPoint.State = SH.State
         Media2.StartPoint.State = SH.State
         Media3.StartPoint.State = SH.State
 
 
     End Sub
-    Public Sub SetStartpoints(SH As StartPointHandler)
+    Public Sub SetStartpoints(ByRef SH As StartPointHandler)
         SetStartStates(SH)
 
         Media1.StartPoint = SH

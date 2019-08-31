@@ -39,8 +39,8 @@ Public Class MainForm
     Public speedkeys = {KeySpeed1, KeySpeed2, KeySpeed3}
     Public WithEvents FBH As New FileboxHandler(lbxFiles)
     Public WithEvents LBH As New ListBoxHandler(lbxShowList)
-    Public Sub OnListboxChanged(sender As Object) Handles FBH.ListboxChanged
-        ' NewIndex.Enabled = True
+    Public Sub OnListboxFilled(sender As Object) Handles FBH.ListBoxFilled
+
     End Sub
 
 
@@ -59,22 +59,15 @@ Public Class MainForm
         PopulateLinkList(filepath, Media)
 
     End Sub
-
-
     Public Sub PopulateLinkList(filepath As String, Media As MediaHandler)
         If filepath = "" Then Exit Sub
-        Media.ClearMarkers()
-        For Each m In Media.Markers
-            Report(m, 0)
-        Next
+        Media.Markers.Clear()
         Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
         Dim i = 0
         If x.Count = 0 Then
             chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Regular)
             chbPreviewLinks.Text = "Preview links (None)"
             Scrubber.BackColor = Me.BackColor
-            'Marks.Clear()
-            '  Scrubber.Visible = False
             If chbPreviewLinks.Checked Then
                 lbxShowList.Items.Clear()
                 ControlSetFocus(lbxFiles)
@@ -82,24 +75,24 @@ Public Class MainForm
         Else
             chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Bold)
             chbPreviewLinks.Text = "Preview links (" & x.Count & ")"
-            '    Scrubber.BackColor = Color.HotPink
+            Scrubber.BackColor = Color.HotPink
             If chbPreviewLinks.Checked Then
                 FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
             End If
-
-        End If
-        For Each m In x
-            Dim n = BookmarkFromLinkName(m)
-            If n > 0 Then
-                If Media.Markers.Contains(n) Or n = -1 Then
-                Else
-                    Media.Markers.Add(n)
+            For Each m In x
+                Dim n = BookmarkFromLinkName(m)
+                If n > 0 Then
+                    If Media.Markers.Contains(n) Then
+                    Else
+                        Media.Markers.Add(n)
+                    End If
+                    i += 1
                 End If
-                i += 1
-            End If
-        Next
-        Media.Markers.Sort()
-        DrawScrubberMarks()
+            Next
+            Media.Markers.Sort()
+
+            DrawScrubberMarks()
+        End If
 
 
 
@@ -109,17 +102,18 @@ Public Class MainForm
         If Media.Duration <> 0 Then
             Marks.Duration = Media.Duration
             Marks.Bar = Scrubber
-            Marks.Clear(Me.BackColor)
+            Marks.Clear()
             Marks.Markers = Media.Markers
             Scrubber.Width = ctrPicAndButtons.Width * ScrubberProportion
             Scrubber.Left = Scrubber.Width * ((1 - ScrubberProportion) / 2)
-            '    Scrubber.Visible = False
+            'Scrubber.Visible = False
             If Marks.Markers.Count > 0 Then
                 Marks.Create()
+                Scrubber.Visible = True
             End If
-
         End If
 
+        'Scrubber.Image = Marks.Bitmap
 
 
 
@@ -329,17 +323,19 @@ Public Class MainForm
     End Sub
 
     Public Sub CancelDisplay()
-        MSFiles.URLSZero()
-        MSFiles.ResettersOff()
+        '        MSFiles.URLSZero()
+        '       MSFiles.ResettersOff()
         Try
 
             If Media.Player.URL <> "" Then
                 Media.Player.URL = ""
             End If
         Catch ex As Exception
+
         End Try
         If currentPicBox.Visible Then
-            DisposePic(currentPicBox)
+            currentPicBox.Image = Nothing
+            GC.Collect()
         End If
         tmrMovieSlideShow.Enabled = False
         tmrSlideShow.Enabled = False
@@ -551,24 +547,17 @@ Public Class MainForm
                 screen = Screen.AllScreens(1)
             Else
                 screen = Screen.AllScreens(0)
+                SplitterPlace(0.75)
             End If
             FullScreen.StartPosition = FormStartPosition.CenterScreen
             FullScreen.Location = screen.Bounds.Location + New Point(100, 100)
             Media.Player.Size = screen.Bounds.Size
-            CancelDisplay()
-
+            FullScreen.FirstMediaIndex = MSFiles.Listbox.SelectedIndex
+            MSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
             FullScreen.Show()
-
-            'MSFiles.AssignPlayers(FullScreen.FSWMP, FullScreen.FSWMP2, FullScreen.FSWMP3)
-            'MSFiles.AssignPictures(FullScreen.fullScreenPicBox, FullScreen.PictureBox1, FullScreen.PictureBox2)
-            'FullScreen.FirstMediaIndex = MSFiles.Listbox.SelectedIndex
-            'MSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
-            'MainWMP1.URL = ""
-            'MainWMP2.URL = ""
-            'MainWMP3.URL = ""
-
-            'CancelDisplay()
+            CancelDisplay()
         Else
+            SplitterPlace(0.25)
             MSFiles.AssignPlayers(MainWMP1, MainWMP2, MainWMP3)
             MSFiles.AssignPictures(PictureBox1, PictureBox2, PictureBox3)
             MSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
@@ -591,7 +580,7 @@ Public Class MainForm
 
 
     Public Sub AdvanceFile(blnForward As Boolean, Optional Random As Boolean = False)
-        Dim LBHH As New ListBoxHandler(LBH.ListBox)
+        Dim LBHH As New FileboxHandler(LBH.ListBox)
         If FocusControl Is lbxShowList Or CtrlDown Then
             LBHH = LBH
         Else
@@ -616,6 +605,51 @@ Public Class MainForm
 
     End Sub
 
+    Public Sub AdvanceFile2(blnForward As Boolean, Optional Random As Boolean = False)
+
+        'Advance using whichever control has focus 
+        'Unless control pressed, in which case, always advance lbxfiles. 
+        Dim diff As Integer
+
+        If blnForward Then
+            diff = 1
+        Else
+            diff = -1
+        End If
+
+        Dim lbx As New ListBox
+        If FocusControl Is lbxFiles Or FocusControl Is lbxShowList Then
+            lbx = FocusControl
+        Else
+            lbx = lbxFiles
+        End If
+        If CtrlDown Then lbx = lbxFiles
+        Dim count As Long
+        count = lbx.Items.Count
+        ReDim Preserve FBCShown(count) 'Boolean list of files shown so far. But why now? Shouldn't this be when the folder is changed?
+        lbx.SelectionMode = SelectionMode.One
+        If count = 0 Then Exit Sub 'if no filelist, then give up.
+        If lbx.SelectedIndex = -1 Then lbx.SelectedIndex = 0
+        If lbx.SelectedIndex = 0 And Not blnForward Then
+            lbx.SelectedIndex = count - 1
+        Else
+            If count > 0 Then
+                If Random Then
+                    MSFiles.NextF.Randomised = True
+                    lbx.SelectedItem = MSFiles.NextItem
+                Else
+                    lbx.SelectedIndex = (lbx.SelectedIndex + diff) Mod count
+                End If
+            End If
+        End If
+        'FBCShown(lbx.SelectedIndex) = True
+        NofShown += 1
+        If NofShown >= count Then 'Re-sets when all shown. Quite nice. 
+            ReDim FBCShown(count)
+            NofShown = 0
+        End If
+
+    End Sub
 
     Public Sub CollapseShowlist(Collapse As Boolean)
         ButtonsHidden = Collapse
@@ -753,6 +787,7 @@ Public Class MainForm
 #Region "Alpha and Numeric"
 
             Case Keys.Enter And e.Control
+                Dim Source As String
                 If Media.IsLink Then
                     HighlightCurrent(Media.LinkPath)
                     CurrentFilterState.State = FilterHandler.FilterState.All
@@ -862,11 +897,11 @@ Public Class MainForm
                         RemoveMarker(Media.MediaPath, l)
 
                     End If
-                    DrawScrubberMarks() 'Removing a mark
+                    DrawScrubberMarks()
                 Else
                     CreateFavourite(Media.MediaPath)
                     PopulateLinkList(Media.MediaPath, Media)
-                    DrawScrubberMarks() 'Adding a mark
+                    DrawScrubberMarks()
                 End If
 
             Case KeyJumpToPoint
@@ -876,7 +911,7 @@ Public Class MainForm
             Case KeyJumpToMark, LKeyMarkPoint
                 'Addmarker(Media.MediaPath)
                 If Media.Markers.Count <> 0 Then
-                    '    Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
+                    ' Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
                     If e.Alt Then
                         Media.LinkCounter = Media.RandomCounter
                     Else
@@ -1086,14 +1121,19 @@ Public Class MainForm
 
 
     Public Sub HighlightCurrent(strPath As String)
+        'Exit Sub
+        'If strPath is a link, it highlights the link, not the file
         If strPath = "" Then Exit Sub 'Empty
         If Len(strPath) > 247 Then Exit Sub 'Too long
+
         Dim finfo As New FileInfo(strPath)
         'Change the tree
         Dim s As String = Path.GetDirectoryName(strPath)
+        '  tvMain2.Validate()
+
         If tvMain2.SelectedFolder <> s Then
             tvMain2.SelectedFolder = s 'Only change tree if it needs changing
-            FBH.FillBox()
+            '  FillListbox(lbxFiles, New DirectoryInfo(s), False)
         End If
         'Select file in filelist
         FBH.SetNamed(strPath)
@@ -1364,6 +1404,7 @@ Public Class MainForm
         Dim lbx As ListBox
         If TypeOf (sender) Is ListBox Then
             lbx = sender
+
         Else
             lbx = lbxFiles
         End If
@@ -1372,21 +1413,19 @@ Public Class MainForm
             Dim i As Long = lbx.SelectedIndex
             If i = -1 Then
             Else
-                If blnFullScreen Then
-                    FullScreen.FSFiles.Listbox = lbx
-                    FullScreen.FSFiles.ListIndex = i
-                End If
+                Debug.Print(vbCrLf & vbCrLf & "NEXT SELECTION ---------------------------------------")
                 MSFiles.Listbox = lbx
                 MSFiles.ListIndex = i
             End If
         End If
-
         If Media.IsLink Then
             PopulateLinkList(Media.LinkPath, Media)
         Else
             PopulateLinkList(Media.MediaPath, Media)
         End If
         Media.SetLink(0)
+
+
 
     End Sub
 
@@ -2764,12 +2803,7 @@ Public Class MainForm
     End Sub
 
     Private Sub MainForm_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
-        'DrawScrubberMarks()
+        DrawScrubberMarks()
 
-    End Sub
-
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles DatabaseToolStripMenuItem.Click
-        Dim x As New Spreadsheet
-        x.CatalogueThisDirectory(Media.MediaDirectory, True)
     End Sub
 End Class

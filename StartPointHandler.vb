@@ -94,7 +94,8 @@
     Private mStartPoint As Long
     Public ReadOnly Property StartPoint() As Long
         Get
-            Return GetStartPoint()
+            GetStartPoint()
+            Return mStartPoint
         End Get
 
     End Property
@@ -166,8 +167,6 @@
         End If
 
         If mStartPoint > mDuration Then MsgBox("Too far")
-        'If mStartPoint <> 0 Then MsgBox(mStartPoint)
         Return mStartPoint
-        If mStartPoint <> oldstartpoint Then RaiseEvent StartPointChanged(Me, Nothing)
     End Function
 End Class

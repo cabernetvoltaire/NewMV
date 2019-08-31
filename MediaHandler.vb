@@ -12,8 +12,8 @@ Public Class MediaHandler
 
 
     Private WithEvents ResetPosition As New Timer
-    Public WithEvents PositionUpdater As New Timer With {.Interval = 100, .Enabled = True}
-    Public WithEvents PositionUpdaterCanceller As New Timer With {.Interval = 25000, .Enabled = True}
+    Public WithEvents PositionUpdater As New Timer With {.Interval = 100}
+    Public WithEvents PositionUpdaterCanceller As New Timer With {.Interval = 5000}
 
     Private DefaultFile As String = "C:\exiftools.exe"
     Public WithEvents StartPoint As New StartPointHandler
@@ -78,7 +78,7 @@ Public Class MediaHandler
     Private mPlayPosition As Long
     Public Property Position() As Long
         Get
-            ' mPlayPosition = mPlayer.Ctlcontrols.currentPosition
+            '   mPlayPosition = mPlayer.Ctlcontrols.currentPosition
             Return mPlayPosition
         End Get
         Set(ByVal value As Long)
@@ -123,23 +123,18 @@ Public Class MediaHandler
             Return mMediaPath
         End Get
         Set(ByVal value As String)
-            Static oldplayer As String
-            PositionUpdaterCanceller.Enabled = True
-
             'If path changes, we need to check it exists, and if so, change stored directory as well, 
             'And raise a media changed event. 
             Dim b As String = mMediaPath
-            'If value = b And mPlayer.Name = oldplayer Then
-            '    'Path hasn't changed, so nothing to do. 
-            '    MsgBox("Nothing to do")
-            'Else
-            If value = "" Then
-                    'Deals with absent file
-                    mMediaPath = DefaultFile
-                    mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
-                    RaiseEvent MediaChanged(Me, New EventArgs)
-                Else
-                    mMediaPath = value
+            If value = b Then
+                'Path hasn't changed, so nothing to do. 
+            ElseIf value = "" Then
+                'Deals with absent file
+                mMediaPath = DefaultFile
+                mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
+                RaiseEvent MediaChanged(Me, New EventArgs)
+            Else
+                mMediaPath = value
                 mType = FindType(value)
                 Try
                     Dim f As New IO.FileInfo(value)
@@ -162,36 +157,16 @@ Public Class MediaHandler
                 Catch ex As Exception
 
                 End Try
-                Dim x As List(Of String) = AllFaveMinder.GetLinksOf(mMediaPath)
-                Dim i = 0
-                For Each m In x
-                    Dim n = BookmarkFromLinkName(m)
-                    If n > 0 Then
-                        If Me.Markers.Contains(n) Then
-                        Else
-                            Me.Markers.Add(n)
-                        End If
-                        i += 1
-                    End If
-                Next
-                Me.Markers.Sort()
 
-                'If mIsLink Then
-                '    MainForm.PopulateLinkList(Media.LinkPath, Me)
-                'Else
-
-                '    MainForm.PopulateLinkList(Media.MediaPath, Me)
-                'End If
                 RaiseEvent MediaChanged(Me, New EventArgs)
 
             End If
 
-            oldplayer = mPlayer.Name
+
         End Set
     End Property
-
     Public Sub New(value As String)
-        '   Player = mPlayer
+        '      Player = mPlayer
         Name = value
         ' PositionUpdater.Interval = 500
         PositionUpdater.Enabled = False
@@ -320,7 +295,7 @@ Public Class MediaHandler
         done.Add(ret)
         Return ret
     End Function
-    Public Function FindNearestCounter(Backwards As Boolean) As Integer
+    Public Function FindNearestCounter(Last As Boolean) As Integer
         If mMarkers.Count = 0 Then
             Return -1
             Exit Function
@@ -328,7 +303,7 @@ Public Class MediaHandler
         Dim ret As Integer
         Dim i As Integer = 0
         For i = 0 To mMarkers.Count - 1
-            If Backwards Then
+            If Last Then
                 If mMarkers(i) > mPlayPosition - 5 Then
                     ret = i - 1
                     Return ret
@@ -340,7 +315,7 @@ Public Class MediaHandler
                 End If
             End If
         Next
-        Return ret
+        Return 0
 
     End Function
     Public Sub SetLink(Optional num = 0)
@@ -356,14 +331,13 @@ Public Class MediaHandler
 #End Region
 
     Public Sub MediaJumpToMarker(Optional ToEnd As Boolean = False)
-        If mDuration = 0 Then Exit Sub
         'It's a link with a bookmark
         If mBookmark > -1 And Speed.PausedPosition = 0 Then 'And mMarkers.Count = 0 Then
-            'If StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
-            mPlayPosition = mBookmark
-            'Else
-            '    mPlayPosition = StartPoint.StartPoint
-            'End If
+            If StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
+                mPlayPosition = mBookmark
+            Else
+                mPlayPosition = StartPoint.StartPoint
+            End If
         Else
             'Not a link
             If ToEnd Then 'Special Case where jump to end button pressed
@@ -376,10 +350,14 @@ Public Class MediaHandler
                 If Speed.PausedPosition <> 0 Then
                     mPlayPosition = Speed.PausedPosition
                 Else
-                    If mMarkers.Count <> 0 And StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then 'Or StartPoint.State=StartPointHandler.StartTypes. Then
-                        mPlayPosition = mMarkers.Item(mlinkcounter)
-                        '    '    '                            If mPlayer Is Media.Player Then MsgBox(mPlayPosition)
-
+                    If mMarkers.Count <> 0 Then 'And StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then 'Or StartPoint.State=StartPointHandler.StartTypes. Then
+                        Try
+                            mPlayPosition = mMarkers.Item(mlinkcounter)
+                            '                            If mPlayer Is Media.Player Then MsgBox(mPlayPosition)
+                            Report("LinkCounter " & mlinkcounter & " at " & mMarkers.Item(mlinkcounter), 3)
+                        Catch ex As Exception
+                            mPlayPosition = StartPoint.StartPoint
+                        End Try
                     Else
                         mPlayPosition = StartPoint.StartPoint
                     End If
@@ -402,7 +380,12 @@ Public Class MediaHandler
             Case Filetype.Link
                 Select Case FindType(mLinkPath)
                     Case Filetype.Movie
+                        If mBookmark > -1 Then
+                            If StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
 
+                                StartPoint.Absolute = mBookmark
+                            End If
+                        End If
                         HandleMovie(mLinkPath)
                     Case Filetype.Pic
                         HandlePic(mLinkPath)
@@ -417,9 +400,7 @@ Public Class MediaHandler
         End Select
     End Sub
     Private Sub HandleMovie(URL As String)
-        HandleMovieOld(URL)
-    End Sub
-    Private Sub HandleMovieOld(URL As String)
+
         Static LastURL As String
         If URL <> LastURL Then
             If mPlayer Is Nothing Then
@@ -434,32 +415,11 @@ Public Class MediaHandler
 
             End If
         Else
-            mlinkcounter = 0
+            mLinkCounter = 0
             GetBookmark()
             MediaJumpToMarker()
         End If
         DisplayerName = mPlayer.Name
-    End Sub
-    Private Sub HandleMovieNew(URL As String)
-        mPlayer.URL = URL
-        Exit Sub
-        Static oldplayername As String
-
-        If URL = mPlayer.URL And mPlayer.Name = oldplayername Then
-            mlinkcounter = 0
-            GetBookmark()
-            MediaJumpToMarker()
-        Else
-            mPlayer.URL = URL
-            '     Sound.URL = URL
-            '          LastURL = URL
-        End If
-        DisplayerName = mPlayer.Name
-        oldplayername = mPlayer.Name
-        'Exit Sub
-
-
-
     End Sub
     Public Sub HandlePic(path As String)
 
@@ -472,6 +432,11 @@ Public Class MediaHandler
             Exit Sub
         End If
         MainForm.OrientPic(img)
+        'Resume if in middle of slideshow
+        'If blnRestartSlideShowFlag Then
+        '    tmrSlideShow.Enabled = True
+        '    blnRestartSlideShowFlag = False
+        'End If
         currentPicBox = mPicBox
         MainForm.MovietoPic(img)
         DisplayerName = mPicBox.Name
@@ -516,8 +481,8 @@ Public Class MediaHandler
 
             Case WMPLib.WMPPlayState.wmppsPlaying
                 mSndH.Slow = False
-                'PositionUpdater.Enabled = True
-
+                PositionUpdater.Enabled = True
+                PositionUpdaterCanceller.Enabled = True
                 ' mResetCounter = 0
                 mDuration = mPlayer.currentMedia.duration
                 StartPoint.Duration = mDuration
@@ -545,7 +510,7 @@ Public Class MediaHandler
     End Sub
 
     Private Sub OnStartChange(sender As Object, e As EventArgs) Handles StartPoint.StartPointChanged, StartPoint.StateChanged
-        '    If StartPoint.StartPoint <> 120 Then MsgBox(StartPoint.StartPoint)
+
         RaiseEvent StartChanged(sender, e)
 
     End Sub
@@ -559,7 +524,7 @@ Public Class MediaHandler
 
             Else
                 mPlayPosition = mPlayer.Ctlcontrols.currentPosition
-             '   mDuration = mPlayer.currentMedia.duration
+                mDuration = mPlayer.currentMedia.duration
             End If
         Catch ex As Exception
         End Try
@@ -575,21 +540,15 @@ Public Class MediaHandler
 
     End Sub
     Public Sub PlaceResetter(ResetOn As Boolean)
-        '  MediaJumpToMarker()
+        'MediaJumpToMarker()
         ResetPosition.Enabled = ResetOn
 
     End Sub
 
     Private Sub PositionUpdaterCanceller_Tick(sender As Object, e As EventArgs) Handles PositionUpdaterCanceller.Tick
-        ResetPosition.Enabled = False
         PositionUpdater.Enabled = False
-        PositionUpdaterCanceller.Enabled = False
+    End Sub
 
-    End Sub
-    Public Sub ClearMarkers()
-        Markers.Clear()
-        mMarkers.Clear()
-    End Sub
 
 
 

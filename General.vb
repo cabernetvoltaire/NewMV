@@ -393,12 +393,11 @@ Public Module General
         If Sound Then SystemSounds.Asterisk.Play()
 
         For i = 0 To gaps
-            Debug.WriteLine("")
-
+            Console.WriteLine()
         Next
-        Debug.WriteLine(str)
+        Console.WriteLine(str)
         For i = 0 To gaps
-            Debug.Print("")
+            Console.WriteLine()
         Next
 
     End Sub
