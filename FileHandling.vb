@@ -35,28 +35,19 @@ Module FileHandling
 
     Public Sub OnMediaShown(M As MediaHandler) Handles MSFiles.MediaShown
         Media = M
-        ' MSFiles.SetStartStates(Media.StartPoint)
-        '  Media.MediaJumpToMarker()
+        'MSFiles.SetStartStates(Media.StartPoint)
+        'Media.MediaJumpToMarker()
         Debug.Print("On Media Shown")
         DebugStartpoint(Media)
-        'LabelStartPoint(Media)
 
         MainForm.UpdateFileInfo()
-        '   MainForm.Scrubber.Image = MainForm.Marks.Bitmap
 
         If M.MediaType <> Filetype.Movie Then
             currentPicBox = M.Picture
         End If
         If M.MediaPath <> "" Then My.Computer.Registry.CurrentUser.SetValue("File", M.MediaPath)
 
-        '  MainForm.DrawScrubberMarks()
-        'If M.IsLink Then
-        '    MainForm.PopulateLinkList(M.LinkPath, M)
-        'Else
-        '    MainForm.PopulateLinkList(M.MediaPath, M)
 
-        'End If
-        'M.SetLink(0)
     End Sub
     Public Sub OnMediaLoaded(M As MediaHandler) Handles MSFiles.LoadedMedia
 
@@ -707,10 +698,17 @@ Module FileHandling
     Public Function DeleteEmptyFolders(d As DirectoryInfo, blnRecurse As Boolean) As Boolean
 
         If blnRecurse Then
-            For Each di In d.EnumerateDirectories
 
-                DeleteEmptyFolders(di, True)
+
+            For Each di In d.EnumerateDirectories
+                Try
+
+                    DeleteEmptyFolders(di, True)
+                Catch ex As Exception
+                    Continue For
+                End Try
             Next
+
         End If
         If d.EnumerateDirectories.Count = 0 And d.EnumerateFiles.Count = 0 Then
             Dim s As String = d.Parent.FullName
@@ -723,10 +721,11 @@ Module FileHandling
                 Exit Function
             End Try
             ' MainForm.tvMain2.RefreshTree(s)
+            Return True
+            Exit Function
         End If
+        Return False
 
-
-        Return True
     End Function
 
     Public Function FolderCount(d As DirectoryInfo, count As Integer, blnRecurse As Boolean) As Long
@@ -768,6 +767,7 @@ Module FileHandling
         Next
     End Sub
     Public Sub HarvestFolder(d As DirectoryInfo, Recurse As Boolean, Parent As Boolean)
+
         If Recurse Then
             For Each di In d.EnumerateDirectories
                 HarvestFolder(di, Recurse, Parent)
@@ -786,20 +786,8 @@ Module FileHandling
             blnSuppressCreate = False
         End If
 
-        'For Each f In d.EnumerateFiles
-        '    If Parent Then
-        '        Dim m As String = d.Parent.FullName & "\" & f.Name
-        '        Dim fi As New FileInfo(m)
-        '        If fi.Exists Then
-        '        Else
-        '            'Use an encapsulated move routine
-        '            f.MoveTo(m)
-        '        End If
-        '    Else
-        '        f.MoveTo(CurrentFolder & "\" & f.Name)
-        '    End If
-        'Next
-        DeleteEmptyFolders(d, True)
+
+        ' DeleteEmptyFolders(d, True)
     End Sub
 
     Public Sub BurstFolder(d As DirectoryInfo)

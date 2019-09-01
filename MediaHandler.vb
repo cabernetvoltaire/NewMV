@@ -12,8 +12,8 @@ Public Class MediaHandler
 
 
     Private WithEvents ResetPosition As New Timer
-    Public WithEvents PositionUpdater As New Timer With {.Interval = 100}
-    Public WithEvents PositionUpdaterCanceller As New Timer With {.Interval = 5000}
+    Public WithEvents PositionUpdater As New Timer With {.Interval = 100, .Enabled = True}
+    Public WithEvents PositionUpdaterCanceller As New Timer With {.Interval = 5000, .Enabled = True}
 
     Private DefaultFile As String = "C:\exiftools.exe"
     Public WithEvents StartPoint As New StartPointHandler
@@ -157,7 +157,26 @@ Public Class MediaHandler
                 Catch ex As Exception
 
                 End Try
+                Dim x As List(Of String) = AllFaveMinder.GetLinksOf(mMediaPath)
+                Dim i = 0
+                For Each m In x
+                    Dim n = BookmarkFromLinkName(m)
+                    If n > 0 Then
+                        If Me.Markers.Contains(n) Then
+                        Else
+                            Me.Markers.Add(n)
+                        End If
+                        i += 1
+                    End If
+                Next
+                Me.Markers.Sort()
 
+                'If mIsLink Then
+                '    MainForm.PopulateLinkList(Media.LinkPath, Me)
+                'Else
+
+                '    MainForm.PopulateLinkList(Media.MediaPath, Me)
+                'End If
                 RaiseEvent MediaChanged(Me, New EventArgs)
 
             End If
@@ -165,6 +184,7 @@ Public Class MediaHandler
 
         End Set
     End Property
+
     Public Sub New(value As String)
         '      Player = mPlayer
         Name = value
@@ -295,7 +315,7 @@ Public Class MediaHandler
         done.Add(ret)
         Return ret
     End Function
-    Public Function FindNearestCounter(Last As Boolean) As Integer
+    Public Function FindNearestCounter(Backwards As Boolean) As Integer
         If mMarkers.Count = 0 Then
             Return -1
             Exit Function
@@ -303,7 +323,7 @@ Public Class MediaHandler
         Dim ret As Integer
         Dim i As Integer = 0
         For i = 0 To mMarkers.Count - 1
-            If Last Then
+            If Backwards Then
                 If mMarkers(i) > mPlayPosition - 5 Then
                     ret = i - 1
                     Return ret
@@ -315,7 +335,7 @@ Public Class MediaHandler
                 End If
             End If
         Next
-        Return 0
+        Return ret
 
     End Function
     Public Sub SetLink(Optional num = 0)
@@ -481,8 +501,8 @@ Public Class MediaHandler
 
             Case WMPLib.WMPPlayState.wmppsPlaying
                 mSndH.Slow = False
-                PositionUpdater.Enabled = True
-                PositionUpdaterCanceller.Enabled = True
+                'PositionUpdater.Enabled = True
+                'PositionUpdaterCanceller.Enabled = True
                 ' mResetCounter = 0
                 mDuration = mPlayer.currentMedia.duration
                 StartPoint.Duration = mDuration
@@ -546,7 +566,10 @@ Public Class MediaHandler
     End Sub
 
     Private Sub PositionUpdaterCanceller_Tick(sender As Object, e As EventArgs) Handles PositionUpdaterCanceller.Tick
+        ResetPosition.Enabled = False
         PositionUpdater.Enabled = False
+        PositionUpdaterCanceller.Enabled = False
+
     End Sub
 
 

@@ -25,19 +25,19 @@ Partial Class FullScreen
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FullScreen))
         Me.FSWMP = New AxWMPLib.AxWindowsMediaPlayer()
         Me.FSBlanker = New System.Windows.Forms.PictureBox()
-        Me.FSPB1 = New System.Windows.Forms.PictureBox()
+        Me.fullScreenPicBox = New System.Windows.Forms.PictureBox()
         Me.DirectoryEntry1 = New System.DirectoryServices.DirectoryEntry()
         Me.FSWMP2 = New AxWMPLib.AxWindowsMediaPlayer()
         Me.FSWMP3 = New AxWMPLib.AxWindowsMediaPlayer()
-        Me.FSPB2 = New System.Windows.Forms.PictureBox()
-        Me.FSPB3 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox2 = New System.Windows.Forms.PictureBox()
         CType(Me.FSWMP, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.FSBlanker, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.FSPB1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.fullScreenPicBox, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.FSWMP2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.FSWMP3, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.FSPB2, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.FSPB3, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'FSWMP
@@ -65,16 +65,16 @@ Partial Class FullScreen
         '
         'fullScreenPicBox
         '
-        Me.FSPB1.BackColor = System.Drawing.Color.Black
-        Me.FSPB1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.FSPB1.Location = New System.Drawing.Point(611, 247)
-        Me.FSPB1.Margin = New System.Windows.Forms.Padding(0)
-        Me.FSPB1.Name = "fullScreenPicBox"
-        Me.FSPB1.Size = New System.Drawing.Size(923, 635)
-        Me.FSPB1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.FSPB1.TabIndex = 18
-        Me.FSPB1.TabStop = False
-        Me.FSPB1.Visible = False
+        Me.fullScreenPicBox.BackColor = System.Drawing.Color.Black
+        Me.fullScreenPicBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.fullScreenPicBox.Location = New System.Drawing.Point(611, 247)
+        Me.fullScreenPicBox.Margin = New System.Windows.Forms.Padding(0)
+        Me.fullScreenPicBox.Name = "fullScreenPicBox"
+        Me.fullScreenPicBox.Size = New System.Drawing.Size(923, 635)
+        Me.fullScreenPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.fullScreenPicBox.TabIndex = 18
+        Me.fullScreenPicBox.TabStop = False
+        Me.fullScreenPicBox.Visible = False
         '
         'FSWMP2
         '
@@ -102,29 +102,29 @@ Partial Class FullScreen
         '
         'PictureBox1
         '
-        Me.FSPB2.BackColor = System.Drawing.Color.Black
-        Me.FSPB2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.FSPB2.Location = New System.Drawing.Point(206, 75)
-        Me.FSPB2.Margin = New System.Windows.Forms.Padding(0)
-        Me.FSPB2.Name = "PictureBox1"
-        Me.FSPB2.Size = New System.Drawing.Size(953, 551)
-        Me.FSPB2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.FSPB2.TabIndex = 22
-        Me.FSPB2.TabStop = False
-        Me.FSPB2.Visible = False
+        Me.PictureBox1.BackColor = System.Drawing.Color.Black
+        Me.PictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.PictureBox1.Location = New System.Drawing.Point(206, 75)
+        Me.PictureBox1.Margin = New System.Windows.Forms.Padding(0)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(953, 551)
+        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PictureBox1.TabIndex = 22
+        Me.PictureBox1.TabStop = False
+        Me.PictureBox1.Visible = False
         '
         'PictureBox2
         '
-        Me.FSPB3.BackColor = System.Drawing.Color.Black
-        Me.FSPB3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.FSPB3.Location = New System.Drawing.Point(13, 13)
-        Me.FSPB3.Margin = New System.Windows.Forms.Padding(0)
-        Me.FSPB3.Name = "PictureBox2"
-        Me.FSPB3.Size = New System.Drawing.Size(662, 545)
-        Me.FSPB3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.FSPB3.TabIndex = 23
-        Me.FSPB3.TabStop = False
-        Me.FSPB3.Visible = False
+        Me.PictureBox2.BackColor = System.Drawing.Color.Black
+        Me.PictureBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.PictureBox2.Location = New System.Drawing.Point(13, 13)
+        Me.PictureBox2.Margin = New System.Windows.Forms.Padding(0)
+        Me.PictureBox2.Name = "PictureBox2"
+        Me.PictureBox2.Size = New System.Drawing.Size(662, 545)
+        Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PictureBox2.TabIndex = 23
+        Me.PictureBox2.TabStop = False
+        Me.PictureBox2.Visible = False
         '
         'FullScreen
         '
@@ -133,12 +133,12 @@ Partial Class FullScreen
         Me.AutoSize = True
         Me.BackColor = System.Drawing.Color.Black
         Me.ClientSize = New System.Drawing.Size(1571, 900)
-        Me.Controls.Add(Me.FSPB3)
-        Me.Controls.Add(Me.FSPB2)
+        Me.Controls.Add(Me.PictureBox2)
+        Me.Controls.Add(Me.PictureBox1)
         Me.Controls.Add(Me.FSWMP3)
         Me.Controls.Add(Me.FSWMP2)
         Me.Controls.Add(Me.FSBlanker)
-        Me.Controls.Add(Me.FSPB1)
+        Me.Controls.Add(Me.fullScreenPicBox)
         Me.Controls.Add(Me.FSWMP)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.KeyPreview = True
@@ -149,21 +149,21 @@ Partial Class FullScreen
         Me.TopMost = True
         CType(Me.FSWMP, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.FSBlanker, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.FSPB1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.fullScreenPicBox, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.FSWMP2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.FSWMP3, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.FSPB2, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.FSPB3, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
 
     Friend WithEvents FSWMP As AxWMPLib.AxWindowsMediaPlayer
-    Friend WithEvents FSPB1 As PictureBox
+    Friend WithEvents fullScreenPicBox As PictureBox
     Friend WithEvents FSBlanker As PictureBox
     Friend WithEvents DirectoryEntry1 As DirectoryServices.DirectoryEntry
     Friend WithEvents FSWMP2 As AxWMPLib.AxWindowsMediaPlayer
     Friend WithEvents FSWMP3 As AxWMPLib.AxWindowsMediaPlayer
-    Friend WithEvents FSPB2 As PictureBox
-    Friend WithEvents FSPB3 As PictureBox
+    Friend WithEvents PictureBox1 As PictureBox
+    Friend WithEvents PictureBox2 As PictureBox
 End Class

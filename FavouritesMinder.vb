@@ -129,8 +129,11 @@
 
         ' Exit Function
         Dim finfo As New IO.FileInfo(Path)
+        Dim m As String = "a"
         Dim list As New List(Of String)
-        list = FavesList.FindAll(Function(x) FilenameFromLink(x) = finfo.Name And Not x.Contains("%-1"))
+        list = FavesList.FindAll(Function(x) FilenameFromLink(x) = finfo.Name)
+
+        'list = FavesList.FindAll(Function(x) x.Contains(finfo.Name))
         Return list
     End Function
     Public Property OkToDelete As Boolean = True

@@ -119,9 +119,9 @@ Friend Module Mysettings
     Public Sub PreferencesGet()
         'Preferences(True)
         'Exit Sub
-        '  Try
+        Try
 
-        MainForm.ctrPicAndButtons.SplitterDistance = 8.7 * MainForm.ctrPicAndButtons.Height / 10
+            MainForm.ctrPicAndButtons.SplitterDistance = 8.7 * MainForm.ctrPicAndButtons.Height / 10
             With My.Computer.Registry.CurrentUser
                 'Appearance
                 MainForm.ctrFileBoxes.SplitterDistance = .GetValue("VertSplit", MainForm.ctrFileBoxes.Height / 4)
@@ -142,8 +142,8 @@ Friend Module Mysettings
                 DirectoriesListFile = .GetValue("Directories List", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures))
                 'All .lnk files in this hierarchy get recognised and changed when files are moved. 
                 GlobalFavesPath = .GetValue("GlobalFaves", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures))
-            Rootpath = .GetValue("RootScanpath", "Q:\")
-            Dim folroot As New IO.DirectoryInfo(Rootpath)
+                Rootpath = .GetValue("RootScanpath", Environment.GetFolderPath(Environment.SpecialFolder.MyComputer))
+                Dim folroot As New IO.DirectoryInfo(Rootpath)
                 If folroot.Exists Then
                     DirectoriesList = GetDirectoriesList(Rootpath)
                 Else
@@ -161,9 +161,9 @@ Friend Module Mysettings
 
 
             End With
-        'Catch ex As Exception
-        'PreferencesReset()
-        'End Try
+        Catch ex As Exception
+            PreferencesReset()
+        End Try
         MainForm.tssMoveCopy.Text = CurrentFolder
     End Sub
     Public Sub PreferencesReset()

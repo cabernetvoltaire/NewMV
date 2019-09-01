@@ -14,11 +14,8 @@ Public Class MediaSwapper
     Public Event LoadedMedia(MH As MediaHandler)
     Public Event MediaNotFound(MH As MediaHandler)
     Public Property NextItem As String
-    Public Property CurrentItem As String
     Public Property PreviousItem As String
     Public Event MediaShown(MH As MediaHandler)
-#Region "Properties"
-
     ''' <summary>
     ''' Assigns the listbox which this Media Swapper controls
     ''' </summary>
@@ -49,6 +46,7 @@ Public Class MediaSwapper
 
             NextF.CurrentIndex = value
             SetIndex(value)
+            '  Listbox.SetSelected(value, True)
         End Set
     End Property
     Public Sub New(ByRef MP1 As AxWindowsMediaPlayer, ByRef MP2 As AxWindowsMediaPlayer, ByRef MP3 As AxWindowsMediaPlayer, ByRef PB1 As PictureBox, ByRef PB2 As PictureBox, ByRef PB3 As PictureBox)
@@ -57,19 +55,13 @@ Public Class MediaSwapper
         AssignPictures(PB1, PB2, PB3)
 
     End Sub
-    Public Sub New()
-
-    End Sub
-#End Region
-#Region "Methods"
     Public Sub AssignPictures(ByRef PB1 As PictureBox, ByRef PB2 As PictureBox, ByRef PB3 As PictureBox)
         Media1.Picture = PB1
         Media2.Picture = PB2
         Media3.Picture = PB3
 
     End Sub
-    Public Sub AssignPlayers(ByVal MP1 As AxWindowsMediaPlayer, ByVal MP2 As AxWindowsMediaPlayer, ByVal MP3 As AxWindowsMediaPlayer)
-
+    Public Sub AssignPlayers(ByRef MP1 As AxWindowsMediaPlayer, ByRef MP2 As AxWindowsMediaPlayer, ByRef MP3 As AxWindowsMediaPlayer)
         Media1.Player = MP1
         Media2.Player = MP2
         Media3.Player = MP3
@@ -80,16 +72,21 @@ Public Class MediaSwapper
     ''' </summary>
     ''' <param name="index"></param>
     Private Sub SetIndex(index As Integer)
+        Dim Current As String
+        Dim Nxt As String
+        Dim Prev As String
         mListcount = Listbox.Items.Count
         Static oldindex As Integer
 
         NextF.Forwards = (mListIndex > oldindex) Or (mListIndex = 0)
         NextF.CurrentIndex = index
 
-        CurrentItem = NextF.CurrentItem
-        NextItem = NextF.NextItem
-        PreviousItem = NextF.PreviousItem
-        Select Case CurrentItem
+        Current = NextF.CurrentItem
+        Nxt = NextF.NextItem
+        NextItem = Nxt
+        Prev = NextF.PreviousItem
+
+        Select Case Current
 
             Case Media2.MediaPath
                 RotateMedia(Media2, Media3, Media1)
@@ -154,21 +151,12 @@ Public Class MediaSwapper
 
     End Sub
     Public Sub URLSZero()
-        Try
-
-            Media1.Player.URL = ""
-            Media2.Player.URL = ""
-            Media3.Player.URL = ""
-            DisposePic(Media1.Picture)
-            DisposePic(Media2.Picture)
-            DisposePic(Media3.Picture)
-            ''Media1.Picture.Image = Nothing
-            'Media2.Picture.Image = Nothing
-            'Media3.Picture.Image = Nothing
-            'GC.Collect()
-        Catch ex As Exception
-            MsgBox(ex.Message)
-        End Try
+        Media1.Player.URL = ""
+        Media2.Player.URL = ""
+        Media3.Player.URL = ""
+        Media1.Picture.Image = Nothing
+        Media2.Picture.Image = Nothing
+        Media3.Picture.Image = Nothing
 
     End Sub
     Public Sub ResettersOff()
@@ -229,6 +217,5 @@ Public Class MediaSwapper
         RaiseEvent MediaShown(MHX)
 
     End Sub
-#End Region
 
 End Class
