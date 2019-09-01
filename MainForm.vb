@@ -2758,7 +2758,7 @@ Public Class MainForm
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles DatabaseToolStripMenuItem.Click
-        Dim x As New Spreadsheet
-        x.CatalogueThisDirectory(Media.MediaDirectory, True)
+        'Dim x As New Spreadsheet
+        'x.CatalogueThisDirectory(Media.MediaDirectory, True)
     End Sub
 End Class

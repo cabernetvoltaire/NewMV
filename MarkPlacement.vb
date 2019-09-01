@@ -20,8 +20,8 @@ Public Class MarkPlacement
         Bitmap = Bar.Image
     End Sub
 
-    Public Sub Clear()
+    Public Sub Clear(cl As Color)
         Dim g As Graphics = Bar.CreateGraphics
-        g.Clear(Bar.BackColor)
+        g.Clear(cl)
     End Sub
 End Class
