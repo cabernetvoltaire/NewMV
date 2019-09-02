@@ -5,17 +5,17 @@ Public Class ButtonForm
     Private sfd As New SaveFileDialog
     Public sbtns As Button()
     Public lbls As Label()
-    Public Function LoadButtonFileName() As String
-        Dim path As String = ""
+    Public Function LoadButtonFileName(path As String) As String
+        If path = "" Then
+            With ofd
+                .DefaultExt = "msb"
+                .Filter = "Metavisua button files|*.msb|All files|*.*"
 
-        With ofd
-            .DefaultExt = "msb"
-            .Filter = "Metavisua button files|*.msb|All files|*.*"
-
-            If .ShowDialog() = System.Windows.Forms.DialogResult.OK Then
-                path = .FileName
-            End If
-        End With
+                If .ShowDialog() = System.Windows.Forms.DialogResult.OK Then
+                    path = .FileName
+                End If
+            End With
+        End If
         Return path
 
     End Function
@@ -44,7 +44,9 @@ Public Class ButtonForm
     Private Sub ButtonForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         sbtns = {Me.Button4, Me.Button2, Me.btn1, Me.Button1, Me.Button9, Me.Button7, Me.Button5, Me.Button6}
         lbls = {Me.Label4, Me.Label2, Me.lbl1, Me.Label1, Me.Label9, Me.Label7, Me.Label5, Me.Label6}
-        TranscribeButtons(buttons.CurrentRow)
+        LoadButtonSet(LoadButtonFileName(ButtonFilePath))
+        ' buttons.CurrentLetter = LetterNumberFromAscii(Asc("A"))
+        'TranscribeButtons(buttons.CurrentRow)
     End Sub
     Public Sub TranscribeButtons(m As ButtonRow)
         For i = 0 To 7
@@ -98,7 +100,7 @@ Public Class ButtonForm
                 If e.Control AndAlso Not e.Alt Then
                     Select Case e.KeyCode
                         Case Keys.L
-                            LoadButtonSet(LoadButtonFileName)
+                            LoadButtonSet(LoadButtonFileName(""))
                         Case Keys.S
                             SaveButtonSet(SaveButtonFileName)
                     End Select
@@ -121,7 +123,7 @@ Public Class ButtonForm
 
         Dim path As String
         If filename = "" Then
-            path = LoadButtonFileName()
+            path = LoadButtonFileName("")
         Else
             path = filename
         End If
@@ -153,7 +155,7 @@ Public Class ButtonForm
     Public Sub SaveButtonSet(Optional filename As String = "")
         Dim path As String
         If filename = "" Then
-            path = LoadButtonFileName()
+            path = LoadButtonFileName("")
         Else
             path = filename
         End If

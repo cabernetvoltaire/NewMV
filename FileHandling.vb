@@ -35,31 +35,11 @@ Module FileHandling
 
     Public Sub OnMediaShown(M As MediaHandler) Handles MSFiles.MediaShown
         Media = M
-        ' MSFiles.SetStartStates(Media.StartPoint)
-        '  Media.MediaJumpToMarker()
-        Debug.Print("On Media Shown")
-        DebugStartpoint(Media)
-        'LabelStartPoint(Media)
-
         MainForm.UpdateFileInfo()
-        '   MainForm.Scrubber.Image = MainForm.Marks.Bitmap
-
         If M.MediaType <> Filetype.Movie Then
             currentPicBox = M.Picture
         End If
         If M.MediaPath <> "" Then My.Computer.Registry.CurrentUser.SetValue("File", M.MediaPath)
-
-        '  MainForm.DrawScrubberMarks()
-        'If M.IsLink Then
-        '    MainForm.PopulateLinkList(M.LinkPath, M)
-        'Else
-        '    MainForm.PopulateLinkList(M.MediaPath, M)
-
-        'End If
-        'M.SetLink(0)
-    End Sub
-    Public Sub OnMediaLoaded(M As MediaHandler) Handles MSFiles.LoadedMedia
-
     End Sub
 
     Private Sub DebugStartpoint(M As MediaHandler)
@@ -69,14 +49,13 @@ Module FileHandling
         Debug.Print(M.StartPoint.Duration & " Duration")
         Debug.Print("")
     End Sub
-    Public Sub OnFileMoved(files As List(Of String), lbx1 As ListBox)
+    Public Sub OnFilesMoved(files As List(Of String), lbx1 As ListBox)
         '   Exit Sub
         lbx1.SelectionMode = SelectionMode.One
         Dim ind As Long = lbx1.SelectedIndex
         For Each f In files
             Select Case NavigateMoveState.State
                 Case StateHandler.StateOptions.Copy, StateHandler.StateOptions.CopyLink
-                    'lbx1.SelectedIndex = (lbx1.SelectedIndex + 1) Mod (lbx1.Items.Count - 1) 'Signal action completed by advancing
                 Case StateHandler.StateOptions.MoveLeavingLink
                     MainForm.UpdatePlayOrder(MainForm.FBH)
                     ReplaceListboxItem(lbx1, ind, f)
@@ -88,9 +67,7 @@ Module FileHandling
         RefreshListbox(lbx1, files)
 
         If lbx1.Items.Count <> 0 Then lbx1.SetSelected(Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0), True)
-        ' If MSFiles.Listbox IsNot lbx1 Then MSFiles.Listbox = lbx1
-        'MSFiles.ListIndex = lbx1.SelectedIndex
-        '        MainForm.IndexHandler(lbx1, Nothing)
+
 
     End Sub
 
@@ -232,7 +209,7 @@ Module FileHandling
     End Sub
 
 
-    Public Sub MoveFolderNew(Dir As String, Dest As String)
+    Public Sub MoveFolder(Dir As String, Dest As String)
         Dim TargetDir As New DirectoryInfo(Dest)
         Dim SourceDir As New DirectoryInfo(Dir)
         'Make target subdirectories.
@@ -266,49 +243,49 @@ Module FileHandling
 
     End Sub
 
-    Public Sub MoveFolder(strDir As String, strDest As String)
-        MoveFolderNew(strDir, strDest)
-        Exit Sub
-        'If strDest = "" Then
-        '    Dim k As New DirectoryInfo(strDir)
-        '    k.Delete(True)
+    'Public Sub MoveFolder(strDir As String, strDest As String)
+    '    MoveFolder(strDir, strDest)
+    '    Exit Sub
+    '    'If strDest = "" Then
+    '    '    Dim k As New DirectoryInfo(strDir)
+    '    '    k.Delete(True)
 
-        'End If
-        'Try
-        '    With My.Computer.FileSystem
-        '        Dim dir = New DirectoryInfo(strDir)
-        '        Dim s As String = dir.Name
-        '        Dim f As New DirectoryInfo(dir.Parent.FullName)
-        '        Dim destdir = New DirectoryInfo(strDest)
-        '        Select Case NavigateMoveState.State
-        '            Case StateHandler.StateOptions.Copy
-        '                .CopyDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
-        '            Case StateHandler.StateOptions.Move
-        '                MainForm.CancelDisplay()
-        '                Dim flist As New List(Of String)
-        '                GetFiles(dir, flist)
+    '    'End If
+    '    'Try
+    '    '    With My.Computer.FileSystem
+    '    '        Dim dir = New DirectoryInfo(strDir)
+    '    '        Dim s As String = dir.Name
+    '    '        Dim f As New DirectoryInfo(dir.Parent.FullName)
+    '    '        Dim destdir = New DirectoryInfo(strDest)
+    '    '        Select Case NavigateMoveState.State
+    '    '            Case StateHandler.StateOptions.Copy
+    '    '                .CopyDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
+    '    '            Case StateHandler.StateOptions.Move
+    '    '                MainForm.CancelDisplay()
+    '    '                Dim flist As New List(Of String)
+    '    '                GetFiles(dir, flist)
 
-        '                AllFaveMinder.DestinationPath = strDest
-        '                AllFaveMinder.CheckFiles(flist)
+    '    '                AllFaveMinder.DestinationPath = strDest
+    '    '                AllFaveMinder.CheckFiles(flist)
 
-        '                .MoveDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
+    '    '                .MoveDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
 
 
-        '            Case StateHandler.StateOptions.MoveLeavingLink
-        '                'Create link directory?
-        '                .MoveDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
+    '    '            Case StateHandler.StateOptions.MoveLeavingLink
+    '    '                'Create link directory?
+    '    '                .MoveDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
 
-        '            Case StateHandler.StateOptions.CopyLink
-        '                'Creat link directory?
+    '    '            Case StateHandler.StateOptions.CopyLink
+    '    '                'Creat link directory?
 
-        '        End Select
-        '        UpdateButton(strDir, strDest & "\" & s) 'todo doesnt handle sub-tree
-        '    End With
-        'Catch ex As Exception
-        '    MsgBox(ex.Message) '
-        'End Try
+    '    '        End Select
+    '    '        UpdateButton(strDir, strDest & "\" & s) 'todo doesnt handle sub-tree
+    '    '    End With
+    '    'Catch ex As Exception
+    '    '    MsgBox(ex.Message) '
+    '    'End Try
 
-    End Sub
+    'End Sub
 
     Private Sub GetFiles(dir As DirectoryInfo, flist As List(Of String))
         For Each m In dir.EnumerateFiles("*", SearchOption.AllDirectories)

@@ -35,7 +35,7 @@ Public Class ButtonSet
                 Dim c = value
                 mCurrentLetter = value
                 mCurrentRow = CurrentSet.Find(Function(x) x.Letter = value)
-                'RaiseEvent LetterChanged(value)
+                RaiseEvent LetterChanged(value)
             Else
                 '                NextRow(mCurrentLetter)
             End If

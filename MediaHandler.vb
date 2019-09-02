@@ -127,14 +127,14 @@ Public Class MediaHandler
             'And raise a media changed event. 
             Dim b As String = mMediaPath
             If value = b Then
-                'Path hasn't changed, so nothing to do. 
+                '    'Path hasn't changed, so nothing to do. 
             ElseIf value = "" Then
                 'Deals with absent file
                 mMediaPath = DefaultFile
-                mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
-                RaiseEvent MediaChanged(Me, New EventArgs)
-            Else
-                mMediaPath = value
+                    mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
+                    RaiseEvent MediaChanged(Me, New EventArgs)
+                Else
+                    mMediaPath = value
                 mType = FindType(value)
                 Try
                     Dim f As New IO.FileInfo(value)

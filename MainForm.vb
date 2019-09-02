@@ -580,7 +580,7 @@ Public Class MainForm
 
 
     Public Sub AdvanceFile(blnForward As Boolean, Optional Random As Boolean = False)
-        Dim LBHH As New FileboxHandler(LBH.ListBox)
+        Dim LBHH As New ListBoxHandler(LBH.ListBox)
         If FocusControl Is lbxShowList Or CtrlDown Then
             LBHH = LBH
         Else
@@ -1252,7 +1252,7 @@ Public Class MainForm
         PreferencesGet()
 
         AddHandler FileHandling.FolderMoved, AddressOf OnFolderMoved
-        AddHandler FileHandling.FileMoved, AddressOf OnFileMoved
+        AddHandler FileHandling.FileMoved, AddressOf OnFilesMoved
 
         InitialiseButtonsOld()
         NavigateMoveState.State = StateHandler.StateOptions.Navigate
@@ -2195,17 +2195,13 @@ Public Class MainForm
         If s <> StateHandler.StateOptions.Navigate Then
             'Non navigate behaviour
 
-            'ChangeWatcherPath(CurrentFolderPath)
             If e.Control And e.Shift Then
                 'Jump to folder
                 If strVisibleButtons(i) <> CurrentFolder Then
                     ChangeFolder(strVisibleButtons(i))
-                    'CancelDisplay()
                     tvMain2.SelectedFolder = CurrentFolder
                 ElseIf Random.OnDirChange Then
                     AdvanceFile(True, True) 'TODO: Whaat?
-
-
                 End If
             ElseIf e.Shift Then
                 MovingFolder(tvMain2.SelectedFolder, strVisibleButtons(i))
@@ -2279,9 +2275,7 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub PicFullScreen(sender As Object, e As EventArgs) Handles PictureBox1.DoubleClick
 
-    End Sub
 
     Private Sub SearchToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SearchToolStripMenuItem.Click
         SelectSubList(False)
@@ -2291,10 +2285,7 @@ Public Class MainForm
         SelectSubList(True)
     End Sub
 
-    Private Sub lbxFiles_MouseMove(sender As Object, e As MouseEventArgs) Handles lbxFiles.MouseMove
-        ' lbxFiles.DoDragDrop(lbxFiles.IndexFromPoint(e.Location), DragDropEffects.Copy)
-        'MouseHoverInfo(lbxFiles, ToolTip1)
-    End Sub
+
 
     Private Sub AddCurrentFileToShowlistToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AddCurrentFileListToolStripMenuItem.Click
         AddCurrentFilesToShowList() 'This one
@@ -2343,7 +2334,6 @@ Public Class MainForm
 
     Private Sub ReUniteFavesLinks()
         Dim s As List(Of String)
-        '        s = DeadLinksSelect()
         s = ListfromSelectedInListbox(CType(FocusControl, ListBox))
         X.OrphanList = s
         ProgressBarOn(s.Count)
@@ -2374,19 +2364,16 @@ Public Class MainForm
     Private Sub tbAbsolute_MouseUp(sender As Object, e As MouseEventArgs) Handles tbAbsolute.MouseUp
         Media.StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute
         Media.StartPoint.Absolute = tbAbsolute.Value
-        '    MSFiles.SetStartpoints(Media.StartPoint)
         tbxAbsolute.Text = New TimeSpan(0, 0, tbAbsolute.Value).ToString("hh\:mm\:ss")
         tbxPercentage.Text = Str(Media.StartPoint.Percentage) & "%"
         tbPercentage.Value = Media.StartPoint.Percentage
         Media.MediaJumpToMarker()
-        'MSFiles.SetStartStates(Media.StartPoint)
         MSFiles.SetStartpoints(Media.StartPoint)
     End Sub
 
     Private Sub tbPercentage_MouseUp(sender As Object, e As MouseEventArgs) Handles tbPercentage.MouseUp
         Media.StartPoint.State = StartPointHandler.StartTypes.ParticularPercentage
         Media.StartPoint.Percentage = tbPercentage.Value
-        '  MSFiles.SetStartpoints(Media.StartPoint)
         tbxAbsolute.Text = New TimeSpan(0, 0, tbAbsolute.Value).ToString("hh\:mm\:ss")
         tbxPercentage.Text = Str(Media.StartPoint.Percentage) & "%"
         tbPercentage.Value = Media.StartPoint.Percentage
@@ -2434,9 +2421,8 @@ Public Class MainForm
 
     Private Sub ButtonFormToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ButtonFormToolStripMenuItem.Click
         Dim x As New ButtonForm
-        'x.MdiParent = Me
         x.Show()
-        '        ButtonForm.Show()
+        x.buttons.CurrentLetter = iCurrentAlpha
 
     End Sub
 
@@ -2467,11 +2453,7 @@ Public Class MainForm
         Else
             FBH.SetNamed(Media.MediaPath)
         End If
-        'If Media.MediaPath = "" Then
-        'FBH.SetFirst()
-        'Else
-        'End If
-        tmrUpdateFileList.Enabled = False
+                tmrUpdateFileList.Enabled = False
     End Sub
     'Private Sub ChangedTree() Handles tvMain2.DirectorySelected
     '    ChangeFolder(tvMain2.SelectedFolder)
@@ -2509,7 +2491,6 @@ Public Class MainForm
 
     Private Sub LoadListToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LoadListToolStripMenuItem.Click
         LoadShowList()
-
     End Sub
 
     Private Sub LevelFolders_Click(sender As Object, e As EventArgs) Handles PromoteFolderToolStripMenuItem.Click
@@ -2519,14 +2500,6 @@ Public Class MainForm
         tmrUpdateFileList.Enabled = True
     End Sub
 
-    Private Sub PositionUpdater_Tick(sender As Object, e As EventArgs) Handles PositionUpdater.Tick
-        ' Exit Sub
-        ' If Media.Player Is Nothing Then Exit Sub
-        If Media.Player.URL <> "" Then
-
-        End If
-        '       End If
-    End Sub
 
     Private Sub DashboardToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DashboardToolStripMenuItem.Click
         Dashboard.Show()
@@ -2569,7 +2542,6 @@ Public Class MainForm
     End Sub
 
     Private Sub FavouritesFolderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FavouritesFolderToolStripMenuItem.Click
-        'FolderChooser("Favourites folder not found. Please select.", "MVFavourites")
         Try
             If CurrentFolder = "" Then
                 CurrentFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) & "\MVFavourites"
@@ -2584,9 +2556,7 @@ Public Class MainForm
         Catch ex As Exception
 
         End Try
-        'CurrentFavesPath = CurrentFolder
-        'FaveMinder.NewPath(CurrentFavesPath)
-        'PreferencesSave()
+
     End Sub
 
     Private Sub tmrMovieSlideShow_Tick(sender As Object, e As EventArgs) Handles tmrMovieSlideShow.Tick
@@ -2638,51 +2608,15 @@ Public Class MainForm
         op2.FindOrphans()
     End Sub
 
-    Private Sub CloneToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CloneToolStripMenuItem.Click
-        Me.MemberwiseClone()
-
-    End Sub
 
     Private Sub lbxGroups_DoubleClick(sender As Object, e As EventArgs) Handles lbxGroups.DoubleClick
         FNG.AdvanceOption()
         FNG.Filenames = FBH.ItemList
     End Sub
 
-    Private Sub MainWMP2_PlayStateChange(sender As Object, e As _WMPOCXEvents_PlayStateChangeEvent) 'Handles MainWMP2.PlayStateChange
-        'PlaystateChange(sender, e)
-    End Sub
 
     Private Sub SelectNonFavouritsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectNonFavouritsToolStripMenuItem.Click
         Op.ImportLinks(Showlist)
-        Exit Sub
-        Dim lbx As ListBox
-        If PFocus = CtrlFocus.ShowList Then
-            lbx = lbxShowList
-        Else
-            lbx = lbxFiles
-        End If
-        Dim m As List(Of String) = FileHandling.FaveMinder.FavesList
-
-        Dim current As New List(Of String)
-        For Each f In lbx.Items
-            Dim finfo As New IO.FileInfo(f)
-
-            For Each j In m
-
-                If InStr(j, finfo.Name) <> 0 Then
-                    current.Add(f)
-                End If
-            Next
-        Next
-        lbx.SelectedItems.Clear()
-        lbx.SelectionMode = SelectionMode.MultiSimple
-        For i = 0 To lbx.Items.Count - 1
-            lbx.SelectedIndices.Add(i)
-        Next
-        For Each f In current
-            lbx.SelectedIndices.Remove(lbx.FindString(f))
-        Next
-        UpdateFileInfo()
 
     End Sub
 
@@ -2692,14 +2626,6 @@ Public Class MainForm
 
     Private Sub ExperimentToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExperimentToolStripMenuItem.Click
         'MovieSwapTest.Show()
-    End Sub
-
-    Private Sub chbNextFile_Click(sender As Object, e As EventArgs) Handles chbNextFile.Click
-
-    End Sub
-
-    Private Sub ByTimeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ByTimeToolStripMenuItem.Click
-
     End Sub
 
     Private Sub ByLinkFolderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ByLinkFolderToolStripMenuItem.Click
@@ -2716,9 +2642,7 @@ Public Class MainForm
         NewIndex.Enabled = False
     End Sub
 
-    Private Sub LoadFiles_DoWork(sender As Object, e As DoWorkEventArgs) Handles LoadFiles.DoWork
 
-    End Sub
 
     Private Sub ToolStripTextBox1_Click_1(sender As Object, e As EventArgs) Handles AutoButton.Click
         AutoButtonsToggle()
@@ -2749,10 +2673,6 @@ Public Class MainForm
         If MsgBox("Reload directories list? Could take a while!", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
             GetDirectoriesList(Rootpath, True)
         End If
-    End Sub
-
-    Private Sub btn1_Click(sender As Object, e As EventArgs) Handles btn1.Click
-
     End Sub
 
     Private Sub RemoveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RemoveToolStripMenuItem.Click
@@ -2788,19 +2708,6 @@ Public Class MainForm
         FBH.InvertSelected()
     End Sub
 
-    Private Sub chbSeparate_CheckedChanged(sender As Object, e As EventArgs) Handles chbSeparate.CheckedChanged
-        'separate = chbSeparate.Checked
-        'SetupPlayers()
-
-    End Sub
-
-    Private Sub lbxGroups_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbxGroups.SelectedIndexChanged
-
-    End Sub
-
-    Private Sub lbxFiles_MouseDown(sender As Object, e As MouseEventArgs) Handles lbxFiles.MouseDown
-
-    End Sub
 
     Private Sub MainForm_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
         DrawScrubberMarks()

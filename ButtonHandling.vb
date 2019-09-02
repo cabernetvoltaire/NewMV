@@ -80,27 +80,6 @@ Module ButtonHandling
     End Sub
 
 
-    Private Function PreviewHover(sender As Object, e As EventArgs) As Boolean
-        Dim button As Button = CType(sender, Button)
-        Dim form As Form = CType(sender, Form)
-        Return form.DisplayRectangle.Contains(Cursor.Position)
-    End Function
-
-    Public Sub UpdateButton(strPath As String, strDest As String)
-        For i = 0 To nletts - 1
-            For j = 0 To 7
-                Dim s As String = strButtonFilePath(j, i, 1)
-                If Not s Is Nothing Then
-                    If s = strPath Then
-                        strButtonFilePath(j, i, 1) = strDest
-                    ElseIf InStr(strPath, s) <> 0 Then
-                        strButtonFilePath(j, i, 1) = Replace(strButtonFilePath(j, i, 1), strPath, strDest)
-                    End If
-                End If
-            Next
-        Next
-
-    End Sub
 
 
     ''' <summary>
