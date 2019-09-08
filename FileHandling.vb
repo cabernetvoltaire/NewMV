@@ -391,14 +391,14 @@ Module FileHandling
                         Else
                             Dim f As New IO.FileInfo(m.FullName)
                             AllFaveMinder.DestinationPath = spath
-                            'Try
-                            m.MoveTo(spath)
+                            Try
+                                m.MoveTo(spath)
 
                                 AllFaveMinder.CheckFile(New IO.FileInfo(m.FullName))
 
-                            'Catch ex As Exception
-                            'MsgBox(ex.Message)
-                            'End Try
+                            Catch ex As Exception
+                                MsgBox(ex.Message)
+                            End Try
                         End If
                     Case StateHandler.StateOptions.MoveLeavingLink
                         'Move, and place link here

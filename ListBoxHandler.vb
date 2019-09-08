@@ -50,14 +50,17 @@
 
     End Sub
     Public Sub IncrementIndex(Forward As Boolean)
-        If Forward Then
-            ListBox.SelectedIndex = (ListBox.SelectedIndex + 1) Mod ListBox.Items.Count
-        Else
-            If ListBox.SelectedIndex = 0 Then
-                ListBox.SelectedIndex = ListBox.Items.Count - 1
-            Else
-                ListBox.SelectedIndex = ListBox.SelectedIndex - 1
+        If ListBox.Items.Count > 0 Then
 
+            If Forward Then
+                ListBox.SelectedIndex = (ListBox.SelectedIndex + 1) Mod ListBox.Items.Count
+            Else
+                If ListBox.SelectedIndex = 0 Then
+                    ListBox.SelectedIndex = ListBox.Items.Count - 1
+                Else
+                    ListBox.SelectedIndex = ListBox.SelectedIndex - 1
+
+                End If
             End If
         End If
     End Sub

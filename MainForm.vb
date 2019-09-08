@@ -463,11 +463,16 @@ Public Class MainForm
             tmrSlideShow.Enabled = True
             Media.Speed.Slideshow = tmrSlideShow.Enabled
             tmrSlideShow.Interval = Media.Speed.Interval
+            If e.KeyCode < KeySpeed1 Then
+                tmrSlideShow.Enabled = Not tmrSlideShow.Enabled
+                Return e
+                Exit Function
+            End If
             Media.Speed.SSSpeed = e.KeyCode - KeySpeed1 'Set slideshow speed if pic showing, and start slideshow
-            'PlaybackSpeed = 30
+                'PlaybackSpeed = 30
 
-        ElseIf e.KeyCode >= KeySpeed1 Then
-            Media.Speed.Speed = e.KeyCode - KeySpeed1
+            ElseIf e.KeyCode >= KeySpeed1 Then
+                Media.Speed.Speed = e.KeyCode - KeySpeed1
             PlaybackSpeed = 1000 / Media.Speed.FrameRate 'Otherwise, set playback speed 'TODO Options
             Media.Speed.Fullspeed = False
         End If
@@ -950,6 +955,7 @@ Public Class MainForm
                 If Media.Speed.Fullspeed Then
                     Media.Speed.PauseVideo(Not Media.Speed.Paused)
                 Else
+                    'tmrSlideShow.Enabled = Not tmrSlideShow.Enabled
                     SpeedChange(e)
 
                 End If

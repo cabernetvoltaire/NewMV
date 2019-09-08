@@ -176,7 +176,7 @@ Public Module General
                 Dim x = str
                 str = TryOtherDriveLetters(str)
                 If str = x Then
-                    Report(str & "target not found", 1, True)
+                    Report(str & "target not found", 1, False)
                 End If
             End If
             Return str
