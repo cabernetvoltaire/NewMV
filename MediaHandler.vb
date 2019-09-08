@@ -146,13 +146,13 @@ Public Class MediaHandler
                             mIsLink = False
                             mLinkPath = ""
                         End If
-                        If Not MainForm.Initialising Then LoadMedia()
+                        LoadMedia()
 
                         mMediaDirectory = f.Directory.FullName
                     Else
+                        '   LoadMedia()
                         mMediaPath = DefaultFile
                         mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
-                        If Not MainForm.Initialising Then LoadMedia()
                     End If
                 Catch ex As Exception
 
@@ -427,7 +427,7 @@ Public Class MediaHandler
             Else
                 Try
                     mPlayer.URL = URL
-                    '     Sound.URL = URL
+                    Sound.URL = URL
                     LastURL = URL
                 Catch EX As Exception
                     Debug.Print(EX.Message)
