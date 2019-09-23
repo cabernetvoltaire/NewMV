@@ -13,7 +13,7 @@ Public Class MarkPlacement
             Dim endpt As Point
             endpt.Y = Bar.Height
             endpt.X = start.X
-            Dim pen As New Pen(Color.Black, 2)
+            Dim pen As New Pen(Color.Black, 1)
             graphics.DrawLine(pen, start, endpt)
         Next
 

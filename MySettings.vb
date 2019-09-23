@@ -61,7 +61,7 @@ Friend Module Mysettings
         With My.Computer.Registry.CurrentUser
             .SetValue("VertSplit", MainForm.ctrFileBoxes.SplitterDistance)
             .SetValue("HorSplit", MainForm.ctrMainFrame.SplitterDistance)
-            .SetValue("File", CurrentFolder)
+            .SetValue("File", Media.MediaPath)
             .SetValue("Filter", MainForm.CurrentFilterState.State)
             .SetValue("SortOrder", MainForm.PlayOrder.State)
             .SetValue("StartPoint", Media.StartPoint.State)

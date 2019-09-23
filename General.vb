@@ -716,6 +716,7 @@ Public Module General
                 End If
             End If
         Next
+
         Return ls
 
     End Function
@@ -728,6 +729,7 @@ Public Module General
             Dim i = lbx.FindString(f)
             If i >= 0 Then lbx.SetSelected(i, True)
         Next
+
     End Sub
     Public Function ReverseListOrder(m As List(Of String)) As List(Of String)
         Dim k As New List(Of String)

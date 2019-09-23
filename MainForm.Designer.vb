@@ -646,7 +646,6 @@ Partial Class MainForm
         Me.lbxShowList.ItemHeight = 20
         Me.lbxShowList.Location = New System.Drawing.Point(0, 0)
         Me.lbxShowList.Name = "lbxShowList"
-        Me.lbxShowList.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
         Me.lbxShowList.Size = New System.Drawing.Size(504, 275)
         Me.lbxShowList.TabIndex = 0
         '
@@ -1072,7 +1071,6 @@ Partial Class MainForm
         Me.Scrubber.Size = New System.Drawing.Size(1775, 12)
         Me.Scrubber.TabIndex = 13
         Me.Scrubber.TabStop = False
-        Me.Scrubber.Visible = False
         '
         'FlowLayoutPanel1
         '

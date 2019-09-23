@@ -7,6 +7,7 @@ Public Class MediaHandler
     Public Event MediaChanged(ByVal sender As Object, ByVal e As EventArgs)
     Public Event SpeedChanged(ByVal sender As Object, ByVal e As EventArgs)
     Public Event MediaNotFound(ByVal sender As Object, ByVal e As EventArgs)
+    Public Event MediaPlaying(ByVal sender As Object, ByVal e As EventArgs)
     Private WithEvents Sound As New AxWindowsMediaPlayer
     Private Property mSndH As New SoundController 'With {.SoundPlayer = Sound, .CurrentPlayer = Player}
 
@@ -78,12 +79,18 @@ Public Class MediaHandler
     Private mPlayPosition As Long
     Public Property Position() As Long
         Get
-            '   mPlayPosition = mPlayer.Ctlcontrols.currentPosition
+            mPlayPosition = mPlayer.Ctlcontrols.currentPosition
             Return mPlayPosition
         End Get
         Set(ByVal value As Long)
             mPlayPosition = value
             mPlayer.Ctlcontrols.currentPosition = mPlayPosition
+            If Speed.Paused Then
+
+                Speed.PausedPosition = mPlayPosition
+                '   Speed.Paused = False
+
+            End If
             Debug.Print("Position was set to " & mPlayPosition)
         End Set
     End Property
@@ -131,10 +138,10 @@ Public Class MediaHandler
             ElseIf value = "" Then
                 'Deals with absent file
                 mMediaPath = DefaultFile
-                    mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
-                    RaiseEvent MediaChanged(Me, New EventArgs)
-                Else
-                    mMediaPath = value
+                mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
+                RaiseEvent MediaChanged(Me, New EventArgs)
+            Else
+                mMediaPath = value
                 mType = FindType(value)
                 Try
                     Dim f As New IO.FileInfo(value)
@@ -231,7 +238,7 @@ Public Class MediaHandler
         End If
 
     End Sub
-    Public Function UpdateBookmark(path As String, time As String) As String
+    Public Function UpdateBookmark(path As String, time As Long) As String
         If Right(path, 4) <> ".lnk" Then
             Return path
             Exit Function
@@ -240,7 +247,7 @@ Public Class MediaHandler
             Dim m() As String = path.Split("%")
             path = m(0) & "%" & time & "%" & m(m.Length - 1)
         Else
-            path = path.Replace(".lnk", "%" & time & "%.lnk")
+            path = path.Replace(".lnk", "%" & Str(time) & "%.lnk")
         End If
         mMediaPath = path
         Return path
@@ -304,12 +311,12 @@ Public Class MediaHandler
         Dim i As Integer = 0
         For i = 0 To mMarkers.Count - 1
             If Last Then
-                If mMarkers(i) > mPlayPosition - 5 Then
+                If mMarkers(i) > Position Then
                     ret = i - 1
                     Return ret
                 End If
             Else
-                If mMarkers(i) > mPlayPosition + 5 Then
+                If mMarkers(i) > Position Then
                     ret = i
                     Return ret
                 End If
@@ -349,6 +356,7 @@ Public Class MediaHandler
             Else
                 If Speed.PausedPosition <> 0 Then
                     mPlayPosition = Speed.PausedPosition
+                    Speed.PausedPosition = 0
                 Else
                     If mMarkers.Count <> 0 Then 'And StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then 'Or StartPoint.State=StartPointHandler.StartTypes. Then
                         Try
@@ -408,7 +416,7 @@ Public Class MediaHandler
                 Try
                     mPlayer.URL = URL
                     '     Sound.URL = URL
-                    LastURL = URL
+                    LastURL = URL 'Prevents reloading into a given player
                 Catch EX As Exception
                     Debug.Print(EX.Message)
                 End Try
@@ -417,7 +425,7 @@ Public Class MediaHandler
         Else
             mLinkCounter = 0
             GetBookmark()
-            MediaJumpToMarker()
+            MediaJumpToMarker() 'Jump to a new position
         End If
         DisplayerName = mPlayer.Name
     End Sub
@@ -487,9 +495,10 @@ Public Class MediaHandler
                 mDuration = mPlayer.currentMedia.duration
                 StartPoint.Duration = mDuration
                 MediaJumpToMarker()
+                RaiseEvent MediaPlaying(Me, Nothing)
                 ' MainForm.DrawScrubberMarks()
 
-                If FullScreen.Changing Or Speed.Unpause Then 'Hold current position if switching to FS or back. 
+                If FullScreen.Changing Or Speed.Paused Then 'Hold current position if switching to FS or back. 
                     mPlayPosition = Speed.PausedPosition
                     Speed.Paused = False
                     Speed.PausedPosition = 0

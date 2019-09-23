@@ -6,7 +6,6 @@ Imports AxWMPLib
 Imports System.Threading
 Imports MasaSam.Forms.Controls
 
-
 Public Class MainForm
 
 
@@ -39,6 +38,7 @@ Public Class MainForm
     Public speedkeys = {KeySpeed1, KeySpeed2, KeySpeed3}
     Public WithEvents FBH As New FileboxHandler(lbxFiles)
     Public WithEvents LBH As New ListBoxHandler(lbxShowList)
+
     Public Sub OnListboxFilled(sender As Object) Handles FBH.ListBoxFilled
 
     End Sub
@@ -61,7 +61,7 @@ Public Class MainForm
     End Sub
     Public Sub PopulateLinkList(filepath As String, Media As MediaHandler)
         If filepath = "" Then Exit Sub
-        Media.Markers.Clear()
+        ' Media.Markers.Clear()
         Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
         Dim i = 0
         If x.Count = 0 Then
@@ -79,19 +79,24 @@ Public Class MainForm
             If chbPreviewLinks.Checked Then
                 FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
             End If
+            Dim markerslist As New List(Of Long)
             For Each m In x
+
                 Dim n = BookmarkFromLinkName(m)
                 If n > 0 Then
-                    If Media.Markers.Contains(n) Then
+                    If markerslist.Contains(n) Then
                     Else
-                        Media.Markers.Add(n)
+                        markerslist.Add(n)
                     End If
                     i += 1
                 End If
             Next
+            Media.Markers = markerslist
             Media.Markers.Sort()
 
             DrawScrubberMarks()
+            DrawScrubberMarks()
+            Scrubber.Update()
         End If
 
 
@@ -100,6 +105,8 @@ Public Class MainForm
 
     Public Sub DrawScrubberMarks()
         If Media.Duration <> 0 Then
+
+
             Marks.Duration = Media.Duration
             Marks.Bar = Scrubber
             Marks.Clear()
@@ -119,7 +126,7 @@ Public Class MainForm
 
     End Sub
 
-    Public Sub OnFolderMoved(ByVal path As String)
+    Friend Sub OnFolderMoved(ByVal path As String)
         '  tvMain2.RefreshTree(tvMain2.SelectedFolder)
         tvMain2.RemoveNode(path)
         'Dim dir As New IO.DirectoryInfo(path)
@@ -322,9 +329,11 @@ Public Class MainForm
         'tbShowfile.Text = "SHOWFILE LOADED:" & path
     End Sub
 
+
     Public Sub CancelDisplay()
         '        MSFiles.URLSZero()
         '       MSFiles.ResettersOff()
+
         Try
 
             If Media.Player.URL <> "" Then
@@ -344,6 +353,7 @@ Public Class MainForm
     End Sub
 
     Private Sub DeleteFolder(tvw As FileSystemTree, blnConfirm As Boolean)
+
         With My.Computer.FileSystem
             Dim m As MsgBoxResult = MsgBoxResult.No
             If .DirectoryExists(CurrentFolder) Then
@@ -353,10 +363,28 @@ Public Class MainForm
                 If Not blnConfirm OrElse m = MsgBoxResult.Yes Then
                     Dim f As New DirectoryInfo(CurrentFolder)
                     Try
-                        .DeleteDirectory(CurrentFolder, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
+                        For Each ff In f.EnumerateFiles
+                            If MSFiles.CurrentURLS.Contains(ff.FullName) Then
+                                MSFiles.CancelURL(ff.FullName)
+                            End If
+
+                            ff.Delete()
+                        Next
+                        For Each fol In f.EnumerateDirectories
+                            DeleteFolder(tvw, False)
+                        Next
+
+                        f.Delete()
+                        '.DeleteDirectory(CurrentFolder, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
                     Catch x As System.OperationCanceledException
 
                         Exit Sub
+                    Catch x As System.IO.IOException
+                        MsgBox(Err.Description)
+
+                    Finally
+                        MsgBox(Err.Description)
+
                     End Try
 
                     tvw.Traverse(False)
@@ -384,19 +412,6 @@ Public Class MainForm
             FBH.SetNamed(Media.MediaPath)
         End If
 
-        'If FocusControl IsNot lbxShowList Then
-        '    Dim e = New DirectoryInfo(CurrentFolder)
-        '   + FBH.SortOrder = PlayOrder
-        '    FillFileBox(lbxFiles, e, False)
-        '    FBH.SetNamed(Media.MediaPath)
-        'Else
-        '    If blnShowBoxShown Then
-        '        Dim s = lbxShowList.SelectedItem
-        '        LBH.SortOrder = PlayOrder
-        '        LBH.FillBox()
-        '        LBH.SetNamed(s)
-        '    End If
-        'End If
 
     End Sub
     Public Sub ReOrderListBox(lbx As ListBox, FilterState As FilterHandler.FilterState, List As List(Of String))
@@ -469,25 +484,26 @@ Public Class MainForm
                 Exit Function
             End If
             Media.Speed.SSSpeed = e.KeyCode - KeySpeed1 'Set slideshow speed if pic showing, and start slideshow
-                'PlaybackSpeed = 30
+            'PlaybackSpeed = 30
 
-            ElseIf e.KeyCode >= KeySpeed1 Then
-                Media.Speed.Speed = e.KeyCode - KeySpeed1
+        ElseIf e.KeyCode >= KeySpeed1 Then
+            Media.Speed.Speed = e.KeyCode - KeySpeed1
             PlaybackSpeed = 1000 / Media.Speed.FrameRate 'Otherwise, set playback speed 'TODO Options
             Media.Speed.Fullspeed = False
         End If
         If e.KeyCode = KeyToggleSpeed Then
             If blnPlaying Then
-                If Media.Player.playState = WMPLib.WMPPlayState.wmppsPaused And Media.Speed.Fullspeed = False Then
+                'If Media.Player.playState = WMPLib.WMPPlayState.wmppsPaused And Media.Speed.Fullspeed = False Then
+                If Media.Speed.Paused Then
                     Media.Position = Media.Player.Ctlcontrols.currentPosition
-                    Media.Player.settings.rate = 1
-                    Media.Player.Ctlcontrols.play()
+
+                    Media.Speed.Paused = False
                     tmrSlowMo.Enabled = False
                     Media.Speed.Fullspeed = True
                 Else
                     Media.Player.Ctlcontrols.pause()
-                    Media.Speed.Fullspeed = False
-
+                    'Media.Speed.Fullspeed = False
+                    Media.Speed.Paused = True
                 End If
             Else
                 tmrSlideShow.Enabled = Not tmrSlideShow.Enabled
@@ -677,9 +693,8 @@ Public Class MainForm
         Else
             Media.Position = Media.Position + SP.AbsoluteJump / iJumpFactor
         End If
-        ' blnRandomStartPoint = False
-        '   JumpVideo(Media.Player, SoundWMP)
-        'tmrJumpVideo.Enabled = True
+
+
     End Sub
 
     Public Sub MediaLargeJump(e As KeyEventArgs, Small As Boolean, Forward As Boolean)
@@ -824,26 +839,42 @@ Public Class MainForm
                     ControlSetFocus(tvMain2)
                     tvMain2.tvFiles_KeyDown(sender, e)
                 End If
-
-            Case KeyEscape
+            Case Keys.Escape
                 CancelDisplay()                'currentPicBox.Image.Dispose()
                 tmrAutoTrail.Enabled = False
                 'PlayOrder.Toggle()
             Case KeyToggleButtons
                 ToggleButtons()
             Case KeyNextFile, KeyPreviousFile, LKeyNextFile, LKeyPreviousFile
-                If FocusControl IsNot lbxFiles And FocusControl IsNot lbxShowList Then
-                    ControlSetFocus(lbxFiles)
-                    FBH.IncrementIndex(e.KeyCode = KeyNextFile)
-                End If
-                If e.Alt Then
-                    AdvanceFile(e.KeyCode = KeyNextFile, True)
-                Else
-                    AdvanceFile(e.KeyCode = KeyNextFile, Random.NextSelect)
+                If FocusControl Is lbxFiles Then
+                    If e.Control Then
+                        ControlSetFocus(lbxShowList)
+                        LBH.IncrementIndex(e.KeyCode = KeyNextFile)
+                    Else
+                        FBH.IncrementIndex(e.KeyCode = KeyNextFile)
+                    End If
+                ElseIf FocusControl Is lbxShowList Then
+                    If e.Control Then
+                        ControlSetFocus(lbxFiles)
+                        FBH.IncrementIndex(e.KeyCode = KeyNextFile)
+                    Else
+                        LBH.IncrementIndex(e.KeyCode = KeyNextFile)
 
+                    End If
+                Else
+                    If FocusControl IsNot lbxFiles And FocusControl IsNot lbxShowList Then
+                        ControlSetFocus(lbxFiles)
+                        FBH.IncrementIndex(e.KeyCode = KeyNextFile)
+                        FBH.IncrementIndex(e.KeyCode = KeyNextFile)
+                    End If
                 End If
-                If e.Shift Then HighlightCurrent(Media.LinkPath) 'Used for links only, to go to original file
-                If FocusControl Is lbxShowList Then HighlightCurrent(Media.MediaPath)
+                'If e.Alt Then
+                '    AdvanceFile(e.KeyCode = KeyNextFile, True)
+                'Else
+                '    AdvanceFile(e.KeyCode = KeyNextFile, Random.NextSelect)
+
+                'End If
+
                 e.SuppressKeyPress = True
                 tmrSlideShow.Enabled = False
                 tmrMovieSlideShow.Enabled = False
@@ -883,7 +914,9 @@ Public Class MainForm
                 'e.SuppressKeyPress = True
 
             Case KeyMarkFavourite
-                If e.Control And e.Alt Then
+                If e.Control And e.Alt And e.Shift Then
+                    RemoveAllFavourites(Media.MediaPath)
+                ElseIf e.Control And e.Alt Then
                     If Media.IsLink Then
                         Dim finfo As New IO.FileInfo(Media.MediaPath)
                         Dim s As String = Media.UpdateBookmark(Media.MediaPath, Media.Position)
@@ -906,6 +939,7 @@ Public Class MainForm
                 Else
                     CreateFavourite(Media.MediaPath)
                     PopulateLinkList(Media.MediaPath, Media)
+                    '       e.SuppressKeyPress = True
                     DrawScrubberMarks()
                 End If
 
@@ -927,6 +961,7 @@ Public Class MainForm
 
                 Else
                     MediaLargeJump(e, e.Modifiers = Keys.Control, True)
+
                     'JumpRandom(e.Control And e.Shift)
                 End If
                 e.Handled = True
@@ -953,13 +988,11 @@ Public Class MainForm
 
             Case KeyToggleSpeed
                 If Media.Speed.Fullspeed Then
-                    Media.Speed.PauseVideo(Not Media.Speed.Paused)
-                Else
-                    'tmrSlideShow.Enabled = Not tmrSlideShow.Enabled
-                    SpeedChange(e)
+                    Media.Speed.Paused = Not Media.Speed.Paused
 
+                Else
+                    SpeedChange(e)
                 End If
-                    '                    PauseToggle()
             Case KeySpeed1, KeySpeed2, KeySpeed3, KeySpeed3 + Keys.Control
                 SpeedChange(e)
 #End Region
@@ -1047,26 +1080,9 @@ Public Class MainForm
         '    Response.Enabled = False
     End Sub
 
-
-
-    'Private Function NextBookmark2(forward As Boolean) As Long
-    '    Dim count = Media.Markers.Count
-    '    If count = 0 Then
-    '        Return Media.StartPoint.StartPoint
-    '        Exit Function
-    '    End If
-    '    If forward Then
-    '        LinkCounter += 1
-    '    Else
-    '        LinkCounter += 1
-    '    End If
-    '    If count = 1 Then
-    '        Return Media.Markers(0)
-    '    Else
-    '        Return Media.Markers((LinkCounter) Mod (count))
-    '    End If
-
-    'End Function
+    Private Sub RemoveAllFavourites(mediaPath As String)
+        Throw New NotImplementedException()
+    End Sub
 
     Private Sub DeleteFiles(e As KeyEventArgs)
         'Use Movefiles with current selected list, and option to delete. 
@@ -1126,7 +1142,7 @@ Public Class MainForm
     End Sub
 
 
-    Public Sub HighlightCurrent(strPath As String)
+    Friend Sub HighlightCurrent(strPath As String)
         'Exit Sub
         'If strPath is a link, it highlights the link, not the file
         If strPath = "" Then Exit Sub 'Empty
@@ -1342,8 +1358,8 @@ Public Class MainForm
 
 
     Public Sub frmMain_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
-        Try
-            KeyDownFlag = True
+        'ry
+        KeyDownFlag = True
             ShiftDown = e.Shift
             CtrlDown = e.Control
             UpdateButtonAppearance()
@@ -1351,9 +1367,9 @@ Public Class MainForm
             If e.KeyCode = KeyBackUndo Then
                 e.SuppressKeyPress = True
             End If
-        Catch ex As Exception
-            MsgBox(ex.Message)
-        End Try
+        'atch ex As Exception
+        'sgBox(ex.Message)
+        'End Try
     End Sub
     Private Sub frmMain_KeyUp(sender As Object, e As KeyEventArgs) Handles MyBase.KeyUp
         KeyDownFlag = False
@@ -1408,12 +1424,14 @@ Public Class MainForm
         ' If KeyDownFlag Then Exit Sub
 
         Dim lbx As ListBox
+
         If TypeOf (sender) Is ListBox Then
             lbx = sender
 
         Else
             lbx = lbxFiles
         End If
+
 
         If lbx.SelectionMode = SelectionMode.One Then
             Dim i As Long = lbx.SelectedIndex
@@ -1422,14 +1440,9 @@ Public Class MainForm
                 Debug.Print(vbCrLf & vbCrLf & "NEXT SELECTION ---------------------------------------")
                 MSFiles.Listbox = lbx
                 MSFiles.ListIndex = i
+                Media.MediaPath = lbx.Items(i)
             End If
         End If
-        If Media.IsLink Then
-            PopulateLinkList(Media.LinkPath, Media)
-        Else
-            PopulateLinkList(Media.MediaPath, Media)
-        End If
-        Media.SetLink(0)
 
 
 
@@ -1508,11 +1521,6 @@ Public Class MainForm
     End Sub
 
 
-
-
-
-
-
     Public Sub SetMotion(KeyCode As Integer)
 
         Dim intSpeed As Integer
@@ -1531,10 +1539,6 @@ Public Class MainForm
 
     End Sub
 
-
-
-
-
     Private Sub tmrMediaSpeed_Tick(sender As Object, e As EventArgs) Handles tmrMediaSpeed.Tick
         Media.Player.Ctlcontrols.step(1)
     End Sub
@@ -1544,60 +1548,6 @@ Public Class MainForm
         ' ToolStripButton3_Click(Me, e)
         tmrInitialise.Enabled = False
     End Sub
-    'Public Sub LoadMedia(sender As Object, e As EventArgs) Handles tmrPicLoad.Tick 'TODO Only used for first loads. 
-    '    '  If T.IsAlive Then Exit Sub
-    '    Debug.Print("")
-
-    '    ReportTime("PicLoadTick")
-    '    HighlightCurrent(Media.MediaPath) 'Swapper
-    '    fType = Media.MediaType
-
-    '    Select Case fType
-    '        Case Filetype.Doc
-
-    '        Case Filetype.Movie
-
-    '            If Media.IsLink Then
-    '                If Media.Bookmark <> -1 Then
-    '                    If Media.StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
-    '                        Media.StartPoint.Absolute = Media.Bookmark
-    '                    End If
-
-    '                End If
-    '                'HandleMovie(Media.LinkPath)
-    '            Else
-    '                'HandleMovie(Media.MediaPath)
-    '            End If
-
-    '        Case Filetype.Pic
-    '            If Media.IsLink Then
-    '                HandlePic(Media.LinkPath)
-    '            Else
-    '                HandlePic(Media.MediaPath)
-    '            End If
-
-
-    '        Case Filetype.Unknown
-    '            tbLastFile.Text = "Unhandled file:" & Media.MediaPath
-
-    '            tmrPicLoad.Enabled = False
-    '            Exit Sub
-    '    End Select
-    '    'MainWMP.fullScreen = blnFullScreen
-    '    If Media.MediaPath <> "" Then My.Computer.Registry.CurrentUser.SetValue("File", Media.MediaPath)
-    '    tmrPicLoad.Enabled = False
-    '    'If FullScreen.Changing Then FullScreen.Changing = False
-    'End Sub
-
-
-    ''' <summary>
-    ''' Jumps video to NewPosition
-    ''' </summary>
-    ''' <param name="sender"></param>
-    ''' <param name="e"></param>
-
-
-
 
     Private Sub ButtonListToolStripMenuItem_Click(sender As Object, e As EventArgs)
         KeyAssignmentsRestore()
@@ -1608,12 +1558,10 @@ Public Class MainForm
         SaveButtonlist()
     End Sub
 
-
     Private Sub tmrUpdateForm_Tick(sender As Object, e As EventArgs) Handles tmrUpdateForm.Tick
         MsgBox("UF")
         Me.Update()
     End Sub
-
 
     Private Sub lbxFiles_DoubleClick(sender As Object, e As EventArgs) Handles lbxFiles.DoubleClick, lbxShowList.DoubleClick
         Dim lbx As New ListBox
@@ -1671,7 +1619,6 @@ Public Class MainForm
         Text = Text & " - " & Media.DisplayerName 'TODO remove displayer name for release. 
     End Sub
 
-
     Private Function SelectSubList(blnRegex As Boolean) As String
         Dim s As String
         If blnRegex Then
@@ -1712,14 +1659,9 @@ Public Class MainForm
         End If
     End Sub
 
-
-
-
     Private Sub LinearToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LinearToolStripMenuItem.Click
         AssignLinear(CurrentFolder, iCurrentAlpha, True)
     End Sub
-
-
 
     Private Sub DeleteEmptyFoldersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteEmptyFoldersToolStripMenuItem.Click
         'If Not MsgBox("This deletes all empty directories", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
@@ -1735,7 +1677,6 @@ Public Class MainForm
         tvMain2.RefreshTree(CurrentFolder)
 
     End Sub
-
 
     ''' <summary>
     ''' Takes all files in subfolders of di, and places them in di
@@ -1777,15 +1718,6 @@ Public Class MainForm
         ProgressBarOff()
     End Sub
 
-
-
-
-
-
-
-
-
-
     Private Sub SaveListToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles SaveButtonFileToolStripMenuItem.Click
         SaveButtonlist()
     End Sub
@@ -1805,17 +1737,12 @@ Public Class MainForm
         NewButtonList()
     End Sub
 
-
-
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.Visible = False
 
         ConstructMenuShortcuts()
         ConstructMenutooltips()
     End Sub
-
-
-
 
     Private Sub ToggleMove()
         NavigateMoveState.ToggleState()
@@ -2459,7 +2386,7 @@ Public Class MainForm
         Else
             FBH.SetNamed(Media.MediaPath)
         End If
-                tmrUpdateFileList.Enabled = False
+        tmrUpdateFileList.Enabled = False
     End Sub
     'Private Sub ChangedTree() Handles tvMain2.DirectorySelected
     '    ChangeFolder(tvMain2.SelectedFolder)
@@ -2716,7 +2643,7 @@ Public Class MainForm
 
 
     Private Sub MainForm_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
-        DrawScrubberMarks()
+        'DrawScrubberMarks()
 
     End Sub
 End Class

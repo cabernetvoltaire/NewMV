@@ -75,23 +75,45 @@
         RaiseEvent ListBoxFilled(ListBox)
         'SetFirst()
     End Sub
+    Private Function InvertListBoxSelections(ByRef tempListBox As ListBox) As Integer
+        Dim selectedind(tempListBox.SelectedItems.Count) As Integer
+        Try
+            For selind = 0 To tempListBox.SelectedItems.Count - 1
+                selectedind.SetValue(tempListBox.Items.IndexOf(tempListBox.SelectedItems(selind)), selind)
+            Next
+            tempListBox.ClearSelected()
+            For listitemIndex = 0 To tempListBox.Items.Count
+                If Array.IndexOf(selectedind, listitemIndex) < 0 Then
+                    tempListBox.SetSelected(listitemIndex, True)
+                End If
+            Next
+            Return 1
+        Catch ex As Exception
+            Return 0
+        End Try
+    End Function
     Public Sub InvertSelected()
-        MsgBox("Needs fixing")
-        Exit Sub
-        ListBox.SelectionMode = SelectionMode.MultiSimple
-        Dim selected As New List(Of String)
-        For Each m In ListBox.SelectedItems
-            selected.Add(m)
-        Next
+        '        MsgBox("Needs fixing")
+        '       Exit Sub
+        ListBox.SelectionMode = SelectionMode.MultiExtended
+        InvertListBoxSelections(ListBox)
+        'For i = 0 To ListBox.Items.Count - 1
+        '    ListBox.Items(i).selected = Not ListBox.Items(i).selected
+        'Next
+        'Dim selected As New List(Of String)
+        'For Each m In ListBox.SelectedItems
+        '    selected.Add(m)
+        'Next
 
-        ListBox.ClearSelected()
-        Dim All As New ListBox.ObjectCollection(ListBox)
-        For Each x In All
-            If selected.Contains(x) Then
-            Else
-                ListBox.SelectedItems.Add(x)
-            End If
-        Next
+        'ListBox.ClearSelected()
+        'Dim All As New ListBox.ObjectCollection(ListBox)
+        'All = ListBox.Items
+        'For Each x In All
+        '    If selected.Contains(x) Then
+        '    Else
+        '        ListBox.SelectedItems.Add(x)
+        '    End If
+        'Next
 
     End Sub
     Public Sub RemoveItems(List As List(Of String))
