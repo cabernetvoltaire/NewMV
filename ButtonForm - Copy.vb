@@ -1,6 +1,5 @@
 ﻿Imports System.IO
 Public Class ButtonForm
-
     Public WithEvents buttons As New ButtonSet
     Private ofd As New OpenFileDialog
     Private sfd As New SaveFileDialog
@@ -203,13 +202,13 @@ Public Class ButtonForm
         lst = lst.OrderBy(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(x) x.Value)
         For Each d In lst
 
-            Dim m As Char = UCase(d.Value(0))
-            m = UCase(m)
-            btnset.CurrentLetter = LetterNumberFromAscii(Asc(m))
-            Dim btn As MVButton
-            btn = btnset.FirstFree(btnset.CurrentLetter)
-            btn.Path = d.Key
-        Next
+                                                              Dim m As Char = UCase(d.Value(0))
+                                                              m = UCase(m)
+                                                              btnset.CurrentLetter = LetterNumberFromAscii(Asc(m))
+                                                              Dim btn As MVButton
+                                                              btn = btnset.FirstFree(btnset.CurrentLetter)
+                                                              btn.Path = d.Key
+                                                          Next
     End Sub
     Private Sub AssignTree(e As DirectoryInfo, btnset As ButtonSet)
         Dim i = 0

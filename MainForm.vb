@@ -45,7 +45,7 @@ Public Class MainForm
 
 
     Public Sub OnParentNotFound(sender As Object, e As EventArgs) Handles X.ParentNotFound, Op.ParentNotFound
-        lbxReport.Items.Add("Not found")
+        '  lbxReport.Items.Add("Not found")
     End Sub
     Public Sub RemoveMarker(filepath As String, timecode As Long)
         Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
@@ -807,7 +807,6 @@ Public Class MainForm
 #Region "Alpha and Numeric"
 
             Case Keys.Enter And e.Control
-                Dim Source As String
                 If Media.IsLink Then
                     HighlightCurrent(Media.LinkPath)
                     CurrentFilterState.State = FilterHandler.FilterState.All
@@ -950,11 +949,11 @@ Public Class MainForm
             Case KeyJumpToMark, LKeyMarkPoint
                 'Addmarker(Media.MediaPath)
                 If Media.Markers.Count <> 0 Then
-                    ' Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
                     If e.Alt Then
                         Media.LinkCounter = Media.RandomCounter
                     Else
-                        Media.LinkCounter = Media.FindNearestCounter(e.Modifiers = Keys.Control)
+                        Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
+                        '     Media.LinkCounter = Media.FindNearestCounter(e.Modifiers = Keys.Control)
                     End If
                     Media.Bookmark = -2
                     Media.MediaJumpToMarker()
@@ -2290,8 +2289,12 @@ Public Class MainForm
         DM.FilterByDate(CurrentFolder, False, index)
         tvMain2.RefreshTree(CurrentFolder)
     End Sub
+    Private Sub FilterAlphabetic()
+        CancelDisplay()
+        DM.FilterByAlpha(CurrentFolder)
+        tvMain2.RefreshTree(CurrentFolder)
 
-
+    End Sub
 
 
     Private Sub tbAbsolute_MouseUp(sender As Object, e As MouseEventArgs) Handles tbAbsolute.MouseUp
@@ -2493,10 +2496,10 @@ Public Class MainForm
     End Sub
 
     Private Sub tmrMovieSlideShow_Tick(sender As Object, e As EventArgs) Handles tmrMovieSlideShow.Tick
-        tmrMovieSlideShow.Interval = Rnd() * 5000 + 2000
+        tmrMovieSlideShow.Interval = Rnd() * 3000 + 1500
         Dim x = Int(Rnd() * 100)
-        Dim ratio = 50
-        If x < ratio Then
+        Dim FSPercent = 70
+        If x < FSPercent Then
             Media.Speed.Fullspeed = True
             Media.Position = Media.Player.Ctlcontrols.currentPosition
             Media.Player.settings.rate = 1
@@ -2504,7 +2507,7 @@ Public Class MainForm
             tmrSlowMo.Enabled = False
             Media.Speed.Fullspeed = True
         Else
-            Media.Speed.Speed = Int((x - ratio) / ((100 - ratio) / 2.8))
+            Media.Speed.Speed = Int((x - FSPercent) / ((100 - FSPercent) / 2.8))
             SpeedChange(New KeyEventArgs(speedkeys(Media.Speed.Speed)))
         End If
 
@@ -2645,5 +2648,9 @@ Public Class MainForm
     Private Sub MainForm_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
         'DrawScrubberMarks()
 
+    End Sub
+
+    Private Sub AlphabeticGroupsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlphabeticGroupsToolStripMenuItem.Click
+        FilterAlphabetic()
     End Sub
 End Class

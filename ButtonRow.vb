@@ -18,6 +18,7 @@
             Buttons(i) = New MVButton
             Buttons(i).FaceText = "f" & Str(i + 5)
             Buttons(i).Label = S(i)
+            Buttons(i).Letter = letter
         Next
         mLetter = letter
         'Current = False
@@ -49,7 +50,7 @@
     Public Function GetFirstFree() As Byte
         For i = 0 To 7
             '  Report(Buttons(i).Path, 1)
-            If Buttons(i).Path = "" Then
+            If Buttons(i).Empty Then
                 Return i
                 Exit Function
             End If
@@ -67,9 +68,15 @@
         End If
         Throw New NotImplementedException()
     End Function
-
-
-
+    Private mLastChanged As MVButton
+    Public Property LastChanged() As MVButton
+        Get
+            Return mLastChanged
+        End Get
+        Set(ByVal value As MVButton)
+            mLastChanged = value
+        End Set
+    End Property
 
     Public Sub InitialiseButtons()
         Dim alph As String = "ABCDEFGH"

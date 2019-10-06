@@ -51,6 +51,7 @@ Module FileHandling
         If M.MediaPath <> "" Then My.Computer.Registry.CurrentUser.SetValue("File", M.MediaPath)
         If ShiftDown Then MainForm.HighlightCurrent(Media.LinkPath) 'Used for links only, to go to original file
         If MainForm.FocusControl Is MainForm.lbxShowList Then MainForm.HighlightCurrent(Media.MediaPath)
+        '  MainForm.DrawScrubberMarks()
     End Sub
     Private Sub DebugStartpoint(M As MediaHandler)
         Debug.Print(M.MediaPath & " loaded into " & M.Player.Name)
@@ -288,6 +289,11 @@ Module FileHandling
         End Select
 
         t = New Thread(New ThreadStart(Sub() MovingFiles(files, strDest, s)))
+        Static i As Byte
+        With buttons
+            .CurrentSet.Last.Buttons(i).Path = strDest
+            i = (i + 1) Mod 8
+        End With
         t.IsBackground = True
         t.SetApartmentState(ApartmentState.STA)
         t.Start()
@@ -345,8 +351,10 @@ Module FileHandling
                             Dim f As New IO.FileInfo(m.FullName)
                             AllFaveMinder.DestinationPath = strDest
                             AllFaveMinder.CheckFile(f)
-                            'fm.DeleteFavourite(m.FullName)
-                            If AllFaveMinder.OkToDelete Then Deletefile(m.FullName)
+                            If AllFaveMinder.OkToDelete Then
+                                'AllFaveMinder.DeleteFavourite(m.FullName)
+                                Deletefile(m.FullName)
+                            End If
                         Else
                             Dim f As New IO.FileInfo(m.FullName)
                             AllFaveMinder.DestinationPath = spath
@@ -354,7 +362,7 @@ Module FileHandling
                                 m.MoveTo(spath)
 
                                 AllFaveMinder.CheckFile(New IO.FileInfo(m.FullName))
-
+                                'AssignSpecialButton("0", strDest)
                             Catch ex As Exception
                                 MsgBox(ex.Message)
                             End Try
@@ -643,8 +651,8 @@ Module FileHandling
         End If
         If d.EnumerateDirectories.Count = 0 And d.EnumerateFiles.Count = 0 Then
             Dim s As String = d.Parent.FullName
-            MainForm.tvMain2.RemoveNode(d.FullName)
             Try
+                MainForm.tvMain2.RemoveNode(d.FullName)
                 d.Delete()
 
             Catch ex As Exception

@@ -267,6 +267,20 @@ Module ButtonHandling
             .Label = f.Name
         End With
     End Sub
+    Public Sub AssignSpecialButton(Letter As Char, path As String)
+        'Exit Sub
+        'Dim f As New DirectoryInfo(path)
+        'Dim oldletter As Integer
+        'oldletter = AsciifromLetterNumber(iCurrentAlpha)
+        ''        buttons.CurrentLetter = buttons.CurrentSet.Count - 1
+        '' buttons.FirstFree(LetterNumberFromAscii(Asc(Letter))).Path = path
+        ''AssignButton(buttonnumber, 35, 0, path)
+        'ChangeButtonLetter(New KeyEventArgs(Keys.D0))
+        'AssignButton(0, iCurrentAlpha, 0, path, True)
+        'ChangeButtonLetter(New KeyEventArgs(oldletter))
+        ''       buttons.CurrentLetter = oldletter
+    End Sub
+
     Public Sub ChangeButtonLetter(e As KeyEventArgs)
 
         MainForm.lblAlpha.Text = e.KeyCode.ToString
@@ -287,7 +301,7 @@ Module ButtonHandling
     Public Sub UpdateButtonAppearance()
         MainForm.lblAlpha.Text = Chr(AsciifromLetterNumber(iCurrentAlpha)).ToString
         For i = 0 To 7
-            buttons.CurrentRow.Buttons(i).Path = strButtonFilePath(i, iCurrentAlpha, 1)
+            'buttons.CurrentRow.Buttons(i).Path = strButtonFilePath(i, iCurrentAlpha, 1)
             Try
                 MainForm.ToolTip1.SetToolTip(btnDest(i), buttons.CurrentRow.Buttons(i).Path)
 

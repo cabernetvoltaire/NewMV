@@ -338,9 +338,12 @@ Public Class MediaHandler
 #End Region
 
     Public Sub MediaJumpToMarker(Optional ToEnd As Boolean = False)
+        If mMarkers.Count <> 0 Then ' And StartPoint.State = StartPointHandler.StartTypes.FirstMarker Then
+            StartPoint.Absolute = mMarkers.Item(mlinkcounter)
+        End If
         'It's a link with a bookmark
         If mBookmark > -1 And Speed.PausedPosition = 0 Then 'And mMarkers.Count = 0 Then
-            If StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
+            If StartPoint.State = StartPointHandler.StartTypes.FirstMarker Then
                 mPlayPosition = mBookmark
             Else
                 mPlayPosition = StartPoint.StartPoint
@@ -358,17 +361,17 @@ Public Class MediaHandler
                     mPlayPosition = Speed.PausedPosition
                     Speed.PausedPosition = 0
                 Else
-                    If mMarkers.Count <> 0 Then 'And StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then 'Or StartPoint.State=StartPointHandler.StartTypes. Then
-                        Try
-                            mPlayPosition = mMarkers.Item(mlinkcounter)
-                            '                            If mPlayer Is Media.Player Then MsgBox(mPlayPosition)
-                            Report("LinkCounter " & mlinkcounter & " at " & mMarkers.Item(mlinkcounter), 3)
-                        Catch ex As Exception
-                            mPlayPosition = StartPoint.StartPoint
-                        End Try
-                    Else
-                        mPlayPosition = StartPoint.StartPoint
-                    End If
+                    'If mMarkers.Count <> 0 And StartPoint.State = StartPointHandler.StartTypes.FirstMarker Then 'Or StartPoint.State=StartPointHandler.StartTypes. Then
+                    '    Try
+                    '        mPlayPosition = mMarkers.Item(mlinkcounter)
+                    '        '                            If mPlayer Is Media.Player Then MsgBox(mPlayPosition)
+                    '        Report("LinkCounter " & mlinkcounter & " at " & mMarkers.Item(mlinkcounter), 3)
+                    '    Catch ex As Exception
+                    '        mPlayPosition = StartPoint.StartPoint
+                    '    End Try
+                    'Else
+                    mPlayPosition = StartPoint.StartPoint
+                    'End If
                 End If
             End If
         End If

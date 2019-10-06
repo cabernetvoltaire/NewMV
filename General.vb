@@ -320,7 +320,7 @@ Public Module General
             list.Add(m.Value)
         Next
     End Sub
-    Public Function Duplicatelist(ByVal inList As List(Of String)) As List(Of String)
+    Public Function Duplicatelist(ByRef inList As List(Of String)) As List(Of String)
         Dim out As New List(Of String)
         For Each i In inList
             out.Add(i)

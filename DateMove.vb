@@ -108,9 +108,6 @@ Class DateMove
     End Sub
     Public Sub FilterBySize(FolderName As String, Recurse As Boolean)
 
-        'For each file
-        'Move to folder with the year, creating it first
-
         Dim s As New IO.DirectoryInfo(FolderName)
         For Each f In s.GetFiles
             For m = 5 To 10
@@ -125,6 +122,7 @@ Class DateMove
         RaiseEvent FilesMoved(Nothing, Nothing)
 
     End Sub
+
     Public Sub FilterByLinkFolder(FolderName As String)
         Dim s As New IO.DirectoryInfo(FolderName)
         For Each f In s.GetFiles
@@ -153,6 +151,23 @@ Class DateMove
                 f.Directory.CreateSubdirectory(f.Extension & "\")
             End If
             f.MoveTo(f.DirectoryName & "\" & f.Extension & "\" & f.Name)
+        Next
+        RaiseEvent FilesMoved(Nothing, Nothing)
+    End Sub
+    Public Sub FilterByAlpha(FolderName As String)
+        Dim s As New IO.DirectoryInfo(FolderName)
+
+        For i = 0 To 3
+            For Each f In s.GetFiles
+                If LCase(f.Name(0)) <= LCase(AlphaName(i)(Len(AlphaName(i)) - 1)) Then
+
+                    If s.GetDirectories("Alpha_" & AlphaName(i)).Length > 0 Then
+                    Else
+                        s.CreateSubdirectory("Alpha_" & AlphaName(i) & "\")
+                    End If
+                    f.MoveTo(f.DirectoryName & "\Alpha_" & AlphaName(i) & "\" & f.Name)
+                End If
+            Next
         Next
         RaiseEvent FilesMoved(Nothing, Nothing)
     End Sub

@@ -27,18 +27,20 @@
     ''' <param name="path"></param>
     Public Sub DeleteFavourite(path As String)
         Dim templist As New List(Of String)
-        templist = Duplicatelist(mFavesList)
+        '  templist = Duplicatelist(mFavesList)
 
         For Each m In mFavesList
             Dim x = LinkTarget(m)
             '      Debug.Print(x)
             If x = path Then
-                templist.Remove(m)
-                Dim f As New IO.FileInfo(m)
-                f.Delete()
+                templist.Add(m)
             End If
         Next
-        mFavesList = Duplicatelist(templist)
+        For Each m In templist
+            Dim f As New IO.FileInfo(m)
+            f.Delete()
+            mFavesList.Remove(m)
+        Next
     End Sub
     Public Sub New(path As String)
         NewPath(path)
