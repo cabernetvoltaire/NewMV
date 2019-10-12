@@ -97,23 +97,7 @@
         '       Exit Sub
         ListBox.SelectionMode = SelectionMode.MultiExtended
         InvertListBoxSelections(ListBox)
-        'For i = 0 To ListBox.Items.Count - 1
-        '    ListBox.Items(i).selected = Not ListBox.Items(i).selected
-        'Next
-        'Dim selected As New List(Of String)
-        'For Each m In ListBox.SelectedItems
-        '    selected.Add(m)
-        'Next
 
-        'ListBox.ClearSelected()
-        'Dim All As New ListBox.ObjectCollection(ListBox)
-        'All = ListBox.Items
-        'For Each x In All
-        '    If selected.Contains(x) Then
-        '    Else
-        '        ListBox.SelectedItems.Add(x)
-        '    End If
-        'Next
 
     End Sub
     Public Sub RemoveItems(List As List(Of String))

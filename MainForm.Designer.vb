@@ -402,7 +402,7 @@ Partial Class MainForm
         '
         Me.StatusStrip1.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.StatusStrip1.ImageScalingSize = New System.Drawing.Size(28, 28)
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSPB, Me.tbFiles, Me.tbFilter, Me.tbRandom, Me.tsslPicState, Me.tbZoom, Me.tbSpeed, Me.tbStartpoint, Me.tbShowfile, Me.tbButton, Me.tbLastFile, Me.tbDate, Me.tbState, Me.TBFractionAbsolute})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSPB, Me.tbFiles, Me.tbFilter, Me.tbRandom, Me.tsslPicState, Me.tbZoom, Me.TBFractionAbsolute, Me.tbSpeed, Me.tbStartpoint, Me.tbShowfile, Me.tbButton, Me.tbDate, Me.tbState, Me.tbLastFile})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 1090)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Padding = New System.Windows.Forms.Padding(2, 0, 12, 0)

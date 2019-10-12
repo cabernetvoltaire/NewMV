@@ -352,16 +352,16 @@ Public Class MainForm
         SP.Slideshow = False
     End Sub
 
-    Private Sub DeleteFolder(tvw As FileSystemTree, blnConfirm As Boolean)
+    Private Sub DeleteFolder(FolderName As String, tvw As FileSystemTree, blnConfirm As Boolean)
 
         With My.Computer.FileSystem
             Dim m As MsgBoxResult = MsgBoxResult.No
-            If .DirectoryExists(CurrentFolder) Then
-                If NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
-                    m = MsgBox("Delete folder " & CurrentFolder & "?", MsgBoxStyle.YesNoCancel)
+            If .DirectoryExists(FolderName) Then
+                If blnConfirm Then
+                    m = MsgBox("Delete folder " & FolderName & "?", MsgBoxStyle.YesNoCancel)
                 End If
                 If Not blnConfirm OrElse m = MsgBoxResult.Yes Then
-                    Dim f As New DirectoryInfo(CurrentFolder)
+                    Dim f As New DirectoryInfo(FolderName)
                     Try
                         For Each ff In f.EnumerateFiles
                             If MSFiles.CurrentURLS.Contains(ff.FullName) Then
@@ -371,19 +371,16 @@ Public Class MainForm
                             ff.Delete()
                         Next
                         For Each fol In f.EnumerateDirectories
-                            DeleteFolder(tvw, False)
+                            DeleteFolder(fol.FullName, tvw, False)
                         Next
 
                         f.Delete()
                         '.DeleteDirectory(CurrentFolder, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
-                    Catch x As System.OperationCanceledException
-
-                        Exit Sub
                     Catch x As System.IO.IOException
                         MsgBox(Err.Description)
 
-                    Finally
-                        MsgBox(Err.Description)
+
+                        'MsgBox(Err.Description)
 
                     End Try
 
@@ -830,9 +827,10 @@ Public Class MainForm
 
 #Region "Control Keys"
             Case KeyTraverseTree, KeyTraverseTreeBack
-                If FocusControl IsNot tvMain2 Then
-                    ' tvMain2.Traverse(e.KeyCode = KeyTraverseTreeBack)
-                End If
+                '   If FocusControl IsNot tvMain2 Then
+                tvMain2.Traverse(e.KeyCode = KeyTraverseTreeBack)
+                    e.SuppressKeyPress = True
+              '  End If
 
             Case Keys.Left, Keys.Right, Keys.Up, Keys.Down
                 If FocusControl IsNot lbxShowList Then
@@ -1089,7 +1087,7 @@ Public Class MainForm
         Dim lbx As New ListBox
         CancelDisplay()
         If e.Shift Then
-            DeleteFolder(tvMain2, NavigateMoveState.State = StateHandler.StateOptions.Navigate)
+            DeleteFolder(CurrentFolder, tvMain2, NavigateMoveState.State = StateHandler.StateOptions.Navigate)
         Else
             If FocusControl Is tvMain2 Then
             Else
@@ -1582,7 +1580,31 @@ Public Class MainForm
 
         If f.LastWriteTime < dt Then dt = f.LastWriteTime
         If f.CreationTime < dt Then dt = f.CreationTime
+        Select Case Math.Log10(f.Length)
+            Case < 5
 
+                tbDate.ForeColor = Color.Red
+                tbDate.BackColor = Color.Silver
+            Case < 6
+                tbDate.ForeColor = Color.Orange
+                tbDate.BackColor = Color.Black
+
+            Case < 7
+                tbDate.ForeColor = Color.White
+                tbDate.BackColor = Color.Black
+            Case < 8
+                tbDate.ForeColor = Color.Green
+                tbDate.BackColor = Color.Silver
+
+            Case < 9
+                tbDate.ForeColor = Color.Blue
+
+            Case < 10
+                tbDate.ForeColor = Color.Indigo
+            Case < 11
+                tbDate.ForeColor = Color.Violet
+
+        End Select
         tbDate.Text = dt.ToShortDateString & " " & dt.ToShortTimeString + " (" + Format(f.Length, "#,0.") + " bytes)"
         Dim c As Int16 = lbxFiles.SelectedItems.Count
         Dim sl As Int16 = lbxShowList.SelectedItems.Count
