@@ -99,9 +99,9 @@ Public Class MainForm
             Media.Markers = markerslist
             Media.Markers.Sort()
 
-            DrawScrubberMarks()
-            DrawScrubberMarks()
             Scrubber.Update()
+            DrawScrubberMarks()
+            DrawScrubberMarks()
         End If
 
 
@@ -955,6 +955,7 @@ Public Class MainForm
                     If e.Alt Then
                         Media.LinkCounter = Media.RandomCounter
                     Else
+                        'Media.StartPoint.IncrementMarker()
                         Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
                         '     Media.LinkCounter = Media.FindNearestCounter(e.Modifiers = Keys.Control)
                     End If
@@ -2673,7 +2674,7 @@ Public Class MainForm
 
 
     Private Sub MainForm_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
-        'DrawScrubberMarks()
+        DrawScrubberMarks()
 
     End Sub
 

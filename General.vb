@@ -17,7 +17,7 @@ Public Module General
     Public VIDEOEXTENSIONS = ".divx.vob.webm.avi.flv.mov.m4p.mpeg.f4v.mpg.m4a.m4v.mkv.mp4.rm.ram.wmv.wav.mp3.3gp"
     Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif"
     Public DirectoriesListFile
-    Public separate As Boolean = False
+    Public separate As Boolean = True
 
     Public CurrentFolder As String
     Public DirectoriesList As New List(Of String)
@@ -392,11 +392,11 @@ Public Module General
     Public Sub Report(str As String, gaps As Integer, Optional Sound As Boolean = False)
         If Sound Then SystemSounds.Asterisk.Play()
 
-        For i = 0 To gaps
+        For i = 1 To gaps
             Console.WriteLine()
         Next
         Console.WriteLine(str)
-        For i = 0 To gaps
+        For i = 1 To gaps
             Console.WriteLine()
         Next
 

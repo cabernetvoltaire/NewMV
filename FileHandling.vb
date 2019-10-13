@@ -51,7 +51,17 @@ Module FileHandling
         Else
             MainForm.PopulateLinkList(M.MediaPath, M)
         End If
+        'Media.IsCurrent = True
         Media.SetLink(0)
+        'StartpointTester.Show()
+
+        'With StartpointTester
+        '    .Duration.Text = Media.Duration
+        '    .FileName.Text = Media.MediaPath
+        '    .Startpoint.Text = Media.StartPoint.StartPoint
+        '    .State.Text = Media.StartPoint.Descriptions(Media.StartPoint.State)
+        'End With
+
         If M.MediaPath <> "" Then My.Computer.Registry.CurrentUser.SetValue("File", M.MediaPath)
         If ShiftDown Then MainForm.HighlightCurrent(Media.LinkPath) 'Used for links only, to go to original file
         If MainForm.FocusControl Is MainForm.lbxShowList Then MainForm.HighlightCurrent(Media.MediaPath)

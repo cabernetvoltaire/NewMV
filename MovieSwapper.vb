@@ -141,7 +141,9 @@ Public Class MediaSwapper
         CurrentURLS.Add(NextF.PreviousItem)
         CurrentURLS.Add(NextF.CurrentItem)
         CurrentURLS.Add(NextF.NextItem)
-
+        ThisMH.IsCurrent = True
+        NextMH.IsCurrent = False
+        PrevMH.IsCurrent = False
 
         Select Case ThisMH.MediaType
             Case Filetype.Movie

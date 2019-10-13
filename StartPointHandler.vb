@@ -63,7 +63,22 @@
             mDistance = value
         End Set
     End Property
-
+    Private mMarkers As List(Of Long)
+    Public Property Markers() As List(Of Long)
+        Get
+            Return mMarkers
+        End Get
+        Set(ByVal value As List(Of Long))
+            mMarkers = value
+        End Set
+    End Property
+    Private mCurrentMarker As Long
+    Public ReadOnly Property CurrentMarker() As Long
+        Get
+            mCurrentMarker = mMarkers(mMarkCounter)
+            Return mCurrentMarker
+        End Get
+    End Property
     Private mAbsolute As Long
     Public Property Absolute() As Long
         Get
@@ -91,13 +106,13 @@
             Dim b As Byte = mPercentage
             mPercentage = value
             mAbsolute = mPercentage / 100 * mDuration
-            'If b <> mPercentage Then RaiseEvent StartPointChanged(Me, Nothing)
+            If b <> mPercentage Then RaiseEvent StartPointChanged(Me, Nothing)
         End Set
     End Property
     Private mStartPoint As Long
     Public ReadOnly Property StartPoint() As Long
         Get
-            GetStartPoint()
+            ' GetStartPoint()
             Return mStartPoint
         End Get
 
@@ -132,7 +147,11 @@
     Public Sub IncrementState(max As Byte)
         State = (State + 1) Mod max
     End Sub
-
+    Private Property mMarkCounter
+    Public Sub IncrementMarker()
+        mMarkCounter = (mMarkCounter + 1) Mod mMarkers.Count
+        mStartPoint = mMarkers(mMarkCounter)
+    End Sub
 
     Private Function GetStartPoint() As Long
         Dim oldstartpoint As Long = mStartPoint
@@ -153,7 +172,6 @@
                 End If
             Case StartTypes.ParticularAbsolute, StartTypes.FirstMarker
                 mStartPoint = mAbsolute
-
             Case StartTypes.ParticularPercentage
                 mStartPoint = mPercentage / 100 * mDuration
             Case StartTypes.Random
