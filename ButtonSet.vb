@@ -1,9 +1,28 @@
 ﻿
 Public Class ButtonSet
     Public WithEvents CurrentSet As New List(Of ButtonRow)
-    Public Event LetterChanged(l As Keys)
+    Public Event LetterChanged(l As Keys, count As Integer)
+    Public Event NewSetThisLetter(index As Integer, total As Integer)
     Private alph As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    Private mRowIndex As Integer
+    Public Property RowIndex() As Integer
+        Get
+            Return mRowIndex
+        End Get
+        Set(ByVal value As Integer)
+            mRowIndex = value
+        End Set
+    End Property
 
+    Private mRowIndexCount As Integer
+    Public Property RowIndexCount() As Integer
+        Get
+            Return mRowIndexCount
+        End Get
+        Set(ByVal value As Integer)
+            mRowIndexCount = value
+        End Set
+    End Property
     Private mCurrentRow As New ButtonRow
     ''' <summary>
     ''' The row which is current and displayed, of all the rows of the button set. 
@@ -32,10 +51,12 @@ Public Class ButtonSet
         Set(ByVal value As Integer)
             Dim b = mCurrentLetter
             If b <> value Then
-                Dim c = value
                 mCurrentLetter = value
                 mCurrentRow = CurrentSet.Find(Function(x) x.Letter = value)
-                RaiseEvent LetterChanged(value)
+                Dim tl As List(Of ButtonRow) = Nothing
+                mRowIndex = 0
+                CountRowIndices(value, tl, mRowIndexCount)
+                RaiseEvent LetterChanged(value, mRowIndexCount)
             Else
                 '                NextRow(mCurrentLetter)
             End If
@@ -48,20 +69,27 @@ Public Class ButtonSet
     ''' </summary>
     ''' <param name="letter"></param>
     Public Function NextRow(letter As Integer) As ButtonRow
-        Dim x As New List(Of ButtonRow)
-        x = CurrentSet.FindAll(Function(m) m.Letter = letter)
-        Dim count As Integer = x.Count
+        Dim x As List(Of ButtonRow) = Nothing
+        Dim count As Integer = Nothing
+        CountRowIndices(letter, x, count)
+
         If count = 1 Then
             Return mCurrentRow
             Exit Function
         End If
-        Dim nextindex As Integer
-        nextindex = x.IndexOf(mCurrentRow)
-        nextindex = (nextindex + 1) Mod count
-        mCurrentRow = x(nextindex)
+        mRowIndex = x.IndexOf(mCurrentRow)
+        mRowIndex = (mRowIndex + 1) Mod count
+        mCurrentRow = x(mRowIndex)
+        RaiseEvent LetterChanged(mCurrentLetter, count)
         CurrentRow = mCurrentRow
         Return mCurrentRow
     End Function
+
+    Private Sub CountRowIndices(letter As Integer, ByRef x As List(Of ButtonRow), ByRef count As Integer)
+        x = CurrentSet.FindAll(Function(m) m.Letter = letter)
+        count = x.Count
+    End Sub
+
     Public Function FirstFree(letter As Integer) As MVButton
         Dim x As New List(Of ButtonRow)
         x = CurrentSet.FindAll(Function(m) m.Letter = letter)

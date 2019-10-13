@@ -1,6 +1,7 @@
 ﻿Public Class StartPointHandler
     Public Enum StartTypes As Byte
         Beginning
+        FirstMarker
         ParticularAbsolute
         ParticularPercentage
         Random
@@ -13,6 +14,7 @@
     Public Event JumpKey()
     Private mOrder = {
         "Beginning",
+        "First Marker",
         "Particular(s)",
         "Particular(%)",
         "Random",
@@ -74,6 +76,7 @@
                 If value <= Duration Then
                     mAbsolute = value
                     mPercentage = mAbsolute / mDuration * 100
+                    mStartPoint = mAbsolute
                     '  RaiseEvent StartPointChanged(Me, Nothing)
                 End If
             End If
@@ -148,7 +151,7 @@
                 If mStartPoint < mDuration / 2 Then
                     mStartPoint = mDuration * 0.9
                 End If
-            Case StartTypes.ParticularAbsolute
+            Case StartTypes.ParticularAbsolute, StartTypes.FirstMarker
                 mStartPoint = mAbsolute
 
             Case StartTypes.ParticularPercentage

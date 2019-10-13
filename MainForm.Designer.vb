@@ -131,7 +131,6 @@ Partial Class MainForm
         Me.chbPreviewLinks = New System.Windows.Forms.CheckBox()
         Me.CheckBox1 = New System.Windows.Forms.CheckBox()
         Me.lblNavigateState = New System.Windows.Forms.Label()
-        Me.lbxReport = New System.Windows.Forms.ListBox()
         Me.tmrUpdateFileList = New System.Windows.Forms.Timer(Me.components)
         Me.tmrPicLoad = New System.Windows.Forms.Timer(Me.components)
         Me.tmrJumpVideo = New System.Windows.Forms.Timer(Me.components)
@@ -241,6 +240,7 @@ Partial Class MainForm
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
         Me.NewIndex = New System.Windows.Forms.Timer(Me.components)
         Me.Response = New System.Windows.Forms.Timer(Me.components)
+        Me.AlphabeticGroupsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1081,7 +1081,6 @@ Partial Class MainForm
         Me.FlowLayoutPanel1.Controls.Add(Me.lblAttributes)
         Me.FlowLayoutPanel1.Controls.Add(Me.GroupBox3)
         Me.FlowLayoutPanel1.Controls.Add(Me.lblNavigateState)
-        Me.FlowLayoutPanel1.Controls.Add(Me.lbxReport)
         Me.FlowLayoutPanel1.Location = New System.Drawing.Point(2, 2)
         Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(2)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
@@ -1358,19 +1357,6 @@ Partial Class MainForm
         Me.lblNavigateState.Size = New System.Drawing.Size(57, 20)
         Me.lblNavigateState.TabIndex = 48
         Me.lblNavigateState.Text = "Label2"
-        '
-        'lbxReport
-        '
-        Me.lbxReport.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lbxReport.FormattingEnabled = True
-        Me.lbxReport.ItemHeight = 17
-        Me.lbxReport.Location = New System.Drawing.Point(1751, 2)
-        Me.lbxReport.Margin = New System.Windows.Forms.Padding(2)
-        Me.lbxReport.Name = "lbxReport"
-        Me.lbxReport.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.lbxReport.Size = New System.Drawing.Size(328, 123)
-        Me.lbxReport.TabIndex = 50
-        Me.ToolTip1.SetToolTip(Me.lbxReport, "Click to select subfolders to create")
         '
         'tmrUpdateFileList
         '
@@ -1749,7 +1735,7 @@ Partial Class MainForm
         '
         'GroupToolStripMenuItem
         '
-        Me.GroupToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ByMonthToolStripMenuItem, Me.ByDateToolStripMenuItem, Me.ByYearToolStripMenuItem, Me.ByTimeToolStripMenuItem, Me.BySizeToolStripMenuItem, Me.CalendarToolStripMenuItem, Me.ToolStripSeparator6, Me.ByNameToolStripMenuItem, Me.ByExtToolStripMenuItem, Me.ByLinkFolderToolStripMenuItem})
+        Me.GroupToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ByMonthToolStripMenuItem, Me.ByDateToolStripMenuItem, Me.ByYearToolStripMenuItem, Me.ByTimeToolStripMenuItem, Me.BySizeToolStripMenuItem, Me.CalendarToolStripMenuItem, Me.ToolStripSeparator6, Me.ByNameToolStripMenuItem, Me.ByExtToolStripMenuItem, Me.ByLinkFolderToolStripMenuItem, Me.AlphabeticGroupsToolStripMenuItem})
         Me.GroupToolStripMenuItem.Name = "GroupToolStripMenuItem"
         Me.GroupToolStripMenuItem.Size = New System.Drawing.Size(373, 30)
         Me.GroupToolStripMenuItem.Text = "&Group..."
@@ -2037,6 +2023,12 @@ Partial Class MainForm
         '
         'Response
         '
+        '
+        'AlphabeticGroupsToolStripMenuItem
+        '
+        Me.AlphabeticGroupsToolStripMenuItem.Name = "AlphabeticGroupsToolStripMenuItem"
+        Me.AlphabeticGroupsToolStripMenuItem.Size = New System.Drawing.Size(279, 30)
+        Me.AlphabeticGroupsToolStripMenuItem.Text = "Alphabetic groups"
         '
         'MainForm
         '
@@ -2328,7 +2320,6 @@ Partial Class MainForm
     Friend WithEvents DisplayedToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SelectedToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents chbEncrypt As CheckBox
-    Friend WithEvents lbxReport As ListBox
     Friend WithEvents GroupFilters As GroupBox
     Friend WithEvents Label1 As Label
     Friend WithEvents cbxOrder As ComboBox
@@ -2342,4 +2333,5 @@ Partial Class MainForm
     Friend WithEvents InvertSelectionToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents chbSeparate As CheckBox
     Friend WithEvents TBFractionAbsolute As ToolStripStatusLabel
+    Friend WithEvents AlphabeticGroupsToolStripMenuItem As ToolStripMenuItem
 End Class

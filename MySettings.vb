@@ -143,8 +143,9 @@ Friend Module Mysettings
                 'All .lnk files in this hierarchy get recognised and changed when files are moved. 
                 GlobalFavesPath = .GetValue("GlobalFaves", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures))
             Rootpath = .GetValue("RootScanpath", "Q:\")
+            If Rootpath = "" Then Rootpath = "Q:\"
             Dim folroot As New IO.DirectoryInfo(Rootpath)
-                If folroot.Exists Then
+            If folroot.Exists Then
                     DirectoriesList = GetDirectoriesList(Rootpath)
                 Else
                     Rootpath = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer)
