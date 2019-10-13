@@ -49,14 +49,14 @@ Partial Class MainForm
         Me.tbRandom = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tsslPicState = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbZoom = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.TBFractionAbsolute = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbSpeed = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbStartpoint = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbShowfile = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbButton = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.tbLastFile = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbDate = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbState = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.TBFractionAbsolute = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.tbLastFile = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tssFolderInfo = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tssMoveCopy = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tssFilter = New System.Windows.Forms.ToolStripStatusLabel()
@@ -406,7 +406,7 @@ Partial Class MainForm
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 1090)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Padding = New System.Windows.Forms.Padding(2, 0, 12, 0)
-        Me.StatusStrip1.Size = New System.Drawing.Size(2332, 30)
+        Me.StatusStrip1.Size = New System.Drawing.Size(2767, 30)
         Me.StatusStrip1.Stretch = False
         Me.StatusStrip1.TabIndex = 16
         Me.StatusStrip1.Text = "StatusStrip1"
@@ -451,6 +451,12 @@ Partial Class MainForm
         Me.tbZoom.Size = New System.Drawing.Size(66, 25)
         Me.tbZoom.Text = "ZOOM"
         '
+        'TBFractionAbsolute
+        '
+        Me.TBFractionAbsolute.Name = "TBFractionAbsolute"
+        Me.TBFractionAbsolute.Size = New System.Drawing.Size(242, 25)
+        Me.TBFractionAbsolute.Text = "Fraction: (F)ths Absolute: (A)s"
+        '
         'tbSpeed
         '
         Me.tbSpeed.Name = "tbSpeed"
@@ -476,12 +482,6 @@ Partial Class MainForm
         Me.tbButton.Size = New System.Drawing.Size(113, 25)
         Me.tbButton.Text = "BUTTONFILE:"
         '
-        'tbLastFile
-        '
-        Me.tbLastFile.Name = "tbLastFile"
-        Me.tbLastFile.Size = New System.Drawing.Size(83, 25)
-        Me.tbLastFile.Text = "LASTFILE"
-        '
         'tbDate
         '
         Me.tbDate.Name = "tbDate"
@@ -493,11 +493,11 @@ Partial Class MainForm
         Me.tbState.Name = "tbState"
         Me.tbState.Size = New System.Drawing.Size(0, 25)
         '
-        'TBFractionAbsolute
+        'tbLastFile
         '
-        Me.TBFractionAbsolute.Name = "TBFractionAbsolute"
-        Me.TBFractionAbsolute.Size = New System.Drawing.Size(242, 25)
-        Me.TBFractionAbsolute.Text = "Fraction: (F)ths Absolute: (A)s"
+        Me.tbLastFile.Name = "tbLastFile"
+        Me.tbLastFile.Size = New System.Drawing.Size(83, 25)
+        Me.tbLastFile.Text = "LASTFILE"
         '
         'tssFolderInfo
         '
@@ -546,7 +546,7 @@ Partial Class MainForm
         Me.TableLayoutPanel2.RowCount = 2
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 167.0!))
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel2.Size = New System.Drawing.Size(2332, 1057)
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(2767, 1057)
         Me.TableLayoutPanel2.TabIndex = 0
         '
         'ctrMainFrame
@@ -565,8 +565,8 @@ Partial Class MainForm
         Me.ctrMainFrame.Panel2.Controls.Add(Me.pbxBlanker)
         Me.ctrMainFrame.Panel2.Controls.Add(Me.ctrPicAndButtons)
         Me.ctrMainFrame.Panel2MinSize = 1000
-        Me.ctrMainFrame.Size = New System.Drawing.Size(2326, 884)
-        Me.ctrMainFrame.SplitterDistance = 504
+        Me.ctrMainFrame.Size = New System.Drawing.Size(2761, 884)
+        Me.ctrMainFrame.SplitterDistance = 598
         Me.ctrMainFrame.SplitterWidth = 41
         Me.ctrMainFrame.TabIndex = 15
         Me.ctrMainFrame.TabStop = False
@@ -585,7 +585,7 @@ Partial Class MainForm
         'ctrFileBoxes.Panel2
         '
         Me.ctrFileBoxes.Panel2.Controls.Add(Me.MasterContainer)
-        Me.ctrFileBoxes.Size = New System.Drawing.Size(504, 884)
+        Me.ctrFileBoxes.Size = New System.Drawing.Size(598, 884)
         Me.ctrFileBoxes.SplitterDistance = 384
         Me.ctrFileBoxes.SplitterWidth = 12
         Me.ctrFileBoxes.TabIndex = 0
@@ -601,7 +601,7 @@ Partial Class MainForm
         Me.tvMain2.Name = "tvMain2"
         Me.tvMain2.RootDrive = Nothing
         Me.tvMain2.SelectedFolder = Nothing
-        Me.tvMain2.Size = New System.Drawing.Size(504, 384)
+        Me.tvMain2.Size = New System.Drawing.Size(598, 384)
         Me.tvMain2.TabIndex = 0
         Me.tvMain2.TrackDriveState = True
         '
@@ -619,7 +619,7 @@ Partial Class MainForm
         'MasterContainer.Panel2
         '
         Me.MasterContainer.Panel2.Controls.Add(Me.lbxShowList)
-        Me.MasterContainer.Size = New System.Drawing.Size(504, 488)
+        Me.MasterContainer.Size = New System.Drawing.Size(598, 488)
         Me.MasterContainer.SplitterDistance = 188
         Me.MasterContainer.SplitterWidth = 25
         Me.MasterContainer.TabIndex = 1
@@ -636,7 +636,7 @@ Partial Class MainForm
         Me.lbxFiles.Margin = New System.Windows.Forms.Padding(5)
         Me.lbxFiles.Name = "lbxFiles"
         Me.lbxFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.lbxFiles.Size = New System.Drawing.Size(504, 188)
+        Me.lbxFiles.Size = New System.Drawing.Size(598, 188)
         Me.lbxFiles.TabIndex = 0
         '
         'lbxShowList
@@ -646,7 +646,7 @@ Partial Class MainForm
         Me.lbxShowList.ItemHeight = 20
         Me.lbxShowList.Location = New System.Drawing.Point(0, 0)
         Me.lbxShowList.Name = "lbxShowList"
-        Me.lbxShowList.Size = New System.Drawing.Size(504, 275)
+        Me.lbxShowList.Size = New System.Drawing.Size(598, 275)
         Me.lbxShowList.TabIndex = 0
         '
         'pbxBlanker
@@ -682,7 +682,7 @@ Partial Class MainForm
         Me.ctrPicAndButtons.Panel2.BackColor = System.Drawing.Color.Transparent
         Me.ctrPicAndButtons.Panel2.CausesValidation = False
         Me.ctrPicAndButtons.Panel2.Controls.Add(Me.btnRow)
-        Me.ctrPicAndButtons.Size = New System.Drawing.Size(1781, 884)
+        Me.ctrPicAndButtons.Size = New System.Drawing.Size(2122, 884)
         Me.ctrPicAndButtons.SplitterDistance = 733
         Me.ctrPicAndButtons.SplitterWidth = 6
         Me.ctrPicAndButtons.TabIndex = 6
@@ -792,7 +792,7 @@ Partial Class MainForm
         Me.btnRow.RowCount = 2
         Me.btnRow.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 17.0!))
         Me.btnRow.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.btnRow.Size = New System.Drawing.Size(1781, 145)
+        Me.btnRow.Size = New System.Drawing.Size(2122, 145)
         Me.btnRow.TabIndex = 3
         '
         'Panel8
@@ -800,9 +800,9 @@ Partial Class MainForm
         Me.Panel8.Controls.Add(Me.lbl8)
         Me.Panel8.Controls.Add(Me.btn8)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel8.Location = New System.Drawing.Point(1611, 20)
+        Me.Panel8.Location = New System.Drawing.Point(1919, 20)
         Me.Panel8.Name = "Panel8"
-        Me.Panel8.Size = New System.Drawing.Size(167, 122)
+        Me.Panel8.Size = New System.Drawing.Size(200, 122)
         Me.Panel8.TabIndex = 10
         '
         'lbl8
@@ -830,9 +830,9 @@ Partial Class MainForm
         Me.Panel7.Controls.Add(Me.lbl7)
         Me.Panel7.Controls.Add(Me.btn7)
         Me.Panel7.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel7.Location = New System.Drawing.Point(1439, 20)
+        Me.Panel7.Location = New System.Drawing.Point(1714, 20)
         Me.Panel7.Name = "Panel7"
-        Me.Panel7.Size = New System.Drawing.Size(166, 122)
+        Me.Panel7.Size = New System.Drawing.Size(199, 122)
         Me.Panel7.TabIndex = 9
         '
         'lbl7
@@ -860,9 +860,9 @@ Partial Class MainForm
         Me.Panel6.Controls.Add(Me.lbl6)
         Me.Panel6.Controls.Add(Me.btn6)
         Me.Panel6.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel6.Location = New System.Drawing.Point(1267, 20)
+        Me.Panel6.Location = New System.Drawing.Point(1509, 20)
         Me.Panel6.Name = "Panel6"
-        Me.Panel6.Size = New System.Drawing.Size(166, 122)
+        Me.Panel6.Size = New System.Drawing.Size(199, 122)
         Me.Panel6.TabIndex = 8
         '
         'lbl6
@@ -890,9 +890,9 @@ Partial Class MainForm
         Me.Panel5.Controls.Add(Me.lbl5)
         Me.Panel5.Controls.Add(Me.btn5)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel5.Location = New System.Drawing.Point(1095, 20)
+        Me.Panel5.Location = New System.Drawing.Point(1304, 20)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(166, 122)
+        Me.Panel5.Size = New System.Drawing.Size(199, 122)
         Me.Panel5.TabIndex = 7
         '
         'lbl5
@@ -920,9 +920,9 @@ Partial Class MainForm
         Me.Panel4.Controls.Add(Me.lbl4)
         Me.Panel4.Controls.Add(Me.btn4)
         Me.Panel4.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel4.Location = New System.Drawing.Point(751, 20)
+        Me.Panel4.Location = New System.Drawing.Point(894, 20)
         Me.Panel4.Name = "Panel4"
-        Me.Panel4.Size = New System.Drawing.Size(166, 122)
+        Me.Panel4.Size = New System.Drawing.Size(199, 122)
         Me.Panel4.TabIndex = 5
         '
         'lbl4
@@ -950,9 +950,9 @@ Partial Class MainForm
         Me.Panel3.Controls.Add(Me.lbl3)
         Me.Panel3.Controls.Add(Me.btn3)
         Me.Panel3.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel3.Location = New System.Drawing.Point(579, 20)
+        Me.Panel3.Location = New System.Drawing.Point(689, 20)
         Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(166, 122)
+        Me.Panel3.Size = New System.Drawing.Size(199, 122)
         Me.Panel3.TabIndex = 4
         '
         'lbl3
@@ -980,9 +980,9 @@ Partial Class MainForm
         Me.Panel2.Controls.Add(Me.lbl2)
         Me.Panel2.Controls.Add(Me.btn2)
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel2.Location = New System.Drawing.Point(407, 20)
+        Me.Panel2.Location = New System.Drawing.Point(484, 20)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(166, 122)
+        Me.Panel2.Size = New System.Drawing.Size(199, 122)
         Me.Panel2.TabIndex = 3
         '
         'lbl2
@@ -1011,9 +1011,9 @@ Partial Class MainForm
         Me.Panel1.Controls.Add(Me.lbl1)
         Me.Panel1.Controls.Add(Me.btn1)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel1.Location = New System.Drawing.Point(235, 20)
+        Me.Panel1.Location = New System.Drawing.Point(279, 20)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(166, 122)
+        Me.Panel1.Size = New System.Drawing.Size(199, 122)
         Me.Panel1.TabIndex = 2
         '
         'lbl1
@@ -1043,9 +1043,9 @@ Partial Class MainForm
         '
         Me.lblAlpha.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lblAlpha.Font = New System.Drawing.Font("Microsoft Sans Serif", 48.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblAlpha.Location = New System.Drawing.Point(923, 17)
+        Me.lblAlpha.Location = New System.Drawing.Point(1099, 17)
         Me.lblAlpha.Name = "lblAlpha"
-        Me.lblAlpha.Size = New System.Drawing.Size(166, 128)
+        Me.lblAlpha.Size = New System.Drawing.Size(199, 128)
         Me.lblAlpha.TabIndex = 11
         Me.lblAlpha.Text = "A"
         Me.lblAlpha.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -1065,7 +1065,7 @@ Partial Class MainForm
         Me.Scrubber.Anchor = System.Windows.Forms.AnchorStyles.Top
         Me.Scrubber.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.btnRow.SetColumnSpan(Me.Scrubber, 10)
-        Me.Scrubber.Location = New System.Drawing.Point(3, 2)
+        Me.Scrubber.Location = New System.Drawing.Point(173, 2)
         Me.Scrubber.Margin = New System.Windows.Forms.Padding(2)
         Me.Scrubber.Name = "Scrubber"
         Me.Scrubber.Size = New System.Drawing.Size(1775, 12)
@@ -1435,7 +1435,7 @@ Partial Class MainForm
         Me.MenuStrip2.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip2.Name = "MenuStrip2"
         Me.MenuStrip2.Padding = New System.Windows.Forms.Padding(5, 2, 0, 2)
-        Me.MenuStrip2.Size = New System.Drawing.Size(2332, 33)
+        Me.MenuStrip2.Size = New System.Drawing.Size(2767, 33)
         Me.MenuStrip2.TabIndex = 17
         Me.MenuStrip2.Text = "MenuStrip2"
         '
@@ -2043,7 +2043,7 @@ Partial Class MainForm
         Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(2332, 1120)
+        Me.ClientSize = New System.Drawing.Size(2767, 1120)
         Me.Controls.Add(Me.TableLayoutPanel2)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.MenuStrip2)

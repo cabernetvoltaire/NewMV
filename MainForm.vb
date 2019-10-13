@@ -26,6 +26,7 @@ Public Class MainForm
     Public WithEvents SP As New SpeedHandler
     Public WithEvents AT As New AutoTrailer
     Public WithEvents X As New OrphanFinder
+    Public WithEvents VT As New VideoThumbnailer
     ' Public WithEvents Response As New Timer
     Public FocusControl As New Control
     Public DraggedFolder As String
@@ -39,6 +40,10 @@ Public Class MainForm
     Public WithEvents FBH As New FileboxHandler(lbxFiles)
     Public WithEvents LBH As New ListBoxHandler(lbxShowList)
 
+    Sub OnThumbnailed(file As String) Handles VT.Thumbnailed
+        emblem.ImageLocation = file
+        emblem.Load()
+    End Sub
     Public Sub OnListboxFilled(sender As Object) Handles FBH.ListBoxFilled
 
     End Sub

@@ -265,6 +265,7 @@
     </Compile>
     <Compile Include="Undo.vb" />
     <Compile Include="UserPrefs.vb" />
+    <Compile Include="VideoThumbnailer.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AddFolders.resx">

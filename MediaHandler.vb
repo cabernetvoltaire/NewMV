@@ -415,6 +415,7 @@ Public Class MediaHandler
             Else
                 Try
                     mPlayer.URL = URL
+
                     '     Sound.URL = URL
                     LastURL = URL 'Prevents reloading into a given player
                 Catch EX As Exception

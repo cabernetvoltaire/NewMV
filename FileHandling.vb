@@ -41,6 +41,10 @@ Module FileHandling
         MainForm.UpdateFileInfo()
         If M.MediaType <> Filetype.Movie Then
             currentPicBox = M.Picture
+        ElseIf M.MediaType = Filetype.Movie Then
+            ' MainForm.emblem.ImageLocation = MainForm.VT.GetThumbnail(M.MediaPath, M.Position)
+            'Deletefile(MainForm.emblem.ImageLocation)
+
         End If
         If M.IsLink Then
             MainForm.PopulateLinkList(M.LinkPath, M)
