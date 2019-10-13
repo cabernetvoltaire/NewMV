@@ -13,8 +13,8 @@ Public Class MediaHandler
     Public IsCurrent As Boolean = False
 
     Private WithEvents ResetPosition As New Timer
-    Public WithEvents PositionUpdater As New Timer With {.Interval = 100}
-    Public WithEvents PositionUpdaterCanceller As New Timer With {.Interval = 5000}
+    Public WithEvents PositionUpdater As New Timer With {.Interval = 10}
+    Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 150000}
 
     Private DefaultFile As String = "C:\exiftools.exe"
     Public WithEvents StartPoint As New StartPointHandler
@@ -337,11 +337,53 @@ Public Class MediaHandler
 
     End Sub
 #End Region
-
+    Public Sub MediaJumpToMarkerOld(Optional ToEnd As Boolean = False)
+        'It's a link with a bookmark
+        If mBookmark > -1 And Speed.PausedPosition = 0 Then 'And mMarkers.Count = 0 Then
+            If StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
+                mPlayPosition = mBookmark
+            Else
+                mPlayPosition = StartPoint.StartPoint
+            End If
+        Else
+            'Not a link
+            If ToEnd Then 'Special Case where jump to end button pressed
+                Dim m As New StartPointHandler With {
+                        .Duration = mDuration,
+                        .State = StartPointHandler.StartTypes.NearEnd
+                                    }
+                mPlayPosition = m.StartPoint
+            Else
+                If Speed.PausedPosition <> 0 Then
+                    mPlayPosition = Speed.PausedPosition
+                Else
+                    If mMarkers.Count <> 0 Then 'And StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then 'Or StartPoint.State=StartPointHandler.StartTypes. Then
+                        Try
+                            mPlayPosition = mMarkers.Item(mlinkcounter)
+                            '                            If mPlayer Is Media.Player Then MsgBox(mPlayPosition)
+                            Report("LinkCounter " & mlinkcounter & " at " & mMarkers.Item(mlinkcounter), 3)
+                        Catch ex As Exception
+                            mPlayPosition = StartPoint.StartPoint
+                        End Try
+                    Else
+                        mPlayPosition = StartPoint.StartPoint
+                    End If
+                End If
+            End If
+        End If
+        If mPlayPosition > mDuration Then
+            Report(mPlayPosition & "Over-reach" & mDuration, 0, False)
+        Else
+            mPlayer.Ctlcontrols.currentPosition = mPlayPosition
+            'Sound.Ctlcontrols.currentPosition = mPlayPosition
+        End If
+        Debug.Print("MediaJumpMarker set" & mMediaPath & " position to " & mPlayPosition)
+    End Sub
     Public Sub MediaJumpToMarker(Optional ToEnd As Boolean = False)
         'There are markers, so jump to the next one
         If mMarkers.Count <> 0 And IsCurrent Then 'And StartPoint.State = StartPointHandler.StartTypes.FirstMarker Then
-            mPlayPosition = mMarkers.Item(mlinkcounter)
+            StartPoint.Absolute = mMarkers.Item(mlinkcounter)
+            mPlayPosition = StartPoint.StartPoint
             'Or it's a link with a bookmark
         ElseIf mBookmark > -1 And Speed.PausedPosition = 0 Then 'And mMarkers.Count = 0 Then
             If StartPoint.State = StartPointHandler.StartTypes.FirstMarker Then
@@ -405,7 +447,7 @@ Public Class MediaHandler
             Else
                 Try
                     mPlayer.URL = URL
-
+                    mlinkcounter = 0
                     '     Sound.URL = URL
                     LastURL = URL 'Prevents reloading into a given player
                 Catch EX As Exception
@@ -414,7 +456,7 @@ Public Class MediaHandler
 
             End If
         Else
-            mLinkCounter = 0
+            mlinkcounter = 0
             GetBookmark()
             MediaJumpToMarker() 'Jump to a new position
         End If
@@ -481,7 +523,7 @@ Public Class MediaHandler
             Case WMPLib.WMPPlayState.wmppsPlaying
                 mSndH.Slow = False
                 PositionUpdater.Enabled = True
-                PositionUpdaterCanceller.Enabled = True
+                ResetPositionCanceller.Enabled = True
                 ' mResetCounter = 0
                 mDuration = mPlayer.currentMedia.duration
                 StartPoint.Duration = mDuration
@@ -545,8 +587,8 @@ Public Class MediaHandler
 
     End Sub
 
-    Private Sub PositionUpdaterCanceller_Tick(sender As Object, e As EventArgs) Handles PositionUpdaterCanceller.Tick
-        PositionUpdater.Enabled = False
+    Private Sub PositionUpdaterCanceller_Tick(sender As Object, e As EventArgs) Handles ResetPositionCanceller.Tick
+        ResetPosition.Enabled = False
     End Sub
 
 

@@ -28,7 +28,10 @@
         mDuration = 100
         mAbsolute = 120
         mDistance = 65
+
     End Sub
+#Region "Properties"
+
     Public ReadOnly Property Descriptions As List(Of String)
         Get
             For i = 0 To 5
@@ -50,7 +53,7 @@
         End Get
         Set(ByVal value As Long)
             mDuration = value
-            GetStartPoint()
+            SetStartPoint()
             ' ReportTime("Duration:" & mDuration)
         End Set
     End Property
@@ -126,7 +129,7 @@
             Dim b As Byte = mState
             mState = value
             If b <> mState Then
-                GetStartPoint()
+                SetStartPoint()
                 RaiseEvent StateChanged(Me, New EventArgs)
             End If
         End Set
@@ -144,6 +147,8 @@
 
         End Set
     End Property
+#End Region
+#Region "Methods"
     Public Sub IncrementState(max As Byte)
         State = (State + 1) Mod max
     End Sub
@@ -153,7 +158,7 @@
         mStartPoint = mMarkers(mMarkCounter)
     End Sub
 
-    Private Function GetStartPoint() As Long
+    Private Function SetStartPoint() As Long
         Dim oldstartpoint As Long = mStartPoint
         Select Case mState
             Case StartTypes.Beginning
@@ -163,9 +168,7 @@
                 If mStartPoint > mDuration / 2 Then
                     mStartPoint = mDuration * 0.1
                 End If
-
             Case StartTypes.NearEnd
-
                 mStartPoint = mDuration - mDistance
                 If mStartPoint < mDuration / 2 Then
                     mStartPoint = mDuration * 0.9
@@ -190,4 +193,5 @@
         If mStartPoint > mDuration Then MsgBox("Too far")
         Return mStartPoint
     End Function
+#End Region
 End Class

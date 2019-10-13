@@ -72,7 +72,7 @@ Public Class MainForm
         If x.Count = 0 Then
             chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Regular)
             chbPreviewLinks.Text = "Preview links (None)"
-            Scrubber.BackColor = Me.BackColor
+            Scrubber.BackColor = Color.Aqua
             If chbPreviewLinks.Checked Then
                 lbxShowList.Items.Clear()
                 ControlSetFocus(lbxFiles)

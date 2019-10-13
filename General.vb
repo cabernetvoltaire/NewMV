@@ -17,7 +17,7 @@ Public Module General
     Public VIDEOEXTENSIONS = ".divx.vob.webm.avi.flv.mov.m4p.mpeg.f4v.mpg.m4a.m4v.mkv.mp4.rm.ram.wmv.wav.mp3.3gp"
     Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif"
     Public DirectoriesListFile
-    Public separate As Boolean = True
+    Public separate As Boolean = False
 
     Public CurrentFolder As String
     Public DirectoriesList As New List(Of String)
