@@ -125,7 +125,7 @@ Public Class MainForm
             End If
         End If
 
-        'Scrubber.Image = Marks.Bitmap
+        Scrubber.Image = Marks.Bitmap
 
 
 
@@ -212,23 +212,27 @@ Public Class MainForm
     End Sub
     Public Sub OnStateChanged(sender As Object, e As EventArgs) Handles NavigateMoveState.StateChanged, CurrentFilterState.StateChanged, PlayOrder.StateChanged
         'If StartingUpFlag Then Exit Sub
+
         FBH.Filter = CurrentFilterState
         FBH.SortOrder = PlayOrder
         ReportAction(NavigateMoveState.Instructions)
-        lblNavigateState.Text = NavigateMoveState.Instructions
 
+        lblNavigateState.Text = NavigateMoveState.Instructions
         cbxOrder.SelectedIndex = PlayOrder.State
         cbxOrder.BackColor = PlayOrder.Colour
+        tbRandom.Text = "ORDER:" & UCase(PlayOrder.Description)
         cbxFilter.BackColor = CurrentFilterState.Colour
         cbxFilter.SelectedIndex = CurrentFilterState.State
-        tbRandom.Text = "ORDER:" & UCase(PlayOrder.Description)
         tbFilter.Text = "FILTER:" & UCase(CurrentFilterState.Description)
+
         tbState.Text = UCase(NavigateMoveState.Description)
         SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
+
         If lbxFiles.Items.Count = 0 And CurrentFilterState.State <> FilterHandler.FilterState.All Then lbxFiles.Items.Add("If there is nothing showing here, check the filters")
+
         If sender IsNot NavigateMoveState Then
             If Not Initialising Then
-                If Showlist.Count > 0 Then
+                If FocusControl Is lbxShowList Then
                     UpdatePlayOrder(LBH)
                 Else
                     UpdatePlayOrder(FBH)

@@ -12,7 +12,7 @@ Public Class MediaHandler
     Private Property mSndH As New SoundController 'With {.SoundPlayer = Sound, .CurrentPlayer = Player}
     Public IsCurrent As Boolean = False
 
-    Private WithEvents ResetPosition As New Timer
+    Private WithEvents ResetPosition As New Timer With {.Interval=10}
     Public WithEvents PositionUpdater As New Timer With {.Interval = 10}
     Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 150000}
 
@@ -337,53 +337,14 @@ Public Class MediaHandler
 
     End Sub
 #End Region
-    Public Sub MediaJumpToMarkerOld(Optional ToEnd As Boolean = False)
-        'It's a link with a bookmark
-        If mBookmark > -1 And Speed.PausedPosition = 0 Then 'And mMarkers.Count = 0 Then
-            If StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then
-                mPlayPosition = mBookmark
-            Else
-                mPlayPosition = StartPoint.StartPoint
-            End If
-        Else
-            'Not a link
-            If ToEnd Then 'Special Case where jump to end button pressed
-                Dim m As New StartPointHandler With {
+    Public Sub MediaJumpToMarker(Optional ToEnd As Boolean = False)
+        'There are markers, so jump to the next one
+        If ToEnd Then 'Special Case where jump to end button pressed
+            Dim m As New StartPointHandler With {
                         .Duration = mDuration,
                         .State = StartPointHandler.StartTypes.NearEnd
                                     }
-                mPlayPosition = m.StartPoint
-            Else
-                If Speed.PausedPosition <> 0 Then
-                    mPlayPosition = Speed.PausedPosition
-                Else
-                    If mMarkers.Count <> 0 Then 'And StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute Then 'Or StartPoint.State=StartPointHandler.StartTypes. Then
-                        Try
-                            mPlayPosition = mMarkers.Item(mlinkcounter)
-                            '                            If mPlayer Is Media.Player Then MsgBox(mPlayPosition)
-                            Report("LinkCounter " & mlinkcounter & " at " & mMarkers.Item(mlinkcounter), 3)
-                        Catch ex As Exception
-                            mPlayPosition = StartPoint.StartPoint
-                        End Try
-                    Else
-                        mPlayPosition = StartPoint.StartPoint
-                    End If
-                End If
-            End If
-        End If
-        If mPlayPosition > mDuration Then
-            Report(mPlayPosition & "Over-reach" & mDuration, 0, False)
-        Else
-            mPlayer.Ctlcontrols.currentPosition = mPlayPosition
-            'Sound.Ctlcontrols.currentPosition = mPlayPosition
-        End If
-        Debug.Print("MediaJumpMarker set" & mMediaPath & " position to " & mPlayPosition)
-    End Sub
-    Public Sub MediaJumpToMarker(Optional ToEnd As Boolean = False)
-        'There are markers, so jump to the next one
-        If mMarkers.Count <> 0 And IsCurrent Then 'And StartPoint.State = StartPointHandler.StartTypes.FirstMarker Then
-            StartPoint.Absolute = mMarkers.Item(mlinkcounter)
-            mPlayPosition = StartPoint.StartPoint
+            mPlayPosition = m.StartPoint
             'Or it's a link with a bookmark
         ElseIf mBookmark > -1 And Speed.PausedPosition = 0 Then 'And mMarkers.Count = 0 Then
             If StartPoint.State = StartPointHandler.StartTypes.FirstMarker Then
@@ -391,12 +352,9 @@ Public Class MediaHandler
             Else
                 mPlayPosition = StartPoint.StartPoint
             End If
-        ElseIf ToEnd Then 'Special Case where jump to end button pressed
-            Dim m As New StartPointHandler With {
-                        .Duration = mDuration,
-                        .State = StartPointHandler.StartTypes.NearEnd
-                                    }
-            mPlayPosition = m.StartPoint
+        ElseIf mMarkers.Count <> 0 Then 'And StartPoint.State = StartPointHandler.StartTypes.FirstMarker Then
+            StartPoint.Absolute = mMarkers.Item(mlinkcounter)
+            mPlayPosition = StartPoint.StartPoint
         ElseIf Speed.PausedPosition <> 0 Then
             mPlayPosition = Speed.PausedPosition
             Speed.PausedPosition = 0
@@ -447,7 +405,7 @@ Public Class MediaHandler
             Else
                 Try
                     mPlayer.URL = URL
-                    mlinkcounter = 0
+
                     '     Sound.URL = URL
                     LastURL = URL 'Prevents reloading into a given player
                 Catch EX As Exception
@@ -458,8 +416,8 @@ Public Class MediaHandler
         Else
             mlinkcounter = 0
             GetBookmark()
-            MediaJumpToMarker() 'Jump to a new position
         End If
+        MediaJumpToMarker() 'Jump to a new position
         DisplayerName = mPlayer.Name
     End Sub
     Public Sub HandlePic(path As String)
@@ -575,6 +533,7 @@ Public Class MediaHandler
     Private Sub ResetPos() Handles ResetPosition.Tick
         ' PositionUpdater.Enabled = False
         Try
+            ' mPlayer.Ctlcontrols.currentPosition = StartPoint.StartPoint
             MediaJumpToMarker()
         Catch ex As Exception
 
