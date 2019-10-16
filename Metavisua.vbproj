@@ -66,12 +66,6 @@
   <PropertyGroup>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
-  <PropertyGroup>
-    <TargetZone>LocalIntranet</TargetZone>
-  </PropertyGroup>
-  <PropertyGroup>
-    <GenerateManifests>false</GenerateManifests>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.Dsofile">
       <HintPath>C:\DsoFile\Demo\Interop.Dsofile.dll</HintPath>
@@ -203,7 +197,6 @@
     </Compile>
     <Compile Include="SortHandler.vb" />
     <Compile Include="Sound.vb" />
-    <Compile Include="SpeedHandler.vb" />
     <Compile Include="SplashScreen1.Designer.vb">
       <DependentUpon>SplashScreen1.vb</DependentUpon>
     </Compile>

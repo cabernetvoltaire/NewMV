@@ -2,16 +2,15 @@
 Public Class MediaSwapper
 
     Public NextF As New NextFile
-    Public WithEvents Media1 As New MediaHandler("mMedia1")
-    Public WithEvents Media2 As New MediaHandler("mMedia2")
-    Public WithEvents Media3 As New MediaHandler("mMedia3")
+    Public Media1 As New MediaHandler("mMedia1")
+    Public Media2 As New MediaHandler("mMedia2")
+    Public Media3 As New MediaHandler("mMedia3")
 
 
     Private mFileList As New List(Of String) '
     Private mListIndex As Integer
     Private mListbox As New ListBox
     Private mListcount As Integer
-    Public CurrentURLS As New List(Of String)
     Public Event LoadedMedia(MH As MediaHandler)
     Public Event MediaNotFound(MH As MediaHandler)
     Public Property NextItem As String
@@ -106,9 +105,7 @@ Public Class MediaSwapper
 
     Private Sub Prepare(ByRef MH As MediaHandler, path As String)
         Debug.Print("PREPARE: " & MH.Player.Name)
-        If MH.MediaPath <> path Then
-            MH.MediaPath = path
-        End If
+        MH.MediaPath = path
         Select Case MH.MediaType
             Case Filetype.Movie
                 MH.Player.Visible = True
@@ -116,7 +113,7 @@ Public Class MediaSwapper
                 RaiseEvent LoadedMedia(MH) 'Currently does nothing.
             Case Filetype.Pic
                 MH.PlaceResetter(False)
-                'MH.MediaPath = path
+                MH.MediaPath = path
                 MH.Picture.Visible = True
             Case Else
 
@@ -124,26 +121,11 @@ Public Class MediaSwapper
         'NB Duration is not loaded by this point. 
 
     End Sub
-    Public Sub CancelURL(filepath As String)
-        If Media1.Player.URL = filepath Then Media1.Player.close()
-        If Media2.Player.URL = filepath Then Media2.Player.close()
-        If Media3.Player.URL = filepath Then Media3.Player.close()
-        If Media1.Picture.ImageLocation = filepath Then DisposePic(Media1.Picture)
-        If Media2.Picture.ImageLocation = filepath Then DisposePic(Media2.Picture)
-        If Media3.Picture.ImageLocation = filepath Then DisposePic(Media3.Picture)
-
-    End Sub
     Private Sub RotateMedia(ByRef ThisMH As MediaHandler, ByRef NextMH As MediaHandler, ByRef PrevMH As MediaHandler)
-        CurrentURLS.Clear()
+
         Prepare(PrevMH, NextF.PreviousItem)
         Prepare(NextMH, NextF.NextItem)
         Prepare(ThisMH, NextF.CurrentItem)
-        CurrentURLS.Add(NextF.PreviousItem)
-        CurrentURLS.Add(NextF.CurrentItem)
-        CurrentURLS.Add(NextF.NextItem)
-        ThisMH.IsCurrent = True
-        NextMH.IsCurrent = False
-        PrevMH.IsCurrent = False
 
         Select Case ThisMH.MediaType
             Case Filetype.Movie
@@ -213,15 +195,10 @@ Public Class MediaSwapper
             .Visible = True
             .BringToFront()
             .settings.mute = Muted
-            RaiseEvent MediaShown(MHX)
         End With
-
+        RaiseEvent MediaShown(MHX)
 
     End Sub
-    Private Sub OnMediaPlaying(sender As Object, e As EventArgs) Handles Media1.MediaPlaying, Media2.MediaPlaying, Media3.MediaPlaying
-        '   RaiseEvent MediaShown(sender)
-    End Sub
-
     Public Sub ClickAllPics()
         PicClick(Media1.Picture)
         PicClick(Media2.Picture)
@@ -229,7 +206,7 @@ Public Class MediaSwapper
 
     End Sub
     Private Sub HideMedias(CurrentMH As MediaHandler)
-        ' Exit Sub
+        Exit Sub
         If Media1 IsNot CurrentMH Then
             Media1.Picture.Visible = False
             Media1.Player.Visible = False

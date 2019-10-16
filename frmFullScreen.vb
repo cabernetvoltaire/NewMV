@@ -18,7 +18,7 @@ Public Class FullScreen
         FSFiles.Media3.Picture = FSPB3
 
 
-        FSFiles.ListIndex = FirstMediaIndex
+        FSFiles.ListIndex = MSFiles.ListIndex
 
         'FSWMP.URL = MainForm.MainWMP1.URL
         'FSWMP2.URL = MainForm.MainWMP2.URL

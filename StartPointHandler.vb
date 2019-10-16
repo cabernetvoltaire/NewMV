@@ -1,7 +1,6 @@
 ﻿Public Class StartPointHandler
     Public Enum StartTypes As Byte
         Beginning
-        FirstMarker
         ParticularAbsolute
         ParticularPercentage
         Random
@@ -14,7 +13,6 @@
     Public Event JumpKey()
     Private mOrder = {
         "Beginning",
-        "First Marker",
         "Particular(s)",
         "Particular(%)",
         "Random",
@@ -28,10 +26,7 @@
         mDuration = 100
         mAbsolute = 120
         mDistance = 65
-
     End Sub
-#Region "Properties"
-
     Public ReadOnly Property Descriptions As List(Of String)
         Get
             For i = 0 To 5
@@ -53,7 +48,7 @@
         End Get
         Set(ByVal value As Long)
             mDuration = value
-            SetStartPoint()
+            GetStartPoint()
             ' ReportTime("Duration:" & mDuration)
         End Set
     End Property
@@ -66,22 +61,7 @@
             mDistance = value
         End Set
     End Property
-    Private mMarkers As List(Of Long)
-    Public Property Markers() As List(Of Long)
-        Get
-            Return mMarkers
-        End Get
-        Set(ByVal value As List(Of Long))
-            mMarkers = value
-        End Set
-    End Property
-    Private mCurrentMarker As Long
-    Public ReadOnly Property CurrentMarker() As Long
-        Get
-            mCurrentMarker = mMarkers(mMarkCounter)
-            Return mCurrentMarker
-        End Get
-    End Property
+
     Private mAbsolute As Long
     Public Property Absolute() As Long
         Get
@@ -90,12 +70,11 @@
         Set(ByVal value As Long)
 
             Dim b As Long = mAbsolute
-            If b <> value Then
+            If b <> mAbsolute Then
                 If value <= Duration Then
                     mAbsolute = value
                     mPercentage = mAbsolute / mDuration * 100
-                    '   mStartPoint = mAbsolute
-                    '  RaiseEvent StartPointChanged(Me, Nothing)
+                    ' RaiseEvent StartPointChanged(Me, Nothing)
                 End If
             End If
         End Set
@@ -109,13 +88,13 @@
             Dim b As Byte = mPercentage
             mPercentage = value
             mAbsolute = mPercentage / 100 * mDuration
-            If b <> mPercentage Then RaiseEvent StartPointChanged(Me, Nothing)
+            'If b <> mPercentage Then RaiseEvent StartPointChanged(Me, Nothing)
         End Set
     End Property
     Private mStartPoint As Long
     Public ReadOnly Property StartPoint() As Long
         Get
-            '  SetStartPoint()
+            GetStartPoint()
             Return mStartPoint
         End Get
 
@@ -129,7 +108,7 @@
             Dim b As Byte = mState
             mState = value
             If b <> mState Then
-                SetStartPoint()
+                GetStartPoint()
                 RaiseEvent StateChanged(Me, New EventArgs)
             End If
         End Set
@@ -147,18 +126,12 @@
 
         End Set
     End Property
-#End Region
-#Region "Methods"
     Public Sub IncrementState(max As Byte)
         State = (State + 1) Mod max
     End Sub
-    Private Property mMarkCounter
-    Public Sub IncrementMarker()
-        mMarkCounter = (mMarkCounter + 1) Mod mMarkers.Count
-        mStartPoint = mMarkers(mMarkCounter)
-    End Sub
 
-    Private Function SetStartPoint() As Long
+
+    Private Function GetStartPoint() As Long
         Dim oldstartpoint As Long = mStartPoint
         Select Case mState
             Case StartTypes.Beginning
@@ -168,13 +141,16 @@
                 If mStartPoint > mDuration / 2 Then
                     mStartPoint = mDuration * 0.1
                 End If
+
             Case StartTypes.NearEnd
+
                 mStartPoint = mDuration - mDistance
                 If mStartPoint < mDuration / 2 Then
                     mStartPoint = mDuration * 0.9
                 End If
-            Case StartTypes.ParticularAbsolute, StartTypes.FirstMarker
+            Case StartTypes.ParticularAbsolute
                 mStartPoint = mAbsolute
+
             Case StartTypes.ParticularPercentage
                 mStartPoint = mPercentage / 100 * mDuration
             Case StartTypes.Random
@@ -193,5 +169,4 @@
         If mStartPoint > mDuration Then MsgBox("Too far")
         Return mStartPoint
     End Function
-#End Region
 End Class
