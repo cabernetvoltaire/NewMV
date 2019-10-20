@@ -469,6 +469,7 @@ Public Class MediaHandler
     Private mResetCounter As Integer
 
     Private Sub PlaystateChange(sender As Object, e As _WMPOCXEvents_PlayStateChangeEvent) Handles mPlayer.PlayStateChange
+
         Select Case e.newState
             Case WMPLib.WMPPlayState.wmppsStopped
                 mPlayer.Ctlcontrols.play()

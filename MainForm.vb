@@ -2716,7 +2716,13 @@ Public Class MainForm
 
 
     Private Sub MainForm_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
-        DrawScrubberMarks()
+     '   DrawScrubberMarks()
 
     End Sub
+
+    Private Sub Scrubber_Paint(sender As Object, e As PaintEventArgs) Handles Scrubber.Paint
+        '  MsgBox("Uh-oh")
+
+    End Sub
+
 End Class

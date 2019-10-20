@@ -1,6 +1,7 @@
 ﻿
 Public Class VideoThumbnailer
     Private WithEvents p As Process
+
     Property Fileref As String
     Property Thumbnail As String
     Event Thumbnailed(s As String)
