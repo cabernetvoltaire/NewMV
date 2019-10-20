@@ -24,11 +24,6 @@ Module FileHandling
     Public FaveMinder As New FavouritesMinder("Q:\Favourites")
     '
     '  Public WithEvents SndH As New SoundController
-    Public Sub OnMediaPlaying(sender As Object, e As EventArgs) Handles Media.MediaPlaying
-
-
-    End Sub
-
     Public Sub OnMediaStartChanged(sender As Object, e As EventArgs) Handles Media.StartChanged
         MainForm.OnStartChanged(sender, e)
 
@@ -36,22 +31,35 @@ Module FileHandling
     Public Sub OnMediaSpeedChanged(sender As Object, e As EventArgs) Handles Media.SpeedChanged
         MainForm.OnSpeedChange(sender, e)
     End Sub
+
+
     Public Sub OnMediaShown(M As MediaHandler) Handles MSFiles.MediaShown
         Media = M
+        'MSFiles.SetStartStates(Media.StartPoint)
+        'Media.MediaJumpToMarker()
+        Debug.Print("On Media Shown")
+        DebugStartpoint(Media)
+
         MainForm.UpdateFileInfo()
+
         If M.MediaType <> Filetype.Movie Then
             currentPicBox = M.Picture
         End If
-        If M.IsLink Then
-            MainForm.PopulateLinkList(M.LinkPath, M)
-        Else
-            MainForm.PopulateLinkList(M.MediaPath, M)
-        End If
-        Media.SetLink(0)
         If M.MediaPath <> "" Then My.Computer.Registry.CurrentUser.SetValue("File", M.MediaPath)
-        If ShiftDown Then MainForm.HighlightCurrent(Media.LinkPath) 'Used for links only, to go to original file
-        If MainForm.FocusControl Is MainForm.lbxShowList Then MainForm.HighlightCurrent(Media.MediaPath)
+        If M.Markers.Count > 0 Then
+            Dim t As TimeSpan = TimeSpan.FromSeconds(M.Markers.Item(M.LinkCounter))
+            Dim s As String = t.ToString(Format("mm\:ss"))
+
+            MainForm.tbReport.Text = "LinkCounter " & M.LinkCounter & " at " & s
+        Else
+            MainForm.tbReport.Text = ""
+        End If
+
     End Sub
+    Public Sub OnMediaLoaded(M As MediaHandler) Handles MSFiles.LoadedMedia
+
+    End Sub
+
     Private Sub DebugStartpoint(M As MediaHandler)
         Debug.Print(M.MediaPath & " loaded into " & M.Player.Name)
         Debug.Print(M.StartPoint.StartPoint & " startpoint")
@@ -59,13 +67,14 @@ Module FileHandling
         Debug.Print(M.StartPoint.Duration & " Duration")
         Debug.Print("")
     End Sub
-    Public Sub OnFilesMoved(files As List(Of String), lbx1 As ListBox)
+    Public Sub OnFileMoved(files As List(Of String), lbx1 As ListBox)
         '   Exit Sub
         lbx1.SelectionMode = SelectionMode.One
         Dim ind As Long = lbx1.SelectedIndex
         For Each f In files
             Select Case NavigateMoveState.State
                 Case StateHandler.StateOptions.Copy, StateHandler.StateOptions.CopyLink
+                    'lbx1.SelectedIndex = (lbx1.SelectedIndex + 1) Mod (lbx1.Items.Count - 1) 'Signal action completed by advancing
                 Case StateHandler.StateOptions.MoveLeavingLink
                     MainForm.UpdatePlayOrder(MainForm.FBH)
                     ReplaceListboxItem(lbx1, ind, f)
@@ -74,12 +83,16 @@ Module FileHandling
             End Select
             MSFiles.ResettersOff()
         Next
-        RefreshListbox(lbx1, files)
+        MainForm.FBH.RemoveItems(files)
 
         If lbx1.Items.Count <> 0 Then lbx1.SetSelected(Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0), True)
-
+        ' If MSFiles.Listbox IsNot lbx1 Then MSFiles.Listbox = lbx1
+        'MSFiles.ListIndex = lbx1.SelectedIndex
+        '        MainForm.IndexHandler(lbx1, Nothing)
 
     End Sub
+
+
     Public strFilterExtensions(6) As String
     Public Sub AssignExtensionFilters()
         strFilterExtensions(FilterHandler.FilterState.All) = ""
@@ -154,6 +167,11 @@ Module FileHandling
         'End Select
         'Return lst
     End Function
+
+
+
+
+
     Public Sub StoreList(list As List(Of String), Dest As String)
         If Dest = "" Then Exit Sub
         WriteListToFile(list, Dest, Encrypted)
@@ -210,17 +228,18 @@ Module FileHandling
             End If
         Next
     End Sub
-    Public Sub MoveFolder(Dir As String, Dest As String)
+
+
+    Public Sub MoveFolderNew(Dir As String, Dest As String)
         Dim TargetDir As New DirectoryInfo(Dest)
         Dim SourceDir As New DirectoryInfo(Dir)
-
-
         'Make target subdirectories.
         MoveDirectoryContents(TargetDir, SourceDir, SourceDir, True)
         For Each d In SourceDir.EnumerateDirectories("*", SearchOption.AllDirectories)
             MoveDirectoryContents(TargetDir, SourceDir, d, True)
         Next
-
+        'SourceDir.Delete()
+        '        My.Computer.FileSystem.CreateDirectory(TargetDir.FullName & "\" & SourceDir.Name)
 
     End Sub
 
@@ -245,6 +264,49 @@ Module FileHandling
 
     End Sub
 
+    Public Sub MoveFolder(strDir As String, strDest As String)
+        MoveFolderNew(strDir, strDest)
+        Exit Sub
+        'If strDest = "" Then
+        '    Dim k As New DirectoryInfo(strDir)
+        '    k.Delete(True)
+
+        'End If
+        'Try
+        '    With My.Computer.FileSystem
+        '        Dim dir = New DirectoryInfo(strDir)
+        '        Dim s As String = dir.Name
+        '        Dim f As New DirectoryInfo(dir.Parent.FullName)
+        '        Dim destdir = New DirectoryInfo(strDest)
+        '        Select Case NavigateMoveState.State
+        '            Case StateHandler.StateOptions.Copy
+        '                .CopyDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
+        '            Case StateHandler.StateOptions.Move
+        '                MainForm.CancelDisplay()
+        '                Dim flist As New List(Of String)
+        '                GetFiles(dir, flist)
+
+        '                AllFaveMinder.DestinationPath = strDest
+        '                AllFaveMinder.CheckFiles(flist)
+
+        '                .MoveDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
+
+
+        '            Case StateHandler.StateOptions.MoveLeavingLink
+        '                'Create link directory?
+        '                .MoveDirectory(strDir, strDest & "\" & s, FileIO.UIOption.OnlyErrorDialogs)
+
+        '            Case StateHandler.StateOptions.CopyLink
+        '                'Creat link directory?
+
+        '        End Select
+        '        UpdateButton(strDir, strDest & "\" & s) 'todo doesnt handle sub-tree
+        '    End With
+        'Catch ex As Exception
+        '    MsgBox(ex.Message) '
+        'End Try
+
+    End Sub
 
     Private Sub GetFiles(dir As DirectoryInfo, flist As List(Of String))
         For Each m In dir.EnumerateFiles("*", SearchOption.AllDirectories)
@@ -430,6 +492,9 @@ Module FileHandling
         End If
     End Sub
 
+
+
+
     Public Function CreateNewDirectory(tv As FileSystemTree, strDest As String, blnAsk As Boolean) As String
         Dim blnCreate As Boolean = True
         Dim blnAssign As Boolean = False
@@ -451,6 +516,7 @@ Module FileHandling
         End If
         Return s
     End Function
+
     Public Sub AddFilesToCollectionSingle(ByRef list As List(Of String), extensions As String, blnRecurse As Boolean)
         Dim s As String
         Dim d As New DirectoryInfo(CurrentFolder)
@@ -493,7 +559,6 @@ Module FileHandling
 
         With My.Computer.FileSystem
             If .FileExists(s) Then
-                MSFiles.CancelURL(s)
                 Try
                     .DeleteFile(s, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
                     'If MainForm.lbxFiles.FindString(s) <> -1 Then
@@ -518,6 +583,7 @@ Module FileHandling
         i = i + dir.EnumerateFiles.Count
         Return i
     End Function
+
     Public Function ListSubFiles(strPath As String) As List(Of String)
         Dim dir As New DirectoryInfo(strPath)
         Dim ls As New List(Of String)
@@ -534,6 +600,7 @@ Module FileHandling
         Next
         Return ls
     End Function
+
     ''' <summary>
     ''' Adds all files in d of given extension, or removes them, to the list, only including strSearch 
     ''' </summary>
@@ -603,6 +670,7 @@ Module FileHandling
             End If
         End If
     End Sub
+
     Public Sub FindAllFoldersBelow(d As DirectoryInfo, list As List(Of String), blnRecurse As Boolean, blnNonEmptyOnly As Boolean)
 
 
@@ -633,13 +701,21 @@ Module FileHandling
             Next
         End If
     End Sub
+
     Public Function DeleteEmptyFolders(d As DirectoryInfo, blnRecurse As Boolean) As Boolean
 
         If blnRecurse Then
-            For Each di In d.EnumerateDirectories
 
-                DeleteEmptyFolders(di, True)
+
+            For Each di In d.EnumerateDirectories
+                Try
+
+                    DeleteEmptyFolders(di, True)
+                Catch ex As Exception
+                    Continue For
+                End Try
             Next
+
         End If
         If d.EnumerateDirectories.Count = 0 And d.EnumerateFiles.Count = 0 Then
             Dim s As String = d.Parent.FullName
@@ -652,11 +728,13 @@ Module FileHandling
                 Exit Function
             End Try
             ' MainForm.tvMain2.RefreshTree(s)
+            Return True
+            Exit Function
         End If
+        Return False
 
-
-        Return True
     End Function
+
     Public Function FolderCount(d As DirectoryInfo, count As Integer, blnRecurse As Boolean) As Long
         Try
             count = count + d.EnumerateDirectories.Count
@@ -688,6 +766,7 @@ Module FileHandling
         End If
         Return count
     End Function
+
     Public Sub HarvestBelow(d As DirectoryInfo)
         For Each di In d.EnumerateDirectories
             BurstFolder(di)
@@ -695,6 +774,7 @@ Module FileHandling
         Next
     End Sub
     Public Sub HarvestFolder(d As DirectoryInfo, Recurse As Boolean, Parent As Boolean)
+
         If Recurse Then
             For Each di In d.EnumerateDirectories
                 HarvestFolder(di, Recurse, Parent)
@@ -713,21 +793,10 @@ Module FileHandling
             blnSuppressCreate = False
         End If
 
-        'For Each f In d.EnumerateFiles
-        '    If Parent Then
-        '        Dim m As String = d.Parent.FullName & "\" & f.Name
-        '        Dim fi As New FileInfo(m)
-        '        If fi.Exists Then
-        '        Else
-        '            'Use an encapsulated move routine
-        '            f.MoveTo(m)
-        '        End If
-        '    Else
-        '        f.MoveTo(CurrentFolder & "\" & f.Name)
-        '    End If
-        'Next
-        DeleteEmptyFolders(d, True)
+
+        ' DeleteEmptyFolders(d, True)
     End Sub
+
     Public Sub BurstFolder(d As DirectoryInfo)
         HarvestFolder(d, True, True)
 

@@ -236,11 +236,13 @@ Partial Class MainForm
         Me.ShowlistToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DashboardToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExperimentToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DatabaseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PositionUpdater = New System.Windows.Forms.Timer(Me.components)
         Me.tmrMovieSlideShow = New System.Windows.Forms.Timer(Me.components)
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
         Me.NewIndex = New System.Windows.Forms.Timer(Me.components)
         Me.Response = New System.Windows.Forms.Timer(Me.components)
+        Me.tbReport = New System.Windows.Forms.ToolStripStatusLabel()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -402,7 +404,7 @@ Partial Class MainForm
         '
         Me.StatusStrip1.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.StatusStrip1.ImageScalingSize = New System.Drawing.Size(28, 28)
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSPB, Me.tbFiles, Me.tbFilter, Me.tbRandom, Me.tsslPicState, Me.tbZoom, Me.tbSpeed, Me.tbStartpoint, Me.tbShowfile, Me.tbButton, Me.tbLastFile, Me.tbDate, Me.tbState, Me.TBFractionAbsolute})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSPB, Me.tbFiles, Me.tbFilter, Me.tbRandom, Me.tsslPicState, Me.tbZoom, Me.tbSpeed, Me.tbStartpoint, Me.tbShowfile, Me.tbButton, Me.tbLastFile, Me.tbDate, Me.tbState, Me.TBFractionAbsolute, Me.tbReport})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 1090)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Padding = New System.Windows.Forms.Padding(2, 0, 12, 0)
@@ -2019,9 +2021,16 @@ Partial Class MainForm
         '
         'ExperimentToolStripMenuItem
         '
+        Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DatabaseToolStripMenuItem})
         Me.ExperimentToolStripMenuItem.Name = "ExperimentToolStripMenuItem"
         Me.ExperimentToolStripMenuItem.Size = New System.Drawing.Size(112, 29)
         Me.ExperimentToolStripMenuItem.Text = "Experiment"
+        '
+        'DatabaseToolStripMenuItem
+        '
+        Me.DatabaseToolStripMenuItem.Name = "DatabaseToolStripMenuItem"
+        Me.DatabaseToolStripMenuItem.Size = New System.Drawing.Size(170, 30)
+        Me.DatabaseToolStripMenuItem.Text = "Database"
         '
         'PositionUpdater
         '
@@ -2037,6 +2046,12 @@ Partial Class MainForm
         '
         'Response
         '
+        '
+        'tbReport
+        '
+        Me.tbReport.Name = "tbReport"
+        Me.tbReport.Size = New System.Drawing.Size(65, 25)
+        Me.tbReport.Text = "Report"
         '
         'MainForm
         '
@@ -2342,4 +2357,6 @@ Partial Class MainForm
     Friend WithEvents InvertSelectionToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents chbSeparate As CheckBox
     Friend WithEvents TBFractionAbsolute As ToolStripStatusLabel
+    Friend WithEvents DatabaseToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents tbReport As ToolStripStatusLabel
 End Class

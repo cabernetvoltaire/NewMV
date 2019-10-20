@@ -113,6 +113,9 @@ Module ButtonHandling
 
     End Sub
     Public Sub AssignAlphabetic(blntest As Boolean)
+        Dim x As New ButtonForm
+        x.buttons = buttons
+
         If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
 
         Dim dlist As New List(Of String)
@@ -128,7 +131,7 @@ Module ButtonHandling
             Dim l As String = UCase(sht(0))
             Dim k As Int16 = LetterNumberFromAscii(Asc(l))
             If k >= 0 AndAlso k < nletts Then
-                If (n(k) Mod 8) = 0 Then
+                If (n(k) Mod 7) = 0 Then
                     layer += 1
                     ReDim Preserve strButtonFilePath(8, nletts, layer)
                     ReDim Preserve strButtonCaptions(8, nletts, layer)
