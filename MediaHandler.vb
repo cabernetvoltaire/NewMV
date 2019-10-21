@@ -352,7 +352,7 @@ Public Class MediaHandler
             Else
                 mPlayPosition = StartPoint.StartPoint
             End If
-        ElseIf mMarkers.Count <> 0 Then 'And StartPoint.State = StartPointHandler.StartTypes.FirstMarker Then
+        ElseIf mMarkers.Count <> 0 And StartPoint.State = StartPointHandler.StartTypes.FirstMarker Then
             StartPoint.Absolute = mMarkers.Item(mlinkcounter)
             mPlayPosition = StartPoint.StartPoint
         ElseIf Speed.PausedPosition <> 0 Then

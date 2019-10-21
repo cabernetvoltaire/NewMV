@@ -68,6 +68,7 @@ Public Class MainForm
         If filepath = "" Then Exit Sub
         ' Media.Markers.Clear()
         Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
+
         Dim i = 0
         If x.Count = 0 Then
             chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Regular)
@@ -121,11 +122,11 @@ Public Class MainForm
             'Scrubber.Visible = False
             If Marks.Markers.Count > 0 Then
                 Marks.Create()
-                Scrubber.Visible = True
+                ' Scrubber.Visible = True
             End If
         End If
 
-        Scrubber.Image = Marks.Bitmap
+        'Scrubber.Image = Marks.Bitmap
 
 
 
@@ -2678,11 +2679,19 @@ Public Class MainForm
 
 
     Private Sub MainForm_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
-        DrawScrubberMarks()
-
     End Sub
 
     Private Sub AlphabeticGroupsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlphabeticGroupsToolStripMenuItem.Click
         FilterAlphabetic()
+    End Sub
+
+    Private Sub chbPreviewLinks_CheckedChanged(sender As Object, e As EventArgs) Handles chbPreviewLinks.CheckedChanged
+
+    End Sub
+
+    Private Sub Scrubber_Paint(sender As Object, e As PaintEventArgs) Handles Scrubber.Paint
+        '  DrawScrubberMarks()
+
+        'MsgBox("Uh-og")
     End Sub
 End Class

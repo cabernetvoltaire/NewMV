@@ -80,6 +80,7 @@ Partial Class MainForm
         Me.SoundWMP = New AxWMPLib.AxWindowsMediaPlayer()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.btnRow = New System.Windows.Forms.TableLayoutPanel()
+        Me.Scrubber = New System.Windows.Forms.PictureBox()
         Me.Panel8 = New System.Windows.Forms.Panel()
         Me.lbl8 = New System.Windows.Forms.Label()
         Me.btn8 = New System.Windows.Forms.Button()
@@ -106,7 +107,6 @@ Partial Class MainForm
         Me.btn1 = New System.Windows.Forms.Button()
         Me.lblAlpha = New System.Windows.Forms.Label()
         Me.emblem = New System.Windows.Forms.PictureBox()
-        Me.Scrubber = New System.Windows.Forms.PictureBox()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
         Me.GroupFilters = New System.Windows.Forms.GroupBox()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -206,6 +206,7 @@ Partial Class MainForm
         Me.ByNameToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ByExtToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ByLinkFolderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AlphabeticGroupsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PromoteFolderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FilterMoveToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.InvertSelectionToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -240,7 +241,6 @@ Partial Class MainForm
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
         Me.NewIndex = New System.Windows.Forms.Timer(Me.components)
         Me.Response = New System.Windows.Forms.Timer(Me.components)
-        Me.AlphabeticGroupsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -268,6 +268,7 @@ Partial Class MainForm
         CType(Me.SoundWMP, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.btnRow.SuspendLayout()
+        CType(Me.Scrubber, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel8.SuspendLayout()
         Me.Panel7.SuspendLayout()
         Me.Panel6.SuspendLayout()
@@ -277,7 +278,6 @@ Partial Class MainForm
         Me.Panel2.SuspendLayout()
         Me.Panel1.SuspendLayout()
         CType(Me.emblem, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.Scrubber, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.FlowLayoutPanel1.SuspendLayout()
         Me.GroupFilters.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -711,7 +711,7 @@ Partial Class MainForm
         'MainWMP1
         '
         Me.MainWMP1.Enabled = True
-        Me.MainWMP1.Location = New System.Drawing.Point(0, 1)
+        Me.MainWMP1.Location = New System.Drawing.Point(162, 128)
         Me.MainWMP1.Name = "MainWMP1"
         Me.MainWMP1.OcxState = CType(resources.GetObject("MainWMP1.OcxState"), System.Windows.Forms.AxHost.State)
         Me.MainWMP1.Size = New System.Drawing.Size(620, 491)
@@ -775,6 +775,7 @@ Partial Class MainForm
         Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661837!))
         Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661837!))
         Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661837!))
+        Me.btnRow.Controls.Add(Me.Scrubber, 0, 0)
         Me.btnRow.Controls.Add(Me.Panel8, 9, 1)
         Me.btnRow.Controls.Add(Me.Panel7, 8, 1)
         Me.btnRow.Controls.Add(Me.Panel6, 7, 1)
@@ -785,15 +786,27 @@ Partial Class MainForm
         Me.btnRow.Controls.Add(Me.Panel1, 1, 1)
         Me.btnRow.Controls.Add(Me.lblAlpha, 5, 1)
         Me.btnRow.Controls.Add(Me.emblem, 0, 1)
-        Me.btnRow.Controls.Add(Me.Scrubber, 0, 0)
         Me.btnRow.Dock = System.Windows.Forms.DockStyle.Fill
         Me.btnRow.Location = New System.Drawing.Point(0, 0)
         Me.btnRow.Name = "btnRow"
         Me.btnRow.RowCount = 2
         Me.btnRow.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 17.0!))
         Me.btnRow.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.btnRow.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
         Me.btnRow.Size = New System.Drawing.Size(2122, 145)
         Me.btnRow.TabIndex = 3
+        '
+        'Scrubber
+        '
+        Me.Scrubber.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.Scrubber.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.btnRow.SetColumnSpan(Me.Scrubber, 10)
+        Me.Scrubber.Location = New System.Drawing.Point(2, 2)
+        Me.Scrubber.Margin = New System.Windows.Forms.Padding(2)
+        Me.Scrubber.Name = "Scrubber"
+        Me.Scrubber.Size = New System.Drawing.Size(2118, 13)
+        Me.Scrubber.TabIndex = 15
+        Me.Scrubber.TabStop = False
         '
         'Panel8
         '
@@ -1059,18 +1072,6 @@ Partial Class MainForm
         Me.emblem.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.emblem.TabIndex = 12
         Me.emblem.TabStop = False
-        '
-        'Scrubber
-        '
-        Me.Scrubber.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.Scrubber.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.btnRow.SetColumnSpan(Me.Scrubber, 10)
-        Me.Scrubber.Location = New System.Drawing.Point(173, 2)
-        Me.Scrubber.Margin = New System.Windows.Forms.Padding(2)
-        Me.Scrubber.Name = "Scrubber"
-        Me.Scrubber.Size = New System.Drawing.Size(1775, 12)
-        Me.Scrubber.TabIndex = 13
-        Me.Scrubber.TabStop = False
         '
         'FlowLayoutPanel1
         '
@@ -1801,6 +1802,12 @@ Partial Class MainForm
         Me.ByLinkFolderToolStripMenuItem.Size = New System.Drawing.Size(279, 30)
         Me.ByLinkFolderToolStripMenuItem.Text = "By Link Folder"
         '
+        'AlphabeticGroupsToolStripMenuItem
+        '
+        Me.AlphabeticGroupsToolStripMenuItem.Name = "AlphabeticGroupsToolStripMenuItem"
+        Me.AlphabeticGroupsToolStripMenuItem.Size = New System.Drawing.Size(279, 30)
+        Me.AlphabeticGroupsToolStripMenuItem.Text = "Alphabetic groups"
+        '
         'PromoteFolderToolStripMenuItem
         '
         Me.PromoteFolderToolStripMenuItem.Name = "PromoteFolderToolStripMenuItem"
@@ -2024,12 +2031,6 @@ Partial Class MainForm
         'Response
         '
         '
-        'AlphabeticGroupsToolStripMenuItem
-        '
-        Me.AlphabeticGroupsToolStripMenuItem.Name = "AlphabeticGroupsToolStripMenuItem"
-        Me.AlphabeticGroupsToolStripMenuItem.Size = New System.Drawing.Size(279, 30)
-        Me.AlphabeticGroupsToolStripMenuItem.Text = "Alphabetic groups"
-        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
@@ -2075,6 +2076,7 @@ Partial Class MainForm
         CType(Me.SoundWMP, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.btnRow.ResumeLayout(False)
+        CType(Me.Scrubber, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel8.ResumeLayout(False)
         Me.Panel8.PerformLayout()
         Me.Panel7.ResumeLayout(False)
@@ -2092,7 +2094,6 @@ Partial Class MainForm
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         CType(Me.emblem, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.Scrubber, System.ComponentModel.ISupportInitialize).EndInit()
         Me.FlowLayoutPanel1.ResumeLayout(False)
         Me.FlowLayoutPanel1.PerformLayout()
         Me.GroupFilters.ResumeLayout(False)
@@ -2328,10 +2329,10 @@ Partial Class MainForm
     Friend WithEvents ForceFavouritesReloadToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ForceDirectoriesReloadToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents RemoveToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents Scrubber As PictureBox
     Friend WithEvents HideDeadLinksToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents InvertSelectionToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents chbSeparate As CheckBox
     Friend WithEvents TBFractionAbsolute As ToolStripStatusLabel
     Friend WithEvents AlphabeticGroupsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents Scrubber As PictureBox
 End Class
