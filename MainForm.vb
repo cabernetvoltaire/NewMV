@@ -1837,7 +1837,7 @@ Public Class MainForm
 
     Private Sub ThumbnailsStart()
         Dim t As New Thumbnails With {
-            .ThumbnailHeight = 150
+            .ThumbnailHeight = 75
         }
         If FocusControl Is lbxFiles Or FocusControl Is lbxShowList Then
             t.List = Duplicatelist(AllfromListbox(FocusControl))
@@ -1848,7 +1848,8 @@ Public Class MainForm
 
         't.LayoutPanel = Thumbnails.FlowLayoutPanel1
         t.Text = CurrentFolder
-        t.SetBounds(0, 0, 750, 900)
+
+        t.SetBounds(-1920, 0, 750, 900)
         t.Show()
 
     End Sub

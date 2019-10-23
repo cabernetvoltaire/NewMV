@@ -25,18 +25,24 @@ Partial Class Thumbnails
         Me.components = New System.ComponentModel.Container()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
+        Me.Timer2 = New System.Windows.Forms.Timer(Me.components)
         Me.SuspendLayout()
         '
         'Timer1
         '
         '
+        'Timer2
+        '
+        Me.Timer2.Interval = 1000
+        '
         'Thumbnails
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(11.0!, 24.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoScroll = True
         Me.AutoSize = True
-        Me.ClientSize = New System.Drawing.Size(2175, 1077)
+        Me.ClientSize = New System.Drawing.Size(1780, 897)
+        Me.Margin = New System.Windows.Forms.Padding(2)
         Me.Name = "Thumbnails"
         Me.Text = "Thumbnails"
         Me.ResumeLayout(False)
@@ -45,4 +51,5 @@ Partial Class Thumbnails
 
     Friend WithEvents Timer1 As Timer
     Friend WithEvents ToolTip1 As ToolTip
+    Friend WithEvents Timer2 As Timer
 End Class

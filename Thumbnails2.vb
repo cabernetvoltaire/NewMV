@@ -9,6 +9,8 @@ Public Class Thumbnails
         .Dock = DockStyle.Bottom
     }
     Public t As Thread
+    Public Event ThumbnailCreated()
+    Private Duration As TimeSpan
     Private mList As List(Of String)
     Public Property List() As List(Of String)
         Get
@@ -18,7 +20,7 @@ Public Class Thumbnails
             mList = value
         End Set
     End Property
-    Public ThumbNailSize As Int16 = 200
+    Public ThumbNailSize As Int16
     Private Sub LoadThumbnails()
         Dim flp As New FlowLayoutPanel With {
             .BackColor = Color.WhiteSmoke,
@@ -32,7 +34,12 @@ Public Class Thumbnails
         Dim pics(mList.Count) As PictureBox
         Dim i As Int16 = 0
 
+        i = CreateThumb(flp, pics, i)
+        'flp2 = flp
+        'flp2.Refresh()
+    End Sub
 
+    Private Function CreateThumb(flp As FlowLayoutPanel, pics() As PictureBox, i As Short) As Short
         For Each f In mList
             pics(i) = New PictureBox
             Try
@@ -76,11 +83,14 @@ Public Class Thumbnails
             Catch ex As System.InvalidOperationException
                 Continue For
             End Try
-            '      Me.Refresh()
+            'RaiseEvent ThumbnailCreated()
+            'Refresh code here
+            flp2 = flp
+            'flp.Visible = True
         Next
-        flp2 = flp
+        Return i
+    End Function
 
-    End Sub
     Private Sub flp_Mouseover(sender As Object, e As EventArgs)
         ToolTip1.SetToolTip(sender, sender.name)
     End Sub
@@ -88,9 +98,9 @@ Public Class Thumbnails
         Dim pb = DirectCast(sender, PictureBox)
 
         ToolTip1.SetToolTip(pb, pb.Tag)
-        Media.MediaPath = pb.Tag
+        MainForm.HighlightCurrent(pb.Tag)
         MainForm.lbxFiles.SelectionMode = SelectionMode.One
-        MainForm.tmrPicLoad.Enabled = True
+        'MainForm.tmrPicLoad.Enabled = True
 
     End Sub
     Private Sub pb_Click(sender As Object, e As EventArgs)
@@ -106,19 +116,17 @@ Public Class Thumbnails
     End Function
 
     Public Function GetThumb(ByVal e As PaintEventArgs, h As Long, f As String, Optional Movie As Boolean = False) As Image
+        Dim myThumbnail As Image '= myBitmap.GetThumbnailImage(h, h * ratio, myCallback, IntPtr.Zero)
         If Movie Then
             Try
                 Dim myCallback As New Image.GetThumbnailImageAbort(AddressOf ThumbnailCallback)
                 '  Dim myBitmap As New Bitmap(f)
                 ' Dim ratio As Single = myBitmap.Height / myBitmap.Width
-                Dim myThumbnail As Image '= myBitmap.GetThumbnailImage(h, h * ratio, myCallback, IntPtr.Zero)
 
                 Dim VT As New VideoThumbnailer
                 VT.Fileref = f
                 myThumbnail = Image.FromFile(VT.GetThumbnail(f, 30))
-                Return myThumbnail
-                e.Graphics.DrawImage(myThumbnail, ThumbNailSize, 75)
-
+                'flp2.Refresh()
             Catch ex As Exception
                 'MsgBox(ex.Message)
                 Return Nothing
@@ -128,7 +136,7 @@ Public Class Thumbnails
                 Dim myCallback As New Image.GetThumbnailImageAbort(AddressOf ThumbnailCallback)
                 Dim myBitmap As New Bitmap(f)
                 Dim ratio As Single = myBitmap.Height / myBitmap.Width
-                Dim myThumbnail As Image = myBitmap.GetThumbnailImage(h, h * ratio, myCallback, IntPtr.Zero)
+                myThumbnail = myBitmap.GetThumbnailImage(h, h * ratio, myCallback, IntPtr.Zero)
                 myBitmap.Dispose()
                 Return myThumbnail
                 e.Graphics.DrawImage(myThumbnail, ThumbNailSize, 75)
@@ -136,11 +144,14 @@ Public Class Thumbnails
                 Return Nothing
             End Try
         End If
+        Return myThumbnail
+        e.Graphics.DrawImage(myThumbnail, ThumbNailSize, 75)
     End Function
 
     Private p As PaintEventArgs
     Private Sub Thumbnails_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
-        'p = e
+        Duration = TimeOperation(True)
+        p = e
 
 
         Loadthumbs()
@@ -149,6 +160,7 @@ Public Class Thumbnails
     End Sub
 
     Private Sub Loadthumbs()
+
         Me.Controls.Add(flp2)
         t = New Thread(New ThreadStart(Sub() LoadThumbnails()))
         t.IsBackground = True
@@ -157,9 +169,12 @@ Public Class Thumbnails
         t.Start()
         Timer1.Enabled = True
 
+
     End Sub
 
-
+    Public Sub OnThumbnailCreated() Handles Me.ThumbnailCreated
+        'flp.Refresh()
+    End Sub
 
 
     Public Property ThumbnailHeight() As Int16
@@ -173,28 +188,31 @@ Public Class Thumbnails
 
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         If t.IsAlive Then
-            'Me.Refresh()
+            '   Me.Refresh()
             Exit Sub
         ElseIf Not t.IsAlive Then
-
+            Duration = TimeOperation(False)
+            Me.Text = Me.Text & " took " & Duration.ToString & " to thumbnail " & List.Count & " files."
             Timer1.Enabled = False
             Me.Refresh()
         End If
 
     End Sub
 
-    Private Sub Thumbnails_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-    End Sub
 
     Private Sub Thumbnails_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
         MainForm.HandleKeys(sender, e)
     End Sub
 
-    Private Sub Thumbnails_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
-        Dim d As New IO.DirectoryInfo("Q:\Thumbs")
-        For Each f In d.GetFiles
-            f.Delete()
-        Next
+    Private Sub Thumbnails_Click(sender As Object, e As EventArgs) Handles Me.Click
+        ' Loadthumbs()
+    End Sub
+
+    Private Sub Thumbnails_Disposed(sender As Object, e As EventArgs) Handles Me.Disposed
+        'Dim d As New IO.DirectoryInfo("Q:\Thumbs")
+        'For Each f In d.GetFiles
+        '    f.Delete()
+        'Next
     End Sub
 End Class
