@@ -404,7 +404,15 @@ Public Module General
     Public Sub ReportTime(str As String)
         Debug.Print(Int(Now().Second) & "." & Int(Now().Millisecond) & " " & str)
     End Sub
+    Public Sub DeleteThumbs()
 
+        If Application.OpenForms.Count = 1 Then
+            Dim d As New IO.DirectoryInfo("Q:\Thumbs")
+            For Each f In d.GetFiles
+                f.Delete()
+            Next
+        End If
+    End Sub
     Public Sub LabelStartPoint(ByRef MH As MediaHandler)
         If MH.MediaPath = "" Then Exit Sub
         Dim s As String = ""

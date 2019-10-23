@@ -2,6 +2,7 @@
 Public Class VideoThumbnailer
     Private WithEvents p As Process
     Property Fileref As String
+    Property ThumbnailHeight As Integer = 200
     Property Thumbnail As String
     Event Thumbnailed(s As String)
     ''' <summary>
@@ -37,7 +38,13 @@ Public Class VideoThumbnailer
 
         Thumbnail = """Q:\Thumbs\" & ss & "thn.jpeg"""
         ' Dim s As String = "-ss " & Str(Frame) & " -i """ & Filename & """ -y -an -codec " & finfo.Extension & " -frames:v 1 -f image2 " & Thumbnail
-        Dim s As String = "-ss " & Str(Frame) & " -i """ & Filename & """ -y -an " & " -frames:v 1 -f image2 " & Thumbnail
+        Dim size As String = Str(ThumbnailHeight) & ":" & Str(ThumbnailHeight / 2)
+        size = Str(ThumbnailHeight)
+        size.Replace(" ", "")
+        ' Dim s As String = "-ss " & Str(Frame) & " -i """ & Filename & """ -y " & " -frames:v 1 -f image2 -vf scale=" & size & ":force_original_aspect_ratio=increase,crop=" & size & " " & Thumbnail
+        Dim s As String = "-ss " & Str(30) & " -i """ & Filename & """ -vf scale='200:100' -y " & " -frames:v 1 -f image2 " & " " & Thumbnail
+        ' Dim s As String = "-ss " & Str(Frame) & " -i """ & Filename & """ -y " & " -frames:v 1 -f image2 " & Thumbnail
+
         pInfo.Arguments = s
         Thumbnail = "Q:\Thumbs\" & ss & "thn.jpeg"
 

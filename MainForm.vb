@@ -1400,8 +1400,9 @@ Public Class MainForm
         e.SuppressKeyPress = True
 
     End Sub
-    Private Sub frmMain_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
+    Private Sub frmMain_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
 
+        DeleteThumbs()
         PreferencesSave()
         Application.Exit()
     End Sub
@@ -1837,7 +1838,8 @@ Public Class MainForm
 
     Private Sub ThumbnailsStart()
         Dim t As New Thumbnails With {
-            .ThumbnailHeight = 75
+            .ThumbnailHeight = 75,
+            .Frame = Media.StartPoint.StartPoint
         }
         If FocusControl Is lbxFiles Or FocusControl Is lbxShowList Then
             t.List = Duplicatelist(AllfromListbox(FocusControl))

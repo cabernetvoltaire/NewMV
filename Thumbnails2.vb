@@ -9,6 +9,7 @@ Public Class Thumbnails
         .Dock = DockStyle.Bottom
     }
     Public t As Thread
+    Public Frame As Long = 120
     Public Event ThumbnailCreated()
     Private Duration As TimeSpan
     Private mList As List(Of String)
@@ -124,8 +125,9 @@ Public Class Thumbnails
                 ' Dim ratio As Single = myBitmap.Height / myBitmap.Width
 
                 Dim VT As New VideoThumbnailer
+
                 VT.Fileref = f
-                myThumbnail = Image.FromFile(VT.GetThumbnail(f, 30))
+                myThumbnail = Image.FromFile(VT.GetThumbnail(f, Frame))
                 'flp2.Refresh()
             Catch ex As Exception
                 'MsgBox(ex.Message)
