@@ -36,8 +36,8 @@ Public Class Thumbnails
         Dim i As Int16 = 0
 
         i = CreateThumb(flp, pics, i)
-        'flp2 = flp
-        'flp2.Refresh()
+        flp2 = flp
+        flp2.Refresh()
     End Sub
 
     Private Function CreateThumb(flp As FlowLayoutPanel, pics() As PictureBox, i As Short) As Short
@@ -77,7 +77,7 @@ Public Class Thumbnails
                         AddHandler .MouseEnter, AddressOf pb_Mouseover
 
                         AddHandler .MouseClick, AddressOf pb_Click
-
+                        .Refresh()
                     End With
                 End If
                 i += 1
@@ -86,7 +86,6 @@ Public Class Thumbnails
             End Try
             'RaiseEvent ThumbnailCreated()
             'Refresh code here
-            flp2 = flp
             'flp.Visible = True
         Next
         Return i

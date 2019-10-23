@@ -30,6 +30,7 @@ Partial Class Thumbnails
         '
         'Timer1
         '
+        Me.Timer1.Interval = 10
         '
         'Timer2
         '
