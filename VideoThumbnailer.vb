@@ -22,10 +22,10 @@ Public Class VideoThumbnailer
         pInfo.FileName = "C:ffmpeg.exe"
         pInfo.WindowStyle = ProcessWindowStyle.Hidden
 
-        Thumbnail = """Q:\" & ss & "thn.jpeg"""
+        Thumbnail = """Q:\Thumbs" & ss & "thn.jpeg"""
         Dim s As String = "-ss " & Str(Frame) & " -i """ & Filename & """ -y " & " -frames:v 1 -f image2 " & Thumbnail
         pInfo.Arguments = s
-        Thumbnail = "Q:\" & ss & "thn.jpeg"
+        Thumbnail = "Q:\Thumbs" & ss & "thn.jpeg"
 
         p = Process.Start(pInfo)
         While (Not p.HasExited)

@@ -1,4 +1,5 @@
-﻿Imports System.Threading
+﻿Imports System.ComponentModel
+Imports System.Threading
 
 Public Class Thumbnails
 
@@ -95,9 +96,9 @@ Public Class Thumbnails
     Private Sub pb_Click(sender As Object, e As EventArgs)
         If MsgBox("Delete file?", MsgBoxStyle.YesNo, "Metavisua") = MsgBoxResult.Yes Then
             Dim pb = DirectCast(sender, PictureBox)
-        pb.Visible = False
-        pb.Enabled = False
-        MainForm.HandleKeys(MainForm, New KeyEventArgs(KeyDelete))
+            pb.Visible = False
+            pb.Enabled = False
+            MainForm.HandleKeys(MainForm, New KeyEventArgs(KeyDelete))
         End If
     End Sub
     Public Function ThumbnailCallback() As Boolean
@@ -187,6 +188,13 @@ Public Class Thumbnails
     End Sub
 
     Private Sub Thumbnails_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
-        MainForm.HandleKeys(sender,e)
+        MainForm.HandleKeys(sender, e)
+    End Sub
+
+    Private Sub Thumbnails_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+        Dim d As New IO.DirectoryInfo("Q:\Thumbs")
+        For Each f In d.GetFiles
+            f.Delete()
+        Next
     End Sub
 End Class
