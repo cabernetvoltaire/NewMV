@@ -73,7 +73,7 @@ Public Class MainForm
         If x.Count = 0 Then
             chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Regular)
             chbPreviewLinks.Text = "Preview links (None)"
-            Scrubber.BackColor = Color.Aqua
+            Scrubber.BackColor = Me.BackColor
             If chbPreviewLinks.Checked Then
                 lbxShowList.Items.Clear()
                 ControlSetFocus(lbxFiles)
@@ -102,7 +102,7 @@ Public Class MainForm
 
             Scrubber.Update()
             DrawScrubberMarks()
-            DrawScrubberMarks()
+            ' DrawScrubberMarks()
         End If
 
 
@@ -126,7 +126,7 @@ Public Class MainForm
             End If
         End If
 
-        'Scrubber.Image = Marks.Bitmap
+        'Scrubber.Image = Marks.Bitmap NEVER add this back.
 
 
 
@@ -1055,7 +1055,7 @@ Public Class MainForm
             Case KeyCycleStartPoint
                 If e.Control Then Exit Sub
                 If e.Shift Then
-                    Media.StartPoint.IncrementState(6)
+                    Media.StartPoint.IncrementState(7)
                 Else
                     Media.StartPoint.IncrementState(2)
                 End If
