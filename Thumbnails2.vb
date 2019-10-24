@@ -4,15 +4,11 @@ Imports System.Threading
 Public Class Thumbnails
 
 
-    Public flp2 As New FlowLayoutPanel With {
-        .BackColor = Color.WhiteSmoke,
-        .Dock = DockStyle.Bottom
-    }
-    Public t As Thread
-    Public Frame As Long = 120
-    Public Event ThumbnailCreated()
+    Public Frame As Long
+    Public Event ThumbnailCreated(i As Short)
     Private Duration As TimeSpan
     Private mList As List(Of String)
+    Private mMsg As String = " Creating thumbnails, please wait..."
     Public Property List() As List(Of String)
         Get
             Return mList
@@ -21,13 +17,14 @@ Public Class Thumbnails
             mList = value
         End Set
     End Property
-    Public ThumbNailSize As Int16
-    Private Sub LoadThumbnails()
+    Public ThumbWidth As Int16
+    Private Function LoadThumbnails() As FlowLayoutPanel
+
         Dim flp As New FlowLayoutPanel With {
             .BackColor = Color.WhiteSmoke,
             .Dock = DockStyle.Fill
         }
-        flp.SendToBack()
+        '        flp.SendToBack()
         flp.Visible = True
         flp.AutoScroll = True
         AddHandler flp.MouseMove, AddressOf flp_Mouseover
@@ -36,11 +33,10 @@ Public Class Thumbnails
         Dim i As Int16 = 0
 
         i = CreateThumb(flp, pics, i)
-        flp2 = flp
-        flp2.Refresh()
-    End Sub
+        Return flp
+    End Function
 
-    Private Function CreateThumb(flp As FlowLayoutPanel, pics() As PictureBox, i As Short) As Short
+    Private Function CreateThumb(ByRef flp As FlowLayoutPanel, pics() As PictureBox, i As Short) As Short
         For Each f In mList
             pics(i) = New PictureBox
             Try
@@ -53,17 +49,17 @@ Public Class Thumbnails
 
                     With pics(i)
 
-                        .Height = ThumbNailSize
+                        .Height = ThumbWidth
                         Select Case typ
                             Case Filetype.Pic
                                 If finfo.Extension = ".gif" Then
                                     .Image = Image.FromFile(f)
 
                                 Else
-                                    .Image = GetThumb(p, .Height, f)
+                                    .Image = GetThumb(PaintArgs, .Height, f)
                                 End If
                             Case Filetype.Movie
-                                .Image = GetThumb(p, .Height, f, True)
+                                .Image = GetThumb(PaintArgs, .Height, f, True)
                         End Select
                         If .Image IsNot Nothing Then
 
@@ -80,13 +76,11 @@ Public Class Thumbnails
                         .Refresh()
                     End With
                 End If
+                RaiseEvent ThumbnailCreated(i)
                 i += 1
             Catch ex As System.InvalidOperationException
                 Continue For
             End Try
-            'RaiseEvent ThumbnailCreated()
-            'Refresh code here
-            'flp.Visible = True
         Next
         Return i
     End Function
@@ -120,14 +114,13 @@ Public Class Thumbnails
         If Movie Then
             Try
                 Dim myCallback As New Image.GetThumbnailImageAbort(AddressOf ThumbnailCallback)
-                '  Dim myBitmap As New Bitmap(f)
-                ' Dim ratio As Single = myBitmap.Height / myBitmap.Width
 
                 Dim VT As New VideoThumbnailer
 
                 VT.Fileref = f
+                VT.ThumbnailHeight = h
+
                 myThumbnail = Image.FromFile(VT.GetThumbnail(f, Frame))
-                'flp2.Refresh()
             Catch ex As Exception
                 'MsgBox(ex.Message)
                 Return Nothing
@@ -140,50 +133,58 @@ Public Class Thumbnails
                 myThumbnail = myBitmap.GetThumbnailImage(h, h * ratio, myCallback, IntPtr.Zero)
                 myBitmap.Dispose()
                 Return myThumbnail
-                e.Graphics.DrawImage(myThumbnail, ThumbNailSize, 75)
+                e.Graphics.DrawImage(myThumbnail, ThumbWidth, CType(ThumbWidth / 2, Single))
             Catch ex As Exception
                 Return Nothing
             End Try
         End If
         Return myThumbnail
-        e.Graphics.DrawImage(myThumbnail, ThumbNailSize, 75)
+        e.Graphics.DrawImage(myThumbnail, ThumbWidth, CType(ThumbWidth / 2, Single))
     End Function
 
-    Private p As PaintEventArgs
+    Private PaintArgs As PaintEventArgs
     Private Sub Thumbnails_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
+        Me.Text = Me.Text & mMsg
         Duration = TimeOperation(True)
-        p = e
+        PaintArgs = e
 
+        OnThumbnailed()
 
-        Loadthumbs()
+        '  Loadthumbs()
 
 
     End Sub
 
     Private Sub Loadthumbs()
 
-        Me.Controls.Add(flp2)
-        t = New Thread(New ThreadStart(Sub() LoadThumbnails()))
-        t.IsBackground = True
-        t.SetApartmentState(ApartmentState.STA)
-
-        t.Start()
-        Timer1.Enabled = True
+        OnThumbnailed()
 
 
     End Sub
+    Private Async Sub OnThumbnailed()
+        If TableLayoutPanel1.GetControlFromPosition(0, 0) Is Nothing Then
+            Dim flp3 As New FlowLayoutPanel
+            flp3 = Await Task.Run(Function() LoadThumbnails())
+            TableLayoutPanel1.Controls.Add(flp3, 0, 0)
+            Duration = TimeOperation(False)
+            Dim dDurStr As String = Duration.Seconds.ToString & "." & Duration.Milliseconds.ToString
+            Me.Text = Me.Text.Replace(mMsg, " (" & dDurStr & "s to thumbnail " & List.Count & " files.)")
+        End If
 
-    Public Sub OnThumbnailCreated() Handles Me.ThumbnailCreated
+    End Sub
+
+    Public Sub OnThumbnailCreated(i As Short) Handles Me.ThumbnailCreated
+
         'flp.Refresh()
     End Sub
 
 
     Public Property ThumbnailHeight() As Int16
         Get
-            Return ThumbNailSize
+            Return ThumbWidth
         End Get
         Set(ByVal value As Int16)
-            ThumbNailSize = value
+            ThumbWidth = value
         End Set
     End Property
 
@@ -193,7 +194,6 @@ Public Class Thumbnails
             Exit Sub
         ElseIf Not t.IsAlive Then
             Duration = TimeOperation(False)
-            Me.Text = Me.Text & " took " & Duration.ToString & " to thumbnail " & List.Count & " files."
             Timer1.Enabled = False
             Me.Refresh()
         End If
@@ -215,5 +215,24 @@ Public Class Thumbnails
         'For Each f In d.GetFiles
         '    f.Delete()
         'Next
+    End Sub
+
+    Private Sub Slider_Scroll(sender As Object, e As EventArgs) Handles Slider.ValueChanged
+        ResizePics(Slider.Value)
+    End Sub
+
+    Private Sub ResizePics(value As Integer)
+        For Each c In TableLayoutPanel1.Controls
+            If TypeOf (c) Is FlowLayoutPanel Then
+                For Each cc In c.controls
+                    If TypeOf (cc) Is PictureBox Then
+                        Dim ratio As Decimal = cc.Height / cc.Width
+                        cc.Height = value * ThumbnailHeight / ((Slider.Minimum + Slider.Maximum) / 2)
+                        cc.Width = value * ThumbnailHeight / (ratio * ((Slider.Minimum + Slider.Maximum) / 2))
+
+                    End If
+                Next
+            End If
+        Next
     End Sub
 End Class

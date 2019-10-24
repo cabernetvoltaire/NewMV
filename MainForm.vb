@@ -1838,9 +1838,10 @@ Public Class MainForm
 
     Private Sub ThumbnailsStart()
         Dim t As New Thumbnails With {
-            .ThumbnailHeight = 75,
-            .Frame = Media.StartPoint.StartPoint
+            .ThumbnailHeight = 150,
+            .Frame = 120
         }
+
         If FocusControl Is lbxFiles Or FocusControl Is lbxShowList Then
             t.List = Duplicatelist(AllfromListbox(FocusControl))
         Else
