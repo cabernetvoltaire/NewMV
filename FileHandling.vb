@@ -85,11 +85,12 @@ Module FileHandling
                     MainForm.UpdatePlayOrder(MainForm.FBH)
                     ReplaceListboxItem(lbx1, ind, f)
                     lbx1.SelectedItem = lbx1.Items(ind)
+                    RefreshListbox(lbx1, files)
                 Case Else
+                    RefreshListbox(lbx1, files)
             End Select
             MSFiles.ResettersOff()
         Next
-        RefreshListbox(lbx1, files)
 
         If lbx1.Items.Count <> 0 Then lbx1.SetSelected(Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0), True)
 

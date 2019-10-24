@@ -72,7 +72,7 @@ Public Class Thumbnails
 
                         AddHandler .MouseEnter, AddressOf pb_Mouseover
 
-                        AddHandler .MouseClick, AddressOf pb_Click
+                        AddHandler .MouseDoubleClick, AddressOf pb_Click
                         .Refresh()
                     End With
                 End If
@@ -97,7 +97,7 @@ Public Class Thumbnails
         'MainForm.tmrPicLoad.Enabled = True
 
     End Sub
-    Private Sub pb_Click(sender As Object, e As EventArgs)
+    Private Sub pb_Click(sender As Object, e As MouseEventArgs)
         If MsgBox("Delete file?", MsgBoxStyle.YesNo, "Metavisua") = MsgBoxResult.Yes Then
             Dim pb = DirectCast(sender, PictureBox)
             pb.Visible = False
@@ -210,12 +210,6 @@ Public Class Thumbnails
         ' Loadthumbs()
     End Sub
 
-    Private Sub Thumbnails_Disposed(sender As Object, e As EventArgs) Handles Me.Disposed
-        'Dim d As New IO.DirectoryInfo("Q:\Thumbs")
-        'For Each f In d.GetFiles
-        '    f.Delete()
-        'Next
-    End Sub
 
     Private Sub Slider_Scroll(sender As Object, e As EventArgs) Handles Slider.ValueChanged
         ResizePics(Slider.Value)
@@ -235,4 +229,6 @@ Public Class Thumbnails
             End If
         Next
     End Sub
+
+
 End Class

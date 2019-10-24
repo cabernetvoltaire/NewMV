@@ -409,7 +409,12 @@ Public Module General
         If Application.OpenForms.Count = 1 Then
             Dim d As New IO.DirectoryInfo("Q:\Thumbs")
             For Each f In d.GetFiles
-                f.Delete()
+                Try
+                    f.Delete()
+
+                Catch ex As Exception
+
+                End Try
             Next
         End If
     End Sub
