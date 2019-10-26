@@ -30,6 +30,7 @@ Partial Class Thumbnails
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
         Me.ProgressBar = New System.Windows.Forms.ProgressBar()
         Me.Slider = New System.Windows.Forms.TrackBar()
+        Me.btnFindDupImages = New System.Windows.Forms.Button()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.FlowLayoutPanel1.SuspendLayout()
         CType(Me.Slider, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -61,6 +62,7 @@ Partial Class Thumbnails
         '
         Me.FlowLayoutPanel1.Controls.Add(Me.ProgressBar)
         Me.FlowLayoutPanel1.Controls.Add(Me.Slider)
+        Me.FlowLayoutPanel1.Controls.Add(Me.btnFindDupImages)
         Me.FlowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.FlowLayoutPanel1.Location = New System.Drawing.Point(3, 810)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
@@ -86,6 +88,15 @@ Partial Class Thumbnails
         Me.Slider.SmallChange = 15
         Me.Slider.TabIndex = 1
         Me.Slider.Value = 180
+        '
+        'btnFindDupImages
+        '
+        Me.btnFindDupImages.Location = New System.Drawing.Point(1044, 3)
+        Me.btnFindDupImages.Name = "btnFindDupImages"
+        Me.btnFindDupImages.Size = New System.Drawing.Size(118, 54)
+        Me.btnFindDupImages.TabIndex = 2
+        Me.btnFindDupImages.Text = "Find &Duplicates"
+        Me.btnFindDupImages.UseVisualStyleBackColor = True
         '
         'Thumbnails
         '
@@ -113,4 +124,5 @@ Partial Class Thumbnails
     Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
     Friend WithEvents ProgressBar As ProgressBar
     Friend WithEvents Slider As TrackBar
+    Friend WithEvents btnFindDupImages As Button
 End Class

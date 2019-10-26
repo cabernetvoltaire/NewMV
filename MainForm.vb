@@ -1349,6 +1349,7 @@ Public Class MainForm
         GlobalInitialise()
 
         Me.Visible = True
+        'HighlightCurrent(Media.MediaPath)
 
     End Sub
     Public Sub ControlSetFocus(control As Control)
@@ -1595,30 +1596,35 @@ Public Class MainForm
             Case < 5
 
                 tbDate.ForeColor = Color.Red
-                tbDate.BackColor = Color.Silver
+                tbDate.BackColor = Me.BackColor
             Case < 6
                 tbDate.ForeColor = Color.Orange
                 tbDate.BackColor = Color.Black
 
             Case < 7
-                tbDate.ForeColor = Color.White
+                tbDate.ForeColor = Color.Yellow
+
                 tbDate.BackColor = Color.Black
             Case < 8
-                tbDate.ForeColor = Color.Green
-                tbDate.BackColor = Color.Silver
+                tbDate.ForeColor = Color.DarkGreen
+                tbDate.BackColor = Me.BackColor
 
             Case < 9
                 tbDate.ForeColor = Color.Blue
+                tbDate.BackColor = Me.BackColor
 
             Case < 10
                 tbDate.ForeColor = Color.Indigo
+                tbDate.BackColor = Me.BackColor
+
             Case < 11
                 tbDate.ForeColor = Color.Violet
+                tbDate.BackColor = Me.BackColor
 
         End Select
-        tbDate.Text = dt.ToShortDateString & " " & dt.ToShortTimeString + " (" + Format(f.Length, "#,0.") + " bytes)"
-        Dim c As Int16 = lbxFiles.SelectedItems.Count
-        Dim sl As Int16 = lbxShowList.SelectedItems.Count
+        tbDate.Text = dt.ToShortDateString & " " & dt.ToShortTimeString + " (" + Format(f.Length, "#,0.") + " bytes) " + Str(Int(f.Length / (128 * Media.Duration))) + " Kps"
+        Dim c As Integer = lbxFiles.SelectedItems.Count
+        Dim sl As Integer = lbxShowList.SelectedItems.Count
         If c > 1 And sl > 1 Then
             tbFiles.Text = "FOLDER:" & listcount & "(" & c & " selected)" & " SHOW:" & showcount & "(" & sl & " selected)"
         ElseIf c > 1 Then
@@ -1840,7 +1846,14 @@ Public Class MainForm
         Dim t As New Thumbnails With {
             .ThumbnailHeight = 150,
             .Frame = 120
-        }
+                    }
+        Dim scr As Screen
+        If blnSecondScreen Then
+            scr = Screen.AllScreens(1)
+        Else
+            scr = Screen.AllScreens(0)
+        End If
+        t.Location = scr.Bounds.Location + New Point(100, 100)
 
         If FocusControl Is lbxFiles Or FocusControl Is lbxShowList Then
             t.List = Duplicatelist(AllfromListbox(FocusControl))
@@ -2481,16 +2494,17 @@ Public Class MainForm
     Private Sub DuplicatesToolStripMenuItem1_Click_1(sender As Object, e As EventArgs) Handles DuplicatesToolStripMenuItem1.Click
         With FindDuplicates
 
-            If PFocus = CtrlFocus.ShowList Then
-                .List = Showlist
+            If FocusControl Is lbxShowList Then
+                .List = LBH.ItemList
             Else
 
-                .List = FileboxContents
+                .List = FBH.ItemList
 
 
             End If
             If .DuplicatesCount > 0 Then
-                .ThumbnailHeight = 100
+                .ThumbnailHeight = 150
+                .SetBounds(-1920, 0, 750, 900)
                 .Show()
             Else
                 MsgBox("No duplicates found.")

@@ -173,9 +173,9 @@ Public Class MediaHandler
 
         End Set
     End Property
-    Public Sub New(value As String)
+    Public Sub New(Nomen As String)
         '      Player = mPlayer
-        Name = value
+        Name = Nomen
         ' PositionUpdater.Interval = 500
         PositionUpdater.Enabled = False
         ResetPosition.Interval = 1000

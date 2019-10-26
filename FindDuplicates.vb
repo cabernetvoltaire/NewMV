@@ -27,7 +27,7 @@ Public Class FindDuplicates
         End Set
     End Property
 
-    Public ReadOnly Property DuplicatesCount() As Int16
+    Public ReadOnly Property DuplicatesCount() As Integer
         Get
             Return mDuplicates.Count
         End Get
@@ -72,7 +72,7 @@ Public Class FindDuplicates
                     Else
                         With r
                             .Height = mThumbnailHeight
-                            .Image = Thumbnails.GetThumb(p, mThumbnailHeight, m)
+                            .Image = Thumbnails.GetThumb(p, mThumbnailHeight, mType, m)
                             If Not .Image Is Nothing Then
                                 If x.Controls.Count > 0 Then
                                     Dim x2 As PictureBox = x.Controls(0)
@@ -99,19 +99,23 @@ Public Class FindDuplicates
                     AddHandler r.MouseMove, AddressOf previewover
                     AddHandler r.Click, AddressOf picdoubleclick
                 Case Filetype.Movie
-                    Dim r As New AxWMPLib.AxWindowsMediaPlayer
-                    r.InitializeLifetimeService()
-                    r.Width = mThumbnailHeight
-                    r.Height = mThumbnailHeight
+                    Dim VT As New VideoThumbnailer With {
+                        .Fileref = m,
+                        .ThumbnailHeight = mThumbnailHeight
+                    }
+                    Dim r As New PictureBox
+                    r.Tag = r.Tag & "(" & New FileInfo(m).Length & " bytes)"
+
+                    r.Image = LoadImage(VT.GetThumbnail(VT.Fileref, 30))
+                    r.Height = r.Image.Height
+                    r.Width = r.Image.Width
                     x.Controls.Add(r)
                     If i = 0 Then x.Controls.Add(New PictureBox)
-
+                    Me.Refresh()
                     r.Tag = m
-                    '    r.Tag = r.Tag & "(" & New FileInfo(m).Length & " bytes)"
-                    '   r.URL = m
                     r.Visible = True
-                    AddHandler r.MouseDownEvent, AddressOf previewover
-                    AddHandler r.DoubleClickEvent, AddressOf picdoubleclick
+                    AddHandler r.MouseMove, AddressOf previewover
+                    AddHandler r.MouseDoubleClick, AddressOf picdoubleclick
             End Select
             i += 1
         Next
@@ -120,22 +124,7 @@ Public Class FindDuplicates
 
 
     End Function
-    Private Function AreSameImage(ByVal I1 As Image, ByVal I2 As Image) As Boolean
-        Dim BM1 As Bitmap = I1
-        Dim BM2 As Bitmap = I2
-        If BM1 Is Nothing Or BM2 Is Nothing Then
-            Return True
-        Else
-            For X = 1 To BM1.Width - 1
-                For y = 1 To BM2.Height - 1
-                    If BM1.GetPixel(X, y) <> BM2.GetPixel(X, y) Then
-                        Return False
-                    End If
-                Next
-            Next
-            Return True
-        End If
-    End Function
+
     Private Function CreateDeleteList() As List(Of String)
         Dim mDeleteList As New List(Of String)
         Dim i As Integer
@@ -177,7 +166,7 @@ Public Class FindDuplicates
         ToolTipDups.SetToolTip(sender, sender.tag)
         Media.MediaPath = sender.tag
         MainForm.lbxFiles.SelectionMode = SelectionMode.One
-        MainForm.tmrPicLoad.Enabled = True
+        '  MainForm.tmrPicLoad.Enabled = True
     End Sub
 
     Private Sub picdoubleclick(sender As Object, e As MouseEventArgs)
@@ -192,7 +181,7 @@ Public Class FindDuplicates
         Next
     End Sub
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.DoubleClick
 
         For Each m In CreateDeleteList()
             ' Dim k = New FileInfo(m)
@@ -209,7 +198,11 @@ Public Class FindDuplicates
         End If
     End Sub
 
-    Private Sub Panel3_Paint(sender As Object, e As PaintEventArgs) Handles Panel3.Paint
+    Private Sub Panel3_Paint(sender As Object, e As PaintEventArgs)
+
+    End Sub
+
+    Private Sub Button1_Click_1(sender As Object, e As EventArgs) Handles Button1.Click
 
     End Sub
 

@@ -1,7 +1,4 @@
-﻿Imports System.ComponentModel
-Imports System.Threading
-
-Public Class Thumbnails
+﻿Public Class Thumbnails
 
 
     Public Frame As Long
@@ -18,6 +15,7 @@ Public Class Thumbnails
         End Set
     End Property
     Public ThumbWidth As Int16
+    Public Pics() As PictureBox
     Private Function LoadThumbnails() As FlowLayoutPanel
 
         Dim flp As New FlowLayoutPanel With {
@@ -41,39 +39,27 @@ Public Class Thumbnails
             pics(i) = New PictureBox
             Try
                 Dim typ As Filetype = FindType(f)
-
-                If typ = Filetype.Pic Or typ = Filetype.Movie Then
+                If typ = Filetype.Pic Or typ = Filetype.Movie Or typ = Filetype.Link Then
                     Dim finfo = New IO.FileInfo(f)
                     flp.Controls.Add(pics(i))
-                    flp.Update()
+                    '    flp.Update()
 
                     With pics(i)
-
                         .Height = ThumbWidth
-                        Select Case typ
-                            Case Filetype.Pic
-                                If finfo.Extension = ".gif" Then
-                                    .Image = Image.FromFile(f)
-
-                                Else
-                                    .Image = GetThumb(PaintArgs, .Height, f)
-                                End If
-                            Case Filetype.Movie
-                                .Image = GetThumb(PaintArgs, .Height, f, True)
-                        End Select
+                        If finfo.Extension = ".gif" Then
+                            .Image = Image.FromFile(f)
+                        Else
+                            .Image = GetThumb(PaintArgs, .Height, f, typ)
+                        End If
                         If .Image IsNot Nothing Then
-
                             .Width = .Image.Width / .Image.Height * .Height
                             .SizeMode = PictureBoxSizeMode.StretchImage
-                        Else
-                            .Image = pics(i).InitialImage
                         End If
                         .Tag = f
 
                         AddHandler .MouseEnter, AddressOf pb_Mouseover
-
                         AddHandler .MouseDoubleClick, AddressOf pb_Click
-                        .Refresh()
+                        '.Refresh()
                     End With
                 End If
                 RaiseEvent ThumbnailCreated(i)
@@ -109,9 +95,23 @@ Public Class Thumbnails
         Return False
     End Function
 
-    Public Function GetThumb(ByVal e As PaintEventArgs, h As Long, f As String, Optional Movie As Boolean = False) As Image
+    Public Function GetThumb(ByVal e As PaintEventArgs, h As Long, f As String, type As Filetype) As Image
         Dim myThumbnail As Image '= myBitmap.GetThumbnailImage(h, h * ratio, myCallback, IntPtr.Zero)
-        If Movie Then
+        If type = Filetype.Movie Or type = Filetype.Link Then
+            Select Case type
+                Case Filetype.Movie
+                Case Filetype.Link
+                    Dim tmpFr As Long = Frame
+                    If InStr(f, "%") <> 0 Then
+                        Dim s As String()
+                        s = f.Split("%")
+                        Frame = Val(s(1))
+                    Else
+                        Frame = tmpFr
+                    End If
+                    f = LinkTarget(f)
+            End Select
+
             Try
                 Dim myCallback As New Image.GetThumbnailImageAbort(AddressOf ThumbnailCallback)
 
@@ -125,6 +125,7 @@ Public Class Thumbnails
                 'MsgBox(ex.Message)
                 Return Nothing
             End Try
+
         Else
             Try
                 Dim myCallback As New Image.GetThumbnailImageAbort(AddressOf ThumbnailCallback)
@@ -161,11 +162,14 @@ Public Class Thumbnails
 
 
     End Sub
+
     Private Async Sub OnThumbnailed()
         If TableLayoutPanel1.GetControlFromPosition(0, 0) Is Nothing Then
             Dim flp3 As New FlowLayoutPanel
             flp3 = Await Task.Run(Function() LoadThumbnails())
+
             TableLayoutPanel1.Controls.Add(flp3, 0, 0)
+
             Duration = TimeOperation(False)
             Dim dDurStr As String = Duration.Seconds.ToString & "." & Duration.Milliseconds.ToString
             Me.Text = Me.Text.Replace(mMsg, " (" & dDurStr & "s to thumbnail " & List.Count & " files.)")
@@ -212,6 +216,11 @@ Public Class Thumbnails
 
 
     Private Sub Slider_Scroll(sender As Object, e As EventArgs) Handles Slider.ValueChanged
+        If List IsNot Nothing Then
+            If List.Count <= 50 Then ResizePics(Slider.Value)
+        End If
+    End Sub
+    Private Sub Slider_MouseUp(sender As Object, e As MouseEventArgs) Handles Slider.MouseUp
         ResizePics(Slider.Value)
     End Sub
 
@@ -228,6 +237,54 @@ Public Class Thumbnails
                 Next
             End If
         Next
+    End Sub
+
+    Private Sub btnFindDupImages_Click(sender As Object, e As EventArgs) Handles btnFindDupImages.Click
+        Dim TestList As New List(Of PictureBox)
+        For Each c In TableLayoutPanel1.GetControlFromPosition(0, 0).Controls
+            If TypeOf (c) Is PictureBox Then
+                TestList.Add(c)
+            End If
+        Next
+        Dim MatchingPics As New List(Of List(Of PictureBox))
+        MatchingPics = PicsWithSameImages(TestList)
+        For Each m In MatchingPics
+            For Each n In m
+                DealWithMatches(n)
+            Next
+        Next
+    End Sub
+
+    Friend Function PicsWithSameImages(ByRef PicList As List(Of PictureBox)) As List(Of List(Of PictureBox))
+        Dim ReturnList As New List(Of List(Of PictureBox))
+        Dim i, j As Integer
+        For i = 0 To PicList.Count - 1
+            Dim CurrentPairs As New List(Of PictureBox)
+            If i < PicList.Count - 1 Then
+
+                For j = i + 1 To PicList.Count - 1
+                    Dim x As Image = PicList(i).Image
+                    Dim y As Image = PicList(j).Image
+                    If AreSameImage(x, y, False) Then
+                        CurrentPairs.Add(PicList(i))
+                        CurrentPairs.Add(PicList(j))
+
+                    End If
+                Next
+                If Not ReturnList.Contains(CurrentPairs) Then
+                    ReturnList.Add(CurrentPairs)
+                End If
+            End If
+        Next
+        Return ReturnList
+    End Function
+    Friend Sub DealWithMatches(x As PictureBox)
+        x.Width = x.Width * 1.5
+        x.Height = x.Height * 1.5
+        Dim flp As FlowLayoutPanel = x.Parent
+        '   flp.Controls.SetChildIndex(y, 0)
+        flp.Controls.SetChildIndex(x, 0)
+
     End Sub
 
 

@@ -808,4 +808,22 @@ Public Module General
         End If
         Return asc
     End Function
+    Friend Function AreSameImage(ByVal I1 As Image, ByVal I2 As Image, Optional EmptyTrue As Boolean = False) As Boolean
+        Dim BM1 As Bitmap = I1
+        Dim BM2 As Bitmap = I2
+        If BM1 Is Nothing Or BM2 Is Nothing Then
+            Return EmptyTrue
+        Else
+
+            For X = 1 To BM1.Width - 1
+                For y = 1 To BM2.Height - 1
+                    If BM1.GetPixel(X, y) <> BM2.GetPixel(X, y) Then
+                        Return False
+                        Exit Function
+                    End If
+                Next
+            Next
+            Return True
+        End If
+    End Function
 End Module
