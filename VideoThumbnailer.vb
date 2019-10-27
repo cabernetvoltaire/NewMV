@@ -26,7 +26,7 @@ Public Class VideoThumbnailer
         ThumbnailProcess(finfo, Filename, Frame, ss)
 
         While (Not p.HasExited)
-            System.Threading.Thread.Sleep(10)
+            Thread.Sleep(10)
         End While
         Return Thumbnail
     End Function
@@ -36,19 +36,12 @@ Public Class VideoThumbnailer
         pInfo.FileName = "C:ffmpeg.exe"
         pInfo.WindowStyle = ProcessWindowStyle.Hidden
 
-        Thumbnail = """Q:\Thumbs\" & ss & "thn.png"""
-        ' Dim s As String = "-ss " & Str(Frame) & " -i """ & Filename & """ -y -an -codec " & finfo.Extension & " -frames:v 1 -f image2 " & Thumbnail
-        Dim size As String = Str(ThumbnailHeight) & ":" & Str(ThumbnailHeight / 2)
-        size = Str(ThumbnailHeight)
-        size.Replace(" ", "")
-        ' Dim s As String = "-ss " & Str(Frame) & " -i """ & Filename & """ -y " & " -frames:v 1 -f image2 -vf scale=" & size & ":force_original_aspect_ratio=increase,crop=" & size & " " & Thumbnail
-        'Dim s As String = "-ss " & Str(30) & " -i """ & Filename & """ -vf scale='200:100' -y " & " -frames:v 1 -f image2 " & " " & Thumbnail
-        Dim s As String = "-ss " & Str(Frame) & " -i """ & Filename & """ -vf scale='192:-1' -y " & " -frames:v 1 -f image2 " & " " & Thumbnail
-        'Dim s As String = "-ss " & Str(Frame) & " -i """ & Filename & """ -y " & " -frames:v 1 -f image2 " & Thumbnail
+        Thumbnail = ThumbnailName(ss)
 
+        '        Dim s As String = "-ss " & Str(Frame) & " -i """ & Filename & """ -vf scale='192:-1' -y " & " -frames:v 1 -f image2 " & " " & Thumbnail
+
+        Dim s As String = "-ss " & Str(Frame) & " -i """ & Filename & """ -vf scale='125:-1' -y " & " -frames:v 1 -f image2 " & " """ & Thumbnail & """"
         pInfo.Arguments = s
-        Thumbnail = "Q:\Thumbs\" & ss & "thn.png"
-
         p = Process.Start(pInfo)
     End Sub
 

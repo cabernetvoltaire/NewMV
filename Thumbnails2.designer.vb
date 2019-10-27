@@ -106,6 +106,7 @@ Partial Class Thumbnails
         Me.AutoSize = True
         Me.ClientSize = New System.Drawing.Size(1780, 897)
         Me.Controls.Add(Me.TableLayoutPanel1)
+        Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(2)
         Me.Name = "Thumbnails"
         Me.Text = "Thumbnails"

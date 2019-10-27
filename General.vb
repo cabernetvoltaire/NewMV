@@ -2,6 +2,7 @@
 Imports System.IO
 Imports System.Drawing.Imaging
 Imports System.Media
+
 Public Module General
     Public Enum ExifOrientations As Byte
         Unknown = 0
@@ -14,6 +15,8 @@ Public Module General
         RightBottom = 7
         LeftBottom = 8
     End Enum
+    Public ThumbDestination As String = "Q:\Thumbs\"
+
     Public VIDEOEXTENSIONS = ".divx.vob.webm.avi.flv.mov.m4p.mpeg.f4v.mpg.m4a.m4v.mkv.mp4.rm.ram.wmv.wav.mp3.3gp"
     Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif"
     Public DirectoriesListFile
@@ -140,26 +143,7 @@ Public Module General
         filename = fparts(0)
         Return filename
     End Function
-    'Public Function GetAllFilesBelow(DirectoryPath As String, ByVal FileList As List(Of String))
-    '    If DirectoryPath.Contains("RECYCLE") Then
-    '        Return FileList
-    '        Exit Function
-    '    End If
-    '    Dim m As New DirectoryInfo(DirectoryPath)
-    '    Try
-    '        For Each k In m.EnumerateDirectories
-    '            FileList = GetAllFilesBelow(k.FullName, FileList)
-    '        Next
 
-    '    Catch ex As System.UnauthorizedAccessException
-    '        Return FileList
-    '        Exit Function
-    '    End Try
-    '    For Each f In m.EnumerateFiles
-    '        FileList.Add(f.FullName)
-    '    Next
-    '    Return FileList
-    'End Function
 
     ''' <summary>
     ''' Returns the path of the link defined in str
@@ -753,15 +737,7 @@ Public Module General
         Next
         Return k
     End Function
-    Private Function Encrypt(ByVal strInput As String, ByVal strKey As String) As String
-        Dim icount As Long
-        Dim lngPtr As Long
-        For icount = 1 To Len(strInput)
-            Mid(strInput, icount, 1) = Chr((Asc(Mid(strInput, icount, 1))) Xor (Asc(Mid(strKey, lngPtr + 1, 1))))
-            lngPtr = ((lngPtr + 1) Mod Len(strKey))
-        Next icount
-        Return strInput
-    End Function
+
     Public Function BookmarkFromLinkName(path As String) As Long
         Dim s() = path.Split("%")
         If s.Length > 2 Then
@@ -814,10 +790,11 @@ Public Module General
         If BM1 Is Nothing Or BM2 Is Nothing Then
             Return EmptyTrue
         Else
-
-            For X = 1 To BM1.Width - 1
-                For y = 1 To BM2.Height - 1
-                    If BM1.GetPixel(X, y) <> BM2.GetPixel(X, y) Then
+            Dim xw As Integer = Math.Min(BM1.Width, BM2.Width)
+            Dim yh As Integer = Math.Min(BM1.Height, BM2.Height)
+            For x = 1 To xw - 1
+                For y = 1 To yh - 1
+                    If BM1.GetPixel(x, y) <> BM2.GetPixel(x, y) Then
                         Return False
                         Exit Function
                     End If
@@ -825,5 +802,12 @@ Public Module General
             Next
             Return True
         End If
+    End Function
+
+    Friend Function ThumbnailName(Filename As String) As String
+        Dim th As String
+        Dim f As New IO.FileInfo(Filename)
+        th = ThumbDestination & f.Name.Replace(".", "") & "thn.png"
+        Return th
     End Function
 End Module

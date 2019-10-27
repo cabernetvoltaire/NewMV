@@ -105,8 +105,8 @@ Public Class FindDuplicates
                     }
                     Dim r As New PictureBox
                     r.Tag = r.Tag & "(" & New FileInfo(m).Length & " bytes)"
-
-                    r.Image = LoadImage(VT.GetThumbnail(VT.Fileref, 30))
+                    Dim thref As String = VT.GetThumbnail(VT.Fileref, 30)
+                    r.Image = LoadImage(thref)
                     r.Height = r.Image.Height
                     r.Width = r.Image.Width
                     x.Controls.Add(r)

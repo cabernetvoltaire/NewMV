@@ -567,54 +567,27 @@ Module FileHandling
     ''' <param name="strSearch"></param>
     ''' <param name="blnRecurse"></param>
     Public Function FindAllFilesBelow(d As DirectoryInfo, list As List(Of String), extensions As String, blnRemove As Boolean, strSearch As String, blnRecurse As Boolean, blnOneOnly As Boolean) As List(Of String)
-        '  MsgBox(CountSubFiles(d.FullName) & " files below")
         Dim x As New List(Of String)
         If strSearch = "" Then strSearch = "*"
+        For Each f In d.EnumerateFiles()
+            If f.FullName.Contains(strSearch) Or strSearch = "*" Then
+                x.Add(f.FullName)
+            End If
+        Next
+
         If blnRecurse Then
-            For Each f In d.EnumerateFiles("*" & strSearch & "*", SearchOption.AllDirectories)
-                x.Add(f.FullName)
+            For Each f In d.EnumerateDirectories("*", SearchOption.AllDirectories)
+                For Each fil In f.EnumerateFiles()
+                    If fil.FullName.Contains(strSearch) Or strSearch = "*" Then
+                        x.Add(fil.FullName)
+                    End If
+                Next
             Next
-        Else
-            x = CType(d.EnumerateFiles(), List(Of String))
-            For Each f In d.EnumerateFiles()
-                x.Add(f.FullName)
-            Next
+
         End If
         Return x
         Exit Function
-        'Static folderpath As String
-        'For Each file In x
-        '    If blnOneOnly Then
-        '        If folderpath = file.DirectoryName Then Continue For
-        '    End If
-        '    ' Application.DoEvents()
-        '    ProgressIncrement(1)
-        '    Try
-        '        If InStr(LCase(extensions), LCase("NOT")) <> 0 Then
-        '            If InStr(extensions, LCase(file.Extension)) = 0 And file.Extension <> "" Then
-        '                'Only include if NOT the given extension
-        '                AddRemove(list, blnRemove, strSearch, file)
-        '            End If
-        '        Else
-        '            If InStr(extensions, LCase(file.Extension)) <> 0 And file.Extension <> "" Then 'File has an extension, and an appropriate one
-        '                AddRemove(list, blnRemove, strSearch, file)
-        '            Else
-        '                If extensions = "" Then
-        '                    AddRemove(list, blnRemove, strSearch, file)
-        '                End If
-        '            End If
-        '        End If
-        '        folderpath = file.DirectoryName
-        '        'Exits each folder when one file has been found matching the condition.
-        '    Catch ex As PathTooLongException
-        '        ReportFault("FindAllFilesBelow", ex.Message)
-        '    End Try
 
-        '    ProgressIncrement(1)
-        'Next
-        'For Each m In x
-        '    list.Add(m.FullName)
-        'Next
     End Function
 
     Private Sub AddRemove(list As List(Of String), blnRemove As Boolean, strSearch As String, file As FileInfo)

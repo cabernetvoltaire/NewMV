@@ -1,6 +1,5 @@
 ﻿Public Class Thumbnails
 
-
     Public Frame As Long
     Public Event ThumbnailCreated(i As Short)
     Private Duration As TimeSpan
@@ -49,11 +48,15 @@
                         If finfo.Extension = ".gif" Then
                             .Image = Image.FromFile(f)
                         Else
+
                             .Image = GetThumb(PaintArgs, .Height, f, typ)
                         End If
                         If .Image IsNot Nothing Then
                             .Width = .Image.Width / .Image.Height * .Height
                             .SizeMode = PictureBoxSizeMode.StretchImage
+                        End If
+                        If typ = Filetype.Link Then
+                            f = LinkTarget(f)
                         End If
                         .Tag = f
 
@@ -97,6 +100,7 @@
 
     Public Function GetThumb(ByVal e As PaintEventArgs, h As Long, f As String, type As Filetype) As Image
         Dim myThumbnail As Image '= myBitmap.GetThumbnailImage(h, h * ratio, myCallback, IntPtr.Zero)
+
         If type = Filetype.Movie Or type = Filetype.Link Then
             Select Case type
                 Case Filetype.Movie
@@ -114,13 +118,17 @@
 
             Try
                 Dim myCallback As New Image.GetThumbnailImageAbort(AddressOf ThumbnailCallback)
-
-                Dim VT As New VideoThumbnailer
-
-                VT.Fileref = f
-                VT.ThumbnailHeight = h
-
-                myThumbnail = Image.FromFile(VT.GetThumbnail(f, Frame))
+                Dim finfo As New IO.FileInfo(ThumbnailName(f))
+                Dim THRef As String
+                If Not finfo.Exists Then
+                    Dim VT As New VideoThumbnailer
+                    VT.Fileref = f
+                    VT.ThumbnailHeight = h
+                    THRef = VT.GetThumbnail(f, Frame)
+                Else
+                    THRef = ThumbnailName(f)
+                End If
+                myThumbnail = Image.FromFile(THRef)
             Catch ex As Exception
                 'MsgBox(ex.Message)
                 Return Nothing
@@ -210,9 +218,6 @@
         MainForm.HandleKeys(sender, e)
     End Sub
 
-    Private Sub Thumbnails_Click(sender As Object, e As EventArgs) Handles Me.Click
-        ' Loadthumbs()
-    End Sub
 
 
     Private Sub Slider_Scroll(sender As Object, e As EventArgs) Handles Slider.ValueChanged
