@@ -1,7 +1,7 @@
 ﻿Imports System.IO
 Imports System.Threading
 Imports MasaSam.Forms.Controls
-Module FileHandling
+Friend Module FileHandling
     Public blnSuppressCreate As Boolean = False
     Public blnChooseOne As Boolean = False
     Public Muted As Boolean = False

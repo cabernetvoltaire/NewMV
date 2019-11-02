@@ -173,7 +173,7 @@ Module ButtonHandling
         Dim d As New DirectoryInfo(strStart)
         For Each di In d.EnumerateDirectories
             If exclude = "" Or InStr(di.Name, exclude) = 0 Then
-                MsgBox(di.Name & "is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###"))
+                'MsgBox(di.Name & "is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###"))
                 dlist.Add(di.Name, di)
             End If
 

@@ -20,7 +20,7 @@ Public Module General
     Public VIDEOEXTENSIONS = ".divx.vob.webm.avi.flv.mov.m4p.mpeg.f4v.mpg.m4a.m4v.mkv.mp4.rm.ram.wmv.wav.mp3.3gp"
     Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif"
     Public DirectoriesListFile
-    Public separate As Boolean = False
+    Public separate As Boolean = True
 
     Public CurrentFolder As String
     Public DirectoriesList As New List(Of String)
@@ -160,7 +160,7 @@ Public Module General
                 Dim x = str
                 str = TryOtherDriveLetters(str)
                 If str = x Then
-                    Report(str & "target not found", 1, False)
+                    'Report(str & "target not found", 1, False)
                 End If
             End If
             Return str
@@ -354,7 +354,31 @@ Public Module General
         MainForm.FillShowbox(MainForm.lbxShowList, 0, s)
         Return s
     End Function
+    Public Sub WriteListToFile(list As List(Of String), filepath As String, Encrypted As Boolean)
+        Dim fs As New StreamWriter(New FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
 
+        For Each m In list
+            If Encrypted Then
+
+                fs.WriteLine(Encrypter.EncryptData(m))
+            Else
+                fs.WriteLine(m)
+            End If
+        Next
+        fs.Close()
+    End Sub
+    Public Sub ReadListfromFile(list As List(Of String), filepath As String, Encrypted As Boolean)
+        Dim fs As New StreamReader(New FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Read))
+        Dim line As String
+        Do While fs.Peek <> -1
+            line = fs.ReadLine
+            If Encrypted Then
+                line = Encrypter.DecryptData(line)
+            End If
+            list.Add(line)
+        Loop
+        fs.Close()
+    End Sub
 
     Private Sub CopyList(list As List(Of String), list2 As SortedList(Of Date, String))
         list.Clear()
@@ -364,6 +388,7 @@ Public Module General
     End Sub
 #End Region
 
+#Region "Debugging functions"
 
     Public Sub ReportFault(routinename As String, msg As String, Optional box As Boolean = True)
         If box Then
@@ -385,11 +410,23 @@ Public Module General
         Next
 
     End Sub
+    Public Sub LabelStartPoint(ByRef MH As MediaHandler)
+        If MH.MediaPath = "" Then Exit Sub
+        Dim s As String = ""
+        Dim sh As StartPointHandler = MH.StartPoint
+        s = s & MH.Name & vbCrLf
+        s = s & MH.MediaPath & vbCrLf
+        s = s & "Duration: " & sh.Duration & vbCrLf & "Percentage:" & sh.Percentage & vbCrLf & " Absolute:" & sh.Absolute & vbCrLf & " Startpoint:" & sh.StartPoint & vbCrLf & " Player:" & Media.Player.Name
+        s = s & vbCrLf & sh.Description
+        Debug.Print(s)
+        MainForm.lblNavigateState.Text = s
+    End Sub
     Public Sub ReportTime(str As String)
         Debug.Print(Int(Now().Second) & "." & Int(Now().Millisecond) & " " & str)
     End Sub
+#End Region
     Public Sub DeleteThumbs()
-
+        Exit Sub
         If Application.OpenForms.Count = 1 Then
             Dim d As New IO.DirectoryInfo("Q:\Thumbs")
             For Each f In d.GetFiles
@@ -401,17 +438,6 @@ Public Module General
                 End Try
             Next
         End If
-    End Sub
-    Public Sub LabelStartPoint(ByRef MH As MediaHandler)
-        If MH.MediaPath = "" Then Exit Sub
-        Dim s As String = ""
-        Dim sh As StartPointHandler = MH.StartPoint
-        s = s & MH.Name & vbCrLf
-        s = s & MH.MediaPath & vbCrLf
-        s = s & "Duration: " & sh.Duration & vbCrLf & "Percentage:" & sh.Percentage & vbCrLf & " Absolute:" & sh.Absolute & vbCrLf & " Startpoint:" & sh.StartPoint & vbCrLf & " Player:" & Media.Player.Name
-        s = s & vbCrLf & sh.Description
-        Debug.Print(s)
-        MainForm.lblNavigateState.Text = s
     End Sub
     Public Function FindType(file As String) As Filetype
         Try
@@ -636,31 +662,7 @@ Public Module General
         lbx.Items.Insert(index, newitem)
 
     End Sub
-    Public Sub WriteListToFile(list As List(Of String), filepath As String, Encrypted As Boolean)
-        Dim fs As New StreamWriter(New FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
 
-        For Each m In list
-            If Encrypted Then
-
-                fs.WriteLine(Encrypter.EncryptData(m))
-            Else
-                fs.WriteLine(m)
-            End If
-        Next
-        fs.Close()
-    End Sub
-    Public Sub ReadListfromFile(list As List(Of String), filepath As String, Encrypted As Boolean)
-        Dim fs As New StreamReader(New FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Read))
-        Dim line As String
-        Do While fs.Peek <> -1
-            line = fs.ReadLine
-            If Encrypted Then
-                line = Encrypter.DecryptData(line)
-            End If
-            list.Add(line)
-        Loop
-        fs.Close()
-    End Sub
     Public Function GetDirSize(RootFolder As String, TotalSize As Long) As Long
         Dim FolderInfo = New IO.DirectoryInfo(RootFolder)
         For Each File In FolderInfo.GetFiles : TotalSize += File.Length
@@ -803,11 +805,34 @@ Public Module General
             Return True
         End If
     End Function
+    Public Function CopyToStandaloneBitmap(ByRef InputImage As Image) As Image
 
+        Dim memory As New MemoryStream()
+        InputImage.Save(memory, Imaging.ImageFormat.Png)
+
+        Return Image.FromStream(memory)
+    End Function
+
+    Public Function InitializeStandaloneImageCopy(ByVal strPathFile As String) As Image
+        Dim finfo As New FileInfo(strPathFile)
+        If strPathFile Is Nothing Then Return Nothing
+        If strPathFile.Length <= 0 Then Return Nothing
+        If Not finfo.Exists Then Return Nothing
+
+        Dim fs As New FileStream(strPathFile, FileMode.Open, FileAccess.Read)
+        Dim img As Image = Image.FromStream(fs)
+        Dim imgClone As Image = CopyToStandaloneBitmap(img)
+        img.Dispose()
+        img = Nothing
+        fs.Close()
+        fs = Nothing
+        Return imgClone
+    End Function
     Friend Function ThumbnailName(Filename As String) As String
         Dim th As String
         Dim f As New IO.FileInfo(Filename)
         th = ThumbDestination & f.Name.Replace(".", "") & "thn.png"
         Return th
     End Function
+
 End Module

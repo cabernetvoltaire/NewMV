@@ -135,7 +135,7 @@ Public Class ButtonForm
         For Each s In btnList
             subs = s.Split("|")
             If subs.Length <> 4 Then
-                'MsgBox("Not a button file")
+                MsgBox("Not a button file")
                 Exit Sub
             Else
                 Dim m As New MVButton

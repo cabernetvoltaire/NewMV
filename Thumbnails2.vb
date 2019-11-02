@@ -81,6 +81,8 @@
         Dim pb = DirectCast(sender, PictureBox)
 
         ToolTip1.SetToolTip(pb, pb.Tag)
+        MainForm.ControlSetFocus(MainForm.lbxFiles)
+        MainForm.Random.OnDirChange = False
         MainForm.HighlightCurrent(pb.Tag)
         MainForm.lbxFiles.SelectionMode = SelectionMode.One
         'MainForm.tmrPicLoad.Enabled = True

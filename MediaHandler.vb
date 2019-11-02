@@ -337,7 +337,7 @@ Public Class MediaHandler
 
     End Sub
 #End Region
-    Public Sub MediaJumpToMarker(Optional ToEnd As Boolean = False)
+    Public Sub MediaJumpToMarker(Optional ToEnd As Boolean = False, Optional ToMarker As Boolean = False)
         'There are markers, so jump to the next one
         If ToEnd Then 'Special Case where jump to end button pressed
             Dim m As New StartPointHandler With {
@@ -352,7 +352,7 @@ Public Class MediaHandler
             Else
                 mPlayPosition = StartPoint.StartPoint
             End If
-        ElseIf mMarkers.Count <> 0 And StartPoint.State = StartPointHandler.StartTypes.FirstMarker Then
+        ElseIf mMarkers.Count <> 0 AndAlso (ToMarker Or StartPoint.State = StartPointHandler.StartTypes.FirstMarker) Then
             StartPoint.Absolute = mMarkers.Item(mlinkcounter)
             mPlayPosition = StartPoint.StartPoint
         ElseIf Speed.PausedPosition <> 0 Then
@@ -413,11 +413,12 @@ Public Class MediaHandler
                 End Try
 
             End If
+            MediaJumpToMarker(ToMarker:=True) 'Jump to a new position
         Else
             mlinkcounter = 0
             GetBookmark()
+            MediaJumpToMarker() 'Jump to a new position
         End If
-        MediaJumpToMarker() 'Jump to a new position
         DisplayerName = mPlayer.Name
     End Sub
     Public Sub HandlePic(path As String)
@@ -518,12 +519,12 @@ Public Class MediaHandler
     ''' Ensures mPlayPosition is always up to date (to within interval)
     ''' </summary>
     Private Sub UpdatePosition() Handles PositionUpdater.Tick
-
+        Exit Sub
         Try
             If Speed.Paused Then
 
             Else
-                mPlayPosition = mPlayer.Ctlcontrols.currentPosition
+                mPlayPosition = mPlayer.Ctlcontrols.currentPosition 'TODO Buggering up startpoint?
                 mDuration = mPlayer.currentMedia.duration
             End If
         Catch ex As Exception
@@ -533,7 +534,7 @@ Public Class MediaHandler
     Private Sub ResetPos() Handles ResetPosition.Tick
         ' PositionUpdater.Enabled = False
         Try
-            ' mPlayer.Ctlcontrols.currentPosition = StartPoint.StartPoint
+            'mPlayer.Ctlcontrols.currentPosition = StartPoint.StartPoint
             MediaJumpToMarker()
         Catch ex As Exception
 
