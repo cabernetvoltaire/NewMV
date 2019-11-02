@@ -111,7 +111,7 @@ Public Class MediaSwapper
         End If
         Select Case MH.MediaType
             Case Filetype.Movie
-                MH.Player.uiMode = "mini"
+                If separate Then MH.Player.uiMode = "mini"
                 MH.Player.Visible = True
                 MH.PlaceResetter(True)
                 RaiseEvent LoadedMedia(MH) 'Currently does nothing.
@@ -210,7 +210,7 @@ Public Class MediaSwapper
         MHX.PlaceResetter(False)
         With MHX.Player
 
-            .uiMode = "Full"
+            If separate Then .uiMode = "Full"
             .Visible = True
             .BringToFront()
             .settings.mute = Muted

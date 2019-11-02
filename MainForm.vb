@@ -99,7 +99,7 @@ Public Class MainForm
         End Select
         ' MSFiles.ListIndex = lbxFiles.SelectedIndex
         MSFiles.SetStartStates(Media.StartPoint)
-
+        'MsgBox(Str(MSFiles.Media1.StartPoint.StartPoint) & " " & Str(MSFiles.Media2.StartPoint.StartPoint) & " " & Str(MSFiles.Media3.StartPoint.StartPoint))
         FullScreen.Changing = False
         cbxStartPoint.SelectedIndex = Media.StartPoint.State
         tbStartpoint.Text = "START:" & Media.StartPoint.Description
