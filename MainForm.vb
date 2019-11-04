@@ -100,7 +100,7 @@ Public Class MainForm
         ' MSFiles.ListIndex = lbxFiles.SelectedIndex
         'Set all MH to have the same StartPoint handler
         MSFiles.SetStartStates(Media.StartPoint)
-        'MsgBox(Str(MSFiles.Media1.StartPoint.StartPoint) & " " & Str(MSFiles.Media2.StartPoint.StartPoint) & " " & Str(MSFiles.Media3.StartPoint.StartPoint))
+
         FullScreen.Changing = False
         cbxStartPoint.SelectedIndex = Media.StartPoint.State
         tbStartpoint.Text = "START:" & Media.StartPoint.Description

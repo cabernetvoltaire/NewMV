@@ -95,7 +95,7 @@
                     mAbsolute = value
                     mPercentage = mAbsolute / mDuration * 100
                     mStartPoint = mAbsolute
-                    RaiseEvent StartPointChanged(Me, Nothing)
+                    '  RaiseEvent StartPointChanged(Me, Nothing)
                 End If
             End If
         End Set
@@ -115,7 +115,7 @@
     Private mStartPoint As Long
     Public ReadOnly Property StartPoint() As Long
         Get
-            'SetStartPoint()
+            '  SetStartPoint()
             Return mStartPoint
         End Get
 
@@ -174,7 +174,7 @@
                 If mStartPoint < mDuration / 2 Then
                     mStartPoint = mDuration * 0.9
                 End If
-            Case StartTypes.ParticularAbsolute
+            Case StartTypes.ParticularAbsolute, StartTypes.FirstMarker
                 mStartPoint = mAbsolute
             Case StartTypes.ParticularPercentage
                 mStartPoint = mPercentage / 100 * mDuration
@@ -192,7 +192,6 @@
         End If
 
         If mStartPoint > mDuration Then MsgBox("Too far")
-        If mStartPoint <> oldstartpoint Then RaiseEvent StartPointChanged(Me, Nothing)
         Return mStartPoint
     End Function
 #End Region

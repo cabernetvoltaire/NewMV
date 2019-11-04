@@ -361,12 +361,12 @@ Public Class MediaHandler
         Else
             mPlayPosition = StartPoint.StartPoint
         End If
-        'If mPlayPosition > mDuration Then
-        '    Report(mPlayPosition & "Over-reach" & mDuration, 0, False)
-        'Else
-        mPlayer.Ctlcontrols.currentPosition = mPlayPosition
-        'Sound.Ctlcontrols.currentPosition = mPlayPosition
-        'End If
+        If mPlayPosition > mDuration Then
+            Report(mPlayPosition & "Over-reach" & mDuration, 0, False)
+        Else
+            mPlayer.Ctlcontrols.currentPosition = mPlayPosition
+            'Sound.Ctlcontrols.currentPosition = mPlayPosition
+        End If
         Report("Start point state is:" & StartPoint.Descriptions(StartPoint.State) & " and has been set to " & StartPoint.StartPoint & "(" & mPlayPosition & ") with a duration of " & StartPoint.Duration, 1)
 
     End Sub
@@ -408,7 +408,7 @@ Public Class MediaHandler
                 End Try
 
             End If
-            '  MediaJumpToMarker(ToMarker:=True) 'Jump to a new position
+            MediaJumpToMarker(ToMarker:=True) 'Jump to a new position
         Else
             mlinkcounter = 0
             GetBookmark()
