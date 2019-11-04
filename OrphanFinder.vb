@@ -34,15 +34,7 @@
     ''' <summary>
     ''' Gets a list of all possible folders to be searched
     ''' </summary>
-    Private mPathList As List(Of String)
-    Public WriteOnly Property PathList(root As String) As List(Of String)
-        Set(ByVal value As List(Of String))
-            If value IsNot mPathList Then
-                GetDirectoriesList(root)
-                mPathList = value
-            End If
-        End Set
-    End Property
+
     ''' <summary>
     ''' Dictionary containing (new parent,link) pairs
     ''' </summary>
@@ -66,26 +58,51 @@
         'for each file in orphanlist
         'change target to all possible directories.
         For Each n In mOrphanList
-            RaiseEvent NewOrphanTesting(Me, Nothing)
+            Dim foundparent As Boolean = False
             Dim filename As String = FilenameFromLink(n)
-            Dim i As Integer = 0
-            Dim max = DirectoriesList.Count
+            Dim aimfile As String = LinkTarget(n)
             Dim newlink = DirectoriesList(0) & "\" & filename
-            While My.Computer.FileSystem.FileExists(newlink) = False And i < max
-                If Len(filename) > 8 Then
-                    newlink = DirectoriesList(i) & "\" & filename
-                End If
-                i += 1
-                'TODO: What about files which occur in multiple places, or different files with the same name?
-            End While
-            If My.Computer.FileSystem.FileExists(newlink) Then
-                If Not mFoundParents.ContainsKey(n) Then
-                    mFoundParents.Add(n, newlink)
-                End If
-            Else
+            If Not mFoundParents.ContainsKey(n) Then
+                ' RaiseEvent NewOrphanTesting(Me, Nothing)
+                Dim i As Integer = 0
+                Dim max = DirectoriesList.Count
+                While Not foundparent
+                    If Len(aimfile) > 8 Then
 
-                Dim s = filename & " was not found anywhere inside the hierarchy " & Rootpath
-                RaiseEvent ParentNotFound(Me, Nothing)
+                        'search sub folders first
+                        Dim finfo As New IO.FileInfo(aimfile)
+                        Try
+                            For Each m In finfo.Directory.EnumerateDirectories
+                                If foundparent Then
+                                    Exit For
+                                Else
+                                    newlink = m.FullName & "\" & finfo.Name
+                                    foundparent = My.Computer.FileSystem.FileExists(newlink)
+
+                                End If
+                            Next
+
+                        Catch ex As Exception
+
+                        End Try
+                    End If
+                End While
+
+                While Not foundparent And i < max
+                    If Len(filename) > 8 Then
+                        newlink = DirectoriesList(i) & "\" & filename
+                        foundparent = My.Computer.FileSystem.FileExists(newlink)
+                    End If
+                    i += 1
+                    'TODO: What about files which occur in multiple places, or different files with the same name?
+                End While
+                If foundparent Then
+                    mFoundParents.Add(n, newlink)
+                Else
+                    Dim s = filename & " was not found anywhere inside the hierarchy " & Rootpath
+                    MsgBox(s)
+                    RaiseEvent ParentNotFound(Me, Nothing)
+                End If
             End If
         Next
         If mFoundParents.Count <> 0 Then

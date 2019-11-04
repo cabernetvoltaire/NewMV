@@ -27,6 +27,8 @@ Public Class MainForm
     Public WithEvents AT As New AutoTrailer
     Public WithEvents X As New OrphanFinder
     Public WithEvents VT As New VideoThumbnailer
+    Public WithEvents FKH As FunctionKeyHandler
+
     ' Public WithEvents Response As New Timer
     Public FocusControl As New Control
     Public DraggedFolder As String
@@ -40,6 +42,7 @@ Public Class MainForm
     Public WithEvents FBH As New FileboxHandler(lbxFiles)
     Public WithEvents LBH As New ListBoxHandler(lbxShowList)
 
+#Region "Event Responders"
     Sub OnThumbnailed(file As String) Handles VT.Thumbnailed
         emblem.ImageLocation = file
         emblem.Load()
@@ -52,115 +55,6 @@ Public Class MainForm
     Public Sub OnParentNotFound(sender As Object, e As EventArgs) Handles X.ParentNotFound, Op.ParentNotFound
         '  lbxReport.Items.Add("Not found")
     End Sub
-    Public Sub RemoveMarker(filepath As String, timecode As Long)
-        Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
-        For Each f In x
-            If BookmarkFromLinkName(f) = timecode Then
-                Dim file As New IO.FileInfo(f)
-                file.Delete()
-            End If
-        Next
-        AllFaveMinder.NewPath(GlobalFavesPath)
-        PopulateLinkList(filepath, Media)
-
-    End Sub
-    Public Sub PopulateLinkList(filepath As String, Media As MediaHandler)
-        If filepath = "" Then Exit Sub
-        ' Media.Markers.Clear()
-        Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
-
-        Dim i = 0
-        If x.Count = 0 Then
-            chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Regular)
-            chbPreviewLinks.Text = "Preview links (None)"
-            Scrubber.BackColor = Color.Aqua
-            If chbPreviewLinks.Checked Then
-                lbxShowList.Items.Clear()
-                ControlSetFocus(lbxFiles)
-            End If
-        Else
-            chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Bold)
-            chbPreviewLinks.Text = "Preview links (" & x.Count & ")"
-            Scrubber.BackColor = Color.HotPink
-            If chbPreviewLinks.Checked Then
-                FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
-            End If
-            Dim markerslist As New List(Of Long)
-            For Each m In x
-
-                Dim n = BookmarkFromLinkName(m)
-                If n > 0 Then
-                    If markerslist.Contains(n) Then
-                    Else
-                        markerslist.Add(n)
-                    End If
-                    i += 1
-                End If
-            Next
-            Media.Markers = markerslist
-            Media.Markers.Sort()
-
-            Scrubber.Update()
-            DrawScrubberMarks()
-            DrawScrubberMarks()
-        End If
-
-
-
-    End Sub
-
-    Public Sub DrawScrubberMarks()
-        If Media.Duration <> 0 Then
-
-
-            Marks.Duration = Media.Duration
-            Marks.Bar = Scrubber
-            Marks.Clear()
-            Marks.Markers = Media.Markers
-            Scrubber.Width = ctrPicAndButtons.Width * ScrubberProportion
-            Scrubber.Left = Scrubber.Width * ((1 - ScrubberProportion) / 2)
-            'Scrubber.Visible = False
-            If Marks.Markers.Count > 0 Then
-                Marks.Create()
-                ' Scrubber.Visible = True
-            End If
-        End If
-
-        'Scrubber.Image = Marks.Bitmap
-
-
-
-    End Sub
-
-    Friend Sub OnFolderMoved(ByVal path As String)
-        '  tvMain2.RefreshTree(tvMain2.SelectedFolder)
-        tvMain2.RemoveNode(path)
-        'Dim dir As New IO.DirectoryInfo(path)
-        'Dir.Delete()
-    End Sub
-
-    Public Sub OnSpeedChange(sender As Object, e As EventArgs) Handles SP.SpeedChanged
-        Dim SH As SpeedHandler = CType(sender, SpeedHandler)
-        If SH.Slideshow Then
-            tbSpeed.Text = "Slide Interval=" & SH.Interval
-        Else
-            tbSpeed.Text = "Speed:" & SH.FrameRate & "fps"
-
-        End If
-    End Sub
-    Public Sub SwitchSound(slow As Boolean)
-        'SndH.Slow = slow
-    End Sub
-
-
-    Public Sub OnRenameFolderStart(sender As Object, e As KeyEventArgs) Handles tvMain2.KeyDown
-        If e.KeyCode = Keys.F2 Then
-            CancelDisplay()
-        End If
-    End Sub
-
-
-
     Public Sub OnRandomChanged() Handles Random.RandomChanged
         FBH.Random = Random
         If Random.All Then
@@ -204,6 +98,7 @@ Public Class MainForm
                 tbxPercentage.Enabled = False
         End Select
         ' MSFiles.ListIndex = lbxFiles.SelectedIndex
+        'Set all MH to have the same StartPoint handler
         MSFiles.SetStartStates(Media.StartPoint)
 
         FullScreen.Changing = False
@@ -257,6 +152,113 @@ Public Class MainForm
         FocusControl.BackColor = MainColor
 
     End Sub
+    Public Sub OnSpeedChange(sender As Object, e As EventArgs) Handles SP.SpeedChanged
+        Dim SH As SpeedHandler = CType(sender, SpeedHandler)
+        If SH.Slideshow Then
+            tbSpeed.Text = "Slide Interval=" & SH.Interval
+        Else
+            tbSpeed.Text = "Speed:" & SH.FrameRate & "fps"
+
+        End If
+    End Sub
+    Public Sub OnRenameFolderStart(sender As Object, e As KeyEventArgs) Handles tvMain2.KeyDown
+        If e.KeyCode = Keys.F2 Then
+            CancelDisplay()
+        End If
+    End Sub
+    Friend Sub OnFolderMoved(ByVal path As String)
+        '  tvMain2.RefreshTree(tvMain2.SelectedFolder)
+        tvMain2.RemoveNode(path)
+        'Dim dir As New IO.DirectoryInfo(path)
+        'Dir.Delete()
+    End Sub
+#End Region
+    Public Sub RemoveMarker(filepath As String, timecode As Long)
+        Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
+        For Each f In x
+            If BookmarkFromLinkName(f) = timecode Then
+                Dim file As New IO.FileInfo(f)
+                file.Delete()
+            End If
+        Next
+        AllFaveMinder.NewPath(GlobalFavesPath)
+        PopulateLinkList(filepath, Media)
+
+    End Sub
+    Public Sub PopulateLinkList(filepath As String, Media As MediaHandler)
+        If filepath = "" Then Exit Sub
+        ' Media.Markers.Clear()
+        Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
+
+        Dim i = 0
+        If x.Count = 0 Then
+            chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Regular)
+            chbPreviewLinks.Text = "Preview links (None)"
+            Scrubber.BackColor = Me.BackColor
+            If chbPreviewLinks.Checked Then
+                lbxShowList.Items.Clear()
+                ControlSetFocus(lbxFiles)
+            End If
+        Else
+            chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Bold)
+            chbPreviewLinks.Text = "Preview links (" & x.Count & ")"
+            Scrubber.BackColor = Color.HotPink
+            If chbPreviewLinks.Checked Then
+                FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
+            End If
+            Dim markerslist As New List(Of Long)
+            For Each m In x
+
+                Dim n = BookmarkFromLinkName(m)
+                If n > 0 Then
+                    If markerslist.Contains(n) Then
+                    Else
+                        markerslist.Add(n)
+                    End If
+                    i += 1
+                End If
+            Next
+            Media.Markers = markerslist
+            Media.Markers.Sort()
+
+            Scrubber.Update()
+            DrawScrubberMarks()
+            DrawScrubberMarks()
+        End If
+
+
+
+    End Sub
+
+    Public Sub DrawScrubberMarks()
+        If Media.Duration <> 0 Then
+
+
+            Marks.Duration = Media.Duration
+            Marks.Bar = Scrubber
+            Marks.Clear()
+            Marks.Markers = Media.Markers
+            Scrubber.Width = ctrPicAndButtons.Width * ScrubberProportion
+            Scrubber.Left = Scrubber.Width * ((1 - ScrubberProportion) / 2)
+            'Scrubber.Visible = False
+            If Marks.Markers.Count > 0 Then
+                Marks.Create()
+                ' Scrubber.Visible = True
+            End If
+        End If
+
+        'Scrubber.Image = Marks.Bitmap NEVER add this back.
+
+
+
+    End Sub
+
+
+    Public Sub SwitchSound(slow As Boolean)
+        'SndH.Slow = slow
+    End Sub
+
+
     ''' <summary>
     ''' Switches between picbox and movie
     ''' </summary>
@@ -267,9 +269,6 @@ Public Class MainForm
         tbState.Text = ""
 
     End Sub
-
-
-
 
     Public Sub OrientPic(img As Image)
         tbZoom.Text = UCase("Orientation -" & Orientation(ImageOrientation(img)))
@@ -415,69 +414,22 @@ Public Class MainForm
             LBH.SetNamed(s)
         Else
             Dim e = New DirectoryInfo(CurrentFolder)
-            FillFileBox(lbxFiles, e, False)
+            FBH.DirectoryPath = e.FullName
+            '            FillFileBox(lbxFiles, e, False)
             FBH.SetNamed(Media.MediaPath)
         End If
 
 
     End Sub
-    Public Sub ReOrderListBox(lbx As ListBox, FilterState As FilterHandler.FilterState, List As List(Of String))
-        lbx.Items.Clear()
-        FillShowbox(lbx, FilterState, List)
-    End Sub
+
 
     Public Sub FillFileBox(lbx As ListBox, Dir As DirectoryInfo, blnRandom As Boolean)
         FBH.Random = Random
         FBH.ListBox = lbx
         FBH.DirectoryPath = Dir.FullName
-
-        Exit Sub
-
-        'If Not Dir.Exists Then Exit Sub
-        'If Dir.Name = "My Computer" Then Exit Sub
-        ''clear listbox
-        'lbx.Items.Clear()
-        'Dim flist = CurrentFileList
-        'If Dir.EnumerateFiles.Count = 0 Then
-        '    If CurrentFilterState.State = FilterHandler.FilterState.LinkOnly Then
-        '        CurrentFilterState.State = FilterHandler.FilterState.All 'Switch back out if come from link only folder
-        '    End If
-        '    lbx.Items.Add("If there is nothing showing here, check your filters")
-        '    Exit Sub
-        'End If
-        'Try
-        '    flist = FilterLBList(Dir, flist)
-        '    flist = SetPlayOrder(PlayOrder.State, flist)
-
-        '    ' MainForm.FNG.Filenames = flist
-        '    ReOrderListBox(lbx, CurrentFilterState.State, flist)
-
-        '    lbx.Tag = Dir
-
-        '    If lbx.Items.Count <> 0 Then
-        '        If blnRandom Then
-        '            Dim s As Long = lbx.Items.Count - 1
-        '            lbx.SelectedIndex = Rnd() * s
-        '        Else
-        '            If lbx.FindString(Media.MediaPath) = -1 Then
-        '                lbx.SelectedItem = lbx.FindString(Media.LinkPath)
-        '            Else
-        '                lbx.SelectedItem = lbx.FindString(Media.MediaPath)
-        '            End If
-        '            If lbx.SelectedItem Is Nothing Then
-        '                lbx.SelectedIndex = 0 'PUt to beginning
-        '            End If
-        '        End If
-        '    End If
-        'Catch ex As IOException
-        '    Exit Try
-        'End Try
-
     End Sub
 
-    'Private Function SpeedChange(e As KeyEventArgs, blnTrue As Boolean)
-    '   SetMotion(e.KeyCode) 'Alternative speed. Doesn't work at the moment. 
-    'End Function
+
     Private Function SpeedChange(e As KeyEventArgs) As KeyEventArgs
 
         Dim blnPlaying As Boolean = Media.MediaType = Filetype.Movie
@@ -787,6 +739,7 @@ Public Class MainForm
     End Function
 
     Public Sub HandleKeys(sender As Object, e As KeyEventArgs)
+
         Me.Cursor = Cursors.WaitCursor
         'MsgBox(e.KeyCode.ToString)
         Dim nke As New Keys
@@ -838,7 +791,7 @@ Public Class MainForm
             Case KeyTraverseTree, KeyTraverseTreeBack
                 '   If FocusControl IsNot tvMain2 Then
                 tvMain2.Traverse(e.KeyCode = KeyTraverseTreeBack)
-                    e.SuppressKeyPress = True
+                e.SuppressKeyPress = True
               '  End If
 
             Case Keys.Left, Keys.Right, Keys.Up, Keys.Down
@@ -952,7 +905,7 @@ Public Class MainForm
 
             Case KeyJumpToPoint
 
-                Media.MediaJumpToMarker(True)
+                Media.MediaJumpToMarker(ToEnd:=True)
                 e.SuppressKeyPress = True
             Case KeyJumpToMark, LKeyMarkPoint
                 'Addmarker(Media.MediaPath)
@@ -965,7 +918,7 @@ Public Class MainForm
                         '     Media.LinkCounter = Media.FindNearestCounter(e.Modifiers = Keys.Control)
                     End If
                     Media.Bookmark = -2
-                    Media.MediaJumpToMarker()
+                    Media.MediaJumpToMarker(ToMarker:=True)
 
                 Else
                     MediaLargeJump(e, e.Modifiers = Keys.Control, True)
@@ -1013,7 +966,7 @@ Public Class MainForm
                     If Media.MediaType = Filetype.Movie Then Media.LoopMovie = Not Media.LoopMovie
                 Else
                     RotatePic(currentPicBox, True)
-
+                    Media.HandlePic(Media.MediaPath)
                 End If
 #End Region
 #Region "States"
@@ -1055,7 +1008,7 @@ Public Class MainForm
             Case KeyCycleStartPoint
                 If e.Control Then Exit Sub
                 If e.Shift Then
-                    Media.StartPoint.IncrementState(6)
+                    Media.StartPoint.IncrementState(7)
                 Else
                     Media.StartPoint.IncrementState(2)
                 End If
@@ -1349,12 +1302,16 @@ Public Class MainForm
         GlobalInitialise()
 
         Me.Visible = True
+        'HighlightCurrent(Media.MediaPath)
 
     End Sub
     Public Sub ControlSetFocus(control As Control)
         ' Set focus to the control, if it can receive focus.
         'Exit Sub
-        FocusControl = control
+        If control Is tvMain2 Then
+        Else
+            FocusControl = control
+        End If
         If control.CanFocus Then
             control.Focus()
         End If
@@ -1400,8 +1357,9 @@ Public Class MainForm
         e.SuppressKeyPress = True
 
     End Sub
-    Private Sub frmMain_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
+    Private Sub frmMain_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
 
+        DeleteThumbs()
         PreferencesSave()
         Application.Exit()
     End Sub
@@ -1469,18 +1427,23 @@ Public Class MainForm
                 .RotateFlip(RotateFlipType.Rotate90FlipNone)
             Else
                 .RotateFlip(RotateFlipType.Rotate270FlipNone)
-
             End If
             currentPicBox.Refresh()
+
             Dim finfo As New FileInfo(Media.MediaPath)
             Dim dt As New Date
             'avoid the updating of the write time
             dt = finfo.LastWriteTime
-            Dim b As Bitmap = currentPicBox.Image
+            Dim bt As Bitmap = currentPicBox.Image
+            Dim b As Image = bt.Clone
 
+
+            ' Dim b As Bitmap = InitializeStandaloneImageCopy(Media.MediaPath)
+            currentPicBox.Image.Dispose()
+            finfo.Delete()
             b.Save(Media.MediaPath)
             finfo.LastWriteTime = dt
-
+            '  currentPicBox.ImageLocation = Media.MediaPath
         End With
     End Sub
     Private Function StringList(List As List(Of String), strSearch As String) As List(Of String)
@@ -1594,30 +1557,35 @@ Public Class MainForm
             Case < 5
 
                 tbDate.ForeColor = Color.Red
-                tbDate.BackColor = Color.Silver
+                tbDate.BackColor = Me.BackColor
             Case < 6
                 tbDate.ForeColor = Color.Orange
                 tbDate.BackColor = Color.Black
 
             Case < 7
-                tbDate.ForeColor = Color.White
+                tbDate.ForeColor = Color.Yellow
+
                 tbDate.BackColor = Color.Black
             Case < 8
-                tbDate.ForeColor = Color.Green
-                tbDate.BackColor = Color.Silver
+                tbDate.ForeColor = Color.DarkGreen
+                tbDate.BackColor = Me.BackColor
 
             Case < 9
                 tbDate.ForeColor = Color.Blue
+                tbDate.BackColor = Me.BackColor
 
             Case < 10
                 tbDate.ForeColor = Color.Indigo
+                tbDate.BackColor = Me.BackColor
+
             Case < 11
                 tbDate.ForeColor = Color.Violet
+                tbDate.BackColor = Me.BackColor
 
         End Select
-        tbDate.Text = dt.ToShortDateString & " " & dt.ToShortTimeString + " (" + Format(f.Length, "#,0.") + " bytes)"
-        Dim c As Int16 = lbxFiles.SelectedItems.Count
-        Dim sl As Int16 = lbxShowList.SelectedItems.Count
+        tbDate.Text = dt.ToShortDateString & " " & dt.ToShortTimeString + " (" + Format(f.Length, "#,0.") + " bytes) " + Str(Int(f.Length / (128 * Media.Duration))) + " Kps"
+        Dim c As Integer = lbxFiles.SelectedItems.Count
+        Dim sl As Integer = lbxShowList.SelectedItems.Count
         If c > 1 And sl > 1 Then
             tbFiles.Text = "FOLDER:" & listcount & "(" & c & " selected)" & " SHOW:" & showcount & "(" & sl & " selected)"
         ElseIf c > 1 Then
@@ -1676,9 +1644,7 @@ Public Class MainForm
         Return s
     End Function
 
-    Private Sub ToolStripButton14_Click_1(sender As Object, e As EventArgs)
-        DeleteShowListFiles()
-    End Sub
+
 
     Private Sub DeleteShowListFiles()
         If MsgBox("This deletes all files in showlist. Sure?", MsgBoxStyle.YesNoCancel) = MsgBoxResult.Yes Then
@@ -1694,6 +1660,81 @@ Public Class MainForm
     Private Sub LinearToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LinearToolStripMenuItem.Click
         AssignLinear(CurrentFolder, iCurrentAlpha, True)
     End Sub
+    Public Sub HandleFunctionKeyDown(sender As Object, e As KeyEventArgs)
+
+        Dim i As Byte = e.KeyCode - Keys.F5
+        Dim s As StateHandler.StateOptions = NavigateMoveState.State
+        '  CancelDisplay() 'Need to cancel display to prevent 'already in use' problems when moving files or deleting them. 
+        If (e.Shift And e.Control And e.Alt) Or strVisibleButtons(i) = "" Then
+            'Assign button
+            AssignButton(i, iCurrentAlpha, 1, CurrentFolder, True) 'Just assign in all modes when all three control buttons held
+            'Always update the button file. 
+            If My.Computer.FileSystem.FileExists(ButtonFilePath) Then
+                KeyAssignmentsStore(ButtonFilePath)
+            Else
+                SaveButtonlist()
+            End If
+            Exit Sub
+        End If
+        If s <> StateHandler.StateOptions.Navigate Then
+            'Non navigate behaviour
+
+            If e.Control And e.Shift Then
+                'Jump to folder
+                If strVisibleButtons(i) <> CurrentFolder Then
+                    ChangeFolder(strVisibleButtons(i))
+                    tvMain2.SelectedFolder = CurrentFolder
+                ElseIf Random.OnDirChange Then
+                    AdvanceFile(True, True) 'TODO: Whaat?
+                End If
+            ElseIf e.Shift Then
+                MovingFolder(tvMain2.SelectedFolder, strVisibleButtons(i))
+            Else
+
+                If lbxShowList.Visible Then
+                    MoveFiles(ListfromSelectedInListbox(lbxShowList), strVisibleButtons(i), lbxShowList)
+                Else
+                    MoveFiles(ListfromSelectedInListbox(lbxFiles), strVisibleButtons(i), lbxFiles)
+                End If
+            End If
+        Else
+            'Navigate behaviour
+            If e.Shift And e.Control And strVisibleButtons(i) <> "" Then
+                MovingFolder(tvMain2.SelectedFolder, strVisibleButtons(i))
+
+            ElseIf e.Shift Then
+                MoveFiles(ListfromSelectedInListbox(lbxFiles), strVisibleButtons(i), lbxFiles)
+            Else
+                'SWITCH folder
+                If strVisibleButtons(i) <> CurrentFolder Then
+                    ChangeFolder(strVisibleButtons(i))
+                    'CancelDisplay()
+                    tvMain2.SelectedFolder = strVisibleButtons(i)
+
+                ElseIf Random.OnDirChange Then
+                    AdvanceFile(True, True)
+
+                End If
+            End If
+        End If
+
+        SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
+
+    End Sub
+
+    Private Sub MovingFolder(Source As String, Dest As String)
+        T = New Thread(New ThreadStart(Sub() MoveFolder(Source, Dest))) With {
+            .IsBackground = True
+        }
+        T.SetApartmentState(ApartmentState.STA)
+
+        T.Start()
+
+        OnFolderMoved(Source)
+
+    End Sub
+
+
 
     Private Sub DeleteEmptyFoldersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteEmptyFoldersToolStripMenuItem.Click
         'If Not MsgBox("This deletes all empty directories", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
@@ -1717,7 +1758,8 @@ Public Class MainForm
         Dim di As New DirectoryInfo(CurrentFolder)
         HarvestFolder(di, True, False)
         DeleteEmptyFolders(di, True)
-        FillFileBox(lbxFiles, di, False)
+        FBH.DirectoryPath = di.FullName
+        '        FillFileBox(lbxFiles, di, False)
         FBH.SetFirst()
         SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
         'SetControlColours(blnMoveMode)
@@ -1837,8 +1879,19 @@ Public Class MainForm
 
     Private Sub ThumbnailsStart()
         Dim t As New Thumbnails With {
-            .ThumbnailHeight = 150
-        }
+            .ThumbnailHeight = 150,
+            .Frame = 120
+                    }
+        Dim scr As Screen
+        If blnSecondScreen Then
+            scr = Screen.AllScreens(1)
+        Else
+            scr = Screen.AllScreens(0)
+        End If
+        t.Location = scr.Bounds.Location + New Point(100, 100)
+        t.Left = scr.Bounds.Left
+        t.Top = scr.Bounds.Top
+
         If FocusControl Is lbxFiles Or FocusControl Is lbxShowList Then
             t.List = Duplicatelist(AllfromListbox(FocusControl))
         Else
@@ -1848,7 +1901,8 @@ Public Class MainForm
 
         't.LayoutPanel = Thumbnails.FlowLayoutPanel1
         t.Text = CurrentFolder
-        t.SetBounds(0, 0, 750, 900)
+
+        't.SetBounds(-1920, 0, 750, 900)
         t.Show()
 
     End Sub
@@ -1925,6 +1979,7 @@ Public Class MainForm
 
     Private Sub DeadLinksSelect()
         Dim s As New List(Of String)
+
         Dim lbx As ListBox = CType(FocusControl, ListBox)
         SelectDeadLinks(lbx)
         UpdateFileInfo()
@@ -2142,80 +2197,6 @@ Public Class MainForm
         PictureFunctions.MouseMove(sender, e)
     End Sub
 
-    Public Sub HandleFunctionKeyDown(sender As Object, e As KeyEventArgs)
-        Dim i As Byte = e.KeyCode - Keys.F5
-        Dim s As StateHandler.StateOptions = NavigateMoveState.State
-        '  CancelDisplay() 'Need to cancel display to prevent 'already in use' problems when moving files or deleting them. 
-        If (e.Shift And e.Control And e.Alt) Or strVisibleButtons(i) = "" Then
-            'Assign button
-            AssignButton(i, iCurrentAlpha, 1, CurrentFolder, True) 'Just assign in all modes when all three control buttons held
-            'Always update the button file. 
-            If My.Computer.FileSystem.FileExists(ButtonFilePath) Then
-                KeyAssignmentsStore(ButtonFilePath)
-            Else
-                SaveButtonlist()
-            End If
-            Exit Sub
-        End If
-        If s <> StateHandler.StateOptions.Navigate Then
-            'Non navigate behaviour
-
-            If e.Control And e.Shift Then
-                'Jump to folder
-                If strVisibleButtons(i) <> CurrentFolder Then
-                    ChangeFolder(strVisibleButtons(i))
-                    tvMain2.SelectedFolder = CurrentFolder
-                ElseIf Random.OnDirChange Then
-                    AdvanceFile(True, True) 'TODO: Whaat?
-                End If
-            ElseIf e.Shift Then
-                MovingFolder(tvMain2.SelectedFolder, strVisibleButtons(i))
-            Else
-
-                If lbxShowList.Visible Then
-                    MoveFiles(ListfromSelectedInListbox(lbxShowList), strVisibleButtons(i), lbxShowList)
-                Else
-                    MoveFiles(ListfromSelectedInListbox(lbxFiles), strVisibleButtons(i), lbxFiles)
-                End If
-            End If
-        Else
-            'Navigate behaviour
-            If e.Shift And e.Control And strVisibleButtons(i) <> "" Then
-                MovingFolder(tvMain2.SelectedFolder, strVisibleButtons(i))
-
-            ElseIf e.Shift Then
-                MoveFiles(ListfromSelectedInListbox(lbxFiles), strVisibleButtons(i), lbxFiles)
-            Else
-                'SWITCH folder
-                If strVisibleButtons(i) <> CurrentFolder Then
-                    ChangeFolder(strVisibleButtons(i))
-                    'CancelDisplay()
-                    tvMain2.SelectedFolder = strVisibleButtons(i)
-
-                ElseIf Random.OnDirChange Then
-                    AdvanceFile(True, True)
-
-                End If
-            End If
-        End If
-
-        SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
-
-    End Sub
-
-    Private Sub MovingFolder(Source As String, Dest As String)
-        T = New Thread(New ThreadStart(Sub() MoveFolder(Source, Dest))) With {
-            .IsBackground = True
-        }
-        T.SetApartmentState(ApartmentState.STA)
-
-        T.Start()
-
-        OnFolderMoved(Source)
-
-    End Sub
-
-
 
     Private Sub frmMain_MouseDown(sender As Object, e As MouseEventArgs) Handles PictureBox1.MouseDown, PictureBox2.MouseDown, PictureBox3.MouseDown
         Select Case e.Button
@@ -2302,7 +2283,17 @@ Public Class MainForm
         s = ListfromSelectedInListbox(CType(FocusControl, ListBox))
         X.OrphanList = s
         ProgressBarOn(s.Count)
-        X.FindOrphans()
+        T = New Thread(New ThreadStart(Sub() X.FindOrphans())) With {
+            .IsBackground = True
+        }
+        T.SetApartmentState(ApartmentState.STA)
+
+        T.Start()
+        lbxFiles.SelectionMode = SelectionMode.One
+        'While T.IsAlive
+        '    ProgressIncrement(1)
+        'End While
+        '        X.FindOrphans()
         ProgressBarOff()
         UpdatePlayOrder(FBH)
     End Sub
@@ -2336,8 +2327,8 @@ Public Class MainForm
         tbxAbsolute.Text = New TimeSpan(0, 0, tbAbsolute.Value).ToString("hh\:mm\:ss")
         tbxPercentage.Text = Str(Media.StartPoint.Percentage) & "%"
         tbPercentage.Value = Media.StartPoint.Percentage
-        Media.MediaJumpToMarker()
         MSFiles.SetStartpoints(Media.StartPoint)
+        Media.MediaJumpToMarker()
     End Sub
 
     Private Sub tbPercentage_MouseUp(sender As Object, e As MouseEventArgs) Handles tbPercentage.MouseUp
@@ -2347,8 +2338,8 @@ Public Class MainForm
         tbxPercentage.Text = Str(Media.StartPoint.Percentage) & "%"
         tbPercentage.Value = Media.StartPoint.Percentage
 
-        Media.MediaJumpToMarker()
         MSFiles.SetStartpoints(Media.StartPoint)
+        Media.MediaJumpToMarker()
 
     End Sub
 
@@ -2477,16 +2468,17 @@ Public Class MainForm
     Private Sub DuplicatesToolStripMenuItem1_Click_1(sender As Object, e As EventArgs) Handles DuplicatesToolStripMenuItem1.Click
         With FindDuplicates
 
-            If PFocus = CtrlFocus.ShowList Then
-                .List = Showlist
+            If FocusControl Is lbxShowList Then
+                .List = LBH.ItemList
             Else
 
-                .List = FileboxContents
+                .List = FBH.ItemList
 
 
             End If
             If .DuplicatesCount > 0 Then
-                .ThumbnailHeight = 100
+                .ThumbnailHeight = 150
+                .SetBounds(-1920, 0, 750, 900)
                 .Show()
             Else
                 MsgBox("No duplicates found.")
@@ -2694,4 +2686,24 @@ Public Class MainForm
 
         'MsgBox("Uh-og")
     End Sub
+
+    Private Sub chbSeparate_CheckedChanged(sender As Object, e As EventArgs) Handles chbSeparate.CheckedChanged
+        separate = chbSeparate.Checked
+
+
+        If separate Then
+            MainWMP1.Dock = DockStyle.None
+            MainWMP2.Dock = DockStyle.None
+            MainWMP3.Dock = DockStyle.None
+            MainWMP1.SetBounds(0, 0, 600, 400)
+            MainWMP2.SetBounds(650, 0, 600, 400)
+            MainWMP3.SetBounds(250, 480, 600, 400)
+        Else
+            MainWMP1.Dock = DockStyle.Fill
+            MainWMP2.Dock = DockStyle.Fill
+            MainWMP3.Dock = DockStyle.Fill
+
+        End If
+    End Sub
+
 End Class

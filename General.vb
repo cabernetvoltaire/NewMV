@@ -2,6 +2,8 @@
 Imports System.IO
 Imports System.Drawing.Imaging
 Imports System.Media
+Imports System.Threading
+
 Public Module General
     Public Enum ExifOrientations As Byte
         Unknown = 0
@@ -14,11 +16,13 @@ Public Module General
         RightBottom = 7
         LeftBottom = 8
     End Enum
+    Public ThumbDestination As String = "Q:\Thumbs\"
+
     Public VIDEOEXTENSIONS = ".divx.vob.webm.avi.flv.mov.m4p.mpeg.f4v.mpg.m4a.m4v.mkv.mp4.rm.ram.wmv.wav.mp3.3gp"
     Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif"
     Public DirectoriesListFile
     Public separate As Boolean = False
-
+    Public t As Threading.Thread
     Public CurrentFolder As String
     Public DirectoriesList As New List(Of String)
     Public Rootpath As String = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
@@ -140,26 +144,7 @@ Public Module General
         filename = fparts(0)
         Return filename
     End Function
-    'Public Function GetAllFilesBelow(DirectoryPath As String, ByVal FileList As List(Of String))
-    '    If DirectoryPath.Contains("RECYCLE") Then
-    '        Return FileList
-    '        Exit Function
-    '    End If
-    '    Dim m As New DirectoryInfo(DirectoryPath)
-    '    Try
-    '        For Each k In m.EnumerateDirectories
-    '            FileList = GetAllFilesBelow(k.FullName, FileList)
-    '        Next
 
-    '    Catch ex As System.UnauthorizedAccessException
-    '        Return FileList
-    '        Exit Function
-    '    End Try
-    '    For Each f In m.EnumerateFiles
-    '        FileList.Add(f.FullName)
-    '    Next
-    '    Return FileList
-    'End Function
 
     ''' <summary>
     ''' Returns the path of the link defined in str
@@ -176,7 +161,7 @@ Public Module General
                 Dim x = str
                 str = TryOtherDriveLetters(str)
                 If str = x Then
-                    Report(str & "target not found", 1, False)
+                    'Report(str & "target not found", 1, False)
                 End If
             End If
             Return str
@@ -193,18 +178,28 @@ Public Module General
         If Not Force AndAlso pathfile.Exists Then
             ReadListfromFile(list, DirectoriesListFile, Encrypted)
         Else
-            Try
-                Dim root As New IO.DirectoryInfo(path)
-                For Each m In root.GetDirectories("*", SearchOption.AllDirectories)
-                    list.Add(m.FullName)
-                Next
-            Catch ex As Exception
-
-            End Try
+            t = New Thread(New ThreadStart(Sub() DirectoriesLister(path, list)))
+            t.IsBackground = True
+            t.SetApartmentState(ApartmentState.STA)
+            t.Start()
+            While t.IsAlive
+                Thread.Sleep(100)
+            End While
             WriteListToFile(list, DirectoriesListFile, Encrypted)
         End If
         Return list
     End Function
+
+    Private Sub DirectoriesLister(path As String, list As List(Of String))
+        Try
+            Dim root As New IO.DirectoryInfo(path)
+            For Each m In root.GetDirectories("*", SearchOption.AllDirectories)
+                list.Add(m.FullName)
+            Next
+        Catch ex As Exception
+
+        End Try
+    End Sub
 
     Public Sub FolderChooser(Message As String, DefaultFolderName As String)
         Dim x As New FolderSelect
@@ -221,12 +216,15 @@ Public Module General
 
     Public Function TryOtherDriveLetters(str As String) As String
         Dim original = str
-
+        Dim m As New List(Of DriveInfo)
+        For Each x In IO.DriveInfo.GetDrives
+            m.Add(x)
+        Next
         If Len(str) <> 0 Then
-            Dim driveletter As String = "A"
-            For i = Asc("A") To Asc("Z")
-                driveletter = Chr(i)
-                str = str.Replace(Left(str, 2), driveletter & ":")
+            For Each drive In m
+
+                Dim driveletter As String = drive.Name
+                str = str.Replace(Left(str, 3), driveletter)
                 If My.Computer.FileSystem.FileExists(str) Then
                     Return str
                     Exit Function
@@ -370,7 +368,31 @@ Public Module General
         MainForm.FillShowbox(MainForm.lbxShowList, 0, s)
         Return s
     End Function
+    Public Sub WriteListToFile(list As List(Of String), filepath As String, Encrypted As Boolean)
+        Dim fs As New StreamWriter(New FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
 
+        For Each m In list
+            If Encrypted Then
+
+                fs.WriteLine(Encrypter.EncryptData(m))
+            Else
+                fs.WriteLine(m)
+            End If
+        Next
+        fs.Close()
+    End Sub
+    Public Sub ReadListfromFile(list As List(Of String), filepath As String, Encrypted As Boolean)
+        Dim fs As New StreamReader(New FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Read))
+        Dim line As String
+        Do While fs.Peek <> -1
+            line = fs.ReadLine
+            If Encrypted Then
+                line = Encrypter.DecryptData(line)
+            End If
+            list.Add(line)
+        Loop
+        fs.Close()
+    End Sub
 
     Private Sub CopyList(list As List(Of String), list2 As SortedList(Of Date, String))
         list.Clear()
@@ -380,6 +402,7 @@ Public Module General
     End Sub
 #End Region
 
+#Region "Debugging functions"
 
     Public Sub ReportFault(routinename As String, msg As String, Optional box As Boolean = True)
         If box Then
@@ -401,9 +424,6 @@ Public Module General
         Next
 
     End Sub
-    Public Sub ReportTime(str As String)
-        Debug.Print(Int(Now().Second) & "." & Int(Now().Millisecond) & " " & str)
-    End Sub
     Public Sub LabelStartPoint(ByRef MH As MediaHandler)
         If MH.MediaPath = "" Then Exit Sub
         Dim s As String = ""
@@ -414,6 +434,24 @@ Public Module General
         s = s & vbCrLf & sh.Description
         Debug.Print(s)
         MainForm.lblNavigateState.Text = s
+    End Sub
+    Public Sub ReportTime(str As String)
+        Debug.Print(Int(Now().Second) & "." & Int(Now().Millisecond) & " " & str)
+    End Sub
+#End Region
+    Public Sub DeleteThumbs()
+        Exit Sub
+        If Application.OpenForms.Count = 1 Then
+            Dim d As New IO.DirectoryInfo("Q:\Thumbs")
+            For Each f In d.GetFiles
+                Try
+                    f.Delete()
+
+                Catch ex As Exception
+
+                End Try
+            Next
+        End If
     End Sub
     Public Function FindType(file As String) As Filetype
         Try
@@ -638,31 +676,7 @@ Public Module General
         lbx.Items.Insert(index, newitem)
 
     End Sub
-    Public Sub WriteListToFile(list As List(Of String), filepath As String, Encrypted As Boolean)
-        Dim fs As New StreamWriter(New FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
 
-        For Each m In list
-            If Encrypted Then
-
-                fs.WriteLine(Encrypter.EncryptData(m))
-            Else
-                fs.WriteLine(m)
-            End If
-        Next
-        fs.Close()
-    End Sub
-    Public Sub ReadListfromFile(list As List(Of String), filepath As String, Encrypted As Boolean)
-        Dim fs As New StreamReader(New FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Read))
-        Dim line As String
-        Do While fs.Peek <> -1
-            line = fs.ReadLine
-            If Encrypted Then
-                line = Encrypter.DecryptData(line)
-            End If
-            list.Add(line)
-        Loop
-        fs.Close()
-    End Sub
     Public Function GetDirSize(RootFolder As String, TotalSize As Long) As Long
         Dim FolderInfo = New IO.DirectoryInfo(RootFolder)
         For Each File In FolderInfo.GetFiles : TotalSize += File.Length
@@ -739,15 +753,7 @@ Public Module General
         Next
         Return k
     End Function
-    Private Function Encrypt(ByVal strInput As String, ByVal strKey As String) As String
-        Dim icount As Long
-        Dim lngPtr As Long
-        For icount = 1 To Len(strInput)
-            Mid(strInput, icount, 1) = Chr((Asc(Mid(strInput, icount, 1))) Xor (Asc(Mid(strKey, lngPtr + 1, 1))))
-            lngPtr = ((lngPtr + 1) Mod Len(strKey))
-        Next icount
-        Return strInput
-    End Function
+
     Public Function BookmarkFromLinkName(path As String) As Long
         Dim s() = path.Split("%")
         If s.Length > 2 Then
@@ -794,4 +800,31 @@ Public Module General
         End If
         Return asc
     End Function
+    Friend Function AreSameImage(ByVal I1 As Image, ByVal I2 As Image, Optional EmptyTrue As Boolean = False) As Boolean
+        Dim BM1 As Bitmap = I1
+        Dim BM2 As Bitmap = I2
+        If BM1 Is Nothing Or BM2 Is Nothing Then
+            Return EmptyTrue
+        Else
+            Dim xw As Integer = Math.Min(BM1.Width, BM2.Width)
+            Dim yh As Integer = Math.Min(BM1.Height, BM2.Height)
+            For x = 1 To xw - 1
+                For y = 1 To yh - 1
+                    If BM1.GetPixel(x, y) <> BM2.GetPixel(x, y) Then
+                        Return False
+                        Exit Function
+                    End If
+                Next
+            Next
+            Return True
+        End If
+    End Function
+
+    Friend Function ThumbnailName(Filename As String) As String
+        Dim th As String
+        Dim f As New IO.FileInfo(Filename)
+        th = ThumbDestination & f.Name.Replace(".", "") & "thn.png"
+        Return th
+    End Function
+
 End Module

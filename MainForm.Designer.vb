@@ -1173,6 +1173,7 @@ Partial Class MainForm
         'tbxAbsolute
         '
         Me.tbxAbsolute.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.tbxAbsolute.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower
         Me.tbxAbsolute.Enabled = False
         Me.tbxAbsolute.Location = New System.Drawing.Point(3, 79)
         Me.tbxAbsolute.Name = "tbxAbsolute"

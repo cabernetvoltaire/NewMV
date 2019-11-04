@@ -150,18 +150,18 @@ Friend Module Mysettings
                 Else
                     Rootpath = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer)
                 End If
-                If fol.Exists = False Then
-                    MainForm.FavouritesFolderToolStripMenuItem.PerformClick()
-                End If
-
-                Dim s As String = .GetValue("File", "")
-                If s = "" Then s = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
-                Media.MediaPath = s
-                MainForm.chbPreviewLinks.Checked = .GetValue("PreviewLinks", False)
-
+            Dim s As String = .GetValue("File", "")
+            If s = "" Then s = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
+            Media.MediaPath = s
+            MainForm.chbPreviewLinks.Checked = .GetValue("PreviewLinks", False)
+            If fol.Exists = False Then
+                MainForm.FavouritesFolderToolStripMenuItem.PerformClick()
+            End If
 
 
-            End With
+
+
+        End With
         'Catch ex As Exception
         'PreferencesReset()
         'End Try

@@ -69,9 +69,13 @@
         If List IsNot Nothing Then ItemList = List
         FilterList()
         OrderList()
+        If ItemList.Count > 200 Then
+            ListBox.SuspendLayout()
+        End If
         For Each f In ItemList
             ListBox.Items.Add(f)
         Next
+        ListBox.ResumeLayout()
         RaiseEvent ListBoxFilled(ListBox)
         'SetFirst()
     End Sub

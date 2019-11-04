@@ -111,6 +111,7 @@ Public Class MediaSwapper
         End If
         Select Case MH.MediaType
             Case Filetype.Movie
+                If separate Then MH.Player.uiMode = "mini"
                 MH.Player.Visible = True
                 MH.PlaceResetter(True)
                 RaiseEvent LoadedMedia(MH) 'Currently does nothing.
@@ -160,7 +161,7 @@ Public Class MediaSwapper
 
 
     End Sub
-    Public Sub SetStartpoints(ByRef SH As StartPointHandler)
+    Public Sub SetStartpoints(ByRef SH As StartPointHandler) 'Only called when bars changed
         SetStartStates(SH)
 
         Media1.StartPoint = SH
@@ -209,7 +210,7 @@ Public Class MediaSwapper
         MHX.PlaceResetter(False)
         With MHX.Player
 
-
+            If separate Then .uiMode = "Full"
             .Visible = True
             .BringToFront()
             .settings.mute = Muted

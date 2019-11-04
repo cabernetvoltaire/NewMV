@@ -34,7 +34,7 @@
 
     Public ReadOnly Property Descriptions As List(Of String)
         Get
-            For i = 0 To 5
+            For i = 0 To 6
                 mDescList.Add(mOrder(i))
             Next
             Descriptions = mDescList
@@ -161,7 +161,8 @@
     Private Function SetStartPoint() As Long
         Dim oldstartpoint As Long = mStartPoint
         Select Case mState
-            Case StartTypes.Beginning
+            Case StartTypes.Beginning, StartTypes.FirstMarker
+
                 mStartPoint = 0
             Case StartTypes.NearBeginning
                 mStartPoint = mDistance
