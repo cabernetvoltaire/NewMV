@@ -81,24 +81,29 @@ Public Class MainForm
     End Sub
     Public Sub OnStartChanged(Sender As Object, e As EventArgs)
         'Media.Bookmark = -1
-        tbxAbsolute.Text = New TimeSpan(0, 0, Media.StartPoint.StartPoint).ToString("hh\:mm\:ss")
-        tbxPercentage.Text = Int(100 * Media.StartPoint.StartPoint / Media.StartPoint.Duration) & "%"
         tbPercentage.Value = Media.StartPoint.Percentage
         tbAbsolute.Maximum = Media.StartPoint.Duration
         tbAbsolute.Value = Media.StartPoint.StartPoint
         Select Case Media.StartPoint.State
             Case StartPointHandler.StartTypes.ParticularAbsolute
+                tbxAbsolute.Text = New TimeSpan(0, 0, Media.StartPoint.StartPoint).ToString("hh\:mm\:ss")
+                tbxPercentage.Text = Int(100 * Media.StartPoint.StartPoint / Media.StartPoint.Duration) & "%"
                 tbxPercentage.Enabled = False
                 tbxAbsolute.Enabled = True
+                MSFiles.SetStartStates(Media.StartPoint)
             Case StartPointHandler.StartTypes.ParticularPercentage
+                tbxAbsolute.Text = New TimeSpan(0, 0, Media.StartPoint.StartPoint).ToString("hh\:mm\:ss")
+                tbxPercentage.Text = Int(100 * Media.StartPoint.StartPoint / Media.StartPoint.Duration) & "%"
                 tbxAbsolute.Enabled = False
                 tbxPercentage.Enabled = True
+                MSFiles.SetStartStates(Media.StartPoint)
             Case Else
                 tbxAbsolute.Enabled = False
                 tbxPercentage.Enabled = False
+                MSFiles.SetStartStates(Media.StartPoint)
+
         End Select
         ' MSFiles.ListIndex = lbxFiles.SelectedIndex
-        MSFiles.SetStartStates(Media.StartPoint)
         'MsgBox(Str(MSFiles.Media1.StartPoint.StartPoint) & " " & Str(MSFiles.Media2.StartPoint.StartPoint) & " " & Str(MSFiles.Media3.StartPoint.StartPoint))
         FullScreen.Changing = False
         cbxStartPoint.SelectedIndex = Media.StartPoint.State
@@ -738,6 +743,7 @@ Public Class MainForm
     End Function
 
     Public Sub HandleKeys(sender As Object, e As KeyEventArgs)
+
         Me.Cursor = Cursors.WaitCursor
         'MsgBox(e.KeyCode.ToString)
         Dim nke As New Keys
@@ -789,7 +795,7 @@ Public Class MainForm
             Case KeyTraverseTree, KeyTraverseTreeBack
                 '   If FocusControl IsNot tvMain2 Then
                 tvMain2.Traverse(e.KeyCode = KeyTraverseTreeBack)
-                    e.SuppressKeyPress = True
+                e.SuppressKeyPress = True
               '  End If
 
             Case Keys.Left, Keys.Right, Keys.Up, Keys.Down
@@ -964,7 +970,7 @@ Public Class MainForm
                     If Media.MediaType = Filetype.Movie Then Media.LoopMovie = Not Media.LoopMovie
                 Else
                     RotatePic(currentPicBox, True)
-
+                    Media.HandlePic(Media.MediaPath)
                 End If
 #End Region
 #Region "States"
@@ -1306,7 +1312,10 @@ Public Class MainForm
     Public Sub ControlSetFocus(control As Control)
         ' Set focus to the control, if it can receive focus.
         'Exit Sub
-        FocusControl = control
+        If control Is tvMain2 Then
+        Else
+            FocusControl = control
+        End If
         If control.CanFocus Then
             control.Focus()
         End If
@@ -1429,11 +1438,16 @@ Public Class MainForm
             Dim dt As New Date
             'avoid the updating of the write time
             dt = finfo.LastWriteTime
-            'Dim b As Bitmap = currentPicBox.Image
-            Dim b As Bitmap = InitializeStandaloneImageCopy(Media.MediaPath)
+            Dim bt As Bitmap = currentPicBox.Image
+            Dim b As Image = bt.Clone
 
+
+            ' Dim b As Bitmap = InitializeStandaloneImageCopy(Media.MediaPath)
+            currentPicBox.Image.Dispose()
+            finfo.Delete()
             b.Save(Media.MediaPath)
             finfo.LastWriteTime = dt
+            '  currentPicBox.ImageLocation = Media.MediaPath
         End With
     End Sub
     Private Function StringList(List As List(Of String), strSearch As String) As List(Of String)
@@ -1969,6 +1983,7 @@ Public Class MainForm
 
     Private Sub DeadLinksSelect()
         Dim s As New List(Of String)
+
         Dim lbx As ListBox = CType(FocusControl, ListBox)
         SelectDeadLinks(lbx)
         UpdateFileInfo()
@@ -2316,8 +2331,8 @@ Public Class MainForm
         tbxAbsolute.Text = New TimeSpan(0, 0, tbAbsolute.Value).ToString("hh\:mm\:ss")
         tbxPercentage.Text = Str(Media.StartPoint.Percentage) & "%"
         tbPercentage.Value = Media.StartPoint.Percentage
-        Media.MediaJumpToMarker()
         MSFiles.SetStartpoints(Media.StartPoint)
+        Media.MediaJumpToMarker()
     End Sub
 
     Private Sub tbPercentage_MouseUp(sender As Object, e As MouseEventArgs) Handles tbPercentage.MouseUp
@@ -2327,8 +2342,8 @@ Public Class MainForm
         tbxPercentage.Text = Str(Media.StartPoint.Percentage) & "%"
         tbPercentage.Value = Media.StartPoint.Percentage
 
-        Media.MediaJumpToMarker()
         MSFiles.SetStartpoints(Media.StartPoint)
+        Media.MediaJumpToMarker()
 
     End Sub
 
@@ -2694,4 +2709,5 @@ Public Class MainForm
 
         End If
     End Sub
+
 End Class

@@ -203,14 +203,14 @@
     End Property
 
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
-        If t.IsAlive Then
-            '   Me.Refresh()
-            Exit Sub
-        ElseIf Not t.IsAlive Then
-            Duration = TimeOperation(False)
-            Timer1.Enabled = False
-            Me.Refresh()
-        End If
+        'If t.IsAlive Then
+        '    '   Me.Refresh()
+        '    Exit Sub
+        'ElseIf Not t.IsAlive Then
+        '    Duration = TimeOperation(False)
+        '    Timer1.Enabled = False
+        '    Me.Refresh()
+        'End If
 
     End Sub
 

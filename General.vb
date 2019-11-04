@@ -2,6 +2,7 @@
 Imports System.IO
 Imports System.Drawing.Imaging
 Imports System.Media
+Imports System.Threading
 
 Public Module General
     Public Enum ExifOrientations As Byte
@@ -21,7 +22,7 @@ Public Module General
     Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif"
     Public DirectoriesListFile
     Public separate As Boolean = False
-
+    Public t As Threading.Thread
     Public CurrentFolder As String
     Public DirectoriesList As New List(Of String)
     Public Rootpath As String = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
@@ -177,18 +178,28 @@ Public Module General
         If Not Force AndAlso pathfile.Exists Then
             ReadListfromFile(list, DirectoriesListFile, Encrypted)
         Else
-            Try
-                Dim root As New IO.DirectoryInfo(path)
-                For Each m In root.GetDirectories("*", SearchOption.AllDirectories)
-                    list.Add(m.FullName)
-                Next
-            Catch ex As Exception
-
-            End Try
+            t = New Thread(New ThreadStart(Sub() DirectoriesLister(path, list)))
+            t.IsBackground = True
+            t.SetApartmentState(ApartmentState.STA)
+            t.Start()
+            While t.IsAlive
+                Thread.Sleep(100)
+            End While
             WriteListToFile(list, DirectoriesListFile, Encrypted)
         End If
         Return list
     End Function
+
+    Private Sub DirectoriesLister(path As String, list As List(Of String))
+        Try
+            Dim root As New IO.DirectoryInfo(path)
+            For Each m In root.GetDirectories("*", SearchOption.AllDirectories)
+                list.Add(m.FullName)
+            Next
+        Catch ex As Exception
+
+        End Try
+    End Sub
 
     Public Sub FolderChooser(Message As String, DefaultFolderName As String)
         Dim x As New FolderSelect
@@ -205,12 +216,15 @@ Public Module General
 
     Public Function TryOtherDriveLetters(str As String) As String
         Dim original = str
-
+        Dim m As New List(Of DriveInfo)
+        For Each x In IO.DriveInfo.GetDrives
+            m.Add(x)
+        Next
         If Len(str) <> 0 Then
-            Dim driveletter As String = "A"
-            For i = Asc("A") To Asc("Z")
-                driveletter = Chr(i)
-                str = str.Replace(Left(str, 2), driveletter & ":")
+            For Each drive In m
+
+                Dim driveletter As String = drive.Name
+                str = str.Replace(Left(str, 3), driveletter)
                 If My.Computer.FileSystem.FileExists(str) Then
                     Return str
                     Exit Function
@@ -805,29 +819,7 @@ Public Module General
             Return True
         End If
     End Function
-    Public Function CopyToStandaloneBitmap(ByRef InputImage As Image) As Image
 
-        Dim memory As New MemoryStream()
-        InputImage.Save(memory, Imaging.ImageFormat.Png)
-
-        Return Image.FromStream(memory)
-    End Function
-
-    Public Function InitializeStandaloneImageCopy(ByVal strPathFile As String) As Image
-        Dim finfo As New FileInfo(strPathFile)
-        If strPathFile Is Nothing Then Return Nothing
-        If strPathFile.Length <= 0 Then Return Nothing
-        If Not finfo.Exists Then Return Nothing
-
-        Dim fs As New FileStream(strPathFile, FileMode.Open, FileAccess.Read)
-        Dim img As Image = Image.FromStream(fs)
-        Dim imgClone As Image = CopyToStandaloneBitmap(img)
-        img.Dispose()
-        img = Nothing
-        fs.Close()
-        fs = Nothing
-        Return imgClone
-    End Function
     Friend Function ThumbnailName(Filename As String) As String
         Dim th As String
         Dim f As New IO.FileInfo(Filename)
