@@ -352,12 +352,12 @@ Public Class MediaHandler
             Else
                 mPlayPosition = StartPoint.StartPoint
             End If
-        ElseIf mMarkers.Count <> 0 AndAlso (ToMarker Or StartPoint.State = StartPointHandler.StartTypes.FirstMarker) Then
-            StartPoint.Absolute = mMarkers.Item(mlinkcounter)
-            mPlayPosition = StartPoint.StartPoint
         ElseIf Speed.PausedPosition <> 0 Then
             mPlayPosition = Speed.PausedPosition
             Speed.PausedPosition = 0
+        ElseIf mMarkers.Count <> 0 AndAlso (ToMarker Or StartPoint.State = StartPointHandler.StartTypes.FirstMarker) Then
+            StartPoint.Absolute = mMarkers.Item(mlinkcounter)
+            mPlayPosition = StartPoint.StartPoint
         Else
             mPlayPosition = StartPoint.StartPoint
         End If
@@ -528,17 +528,15 @@ Public Class MediaHandler
     Private Sub ResetPos() Handles ResetPosition.Tick
         ' PositionUpdater.Enabled = False
         Try
-            'mPlayer.Ctlcontrols.currentPosition = StartPoint.StartPoint
-            ' MediaJumpToMarker()
+            '  mPlayer.Ctlcontrols.currentPosition = StartPoint.StartPoint
+            MediaJumpToMarker()
         Catch ex As Exception
 
         End Try
 
     End Sub
     Public Sub PlaceResetter(ResetOn As Boolean)
-        'MediaJumpToMarker()
         ResetPosition.Enabled = ResetOn
-
     End Sub
     Private Sub PositionUpdaterCanceller_Tick(sender As Object, e As EventArgs) Handles ResetPositionCanceller.Tick
         ResetPosition.Enabled = False

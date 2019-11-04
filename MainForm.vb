@@ -81,29 +81,25 @@ Public Class MainForm
     End Sub
     Public Sub OnStartChanged(Sender As Object, e As EventArgs)
         'Media.Bookmark = -1
+        tbxAbsolute.Text = New TimeSpan(0, 0, Media.StartPoint.StartPoint).ToString("hh\:mm\:ss")
+        tbxPercentage.Text = Int(100 * Media.StartPoint.StartPoint / Media.StartPoint.Duration) & "%"
         tbPercentage.Value = Media.StartPoint.Percentage
         tbAbsolute.Maximum = Media.StartPoint.Duration
         tbAbsolute.Value = Media.StartPoint.StartPoint
         Select Case Media.StartPoint.State
             Case StartPointHandler.StartTypes.ParticularAbsolute
-                tbxAbsolute.Text = New TimeSpan(0, 0, Media.StartPoint.StartPoint).ToString("hh\:mm\:ss")
-                tbxPercentage.Text = Int(100 * Media.StartPoint.StartPoint / Media.StartPoint.Duration) & "%"
                 tbxPercentage.Enabled = False
                 tbxAbsolute.Enabled = True
-                MSFiles.SetStartStates(Media.StartPoint)
             Case StartPointHandler.StartTypes.ParticularPercentage
-                tbxAbsolute.Text = New TimeSpan(0, 0, Media.StartPoint.StartPoint).ToString("hh\:mm\:ss")
-                tbxPercentage.Text = Int(100 * Media.StartPoint.StartPoint / Media.StartPoint.Duration) & "%"
                 tbxAbsolute.Enabled = False
                 tbxPercentage.Enabled = True
-                MSFiles.SetStartStates(Media.StartPoint)
             Case Else
                 tbxAbsolute.Enabled = False
                 tbxPercentage.Enabled = False
-                MSFiles.SetStartStates(Media.StartPoint)
-
         End Select
         ' MSFiles.ListIndex = lbxFiles.SelectedIndex
+        'Set all MH to have the same StartPoint handler
+        MSFiles.SetStartStates(Media.StartPoint)
         'MsgBox(Str(MSFiles.Media1.StartPoint.StartPoint) & " " & Str(MSFiles.Media2.StartPoint.StartPoint) & " " & Str(MSFiles.Media3.StartPoint.StartPoint))
         FullScreen.Changing = False
         cbxStartPoint.SelectedIndex = Media.StartPoint.State
