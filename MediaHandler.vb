@@ -412,8 +412,8 @@ Public Class MediaHandler
         Else
             mlinkcounter = 0
             GetBookmark()
+            MediaJumpToMarker() 'Jump to a new position
         End If
-        MediaJumpToMarker(False, True) 'Jump to a new position
         DisplayerName = mPlayer.Name
     End Sub
     Public Sub HandlePic(path As String)
@@ -481,7 +481,7 @@ Public Class MediaHandler
                 ' mResetCounter = 0
                 mDuration = mPlayer.currentMedia.duration
                 StartPoint.Duration = mDuration
-                'MediaJumpToMarker()
+                MediaJumpToMarker()
                 RaiseEvent MediaPlaying(Me, Nothing)
                 ' MainForm.DrawScrubberMarks()
 
