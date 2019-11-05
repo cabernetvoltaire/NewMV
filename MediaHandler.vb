@@ -481,7 +481,7 @@ Public Class MediaHandler
                 ' mResetCounter = 0
                 mDuration = mPlayer.currentMedia.duration
                 StartPoint.Duration = mDuration
-                MediaJumpToMarker()
+                'MediaJumpToMarker()
                 RaiseEvent MediaPlaying(Me, Nothing)
                 ' MainForm.DrawScrubberMarks()
 
