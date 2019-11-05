@@ -2327,8 +2327,8 @@ Public Class MainForm
         tbxAbsolute.Text = New TimeSpan(0, 0, tbAbsolute.Value).ToString("hh\:mm\:ss")
         tbxPercentage.Text = Str(Media.StartPoint.Percentage) & "%"
         tbPercentage.Value = Media.StartPoint.Percentage
-        MSFiles.SetStartpoints(Media.StartPoint)
         Media.MediaJumpToMarker()
+        MSFiles.SetStartpoints(Media.StartPoint)
     End Sub
 
     Private Sub tbPercentage_MouseUp(sender As Object, e As MouseEventArgs) Handles tbPercentage.MouseUp
@@ -2338,10 +2338,11 @@ Public Class MainForm
         tbxPercentage.Text = Str(Media.StartPoint.Percentage) & "%"
         tbPercentage.Value = Media.StartPoint.Percentage
 
-        MSFiles.SetStartpoints(Media.StartPoint)
         Media.MediaJumpToMarker()
+        MSFiles.SetStartpoints(Media.StartPoint)
 
     End Sub
+
 
     Private Sub ReclaimDeadLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectedToolStripMenuItem.Click
         ReUniteFavesLinks()

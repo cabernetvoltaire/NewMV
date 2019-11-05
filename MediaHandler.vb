@@ -357,7 +357,7 @@ Public Class MediaHandler
             Speed.PausedPosition = 0
         ElseIf mMarkers.Count <> 0 AndAlso (ToMarker Or StartPoint.State = StartPointHandler.StartTypes.FirstMarker) Then
             StartPoint.Absolute = mMarkers.Item(mlinkcounter)
-            mPlayPosition = StartPoint.StartPoint
+            mPlayPosition = StartPoint.Absolute
         Else
             mPlayPosition = StartPoint.StartPoint
         End If
@@ -408,7 +408,7 @@ Public Class MediaHandler
                 End Try
 
             End If
-            MediaJumpToMarker(ToMarker:=True) 'Jump to a new position
+            MediaJumpToMarker() 'Jump to a new position
         Else
             mlinkcounter = 0
             GetBookmark()
@@ -481,7 +481,7 @@ Public Class MediaHandler
                 ' mResetCounter = 0
                 mDuration = mPlayer.currentMedia.duration
                 StartPoint.Duration = mDuration
-                'MediaJumpToMarker()
+                MediaJumpToMarker()
                 RaiseEvent MediaPlaying(Me, Nothing)
                 ' MainForm.DrawScrubberMarks()
 

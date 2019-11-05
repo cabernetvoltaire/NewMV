@@ -95,7 +95,7 @@
                     mAbsolute = value
                     mPercentage = mAbsolute / mDuration * 100
                     mStartPoint = mAbsolute
-                    '  RaiseEvent StartPointChanged(Me, Nothing)
+                    RaiseEvent StartPointChanged(Me, Nothing)
                 End If
             End If
         End Set
