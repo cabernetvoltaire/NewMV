@@ -90,13 +90,11 @@
         Set(ByVal value As Long)
 
             Dim b As Long = mAbsolute
-            If b <> value Then
-                If value <= Duration Then
-                    mAbsolute = value
-                    mPercentage = mAbsolute / mDuration * 100
-                    mStartPoint = mAbsolute
-                    RaiseEvent StartPointChanged(Me, Nothing)
-                End If
+            If value <= Duration Then
+                mAbsolute = value
+                mPercentage = mAbsolute / mDuration * 100
+                mStartPoint = mAbsolute
+                RaiseEvent StartPointChanged(Me, Nothing)
             End If
         End Set
     End Property

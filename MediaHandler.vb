@@ -165,7 +165,8 @@ Public Class MediaHandler
                 Catch ex As Exception
 
                 End Try
-
+                mMarkers = GetMarkersFromLinkList(AllFaveMinder.GetLinksOf(mMediaPath))
+                mMarkers.Sort()
                 RaiseEvent MediaChanged(Me, New EventArgs)
 
             End If
@@ -173,6 +174,23 @@ Public Class MediaHandler
 
         End Set
     End Property
+
+    Private Function GetMarkersFromLinkList(list As List(Of String)) As List(Of Long)
+        Dim markerslist As New List(Of Long)
+        Dim i = 0
+        For Each m In list
+            Dim n = BookmarkFromLinkName(m)
+            If n > 0 Then
+                If markerslist.Contains(n) Then
+                Else
+                    markerslist.Add(n)
+                End If
+                i += 1
+            End If
+        Next
+        Return markerslist
+    End Function
+
     Public Sub New(Nomen As String)
         '      Player = mPlayer
         Name = Nomen
@@ -267,7 +285,7 @@ Public Class MediaHandler
     End Property
 
     Public Function IncrementLinkCounter(Forward As Boolean) As Integer
-        If mMarkers.Count = 0 Then
+        If mMarkers.Count = 0 Or mMarkers.Count < mlinkcounter Then
             Return 0
             Exit Function
         End If
@@ -280,7 +298,9 @@ Public Class MediaHandler
             mlinkcounter = mlinkcounter + mMarkers.Count
         End If
         mlinkcounter = mlinkcounter Mod (mMarkers.Count)
-
+        If mlinkcounter > mMarkers.Count Then
+            mlinkcounter = 0
+        End If
         Return mlinkcounter
     End Function
     Public Function RandomCounter() As Integer
@@ -357,7 +377,7 @@ Public Class MediaHandler
             Speed.PausedPosition = 0
         ElseIf mMarkers.Count <> 0 AndAlso (ToMarker Or StartPoint.State = StartPointHandler.StartTypes.FirstMarker) Then
             StartPoint.Absolute = mMarkers.Item(mlinkcounter)
-            mPlayPosition = StartPoint.Absolute
+            mPlayPosition = StartPoint.StartPoint
         Else
             mPlayPosition = StartPoint.StartPoint
         End If
@@ -367,7 +387,7 @@ Public Class MediaHandler
             mPlayer.Ctlcontrols.currentPosition = mPlayPosition
             'Sound.Ctlcontrols.currentPosition = mPlayPosition
         End If
-        Report("Start point state is:" & StartPoint.Descriptions(StartPoint.State) & " and has been set to " & StartPoint.StartPoint & "(" & mPlayPosition & ") with a duration of " & StartPoint.Duration, 1)
+        Report(Me.MediaPath & vbCrLf & Format(mMarkers.Count) & " markers" & vbCrLf & "Start point state is:" & StartPoint.Descriptions(StartPoint.State) & vbCrLf & " and has been set to " & StartPoint.StartPoint & "(" & mPlayPosition & ") " & vbCrLf & "with a duration of " & StartPoint.Duration, 1)
 
     End Sub
     Private Sub LoadMedia()

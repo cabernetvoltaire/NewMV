@@ -81,7 +81,8 @@ Public Class MainForm
     End Sub
     Public Sub OnStartChanged(Sender As Object, e As EventArgs)
         'Media.Bookmark = -1
-        tbxAbsolute.Text = New TimeSpan(0, 0, Media.StartPoint.StartPoint).ToString("hh\:mm\:ss")
+        tbxAbsolute.Text = New TimeSpan(0, 0, Media.StartPoint.StartPoint).ToString("hh\:mm\:ss") 'TODO: DUbious
+
         tbxPercentage.Text = Int(100 * Media.StartPoint.StartPoint / Media.StartPoint.Duration) & "%"
         tbPercentage.Value = Media.StartPoint.Percentage
         tbAbsolute.Maximum = Media.StartPoint.Duration
@@ -206,20 +207,10 @@ Public Class MainForm
             If chbPreviewLinks.Checked Then
                 FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
             End If
-            Dim markerslist As New List(Of Long)
-            For Each m In x
+            'Dim markerslist As New List(Of Long)
 
-                Dim n = BookmarkFromLinkName(m)
-                If n > 0 Then
-                    If markerslist.Contains(n) Then
-                    Else
-                        markerslist.Add(n)
-                    End If
-                    i += 1
-                End If
-            Next
-            Media.Markers = markerslist
-            Media.Markers.Sort()
+            'Media.Markers = markerslist
+            'Media.Markers.Sort()
 
             Scrubber.Update()
             DrawScrubberMarks()
