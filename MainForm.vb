@@ -174,6 +174,13 @@ Public Class MainForm
         'Dir.Delete()
     End Sub
 #End Region
+    Private Sub AddMarker()
+        CreateFavourite(Media.MediaPath)
+        PopulateLinkList(Media.MediaPath, Media)
+        '       e.SuppressKeyPress = True
+        DrawScrubberMarks()
+    End Sub
+
     Public Sub RemoveMarker(filepath As String, timecode As Long)
         Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
         For Each f In x
@@ -211,7 +218,7 @@ Public Class MainForm
 
             'Media.Markers = markerslist
             'Media.Markers.Sort()
-
+            Marks.Markers = Media.GetMarkersFromLinkList
             Scrubber.Update()
             DrawScrubberMarks()
             DrawScrubberMarks()
@@ -888,10 +895,7 @@ Public Class MainForm
                     End If
                     DrawScrubberMarks()
                 Else
-                    CreateFavourite(Media.MediaPath)
-                    PopulateLinkList(Media.MediaPath, Media)
-                    '       e.SuppressKeyPress = True
-                    DrawScrubberMarks()
+                    AddMarker()
                 End If
 
             Case KeyJumpToPoint
@@ -1031,6 +1035,7 @@ Public Class MainForm
         ' e.suppresskeypress = True
         '    Response.Enabled = False
     End Sub
+
 
     Private Sub RemoveAllFavourites(mediaPath As String)
         Throw New NotImplementedException()

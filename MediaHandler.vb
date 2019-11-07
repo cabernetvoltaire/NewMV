@@ -165,7 +165,7 @@ Public Class MediaHandler
                 Catch ex As Exception
 
                 End Try
-                mMarkers = GetMarkersFromLinkList(AllFaveMinder.GetLinksOf(mMediaPath))
+                mMarkers = GetMarkersFromLinkList()
                 mMarkers.Sort()
                 RaiseEvent MediaChanged(Me, New EventArgs)
 
@@ -175,10 +175,18 @@ Public Class MediaHandler
         End Set
     End Property
 
-    Private Function GetMarkersFromLinkList(list As List(Of String)) As List(Of Long)
+
+    Public Function GetMarkersFromLinkList() As List(Of Long)
+        Dim List As New List(Of String)
         Dim markerslist As New List(Of Long)
+        If mIsLink Then
+            List = AllFaveMinder.GetLinksOf(mLinkPath)
+
+        Else
+            List = AllFaveMinder.GetLinksOf(mMediaPath)
+        End If
         Dim i = 0
-        For Each m In list
+        For Each m In List
             Dim n = BookmarkFromLinkName(m)
             If n > 0 Then
                 If markerslist.Contains(n) Then
@@ -277,6 +285,9 @@ Public Class MediaHandler
 
     Public Property LinkCounter As Integer
         Get
+            If mlinkcounter > mMarkers.Count Or mMarkers.Count = 1 Then
+                mlinkcounter = 0
+            End If
             Return mlinkcounter
         End Get
         Set
@@ -357,6 +368,7 @@ Public Class MediaHandler
 
     End Sub
 #End Region
+#Region "Media Handlers"
     Public Sub MediaJumpToMarker(Optional ToEnd As Boolean = False, Optional ToMarker As Boolean = False)
         'There are markers, so jump to the next one
         If ToEnd Then 'Special Case where jump to end button pressed
@@ -376,7 +388,7 @@ Public Class MediaHandler
             mPlayPosition = Speed.PausedPosition
             Speed.PausedPosition = 0
         ElseIf mMarkers.Count <> 0 AndAlso (ToMarker Or StartPoint.State = StartPointHandler.StartTypes.FirstMarker) Then
-            StartPoint.Absolute = mMarkers.Item(mlinkcounter)
+            StartPoint.Absolute = mMarkers.Item(LinkCounter)
             mPlayPosition = StartPoint.StartPoint
         Else
             mPlayPosition = StartPoint.StartPoint
@@ -475,7 +487,7 @@ Public Class MediaHandler
     End Sub
 
 #End Region
-
+#End Region
 #Region "Event Handlers"
     Private Sub Uhoh() Handles mPlayer.ErrorEvent
         ' MsgBox("Error in MediaPlayer")
