@@ -80,6 +80,7 @@ Public Module General
 
 #Region "Links"
     Public Sub SelectDeadLinks(lbx As ListBox)
+
         HighlightList(lbx, GetDeadLinks(lbx))
 
     End Sub
@@ -170,14 +171,75 @@ Public Module General
         End Try
 
     End Function
+    Private Function GenerateSafeFolderList(ByVal folder As String) _
+            As List(Of String)
 
+        ' -------------------------------------------
+        ' Based On A Function By John Wein As Posted:
+        '
+        ' http://social.msdn.microsoft.com/Forums/en-US/vbgeneral/thread/d6e64558-395b-4b48-8b64-0f5a7e3a7623
+        '
+        ' Thanks John!
+        ' -------------------------------------------
+
+        Dim retVal As New List(Of String)
+
+        Dim Dirs As New Stack(Of String)
+        Dirs.Push(folder)
+
+        While Dirs.Count > 0
+            If False Then
+                Exit While
+            Else
+                Dim Dir As String = Dirs.Pop
+
+                Try
+                    For Each D As String In System.IO.Directory.GetDirectories(Dir)
+                        ' Do not include any that are either system or hidden
+
+                        Dim dirInfo As New System.IO.DirectoryInfo(D)
+                        If (((dirInfo.Attributes And System.IO.FileAttributes.Hidden) = 0) AndAlso
+                                ((dirInfo.Attributes And System.IO.FileAttributes.System) = 0)) Then
+
+                            If Not retVal.Contains(D) Then
+                                retVal.Add(D)
+                            End If
+                        End If
+
+                        Dirs.Push(D)
+                    Next
+
+                Catch ex As Exception
+
+                    If retVal.Contains(Dir) Then
+                        Dim indexToRemove As Integer = 0
+
+                        For i As Integer = 0 To retVal.Count - 1
+                            If retVal(i) = Dir Then
+                                indexToRemove = i
+                                Exit For
+                            End If
+                        Next
+
+                        retVal.RemoveAt(indexToRemove)
+                    End If
+                    Continue While
+                End Try
+            End If
+        End While
+
+        Return retVal
+
+    End Function
 
     Public Function GetDirectoriesList(path As String, Optional Force As Boolean = False) As List(Of String)
         Dim list As New List(Of String)
         Dim pathfile As New IO.FileInfo(DirectoriesListFile)
         If Not Force AndAlso pathfile.Exists Then
             ReadListfromFile(list, DirectoriesListFile, Encrypted)
+            '   MsgBox(list.Count)
         Else
+            '   DirectoriesLister(path, list)
             t = New Thread(New ThreadStart(Sub() DirectoriesLister(path, list)))
             t.IsBackground = True
             t.SetApartmentState(ApartmentState.STA)
@@ -193,11 +255,13 @@ Public Module General
     Private Sub DirectoriesLister(path As String, list As List(Of String))
         Try
             Dim root As New IO.DirectoryInfo(path)
-            For Each m In root.GetDirectories("*", SearchOption.AllDirectories)
-                list.Add(m.FullName)
+
+            For Each m In GenerateSafeFolderList(path)
+                Dim fol As New IO.DirectoryInfo(m)
+                list.Add(fol.FullName)
             Next
         Catch ex As Exception
-
+            MsgBox(ex.Message)
         End Try
     End Sub
 

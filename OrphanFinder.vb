@@ -54,61 +54,68 @@
     ''' Searches in subfolders of original destination of each link
     ''' </summary>
     Public Property SearchPath As String
-    Public Sub FindOrphans()
-        'for each file in orphanlist
-        'change target to all possible directories.
+    Public Sub FindOrphans2()
+        'for each file in the orphan list
+        'first look at all subfolders of original file destination
+        'as most likely that it's been moved to a lower folder
+        Dim foundparent As Boolean = False
         For Each n In mOrphanList
-            Dim foundparent As Boolean = False
-            Dim filename As String = FilenameFromLink(n)
-            Dim aimfile As String = LinkTarget(n)
-            Dim newlink = DirectoriesList(0) & "\" & filename
-            If Not mFoundParents.ContainsKey(n) Then
-                ' RaiseEvent NewOrphanTesting(Me, Nothing)
-                Dim i As Integer = 0
-                Dim max = DirectoriesList.Count
-                While Not foundparent
-                    If Len(aimfile) > 8 Then
+            Dim filename = FilenameFromLink(n) 'name of the file 
+            Dim aimfile As String = LinkTarget(n) 'non-existent file which is the linktarget
+            Dim finfo As New IO.FileInfo(aimfile)
+            filename = finfo.Name 'in case it was wrong?
+            If finfo.Directory.Exists Then 'Not going to use this method if the original folder has been destroyed
+                Dim dirs = finfo.Directory.EnumerateDirectories
+                For Each subdir In dirs
+                    If foundparent Then
+                        Exit For
+                    Else
+                        Dim newlink = subdir.FullName & "\" & finfo.Name
+                        If My.Computer.FileSystem.FileExists(newlink) Then
+                            foundparent = True
+                            If Not mFoundParents.Keys.Contains(n) Then
+                                mFoundParents.Add(n, newlink)
 
-                        'search sub folders first
-                        Dim finfo As New IO.FileInfo(aimfile)
-                        Try
-                            For Each m In finfo.Directory.EnumerateDirectories
-                                If foundparent Then
-                                    Exit For
-                                Else
-                                    newlink = m.FullName & "\" & finfo.Name
-                                    foundparent = My.Computer.FileSystem.FileExists(newlink)
+                            End If
 
-                                End If
-                            Next
-
-                        Catch ex As Exception
-
-                        End Try
+                        End If
                     End If
-                End While
 
-                While Not foundparent And i < max
-                    If Len(filename) > 8 Then
-                        newlink = DirectoriesList(i) & "\" & filename
-                        foundparent = My.Computer.FileSystem.FileExists(newlink)
-                    End If
-                    i += 1
-                    'TODO: What about files which occur in multiple places, or different files with the same name?
-                End While
-                If foundparent Then
-                    mFoundParents.Add(n, newlink)
-                Else
-                    Dim s = filename & " was not found anywhere inside the hierarchy " & Rootpath
-                    MsgBox(s)
-                    RaiseEvent ParentNotFound(Me, Nothing)
-                End If
+                Next
+                foundparent = False
             End If
         Next
-        If mFoundParents.Count <> 0 Then
-            RaiseEvent FoundParent(Me, Nothing)
-        End If
+        For Each x In mFoundParents.Keys
+            mOrphanList.Remove(x)
+        Next
+        'otherwise, have to do a complete search
+        'for each directory, 
+        Dim i As Integer = 0
+        Dim max = DirectoriesList.Count
+        While mFoundParents.Count < mOrphanList.Count And i < max
+            For Each j In mOrphanList
+                Dim filename = FilenameFromLink(j) 'name of the file 
+                If Len(filename) > 8 Then
+                    Dim newlink = DirectoriesList(i) & "\" & filename
+                    Report("Trying " & newlink, 0)
+                    If My.Computer.FileSystem.FileExists(newlink) Then
+                        If Not mFoundParents.Keys.Contains(j) Then
+                            mFoundParents.Add(j, newlink)
+                        End If
+                    End If
+                End If
+            Next
+            i += 1
+            'TODO: What about files which occur in multiple places, or different files with the same name?
+        End While
+        'check each file
+        'This takes number of directories x number of orphans at worst
+
+    End Sub
+    Public Sub FindOrphans()
+        FindOrphans2()
         Reunite()
+
     End Sub
 
 

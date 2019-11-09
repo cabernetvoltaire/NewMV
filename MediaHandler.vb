@@ -561,7 +561,7 @@ Public Class MediaHandler
         ' PositionUpdater.Enabled = False
         Try
             '  mPlayer.Ctlcontrols.currentPosition = StartPoint.StartPoint
-            MediaJumpToMarker()
+            ' MediaJumpToMarker()
         Catch ex As Exception
 
         End Try

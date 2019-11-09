@@ -48,7 +48,7 @@ Public Class MainForm
         emblem.Load()
     End Sub
     Public Sub OnListboxFilled(sender As Object) Handles FBH.ListBoxFilled
-
+        UpdateFileInfo()
     End Sub
 
 
@@ -633,6 +633,7 @@ Public Class MainForm
         ButtonsHidden = Collapse
         MasterContainer.Panel2Collapsed = Collapse
         lbxFiles.SelectionMode = SelectionMode.One
+        ControlSetFocus(lbxFiles)
         MasterContainer.SplitterDistance = MasterContainer.Height / 3
         UpdateFileInfo()
     End Sub
@@ -1382,6 +1383,19 @@ Public Class MainForm
         NewIndex.Enabled = True
 
     End Sub
+
+    Sub EscapeMultiSelect(sender As Object, e As KeyEventArgs) Handles lbxFiles.KeyDown, lbxShowList.KeyDown
+        If e.KeyCode = Keys.Escape Then
+            Dim m As New ListBox
+            m = sender
+            Dim i = m.SelectedIndices(0)
+            m.SelectionMode = SelectionMode.One
+            m.SelectedIndex = i
+            sender = m
+        End If
+
+    End Sub
+
     Public Sub IndexHandler(sender As Object, e As EventArgs) ' Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged
         ' If KeyDownFlag Then Exit Sub
 
@@ -1973,10 +1987,16 @@ Public Class MainForm
 
 
 
-    Private Sub DeadLinksSelect()
-        Dim s As New List(Of String)
+    Private Sub DeadLinksSelect(lbx As ListBox)
+        'Dim s As New List(Of String)
 
-        Dim lbx As ListBox = CType(FocusControl, ListBox)
+        'Dim lbx As ListBox = CType(FocusControl, ListBox)
+        'T = New Thread(New ThreadStart(Sub() SelectDeadLinks(lbx))) With {
+        '    .IsBackground = True
+        '}
+        'T.SetApartmentState(ApartmentState.STA)
+
+        'T.Start()
         SelectDeadLinks(lbx)
         UpdateFileInfo()
     End Sub
@@ -2179,7 +2199,7 @@ Public Class MainForm
 
 
     Private Sub SelectDeadLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectDeadLinksToolStripMenuItem.Click
-        DeadLinksSelect()
+        DeadLinksSelect(FocusControl)
 
     End Sub
 
@@ -2554,11 +2574,12 @@ Public Class MainForm
         Dim op2 As New OrphanFinder
         Dim lbx As New ListBox
         Dim files As New List(Of String)
-        If PFocus = CtrlFocus.Files Then
-            lbx = lbxFiles
-        ElseIf PFocus = CtrlFocus.ShowList Then
-            lbx = lbxShowList
-        End If
+        lbx = FocusControl
+        'If PFocus = CtrlFocus.Files Then
+        '    lbx = lbxFiles
+        'ElseIf PFocus = CtrlFocus.ShowList Then
+        '    lbx = lbxShowList
+        'End If
         For Each m In lbx.SelectedItems
             files.Add(m)
         Next
@@ -2703,4 +2724,7 @@ Public Class MainForm
         End If
     End Sub
 
+    Private Sub tvMain2_Load(sender As Object, e As EventArgs) Handles tvMain2.Load
+
+    End Sub
 End Class

@@ -16,7 +16,7 @@
         End Set
     End Property
 
-    Private mListbox As New ListBox
+    Private WithEvents mListbox As New ListBox
 
     Public Property ListBox() As ListBox
         Get
@@ -146,6 +146,11 @@
 #End Region
 
 #Region "Events"
+    'Private Sub Keydown(sender As Object, e As KeyEventArgs) Handles mListbox.KeyDown
+    '    If e.KeyCode = Keys.Escape Then
+    '        mListbox.SelectionMode = SelectionMode.One
+    '    End If
+    'End Sub
 
 #End Region
 
