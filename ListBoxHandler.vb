@@ -3,6 +3,7 @@
     Public Property SortOrder As New SortHandler
     Public Property Filter As New FilterHandler
     Public Property Random As New RandomHandler
+
     Private mItemList As New List(Of String)
     Public Event ListBoxFilled(l As ListBox)
     Public Event ListboxChanged(l As ListBox)
@@ -14,6 +15,16 @@
         Set(ByVal value As List(Of String))
             mItemList = value
         End Set
+    End Property
+    Private Property mSelectedItems As New List(Of String)
+    Public ReadOnly Property SelectedItemsList() As List(Of String)
+        Get
+            For Each m In mListbox.SelectedItems
+                mSelectedItems.add(m.ToString)
+            Next
+            Return mSelectedItems
+
+        End Get
     End Property
 
     Private WithEvents mListbox As New ListBox

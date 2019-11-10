@@ -640,7 +640,7 @@ Friend Module FileHandling
         If d.EnumerateDirectories.Count = 0 And d.EnumerateFiles.Count = 0 Then
             Dim s As String = d.Parent.FullName
             Try
-                MainForm.tvMain2.RemoveNode(d.FullName)
+                ' MainForm.tvMain2.RemoveNode(d.FullName)
                 d.Delete()
 
             Catch ex As Exception
@@ -727,6 +727,12 @@ Friend Module FileHandling
     Public Sub BurstFolder(d As DirectoryInfo)
         HarvestFolder(d, True, True)
 
+    End Sub
+
+    Public Sub PromoteFile(path As String)
+
+        Dim finfo As New IO.FileInfo(path)
+        finfo.MoveTo(finfo.Directory.Parent.FullName & "\" & finfo.Name)
     End Sub
 
 End Module

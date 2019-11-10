@@ -241,6 +241,7 @@ Partial Class MainForm
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
         Me.NewIndex = New System.Windows.Forms.Timer(Me.components)
         Me.Response = New System.Windows.Forms.Timer(Me.components)
+        Me.PromoteFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1678,7 +1679,7 @@ Partial Class MainForm
         '
         'HarvestFolderToolStripMenuItem
         '
-        Me.HarvestFolderToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteEmptyFoldersToolStripMenuItem, Me.HarvestFoldersToolStripMenuItem, Me.ToolStripSeparator8, Me.BundleToolStripMenuItem, Me.BurstFolderToolStripMenuItem, Me.ToolStripSeparator9, Me.GroupToolStripMenuItem, Me.PromoteFolderToolStripMenuItem, Me.FilterMoveToolStripMenuItem, Me.InvertSelectionToolStripMenuItem})
+        Me.HarvestFolderToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteEmptyFoldersToolStripMenuItem, Me.HarvestFoldersToolStripMenuItem, Me.ToolStripSeparator8, Me.BundleToolStripMenuItem, Me.BurstFolderToolStripMenuItem, Me.ToolStripSeparator9, Me.GroupToolStripMenuItem, Me.PromoteFolderToolStripMenuItem, Me.FilterMoveToolStripMenuItem, Me.InvertSelectionToolStripMenuItem, Me.PromoteFileToolStripMenuItem})
         Me.HarvestFolderToolStripMenuItem.Name = "HarvestFolderToolStripMenuItem"
         Me.HarvestFolderToolStripMenuItem.Size = New System.Drawing.Size(138, 29)
         Me.HarvestFolderToolStripMenuItem.Text = "&Folder Actions"
@@ -1838,7 +1839,7 @@ Partial Class MainForm
         'Screen1ToolStripMenuItem
         '
         Me.Screen1ToolStripMenuItem.Name = "Screen1ToolStripMenuItem"
-        Me.Screen1ToolStripMenuItem.Size = New System.Drawing.Size(163, 30)
+        Me.Screen1ToolStripMenuItem.Size = New System.Drawing.Size(252, 30)
         Me.Screen1ToolStripMenuItem.Text = "Screen 1"
         '
         'Screen2ToolStripMenuItem
@@ -1846,7 +1847,7 @@ Partial Class MainForm
         Me.Screen2ToolStripMenuItem.Checked = True
         Me.Screen2ToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
         Me.Screen2ToolStripMenuItem.Name = "Screen2ToolStripMenuItem"
-        Me.Screen2ToolStripMenuItem.Size = New System.Drawing.Size(163, 30)
+        Me.Screen2ToolStripMenuItem.Size = New System.Drawing.Size(252, 30)
         Me.Screen2ToolStripMenuItem.Text = "Screen 2"
         '
         'OptionsToolStripMenuItem
@@ -2031,6 +2032,15 @@ Partial Class MainForm
         '
         'Response
         '
+        '
+        'PromoteFileToolStripMenuItem
+        '
+        Me.PromoteFileToolStripMenuItem.Name = "PromoteFileToolStripMenuItem"
+        Me.PromoteFileToolStripMenuItem.ShortcutKeys = CType((((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
+            Or System.Windows.Forms.Keys.Shift) _
+            Or System.Windows.Forms.Keys.P), System.Windows.Forms.Keys)
+        Me.PromoteFileToolStripMenuItem.Size = New System.Drawing.Size(373, 30)
+        Me.PromoteFileToolStripMenuItem.Text = "Promote File"
         '
         'MainForm
         '
@@ -2336,4 +2346,5 @@ Partial Class MainForm
     Friend WithEvents TBFractionAbsolute As ToolStripStatusLabel
     Friend WithEvents AlphabeticGroupsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents Scrubber As PictureBox
+    Friend WithEvents PromoteFileToolStripMenuItem As ToolStripMenuItem
 End Class

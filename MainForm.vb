@@ -1751,6 +1751,7 @@ Public Class MainForm
         '    Exit Sub
         'Else
         DeleteEmptyFolders(New DirectoryInfo(CurrentFolder), True)
+        tvMain2.RefreshTree(CurrentFolder)
         'End If
 
     End Sub
@@ -2726,5 +2727,10 @@ Public Class MainForm
 
     Private Sub tvMain2_Load(sender As Object, e As EventArgs) Handles tvMain2.Load
 
+    End Sub
+
+    Private Sub PromoteFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PromoteFileToolStripMenuItem.Click
+        Dim folder As New IO.DirectoryInfo(FBH.DirectoryPath)
+        MoveFiles(FBH.SelectedItemsList, folder.Parent.FullName, FBH.ListBox)
     End Sub
 End Class
