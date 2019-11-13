@@ -150,6 +150,7 @@ Public Class MediaHandler
                         If mType = Filetype.Link Then
                             mIsLink = True
                             mLinkPath = LinkTarget(f.FullName)
+                            If mLinkPath = "" Then mLinkPath = mMediaPath
                         Else
                             mIsLink = False
                             mLinkPath = ""

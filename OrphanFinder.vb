@@ -61,8 +61,8 @@
         Dim foundparent As Boolean = False
         For Each n In mOrphanList
             Dim filename = FilenameFromLink(n) 'name of the file 
-            Dim aimfile As String = LinkTarget(n) 'non-existent file which is the linktarget
-            Dim finfo As New IO.FileInfo(aimfile)
+            'Dim aimfile As String = LinkTarget(n) 'non-existent file which is the linktarget
+            Dim finfo As New IO.FileInfo(filename)
             filename = finfo.Name 'in case it was wrong?
             If finfo.Directory.Exists Then 'Not going to use this method if the original folder has been destroyed
                 Dim dirs = finfo.Directory.EnumerateDirectories
