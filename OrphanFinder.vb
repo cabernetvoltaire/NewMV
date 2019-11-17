@@ -94,10 +94,12 @@
         Dim max = DirectoriesList.Count
         While mFoundParents.Count < mOrphanList.Count And i < max
             For Each j In mOrphanList
-                Dim filename = FilenameFromLink(j) 'name of the file 
+                Dim filename = LinkTarget(j) 'name of the file 
+                Dim spl = filename.Split("\")
+                filename = spl(spl.Length - 1)
                 If Len(filename) > 8 Then
                     Dim newlink = DirectoriesList(i) & "\" & filename
-                    Report("Trying " & newlink, 0)
+                    '          Report("Trying " & newlink, 0)
                     If My.Computer.FileSystem.FileExists(newlink) Then
                         If Not mFoundParents.Keys.Contains(j) Then
                             mFoundParents.Add(j, newlink)
@@ -166,5 +168,21 @@
             Dim f As New IO.FileInfo(m.Value)
             If f.Exists = True Then mSHandler.ReAssign_ShortCutPath(m.Value, mn)
         Next
+    End Sub
+
+    Public Sub ReuniteWithFile(list As List(Of String), filename As String)
+        'All the shortcuts in list are redirected to filename
+        mFoundParents.Clear()
+
+        For Each m In list
+            If LinkTargetExists(m) Then
+            Else
+                If mFoundParents.Keys.Contains(m) Then
+                Else
+                    mFoundParents.Add(m, filename)
+                End If
+            End If
+        Next
+        Reunite()
     End Sub
 End Class

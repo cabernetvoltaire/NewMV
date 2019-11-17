@@ -323,6 +323,12 @@ Friend Module FileHandling
 
 
     End Sub
+    Public Sub MoveFiles(file As String, strDest As String, lbx1 As ListBox, Optional Folder As Boolean = False)
+        Dim files As New List(Of String)
+        files.Add(file)
+        MoveFiles(files, strDest, lbx1, Folder)
+
+    End Sub
 
     Private Sub MovingFiles(files As List(Of String), strDest As String, s As String)
         If strDest <> "" Then
@@ -374,9 +380,9 @@ Friend Module FileHandling
                             Dim f As New IO.FileInfo(m.FullName)
                             AllFaveMinder.DestinationPath = spath
                             Try
-                                m.MoveTo(spath)
 
                                 AllFaveMinder.CheckFile(New IO.FileInfo(m.FullName))
+                                m.MoveTo(spath)
                                 'AssignSpecialButton("0", strDest)
                             Catch ex As Exception
                                 MsgBox(ex.Message)
@@ -632,10 +638,13 @@ Friend Module FileHandling
     Public Function DeleteEmptyFolders(d As DirectoryInfo, blnRecurse As Boolean) As Boolean
 
         If blnRecurse Then
-            For Each di In d.EnumerateDirectories
+            Try
+                For Each di In d.EnumerateDirectories
 
-                DeleteEmptyFolders(di, True)
-            Next
+                    DeleteEmptyFolders(di, True)
+                Next
+            Catch
+            End Try
         End If
         If d.EnumerateDirectories.Count = 0 And d.EnumerateFiles.Count = 0 Then
             Dim s As String = d.Parent.FullName

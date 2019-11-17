@@ -197,6 +197,16 @@ Public Class MainForm
         If filepath = "" Then Exit Sub
         ' Media.Markers.Clear()
         Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
+        If Media.IsLink Then
+        Else
+            T = New Thread(New ThreadStart(Sub() Op.ReuniteWithFile(x, filepath))) With {
+           .IsBackground = True
+        }
+            T.SetApartmentState(ApartmentState.STA)
+
+            T.Start()
+            ' Op.ReuniteWithFile(x, filepath)
+        End If
 
         Dim i = 0
         If x.Count = 0 Then
@@ -375,13 +385,13 @@ Public Class MainForm
                                 MSFiles.CancelURL(ff.FullName)
                             End If
 
-                            ff.Delete()
+                            .DeleteFile(ff.FullName, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
                         Next
                         For Each fol In f.EnumerateDirectories
                             DeleteFolder(fol.FullName, tvw, False)
                         Next
 
-                        f.Delete()
+                        f.Delete(FileIO.RecycleOption.SendToRecycleBin)
                         '.DeleteDirectory(CurrentFolder, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
                     Catch x As System.IO.IOException
                         MsgBox(Err.Description)
@@ -564,6 +574,7 @@ Public Class MainForm
         Else
             LBHH = FBH
         End If
+        LBHH.ListBox.SelectionMode = SelectionMode.One
         Dim count = LBHH.ItemList.Count
         ReDim Preserve FBCShown(count)
         If Random Then
@@ -583,51 +594,7 @@ Public Class MainForm
 
     End Sub
 
-    Public Sub AdvanceFile2(blnForward As Boolean, Optional Random As Boolean = False)
 
-        'Advance using whichever control has focus 
-        'Unless control pressed, in which case, always advance lbxfiles. 
-        Dim diff As Integer
-
-        If blnForward Then
-            diff = 1
-        Else
-            diff = -1
-        End If
-
-        Dim lbx As New ListBox
-        If FocusControl Is lbxFiles Or FocusControl Is lbxShowList Then
-            lbx = FocusControl
-        Else
-            lbx = lbxFiles
-        End If
-        If CtrlDown Then lbx = lbxFiles
-        Dim count As Long
-        count = lbx.Items.Count
-        ReDim Preserve FBCShown(count) 'Boolean list of files shown so far. But why now? Shouldn't this be when the folder is changed?
-        lbx.SelectionMode = SelectionMode.One
-        If count = 0 Then Exit Sub 'if no filelist, then give up.
-        If lbx.SelectedIndex = -1 Then lbx.SelectedIndex = 0
-        If lbx.SelectedIndex = 0 And Not blnForward Then
-            lbx.SelectedIndex = count - 1
-        Else
-            If count > 0 Then
-                If Random Then
-                    MSFiles.NextF.Randomised = True
-                    lbx.SelectedItem = MSFiles.NextItem
-                Else
-                    lbx.SelectedIndex = (lbx.SelectedIndex + diff) Mod count
-                End If
-            End If
-        End If
-        'FBCShown(lbx.SelectedIndex) = True
-        NofShown += 1
-        If NofShown >= count Then 'Re-sets when all shown. Quite nice. 
-            ReDim FBCShown(count)
-            NofShown = 0
-        End If
-
-    End Sub
 
     Public Sub CollapseShowlist(Collapse As Boolean)
         ButtonsHidden = Collapse
@@ -1145,24 +1112,15 @@ Public Class MainForm
 
 
 
-    Private Sub CopyList(list As List(Of String), list2 As SortedList(Of Long, String))
-        list.Clear()
-        For Each m As KeyValuePair(Of Long, String) In list2
-            list.Add(m.Value)
-        Next
-    End Sub
-    Private Sub CopyList(list As List(Of String), list2 As SortedList(Of Date, String))
-        list.Clear()
-        For Each m As KeyValuePair(Of Date, String) In list2
-            list.Add(m.Value)
-        Next
-    End Sub
+
 
 
     Private Sub RemoveFilesFromCollection(ByVal list As List(Of String), extensions As String)
         Dim d As New System.IO.DirectoryInfo(CurrentFolder)
         FindAllFilesBelow(d, list, extensions, True, "", True, False)
     End Sub
+#Region "Initialisation"
+
     Private Sub PopulateLists()
         Dim m As New StartPointHandler
         cbxFilter.Items.Clear()
@@ -1293,7 +1251,10 @@ Public Class MainForm
         End If
 
     End Sub
-    'Form Controls
+#End Region
+
+#Region "Control Handlers"
+
     Private Sub Form1_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         SplashScreen1.Hide()
         GlobalInitialise()
@@ -1322,13 +1283,13 @@ Public Class MainForm
     Public Sub frmMain_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
         'ry
         KeyDownFlag = True
-            ShiftDown = e.Shift
-            CtrlDown = e.Control
-            UpdateButtonAppearance()
-            HandleKeys(sender, e)
-            If e.KeyCode = KeyBackUndo Then
-                e.SuppressKeyPress = True
-            End If
+        ShiftDown = e.Shift
+        CtrlDown = e.Control
+        UpdateButtonAppearance()
+        HandleKeys(sender, e)
+        If e.KeyCode = KeyBackUndo Then
+            e.SuppressKeyPress = True
+        End If
         'atch ex As Exception
         'sgBox(ex.Message)
         'End Try
@@ -1356,7 +1317,7 @@ Public Class MainForm
     End Sub
     Private Sub frmMain_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
 
-        DeleteThumbs()
+        ' DeleteThumbs()
         PreferencesSave()
         Application.Exit()
     End Sub
@@ -1593,7 +1554,7 @@ Public Class MainForm
                 tbDate.BackColor = Me.BackColor
 
         End Select
-        tbDate.Text = dt.ToShortDateString & " " & dt.ToShortTimeString + " (" + Format(f.Length, "#,0.") + " bytes) " + Str(Int(f.Length / (128 * Media.Duration))) + " Kps"
+        tbDate.Text = dt.ToShortDateString & " " & dt.ToShortTimeString + " (" + Format(f.Length / 1024, "#,0.") + " Kb) " + Str(Int(f.Length / (128 * Media.Duration))) + " Kps"
         Dim c As Integer = lbxFiles.SelectedItems.Count
         Dim sl As Integer = lbxShowList.SelectedItems.Count
         If c > 1 And sl > 1 Then
@@ -1605,6 +1566,7 @@ Public Class MainForm
         Else
             tbFiles.Text = "FOLDER:" & listcount & " SHOW:" & showcount
         End If
+        tbFiles.Text = "FOLDER:" & listcount & " (" & GetDirSizeString(CurrentFolder) & ") SHOW:" & showcount
         tbFilter.Text = "FILTER:" & UCase(CurrentFilterState.Description)
         tbLastFile.Text = Media.MediaPath
         tbRandom.Text = "ORDER:" & UCase(PlayOrder.Description)
@@ -1981,7 +1943,9 @@ Public Class MainForm
     End Sub
 
     Private Sub ToolStripButton1_Click_1(sender As Object, e As EventArgs) Handles TreeToolStripMenuItem.Click
-        AssignTree(CurrentFolder)
+        Dim size As Byte = Val(InputBox("Max size"))
+        If size < 6 Then size = 11
+        AssignTreeNew(CurrentFolder, size)
         SaveButtonlist()
 
     End Sub
@@ -2330,9 +2294,9 @@ Public Class MainForm
         DM.FilterByDate(CurrentFolder, False, index)
         tvMain2.RefreshTree(CurrentFolder)
     End Sub
-    Private Sub FilterAlphabetic()
+    Private Sub FilterAlphabetic(Folders As Boolean, Files As Boolean)
         CancelDisplay()
-        DM.FilterByAlpha(CurrentFolder)
+        DM.FilterByAlpha(CurrentFolder, Folders:=Folders, Files:=Files)
         tvMain2.RefreshTree(CurrentFolder)
 
     End Sub
@@ -2568,7 +2532,7 @@ Public Class MainForm
 
     Private Sub btn8_DragDrop(sender As Object, e As DragEventArgs) Handles btn8.DragDrop, btn1.DragDrop
         Dim i As Integer = Val(sender.name(3))
-        AssignButton(i - 1, e.Data.GetData(DataFormats.Text).ToString)
+        '  AssignButton(i - 1, e.Data.GetData(DataFormats.Text).ToString)
     End Sub
 
     Private Sub RefreshSelectedLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RefreshSelectedLinksToolStripMenuItem.Click
@@ -2693,7 +2657,6 @@ Public Class MainForm
     End Sub
 
     Private Sub AlphabeticGroupsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlphabeticGroupsToolStripMenuItem.Click
-        FilterAlphabetic()
     End Sub
 
     Private Sub chbPreviewLinks_CheckedChanged(sender As Object, e As EventArgs) Handles chbPreviewLinks.CheckedChanged
@@ -2733,4 +2696,19 @@ Public Class MainForm
         Dim folder As New IO.DirectoryInfo(FBH.DirectoryPath)
         MoveFiles(FBH.SelectedItemsList, folder.Parent.FullName, FBH.ListBox)
     End Sub
+
+    Private Sub FilesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FilesToolStripMenuItem.Click
+        FilterAlphabetic(False, True)
+
+    End Sub
+
+    Private Sub FoldersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FoldersToolStripMenuItem.Click
+        FilterAlphabetic(True, False)
+    End Sub
+
+    Private Sub NewButtonFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NewButtonFileToolStripMenuItem.Click
+        NewButtonList()
+    End Sub
+#End Region
+
 End Class

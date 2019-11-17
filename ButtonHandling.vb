@@ -173,7 +173,7 @@ Module ButtonHandling
         Dim d As New DirectoryInfo(strStart)
         For Each di In d.EnumerateDirectories
             If exclude = "" Or InStr(di.Name, exclude) = 0 Then
-                'MsgBox(di.Name & "is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###"))
+                'MsgBox(di.Name & "is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###.#"))
                 dlist.Add(di.Name, di)
             End If
 
@@ -209,6 +209,51 @@ Module ButtonHandling
 
         KeyAssignmentsStore(ButtonFilePath)
     End Sub
+    Public Sub AssignTreeNew(strStart As String, SizeMagnitude As Byte)
+        If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
+
+        Dim dlist As New SortedList(Of Long, DirectoryInfo)
+        Dim plist As New SortedList(Of String, DirectoryInfo)
+        Dim exclude As String = ""
+        exclude = InputBox("String to exclude from folders?", "")
+        Dim d As New DirectoryInfo(strStart)
+        For Each di In d.EnumerateDirectories("*", searchOption:=IO.SearchOption.AllDirectories)
+
+            Dim disize = GetDirSize(di.FullName, 0)
+            If (exclude = "" Or Not di.Name.Contains(exclude)) And disize > 10 ^ SizeMagnitude Then
+                'MsgBox(di.Name & " is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###.#"))
+                While dlist.Keys.Contains(disize)
+                    disize += 1
+                End While
+                dlist.Add(disize, di)
+            End If
+
+        Next
+        Dim i As Int16 = 0
+
+        dlist.Reverse
+        dlist.Reverse
+
+        Dim n(nletts) As Integer
+
+        For Each dx In dlist
+            Dim di As IO.DirectoryInfo
+            di = dx.Value
+            Dim l As String = UCase(di.Name(0))
+            Dim ButtonNumber As Integer = LetterNumberFromAscii(Asc(l))
+            buttons.CurrentLetter = ButtonNumber
+            Dim firstbtn As New MVButton()
+                firstbtn.Letter = ButtonNumber
+                firstbtn.Position = buttons.CurrentRow.GetFirstFree()
+                firstbtn.Path = di.FullName
+                If firstbtn.Position < 8 Then AssignButton(firstbtn.Position, firstbtn.Letter, 1, di.FullName)
+
+
+        Next
+
+
+        KeyAssignmentsStore(ButtonFilePath)
+    End Sub
     Public Function FindNextTier(tier As SortedList(Of String, DirectoryInfo)) As SortedList(Of String, DirectoryInfo)
         Dim i As Int16 = 0
         Dim nexttier As New SortedList(Of String, DirectoryInfo)
@@ -227,8 +272,8 @@ Module ButtonHandling
     End Function
 
 
-    Public Sub AssignButton(ByVal i As Byte, ByVal j As Integer, ByVal k As Byte, ByVal strPath As String, Optional blnStore As Boolean = False)
-        Dim f As New DirectoryInfo(strPath)
+    Public Sub AssignButton(ByVal ButtonNumber As Byte, ByVal ButtonLetter As Integer, ByVal Layer As Byte, ByVal Path As String, Optional Store As Boolean = False)
+        Dim f As New DirectoryInfo(Path)
         'Static AskAgain As Boolean
         'If strVisibleButtons(i) <> "" And NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
         '    If AskAgain Then
@@ -237,30 +282,30 @@ Module ButtonHandling
         '        End If
         '    End If
         'End If
-        With buttons.CurrentRow.Buttons(i)
+        With buttons.CurrentRow.Buttons(ButtonNumber)
             Try
-                .Path = strPath
+                .Path = Path
                 .Label = f.Name
 
             Catch ex As Exception
 
             End Try
         End With
-        strVisibleButtons(i) = strPath
-        strButtonFilePath(i, j, k) = strPath
+        strVisibleButtons(ButtonNumber) = Path
+        strButtonFilePath(ButtonNumber, ButtonLetter, Layer) = Path
 
-        lblDest(i).Text = f.Name
-        strButtonCaptions(i, j, k) = f.Name
+        lblDest(ButtonNumber).Text = f.Name
+        strButtonCaptions(ButtonNumber, ButtonLetter, Layer) = f.Name
         UpdateButtonAppearance()
-        If blnStore Then
+        If Store Then
             KeyAssignmentsStore(ButtonFilePath)
         End If
     End Sub
 
-    Public Sub AssignButton(i As Byte, Path As String)
+    Public Sub AssignButton(i As Byte, Path As String, ask As Boolean)
         Dim f As New DirectoryInfo(Path)
         With buttons.CurrentRow.Buttons(i)
-            If .Path <> "" And NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
+            If .Path <> "" And ask Then
                 If Not MsgBox("Replace button assignment for F" & i + 5 & " with " & f.Name & "?", MsgBoxStyle.YesNoCancel) = MsgBoxResult.Yes Then Exit Sub
             End If
             .Path = Path
@@ -376,6 +421,7 @@ Module ButtonHandling
             lblDest(i).Text = ""
 
         Next
+        buttons.Clear()
     End Sub
     Public Sub ClearCurrentButtons(b As ButtonSet)
         For Each row In b.CurrentSet

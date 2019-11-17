@@ -740,13 +740,38 @@ Public Module General
         lbx.Items.Insert(index, newitem)
 
     End Sub
+    Public Function GetDirSizeString(Rootfolder As String) As String
+        Dim size As Long = GetDirSize(Rootfolder, 0)
+        Dim sizestring As String
+        If size > 10 ^ 12 Then
+            sizestring = Str(Format(size / 1024 / 1024 / 1024 / 1024, "###,###,###,###,###.#")) & " Tb"
+        ElseIf size > 10 ^ 9 Then
+            sizestring = Str(Format(size / 1024 / 1024 / 1024, "###,###,###,###,###.#")) & " Mb"
 
+        ElseIf size > 10 ^ 6 Then
+            sizestring = Str(Format(size / 1024 / 1024, "###,###,###,###,###.#")) & " Mb"
+        ElseIf size > 10 ^ 3 Then
+            sizestring = Str(Format(size / 1024, "###,###,###,###,###.#")) & " Kb"
+        Else
+            If size = 0 Then
+                sizestring = "0 bytes"
+            Else
+                sizestring = Str(Format(size, "###,###,###,###,###.#")) & " bytes"
+
+            End If
+
+        End If
+        Return sizestring
+    End Function
     Public Function GetDirSize(RootFolder As String, TotalSize As Long) As Long
-        Dim FolderInfo = New IO.DirectoryInfo(RootFolder)
-        For Each File In FolderInfo.GetFiles : TotalSize += File.Length
-        Next
-        For Each SubFolderInfo In FolderInfo.GetDirectories : GetDirSize(SubFolderInfo.FullName, TotalSize)
-        Next
+        Dim fso = CreateObject("Scripting.FileSystemObject")
+        Dim profile = fso.GetFolder(RootFolder)
+        TotalSize = profile.size
+        'Dim FolderInfo = New IO.DirectoryInfo(RootFolder)
+        'For Each File In FolderInfo.GetFiles : TotalSize += File.Length
+        'Next
+        'For Each SubFolderInfo In FolderInfo.GetDirectories : GetDirSize(SubFolderInfo.FullName, TotalSize)
+        'Next
         Return TotalSize
     End Function
 

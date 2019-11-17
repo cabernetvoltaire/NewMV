@@ -12,6 +12,7 @@ Public Class MediaSwapper
     Private mListbox As New ListBox
     Private mListcount As Integer
     Public CurrentURLS As New List(Of String)
+    <CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")>
     Public Event LoadedMedia(MH As MediaHandler)
     Public Event MediaNotFound(MH As MediaHandler)
     Public Property NextItem As String

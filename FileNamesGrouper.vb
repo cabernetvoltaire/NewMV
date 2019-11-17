@@ -129,7 +129,7 @@
 
             For Each foundword In mWordlist 'Go through wordlist and allocate files which contain it
 
-                If InStr(filefromlist, foundword.Key) <> 0 And CountOfGroup(filefromlist) < foundword.Value Then
+                If InStr(filefromlist, foundword.Key) <> 0 And CountOfGroup(filefromlist) < foundword.Value Then 'This is where the problem lies
 
 
                     If foundword.Value > 0 And foundword.Key <> "" Then

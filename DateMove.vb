@@ -154,21 +154,45 @@ Class DateMove
         Next
         RaiseEvent FilesMoved(Nothing, Nothing)
     End Sub
-    Public Sub FilterByAlpha(FolderName As String)
+    Public Sub FilterByAlpha(FolderName As String, Optional Files As Boolean = False, Optional Folders As Boolean = False)
         Dim s As New IO.DirectoryInfo(FolderName)
+        If Files Then
 
-        For i = 0 To 3
-            For Each f In s.GetFiles
-                If LCase(f.Name(0)) <= LCase(AlphaName(i)(Len(AlphaName(i)) - 1)) Then
+            For i = 0 To 3
+                For Each f In s.GetFiles
+                    If LCase(f.Name(0)) <= LCase(AlphaName(i)(Len(AlphaName(i)) - 1)) Then
 
-                    If s.GetDirectories("Alpha_" & AlphaName(i)).Length > 0 Then
-                    Else
-                        s.CreateSubdirectory("Alpha_" & AlphaName(i) & "\")
+                        If s.GetDirectories("Alpha_" & AlphaName(i)).Length > 0 Then
+                        Else
+                            s.CreateSubdirectory("Alpha_" & AlphaName(i) & "\")
+                        End If
+                        Dim dest As String = f.DirectoryName & "\Alpha_" & AlphaName(i)
+
+                        MoveFiles(f.FullName, dest, MainForm.lbxFiles)
                     End If
-                    f.MoveTo(f.DirectoryName & "\Alpha_" & AlphaName(i) & "\" & f.Name)
-                End If
+                Next
             Next
-        Next
+        End If
+        If Folders Then
+            For i = 0 To 3
+                Dim Alpha As String = "Alpha_" & AlphaName(i)
+                For Each f In s.EnumerateDirectories("*", IO.SearchOption.TopDirectoryOnly)
+                    If LCase(f.Name(0)) <= LCase(AlphaName(i)(Len(AlphaName(i)) - 1)) And LCase(f.Name(0)) >= LCase(AlphaName(i)(0)) Then
+
+                        If s.GetDirectories(Alpha).Length > 0 Then
+                        Else
+                            If s.FullName.Contains(Alpha) Then
+                            Else
+                                s.CreateSubdirectory(Alpha & "\")
+
+                            End If
+                        End If
+                        Dim dest As String = s.FullName & "\" & Alpha
+                        If Not f.Name.Contains("Alpha") Then MoveFolder(f.FullName, dest)
+                    End If
+                Next
+            Next
+        End If
         RaiseEvent FilesMoved(Nothing, Nothing)
     End Sub
     'Private Sub GetFoldersBelow(folderpath As String, recurse As Boolean)

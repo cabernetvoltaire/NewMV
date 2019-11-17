@@ -207,9 +207,12 @@ Partial Class MainForm
         Me.ByExtToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ByLinkFolderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AlphabeticGroupsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.FilesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.FoldersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PromoteFolderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FilterMoveToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.InvertSelectionToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PromoteFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FullScreenToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.Screen1ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Screen2ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -241,7 +244,6 @@ Partial Class MainForm
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
         Me.NewIndex = New System.Windows.Forms.Timer(Me.components)
         Me.Response = New System.Windows.Forms.Timer(Me.components)
-        Me.PromoteFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1806,9 +1808,22 @@ Partial Class MainForm
         '
         'AlphabeticGroupsToolStripMenuItem
         '
+        Me.AlphabeticGroupsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FilesToolStripMenuItem, Me.FoldersToolStripMenuItem})
         Me.AlphabeticGroupsToolStripMenuItem.Name = "AlphabeticGroupsToolStripMenuItem"
         Me.AlphabeticGroupsToolStripMenuItem.Size = New System.Drawing.Size(279, 30)
         Me.AlphabeticGroupsToolStripMenuItem.Text = "Alphabetic groups"
+        '
+        'FilesToolStripMenuItem
+        '
+        Me.FilesToolStripMenuItem.Name = "FilesToolStripMenuItem"
+        Me.FilesToolStripMenuItem.Size = New System.Drawing.Size(154, 30)
+        Me.FilesToolStripMenuItem.Text = "Files"
+        '
+        'FoldersToolStripMenuItem
+        '
+        Me.FoldersToolStripMenuItem.Name = "FoldersToolStripMenuItem"
+        Me.FoldersToolStripMenuItem.Size = New System.Drawing.Size(154, 30)
+        Me.FoldersToolStripMenuItem.Text = "Folders"
         '
         'PromoteFolderToolStripMenuItem
         '
@@ -1828,6 +1843,15 @@ Partial Class MainForm
         Me.InvertSelectionToolStripMenuItem.Size = New System.Drawing.Size(373, 30)
         Me.InvertSelectionToolStripMenuItem.Text = "Invert Selection"
         '
+        'PromoteFileToolStripMenuItem
+        '
+        Me.PromoteFileToolStripMenuItem.Name = "PromoteFileToolStripMenuItem"
+        Me.PromoteFileToolStripMenuItem.ShortcutKeys = CType((((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
+            Or System.Windows.Forms.Keys.Shift) _
+            Or System.Windows.Forms.Keys.P), System.Windows.Forms.Keys)
+        Me.PromoteFileToolStripMenuItem.Size = New System.Drawing.Size(373, 30)
+        Me.PromoteFileToolStripMenuItem.Text = "Promote File"
+        '
         'FullScreenToolStripMenuItem1
         '
         Me.FullScreenToolStripMenuItem1.CheckOnClick = True
@@ -1839,7 +1863,7 @@ Partial Class MainForm
         'Screen1ToolStripMenuItem
         '
         Me.Screen1ToolStripMenuItem.Name = "Screen1ToolStripMenuItem"
-        Me.Screen1ToolStripMenuItem.Size = New System.Drawing.Size(252, 30)
+        Me.Screen1ToolStripMenuItem.Size = New System.Drawing.Size(163, 30)
         Me.Screen1ToolStripMenuItem.Text = "Screen 1"
         '
         'Screen2ToolStripMenuItem
@@ -1847,7 +1871,7 @@ Partial Class MainForm
         Me.Screen2ToolStripMenuItem.Checked = True
         Me.Screen2ToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
         Me.Screen2ToolStripMenuItem.Name = "Screen2ToolStripMenuItem"
-        Me.Screen2ToolStripMenuItem.Size = New System.Drawing.Size(252, 30)
+        Me.Screen2ToolStripMenuItem.Size = New System.Drawing.Size(163, 30)
         Me.Screen2ToolStripMenuItem.Text = "Screen 2"
         '
         'OptionsToolStripMenuItem
@@ -2032,15 +2056,6 @@ Partial Class MainForm
         '
         'Response
         '
-        '
-        'PromoteFileToolStripMenuItem
-        '
-        Me.PromoteFileToolStripMenuItem.Name = "PromoteFileToolStripMenuItem"
-        Me.PromoteFileToolStripMenuItem.ShortcutKeys = CType((((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
-            Or System.Windows.Forms.Keys.Shift) _
-            Or System.Windows.Forms.Keys.P), System.Windows.Forms.Keys)
-        Me.PromoteFileToolStripMenuItem.Size = New System.Drawing.Size(373, 30)
-        Me.PromoteFileToolStripMenuItem.Text = "Promote File"
         '
         'MainForm
         '
@@ -2347,4 +2362,6 @@ Partial Class MainForm
     Friend WithEvents AlphabeticGroupsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents Scrubber As PictureBox
     Friend WithEvents PromoteFileToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents FilesToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents FoldersToolStripMenuItem As ToolStripMenuItem
 End Class

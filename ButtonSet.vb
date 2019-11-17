@@ -89,7 +89,11 @@ Public Class ButtonSet
         x = CurrentSet.FindAll(Function(m) m.Letter = letter)
         count = x.Count
     End Sub
-
+    ''' <summary>
+    ''' Returns first free button in a whole buttonset
+    ''' </summary>
+    ''' <param name="letter"></param>
+    ''' <returns></returns>
     Public Function FirstFree(letter As Integer) As MVButton
         Dim x As New List(Of ButtonRow)
         x = CurrentSet.FindAll(Function(m) m.Letter = letter)

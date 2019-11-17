@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{AE2A260B-7821-4E97-A843-D96814954527}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>MasaSam.Forms.Sample.MainForm</StartupObject>
+    <StartupObject>MasaSam.Forms.Sample.SplashScreen1</StartupObject>
     <RootNamespace>MasaSam.Forms.Sample</RootNamespace>
     <AssemblyName>Metavisua</AssemblyName>
     <FileAlignment>512</FileAlignment>

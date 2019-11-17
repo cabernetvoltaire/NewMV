@@ -561,8 +561,8 @@ Public Class MediaHandler
     Private Sub ResetPos() Handles ResetPosition.Tick
         ' PositionUpdater.Enabled = False
         Try
-            '  mPlayer.Ctlcontrols.currentPosition = StartPoint.StartPoint
-            ' MediaJumpToMarker()
+            'mPlayer.Ctlcontrols.currentPosition = StartPoint.StartPoint
+            MediaJumpToMarker()
         Catch ex As Exception
 
         End Try
