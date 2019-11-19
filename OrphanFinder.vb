@@ -88,9 +88,53 @@
         For Each x In mFoundParents.Keys
             mOrphanList.Remove(x)
         Next
+
+        'Alternative
+        'Get parent folder name
+        Dim i As Integer = 0
+        For Each f In mOrphanList
+            Dim fname As String = LinkTarget(f)
+            If fname <> "" Then
+
+                Dim tgt As New IO.DirectoryInfo(fname)
+                Dim found As Boolean = False
+                While Not found And tgt.Name <> tgt.Root.FullName
+                    Dim parentname As String = tgt.Name
+
+                    'Search Directories list for path containing folder name
+                    Dim searchdir As New List(Of String)
+                    searchdir = DirectoriesList.FindAll(Function(x) x.Contains(parentname))
+                    Dim filename = LinkTarget(f) 'name of the file 
+                    Dim spl = filename.Split("\")
+                    filename = spl(spl.Length - 1)
+                    If Len(filename) > 8 And i < searchdir.Count And Not found Then
+                        Dim newlink = searchdir(i) & "\" & filename
+                        If My.Computer.FileSystem.FileExists(newlink) Then
+                            If Not mFoundParents.Keys.Contains(f) Then
+                                mFoundParents.Add(f, newlink)
+                                found = True
+                            End If
+
+                        End If
+                        i += 1
+                    End If
+                    i = 0
+                    'Failed so use parent folder as search name
+                    tgt = tgt.Parent
+                End While
+            End If
+            i = 0
+        Next
+        For Each x In mFoundParents.Keys
+            mOrphanList.Remove(x)
+        Next
+        If mFoundParents.Count > 0 Then
+            Exit Sub
+        End If
+        'Check those.
+        i = 0
         'otherwise, have to do a complete search
         'for each directory, 
-        Dim i As Integer = 0
         Dim max = DirectoriesList.Count
         While mFoundParents.Count < mOrphanList.Count And i < max
             For Each j In mOrphanList
@@ -117,6 +161,7 @@
     Public Sub FindOrphans()
         FindOrphans2()
         Reunite()
+        MsgBox("Reunite finished")
 
     End Sub
 

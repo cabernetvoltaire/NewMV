@@ -130,6 +130,16 @@
   <data name="TableLayoutPanel1.ColumnCount" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="ProgressBar.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="ProgressBar.Size" type="System.Drawing.Size, System.Drawing">
+    <value>707, 81</value>
+  </data>
+  <data name="ProgressBar.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
   <data name="&gt;&gt;ProgressBar.Name" xml:space="preserve">
     <value>ProgressBar</value>
   </data>
@@ -141,6 +151,19 @@
   </data>
   <data name="&gt;&gt;ProgressBar.ZOrder" xml:space="preserve">
     <value>0</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Slider.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="Slider.Location" type="System.Drawing.Point, System.Drawing">
+    <value>716, 3</value>
+  </data>
+  <data name="Slider.Size" type="System.Drawing.Size, System.Drawing">
+    <value>322, 69</value>
+  </data>
+  <data name="Slider.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
   <data name="&gt;&gt;Slider.Name" xml:space="preserve">
     <value>Slider</value>
@@ -154,6 +177,18 @@
   <data name="&gt;&gt;Slider.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
+  <data name="btnFindDupImages.Location" type="System.Drawing.Point, System.Drawing">
+    <value>1044, 3</value>
+  </data>
+  <data name="btnFindDupImages.Size" type="System.Drawing.Size, System.Drawing">
+    <value>118, 54</value>
+  </data>
+  <data name="btnFindDupImages.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="btnFindDupImages.Text" xml:space="preserve">
+    <value>Find &amp;Duplicates</value>
+  </data>
   <data name="&gt;&gt;btnFindDupImages.Name" xml:space="preserve">
     <value>btnFindDupImages</value>
   </data>
@@ -166,11 +201,36 @@
   <data name="&gt;&gt;btnFindDupImages.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Refresh.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="Refresh.Location" type="System.Drawing.Point, System.Drawing">
+    <value>1168, 3</value>
+  </data>
+  <data name="Refresh.Size" type="System.Drawing.Size, System.Drawing">
+    <value>118, 54</value>
+  </data>
+  <data name="Refresh.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="Refresh.Text" xml:space="preserve">
+    <value>Refresh Thumbnails</value>
+  </data>
+  <data name="&gt;&gt;Refresh.Name" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="&gt;&gt;Refresh.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;Refresh.Parent" xml:space="preserve">
+    <value>FlowLayoutPanel1</value>
+  </data>
+  <data name="&gt;&gt;Refresh.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
   <data name="FlowLayoutPanel1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Fill</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="FlowLayoutPanel1.Location" type="System.Drawing.Point, System.Drawing">
     <value>3, 810</value>
   </data>
@@ -221,75 +281,6 @@
   </data>
   <data name="TableLayoutPanel1.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms">
     <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="FlowLayoutPanel1" Row="1" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;/Controls&gt;&lt;Columns Styles="Percent,90" /&gt;&lt;Rows Styles="Percent,90,Percent,10" /&gt;&lt;/TableLayoutSettings&gt;</value>
-  </data>
-  <data name="ProgressBar.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
-  </data>
-  <data name="ProgressBar.Size" type="System.Drawing.Size, System.Drawing">
-    <value>707, 81</value>
-  </data>
-  <data name="ProgressBar.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;ProgressBar.Name" xml:space="preserve">
-    <value>ProgressBar</value>
-  </data>
-  <data name="&gt;&gt;ProgressBar.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ProgressBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;ProgressBar.Parent" xml:space="preserve">
-    <value>FlowLayoutPanel1</value>
-  </data>
-  <data name="&gt;&gt;ProgressBar.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="Slider.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Left, Right</value>
-  </data>
-  <data name="Slider.Location" type="System.Drawing.Point, System.Drawing">
-    <value>716, 3</value>
-  </data>
-  <data name="Slider.Size" type="System.Drawing.Size, System.Drawing">
-    <value>322, 69</value>
-  </data>
-  <data name="Slider.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;Slider.Name" xml:space="preserve">
-    <value>Slider</value>
-  </data>
-  <data name="&gt;&gt;Slider.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TrackBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;Slider.Parent" xml:space="preserve">
-    <value>FlowLayoutPanel1</value>
-  </data>
-  <data name="&gt;&gt;Slider.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="btnFindDupImages.Location" type="System.Drawing.Point, System.Drawing">
-    <value>1044, 3</value>
-  </data>
-  <data name="btnFindDupImages.Size" type="System.Drawing.Size, System.Drawing">
-    <value>118, 54</value>
-  </data>
-  <data name="btnFindDupImages.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
-  <data name="btnFindDupImages.Text" xml:space="preserve">
-    <value>Find &amp;Duplicates</value>
-  </data>
-  <data name="&gt;&gt;btnFindDupImages.Name" xml:space="preserve">
-    <value>btnFindDupImages</value>
-  </data>
-  <data name="&gt;&gt;btnFindDupImages.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btnFindDupImages.Parent" xml:space="preserve">
-    <value>FlowLayoutPanel1</value>
-  </data>
-  <data name="&gt;&gt;btnFindDupImages.ZOrder" xml:space="preserve">
-    <value>2</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>

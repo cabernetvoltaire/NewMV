@@ -32,6 +32,7 @@ Partial Class Thumbnails
         Me.ProgressBar = New System.Windows.Forms.ProgressBar()
         Me.Slider = New System.Windows.Forms.TrackBar()
         Me.btnFindDupImages = New System.Windows.Forms.Button()
+        Me.Refresh = New System.Windows.Forms.Button()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.FlowLayoutPanel1.SuspendLayout()
         CType(Me.Slider, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -56,6 +57,7 @@ Partial Class Thumbnails
         Me.FlowLayoutPanel1.Controls.Add(Me.ProgressBar)
         Me.FlowLayoutPanel1.Controls.Add(Me.Slider)
         Me.FlowLayoutPanel1.Controls.Add(Me.btnFindDupImages)
+        Me.FlowLayoutPanel1.Controls.Add(Me.Refresh)
         resources.ApplyResources(Me.FlowLayoutPanel1, "FlowLayoutPanel1")
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
         '
@@ -78,6 +80,12 @@ Partial Class Thumbnails
         resources.ApplyResources(Me.btnFindDupImages, "btnFindDupImages")
         Me.btnFindDupImages.Name = "btnFindDupImages"
         Me.btnFindDupImages.UseVisualStyleBackColor = True
+        '
+        'Refresh
+        '
+        resources.ApplyResources(Me.Refresh, "Refresh")
+        Me.Refresh.Name = "Refresh"
+        Me.Refresh.UseVisualStyleBackColor = True
         '
         'Thumbnails
         '
@@ -104,4 +112,5 @@ Partial Class Thumbnails
     Friend WithEvents ProgressBar As ProgressBar
     Friend WithEvents Slider As TrackBar
     Friend WithEvents btnFindDupImages As Button
+    Friend WithEvents Refresh As Button
 End Class

@@ -185,6 +185,7 @@
     <Compile Include="ListBoxHandler.vb" />
     <Compile Include="MarkPlacement.vb" />
     <Compile Include="MediaHandler.vb" />
+    <Compile Include="MediaInfo.vb" />
     <Compile Include="MovieSwapper.vb" />
     <Compile Include="MVButton.vb" />
     <Compile Include="My Project\Class1.vb" />

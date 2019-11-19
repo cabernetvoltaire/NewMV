@@ -4,6 +4,7 @@
     Public Event ThumbnailCreated(i As Short)
     Private Duration As TimeSpan
     Private mList As List(Of String)
+    Private mRefresh As Boolean = False
     Private mMsg As String = " Creating thumbnails, please wait..."
     Public Property List() As List(Of String)
         Get
@@ -122,7 +123,7 @@
                 Dim myCallback As New Image.GetThumbnailImageAbort(AddressOf ThumbnailCallback)
                 Dim finfo As New IO.FileInfo(ThumbnailName(f))
                 Dim THRef As String
-                If Not finfo.Exists Then
+                If Not finfo.Exists Or mRefresh Then
                     Dim VT As New VideoThumbnailer
                     VT.Fileref = f
                     VT.ThumbnailHeight = h
@@ -294,5 +295,9 @@
 
     End Sub
 
-
+    Private Sub Refresh_Click(sender As Object, e As EventArgs) Handles Refresh.Click
+        mRefresh = True
+        LoadThumbnails()
+        mRefresh = False
+    End Sub
 End Class

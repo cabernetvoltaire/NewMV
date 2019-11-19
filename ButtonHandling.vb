@@ -155,7 +155,7 @@ Module ButtonHandling
         Dim d As New DirectoryInfo(Start)
         For Each di In d.EnumerateDirectories
             If InStr(di.Name, exclude) = 0 Then
-                plist.Add(GetDirSize(di.Name, 0), di)
+                plist.Add(GetDirSize(di.Name, 0).Result, di)
             End If
         Next
 
@@ -212,14 +212,16 @@ Module ButtonHandling
     Public Sub AssignTreeNew(strStart As String, SizeMagnitude As Byte)
         If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
 
-        Dim dlist As New SortedList(Of Long, DirectoryInfo)
-        Dim plist As New SortedList(Of String, DirectoryInfo)
         Dim exclude As String = ""
         exclude = InputBox("String to exclude from folders?", "")
         Dim d As New DirectoryInfo(strStart)
+
+        Dim icomp As New MyComparer
+        Dim dlist As New SortedList(Of Long, DirectoryInfo)(icomp)
+
         For Each di In d.EnumerateDirectories("*", searchOption:=IO.SearchOption.AllDirectories)
 
-            Dim disize = GetDirSize(di.FullName, 0)
+            Dim disize = GetDirSize(di.FullName, 0).Result
             If (exclude = "" Or Not di.Name.Contains(exclude)) And disize > 10 ^ SizeMagnitude Then
                 'MsgBox(di.Name & " is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###.#"))
                 While dlist.Keys.Contains(disize)
@@ -230,9 +232,8 @@ Module ButtonHandling
 
         Next
         Dim i As Int16 = 0
-
-        dlist.Reverse
-        dlist.Reverse
+        'dlist.Reverse
+        '   dlist.Reverse
 
         Dim n(nletts) As Integer
 
@@ -243,10 +244,10 @@ Module ButtonHandling
             Dim ButtonNumber As Integer = LetterNumberFromAscii(Asc(l))
             buttons.CurrentLetter = ButtonNumber
             Dim firstbtn As New MVButton()
-                firstbtn.Letter = ButtonNumber
-                firstbtn.Position = buttons.CurrentRow.GetFirstFree()
-                firstbtn.Path = di.FullName
-                If firstbtn.Position < 8 Then AssignButton(firstbtn.Position, firstbtn.Letter, 1, di.FullName)
+            firstbtn.Letter = ButtonNumber
+            firstbtn.Position = buttons.CurrentRow.GetFirstFree()
+            firstbtn.Path = di.FullName
+            If firstbtn.Position < 8 Then AssignButton(firstbtn.Position, firstbtn.Letter, 1, di.FullName)
 
 
         Next
@@ -517,3 +518,64 @@ Module ButtonHandling
     End Sub
 
 End Module
+Public Class MyComparer
+    Implements Generic.IComparer(Of Long)
+
+    ''' <returns>
+    ''' Zero if x is equal to y;
+    ''' A value less than zero if x is greater than y;
+    ''' A value greater than zero if x is less than y.
+    ''' </returns>
+    ''' <remarks></remarks>
+    Public Function Compare(ByVal x As Long, ByVal y As Long) As Integer Implements System.Collections.Generic.IComparer(Of Long).Compare
+        If x = y Then
+            Return 0
+        ElseIf x > y Then
+            Return -1
+        Else
+            Return 1
+
+        End If
+
+
+    End Function
+
+
+End Class
+
+Public Class CompareByFilesize
+    Implements Generic.IComparer(Of FileInfo)
+
+    Public Function Compare(x As FileInfo, y As FileInfo) As Integer Implements IComparer(Of FileInfo).Compare
+        If x.Length = y.Length Then
+            Return 0
+        ElseIf x.Length < y.length Then
+            Return -1
+        Else
+            Return 1
+        End If
+
+    End Function
+End Class
+Public Class CompareByDateTime
+    Implements Generic.IComparer(Of FileInfo)
+    Public Reverse As Boolean
+    Public Function Compare(x As FileInfo, y As FileInfo) As Integer Implements IComparer(Of FileInfo).Compare
+        If x.CreationTimeUtc = y.CreationTimeUtc Then
+            Return 0
+        ElseIf x.CreationTimeUtc < y.CreationTimeUtc Then
+            If Reverse Then
+                Return 1
+            Else
+                Return -1
+            End If
+        Else
+            If Reverse Then
+                Return -1
+            Else
+                Return 1
+            End If
+        End If
+
+    End Function
+End Class

@@ -127,15 +127,19 @@ Class DateMove
         Dim s As New IO.DirectoryInfo(FolderName)
         For Each f In s.GetFiles
             If f.Extension = ".lnk" Then
+                Try
 
-                Dim tgt As New IO.FileInfo(LinkTarget(f.FullName))
-                Dim parentname As String = tgt.Directory.Name
-                If parentname = tgt.Directory.Root.FullName Then parentname = ""
-                Dim m As New IO.DirectoryInfo(f.Directory.FullName & "\" & parentname)
-                If Not m.Exists Then
-                    m.Create()
-                End If
-                f.MoveTo(m.FullName & "\" & f.Name)
+                    Dim tgt As New IO.FileInfo(LinkTarget(f.FullName))
+                    Dim parentname As String = tgt.Directory.Name
+                    If parentname = tgt.Directory.Root.FullName Then parentname = ""
+                    Dim m As New IO.DirectoryInfo(f.Directory.FullName & "\" & parentname)
+                    If Not m.Exists Then
+                        m.Create()
+                    End If
+                    f.MoveTo(m.FullName & "\" & f.Name)
+                Catch ex As Exception
+
+                End Try
 
             End If
         Next

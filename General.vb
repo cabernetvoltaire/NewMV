@@ -95,9 +95,12 @@ Public Module General
         '    End If
         'Next
         Dim deadlinks As New List(Of String)
+
         For Each f In ls
-            If Not LinkTargetExists(f) Then
-                deadlinks.Add(f)
+            If f.EndsWith(".lnk") Then
+                If Not LinkTargetExists(f) Then
+                    deadlinks.Add(f)
+                End If
             End If
         Next
         Return deadlinks
@@ -248,6 +251,7 @@ Public Module General
                 Thread.Sleep(100)
             End While
             WriteListToFile(list, DirectoriesListFile, Encrypted)
+            MsgBox("Directories Loaded")
         End If
         Return list
     End Function
@@ -603,6 +607,25 @@ Public Module General
     End Function
 
 
+    Public Function SetPlayOrderNew(Order As Byte, List As List(Of String)) As List(Of String)
+        Dim x As New List(Of IO.FileInfo)
+        Try
+            Select Case Order
+                Case SortHandler.Order.Name
+                Case SortHandler.Order.Size
+                    Dim cpr As New CompareByFilesize
+                    x.Sort(cpr)
+                Case SortHandler.Order.DateTime
+                Case SortHandler.Order.PathName
+                Case SortHandler.Order.Random
+                Case SortHandler.Order.Type
+
+
+            End Select
+        Catch ex As Exception
+
+        End Try
+    End Function
 
 
     Public Function SetPlayOrder(Order As Byte, ByVal List As List(Of String)) As List(Of String)
@@ -614,92 +637,20 @@ Public Module General
         Try
             Select Case Order
                 Case SortHandler.Order.Name
-                    For Each f In List
-                        If Len(f) > 247 Then Continue For
-                        Dim file As New FileInfo(f)
-
-                        Dim l As Long = 0
-                        Dim s As String
-                        s = file.Name & Str(l)
-                        While NewListS.ContainsKey(s)
-                            l += 1
-                            s = file.Name & Str(l)
-                            '               frmMain.ListBox1.Items.Add(s)
-
-                        End While
-                        NewListS.Add(s, file.FullName)
-                    Next
+                    SortByName(List, NewListS)
                 Case SortHandler.Order.Size
-                    For Each f In List
-                        If Len(f) > 247 Then Continue For
-                        Dim file As New FileInfo(f)
-                        Try
-                            Dim l As Long
-                            l = file.Length
-                            While NewListL.ContainsKey(l)
-                                l += 1
-                                'MsgBox(l)
-                            End While
-                            NewListL.Add(l, file.FullName)
-
-                        Catch ex As FileNotFoundException
-                        Catch ex As Exception
-                            MsgBox("Unhandled Error in SetPlayOrder" & vbCrLf & ex.Message)
-
-
-                        End Try
-                    Next
+                    SortBySize(List, NewListL)
 
                 Case SortHandler.Order.DateTime
-                    For Each f In List
-                        If Len(f) > 247 Then Continue For
-                        Dim file As New FileInfo(f)
-                        'MsgBox(time)
-                        Dim time = GetDate(file)
-                        While NewListD.ContainsKey(time)
-                            time = time.AddSeconds(1)
-                        End While
-                        NewListD.Add(time, file.FullName)
-                    Next
+                    SortByDate(List, NewListD)
                 Case SortHandler.Order.PathName
-                    For Each f In List
-                        If Len(f) > 247 Then Continue For
-                        Dim file As New FileInfo(f)
-                        Dim l As Long = 0
-                        Dim s As String
-                        s = file.FullName & Str(l)
-                        While NewListS.ContainsKey(s)
-                            l += 1
-                            s = file.FullName & Str(l)
-                            '               frmMain.ListBox1.Items.Add(s)
-
-                        End While
-                        '                        MsgBox(file.FullName)
-                        NewListS.Add(s, file.FullName)
-                    Next
+                    SortbyPathName(List, NewListS)
 
                 Case SortHandler.Order.Type
-                    For Each f In List
-                        If Len(f) > 247 Then Continue For
-                        Dim file As New FileInfo(f)
-                        NewListS.Add(file.Extension & file.Name & Str(Rnd() * (100)), file.FullName)
-                    Next
+                    SortbyType(List, NewListS)
 
                 Case SortHandler.Order.Random
-                    For Each f In List
-                        If Len(f) > 247 Then Continue For
-                        Dim file As New FileInfo(f)
-
-                        Dim l As Long
-                        l = Int(Rnd() * (100 * List.Count))
-                        While NewListS.ContainsKey(Str(l))
-                            l = Int(Rnd() * (100 * List.Count))
-                            '                       frmMain.ListBox1.Items.Add(l)
-
-                        End While
-                        NewListS.Add(Str(l), file.FullName)
-                    Next
-
+                    SortbyRandom(List, NewListS)
                 Case Else
 
             End Select
@@ -726,6 +677,101 @@ Public Module General
 
     End Function
 
+    Private Sub SortbyRandom(List As List(Of String), NewListS As SortedList(Of String, String))
+        For Each f In List
+            If Len(f) > 247 Then Continue For
+            Dim file As New FileInfo(f)
+
+            Dim l As Long
+            l = Int(Rnd() * (100 * List.Count))
+            While NewListS.ContainsKey(Str(l))
+                l = Int(Rnd() * (100 * List.Count))
+                '                       frmMain.ListBox1.Items.Add(l)
+
+            End While
+            NewListS.Add(Str(l), file.FullName)
+        Next
+    End Sub
+
+    Private Sub SortbyType(List As List(Of String), NewListS As SortedList(Of String, String))
+        For Each f In List
+            If Len(f) > 247 Then Continue For
+            Dim file As New FileInfo(f)
+            NewListS.Add(file.Extension & file.Name & Str(Rnd() * (100)), file.FullName)
+        Next
+    End Sub
+
+    Private Sub SortbyPathName(List As List(Of String), NewListS As SortedList(Of String, String))
+        For Each f In List
+            If Len(f) > 247 Then Continue For
+            Dim file As New FileInfo(f)
+            Dim l As Long = 0
+            Dim s As String
+            s = file.FullName & Str(l)
+            While NewListS.ContainsKey(s)
+                l += 1
+                s = file.FullName & Str(l)
+                '               frmMain.ListBox1.Items.Add(s)
+
+            End While
+            '                        MsgBox(file.FullName)
+            NewListS.Add(s, file.FullName)
+        Next
+    End Sub
+
+    Private Sub SortByDate(List As List(Of String), NewListD As SortedList(Of Date, String))
+        For Each f In List
+            If Len(f) > 247 Then Continue For
+            Dim file As New FileInfo(f)
+            'MsgBox(time)
+            Dim time = GetDate(file)
+            While NewListD.ContainsKey(time)
+                time = time.AddSeconds(1)
+            End While
+            NewListD.Add(time, file.FullName)
+        Next
+    End Sub
+
+    Private Sub SortBySize(List As List(Of String), NewListL As SortedList(Of Long, String))
+        For Each f In List
+            If Len(f) > 247 Then Continue For
+            Dim file As New FileInfo(f)
+            Try
+                Dim l As Long
+                l = file.Length
+                While NewListL.ContainsKey(l)
+                    l += 1
+                    'MsgBox(l)
+                End While
+                NewListL.Add(l, file.FullName)
+
+            Catch ex As FileNotFoundException
+            Catch ex As Exception
+                MsgBox("Unhandled Error in SetPlayOrder" & vbCrLf & ex.Message)
+
+
+            End Try
+        Next
+    End Sub
+
+    Private Sub SortByName(List As List(Of String), NewListS As SortedList(Of String, String))
+        For Each f In List
+            If Len(f) > 247 Then Continue For
+            Dim file As New FileInfo(f)
+
+            Dim l As Long = 0
+            Dim s As String
+            s = file.Name & Str(l)
+            While NewListS.ContainsKey(s)
+                l += 1
+                s = file.Name & Str(l)
+                '               frmMain.ListBox1.Items.Add(s)
+
+            End While
+            NewListS.Add(s, file.FullName)
+        Next
+    End Sub
+
     Function GetDate(f As FileInfo) As DateTime
         Dim time As DateTime = f.CreationTime
         Dim time2 As DateTime = f.LastAccessTime
@@ -740,8 +786,8 @@ Public Module General
         lbx.Items.Insert(index, newitem)
 
     End Sub
-    Public Function GetDirSizeString(Rootfolder As String) As String
-        Dim size As Long = GetDirSize(Rootfolder, 0)
+    Public Async Function GetDirSizeString(Rootfolder As String) As Task(Of String)
+        Dim size As Long = GetDirSize(Rootfolder, 0).Result
         Dim sizestring As String
         If size > 10 ^ 12 Then
             sizestring = Str(Format(size / 1024 / 1024 / 1024 / 1024, "###,###,###,###,###.#")) & " Tb"
@@ -763,10 +809,21 @@ Public Module General
         End If
         Return sizestring
     End Function
-    Public Function GetDirSize(RootFolder As String, TotalSize As Long) As Long
+
+    Public Async Function GetDirSize(RootFolder As String, TotalSize As Long) As Task(Of Long)
+        If RootFolder.EndsWith(":\") Then
+            Return 0
+            Exit Function
+        End If
+
         Dim fso = CreateObject("Scripting.FileSystemObject")
-        Dim profile = fso.GetFolder(RootFolder)
-        TotalSize = profile.size
+        Dim dir As New IO.DirectoryInfo(RootFolder)
+        If dir.Exists Then
+            Dim profile = fso.GetFolder(RootFolder)
+
+            TotalSize = profile.size
+        End If
+
         'Dim FolderInfo = New IO.DirectoryInfo(RootFolder)
         'For Each File In FolderInfo.GetFiles : TotalSize += File.Length
         'Next

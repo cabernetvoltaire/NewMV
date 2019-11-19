@@ -168,8 +168,9 @@ Public Class MainForm
         End If
     End Sub
     Friend Sub OnFolderMoved(ByVal path As String)
-        '  tvMain2.RefreshTree(tvMain2.SelectedFolder)
-        tvMain2.RemoveNode(path)
+        Dim d As New IO.DirectoryInfo(tvMain2.SelectedFolder)
+        tvMain2.RefreshTree(d.FullName)
+        'tvMain2.RemoveNode(path)
         'Dim dir As New IO.DirectoryInfo(path)
         'Dir.Delete()
     End Sub
@@ -392,6 +393,7 @@ Public Class MainForm
                         Next
 
                         f.Delete(FileIO.RecycleOption.SendToRecycleBin)
+                        DirectoriesList.Remove(FolderName)
                         '.DeleteDirectory(CurrentFolder, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
                     Catch x As System.IO.IOException
                         MsgBox(Err.Description)
@@ -1566,7 +1568,7 @@ Public Class MainForm
         Else
             tbFiles.Text = "FOLDER:" & listcount & " SHOW:" & showcount
         End If
-        tbFiles.Text = "FOLDER:" & listcount & " (" & GetDirSizeString(CurrentFolder) & ") SHOW:" & showcount
+        tbFiles.Text = "FOLDER:" & listcount & " (" & GetDirSizeString(CurrentFolder).Result & ") SHOW:" & showcount
         tbFilter.Text = "FILTER:" & UCase(CurrentFilterState.Description)
         tbLastFile.Text = Media.MediaPath
         tbRandom.Text = "ORDER:" & UCase(PlayOrder.Description)
@@ -2635,7 +2637,7 @@ Public Class MainForm
     End Sub
 
 
-    Private Sub lbxFiles_KeyDown(sender As Object, e As KeyEventArgs) Handles lbxFiles.KeyDown
+    Private Sub lbxFiles_KeyDown(sender As Object, e As KeyEventArgs) Handles lbxFiles.KeyDown, lbxShowList.KeyDown
         If e.KeyCode = KeyTraverseTree Or e.KeyCode = KeyTraverseTreeBack Then
             tvMain2.tvFiles_KeyDown(sender, e)
         End If

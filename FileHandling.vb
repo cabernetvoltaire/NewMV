@@ -227,9 +227,11 @@ Friend Module FileHandling
         Next
     End Sub
     Public Sub MoveFolder(Dir As String, Dest As String)
+
         Dim TargetDir As New DirectoryInfo(Dest)
         Dim SourceDir As New DirectoryInfo(Dir)
-
+        DirectoriesList.Remove(SourceDir.FullName)
+        DirectoriesList.Add(TargetDir.FullName)
 
         'Make target subdirectories.
         MoveDirectoryContents(TargetDir, SourceDir, SourceDir, True)
@@ -352,7 +354,7 @@ Friend Module FileHandling
                     spath = s & "\" & m.Name
 
                 End If
-                While .FileExists(spath) AndAlso m.FullName <> spath 'Existing path
+                While .FileExists(spath) AndAlso m.FullName = spath 'Existing path
                     Dim x = m.Extension
                     Dim b = InStr(spath, "(")
                     If b = 0 Then
@@ -365,7 +367,18 @@ Friend Module FileHandling
                 End While
                 Select Case NavigateMoveState.State
                     Case StateHandler.StateOptions.Copy
-                        .CopyFile(m.FullName, spath)
+                        If strDest = "" Then
+                            Dim f As New IO.FileInfo(m.FullName)
+                            AllFaveMinder.DestinationPath = strDest
+                            AllFaveMinder.CheckFile(f)
+                            If AllFaveMinder.OkToDelete Then
+                                'AllFaveMinder.DeleteFavourite(m.FullName)
+                                Deletefile(m.FullName)
+                            End If
+                        Else
+                            .CopyFile(m.FullName, spath)
+
+                        End If
                     Case StateHandler.StateOptions.Move, StateHandler.StateOptions.Navigate
                         'If Not currentPicBox.Image Is Nothing Then DisposePic(currentPicBox)
                         If strDest = "" Then
@@ -473,6 +486,7 @@ Friend Module FileHandling
         If blnCreate Then
             Try
                 IO.Directory.CreateDirectory(s)
+                DirectoriesList.Add(s)
                 tv.RefreshTree(strDest)
             Catch ex As IO.DirectoryNotFoundException
             End Try
@@ -650,7 +664,8 @@ Friend Module FileHandling
             Dim s As String = d.Parent.FullName
             Try
                 ' MainForm.tvMain2.RemoveNode(d.FullName)
-                d.Delete()
+                My.Computer.FileSystem.DeleteDirectory(d.FullName, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
+                DirectoriesList.Remove(d.FullName)
 
             Catch ex As Exception
                 Return False
@@ -732,6 +747,7 @@ Friend Module FileHandling
         '    End If
         'Next
         DeleteEmptyFolders(d, True)
+        RaiseEvent FolderMoved(d.FullName)
     End Sub
     Public Sub BurstFolder(d As DirectoryInfo)
         HarvestFolder(d, True, True)
