@@ -2537,21 +2537,17 @@ Public Class MainForm
         '  AssignButton(i - 1, e.Data.GetData(DataFormats.Text).ToString)
     End Sub
 
-    Private Sub RefreshSelectedLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RefreshSelectedLinksToolStripMenuItem.Click
+    Private Sub RefreshSelectedLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RefreshSelectedLinksToolStripMenuItem.Click, SelectedDeepToolStripMenuItem.Click
         Dim op2 As New OrphanFinder
         Dim lbx As New ListBox
         Dim files As New List(Of String)
         lbx = FocusControl
-        'If PFocus = CtrlFocus.Files Then
-        '    lbx = lbxFiles
-        'ElseIf PFocus = CtrlFocus.ShowList Then
-        '    lbx = lbxShowList
-        'End If
+
         For Each m In lbx.SelectedItems
             files.Add(m)
         Next
         op2.OrphanList = files
-        op2.FindOrphans()
+        op2.FindOrphans(sender Is SelectedDeepToolStripMenuItem)
     End Sub
 
 
@@ -2710,6 +2706,32 @@ Public Class MainForm
 
     Private Sub NewButtonFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NewButtonFileToolStripMenuItem.Click
         NewButtonList()
+    End Sub
+
+    Private Sub SelectedDeepToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectedDeepToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub ListDeadFilesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ListDeadFilesToolStripMenuItem.Click
+        FormDeadFiles.Show()
+        SelectDeadLinks(FocusControl)
+        Dim op2 As New OrphanFinder
+        Dim lbx As New ListBox
+        Dim files As New List(Of String)
+        lbx = FocusControl
+
+        For Each m In lbx.SelectedItems
+            files.Add(m)
+        Next
+        op2.OrphanList = files
+        Dim deadfiles As New List(Of String)
+        deadfiles = op2.ListOfDeadFiles
+        deadfiles.Sort()
+
+        For Each f In deadfiles
+            FormDeadFiles.TextBox1.Text = FormDeadFiles.TextBox1.Text & f & vbCrLf
+
+        Next
     End Sub
 #End Region
 

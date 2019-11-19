@@ -811,6 +811,7 @@ Public Module General
     End Function
 
     Public Async Function GetDirSize(RootFolder As String, TotalSize As Long) As Task(Of Long)
+        Exit Function
         If RootFolder.EndsWith(":\") Then
             Return 0
             Exit Function

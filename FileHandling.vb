@@ -394,8 +394,8 @@ Friend Module FileHandling
                             AllFaveMinder.DestinationPath = spath
                             Try
 
-                                AllFaveMinder.CheckFile(New IO.FileInfo(m.FullName))
                                 m.MoveTo(spath)
+                                AllFaveMinder.CheckFile(New IO.FileInfo(m.FullName))
                                 'AssignSpecialButton("0", strDest)
                             Catch ex As Exception
                                 MsgBox(ex.Message)
