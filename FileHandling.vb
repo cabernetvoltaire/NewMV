@@ -75,7 +75,7 @@ Friend Module FileHandling
         Debug.Print("")
     End Sub
     Public Sub OnFilesMoved(files As List(Of String), lbx1 As ListBox)
-        '   Exit Sub
+        ' Exit Sub
         lbx1.SelectionMode = SelectionMode.One
         Dim ind As Long = lbx1.SelectedIndex
         For Each f In files
@@ -85,6 +85,7 @@ Friend Module FileHandling
                     MainForm.UpdatePlayOrder(MainForm.FBH)
                     ReplaceListboxItem(lbx1, ind, f)
                     lbx1.SelectedItem = lbx1.Items(ind)
+
                     RefreshListbox(lbx1, files)
                 Case Else
                     RefreshListbox(lbx1, files)
@@ -318,7 +319,12 @@ Friend Module FileHandling
         If Folder Then
 
         Else
+            'If t.IsAlive Then
+            'Else
+
             RaiseEvent FileMoved(files, lbx1)
+
+            'End If
         End If
 
         'Deal with the list box
@@ -397,6 +403,7 @@ Friend Module FileHandling
                                 m.MoveTo(spath)
                                 AllFaveMinder.CheckFile(New IO.FileInfo(m.FullName))
                                 'AssignSpecialButton("0", strDest)
+                            Catch ex As System.IO.IOException
                             Catch ex As Exception
                                 MsgBox(ex.Message)
                             End Try
@@ -663,7 +670,7 @@ Friend Module FileHandling
         If d.EnumerateDirectories.Count = 0 And d.EnumerateFiles.Count = 0 Then
             Dim s As String = d.Parent.FullName
             Try
-                ' MainForm.tvMain2.RemoveNode(d.FullName)
+                MainForm.tvMain2.RemoveNode(d.FullName)
                 My.Computer.FileSystem.DeleteDirectory(d.FullName, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
                 DirectoriesList.Remove(d.FullName)
 
@@ -716,9 +723,13 @@ Friend Module FileHandling
     End Sub
     Public Sub HarvestFolder(d As DirectoryInfo, Recurse As Boolean, Parent As Boolean)
         If Recurse Then
-            For Each di In d.EnumerateDirectories
-                HarvestFolder(di, Recurse, Parent)
-            Next
+            Try
+                For Each di In d.EnumerateDirectories
+                    HarvestFolder(di, Recurse, Parent)
+                Next
+            Catch ex As Exception
+                MsgBox(ex.Message)
+            End Try
         End If
         blnSuppressCreate = True
         Dim l As New List(Of String)

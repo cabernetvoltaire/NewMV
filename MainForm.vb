@@ -1568,7 +1568,7 @@ Public Class MainForm
         Else
             tbFiles.Text = "FOLDER:" & listcount & " SHOW:" & showcount
         End If
-        tbFiles.Text = "FOLDER:" & listcount & " (" & GetDirSizeString(CurrentFolder).Result & ") SHOW:" & showcount
+        tbFiles.Text = tbFiles.Text.Replace("SHOW:", "(" & GetDirSizeString(CurrentFolder).Result & ") SHOW:")
         tbFilter.Text = "FILTER:" & UCase(CurrentFilterState.Description)
         tbLastFile.Text = Media.MediaPath
         tbRandom.Text = "ORDER:" & UCase(PlayOrder.Description)
@@ -1710,11 +1710,12 @@ Public Class MainForm
 
 
 
-    Private Sub DeleteEmptyFoldersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteEmptyFoldersToolStripMenuItem.Click
+    Private Sub DeleteEmptyFoldersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteEmptyFoldersToolStripMenuItem.Click, IncludingAllSubfoldersToolStripMenuItem.Click
+
         'If Not MsgBox("This deletes all empty directories", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
         '    Exit Sub
         'Else
-        DeleteEmptyFolders(New DirectoryInfo(CurrentFolder), True)
+        DeleteEmptyFolders(New DirectoryInfo(CurrentFolder), sender Is IncludingAllSubfoldersToolStripMenuItem)
         tvMain2.RefreshTree(CurrentFolder)
         'End If
 
@@ -1812,6 +1813,7 @@ Public Class MainForm
         CurrentFolder = e.Directory.FullName
         tmrUpdateFileList.Enabled = True
         tmrUpdateFileList.Interval = 200
+        CancelDisplay()
         ' FillListbox(lbxFiles, New DirectoryInfo(CurrentFolder), Random.OnDirChange)
 
 
@@ -2547,7 +2549,7 @@ Public Class MainForm
             files.Add(m)
         Next
         op2.OrphanList = files
-        op2.FindOrphans(sender Is SelectedDeepToolStripMenuItem)
+        If op2.FindOrphans(sender Is SelectedDeepToolStripMenuItem) Then FBH.FillBox()
     End Sub
 
 

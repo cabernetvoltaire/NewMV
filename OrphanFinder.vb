@@ -123,7 +123,7 @@
                 Dim tgt As New IO.DirectoryInfo(fname)
                 Dim found As Boolean = False
                 While Not found And tgt.Parent.Name <> tgt.Root.FullName
-                    Dim parentname As String = tgt.Parent.Name
+                    Dim parentname As String = tgt.Name
 
                     'Search Directories list for path containing folder name
                     Dim searchdir As New List(Of String)
@@ -145,7 +145,12 @@
                     End While
                     i = 0
                     'Failed so use parent folder as search name
-                    tgt = tgt.Parent
+                    If tgt.Parent.Name <> "Watch" Then
+                        tgt = tgt.Parent
+                    Else
+                        Exit While
+                    End If
+
                 End While
             End If
             i = 0
@@ -185,12 +190,16 @@
         Return foundparent
     End Function
 
-    Public Sub FindOrphans(Optional Deep As Boolean = False)
+    Public Function FindOrphans(Optional Deep As Boolean = False) As Boolean
         FindOrphans2(Deep)
         Reunite()
-        MsgBox("Reunite finished")
-
-    End Sub
+        MsgBox("Reunite finished - " & mFoundParents.Count & " files reunited")
+        If mFoundParents.Count > 0 Then
+            Return True
+        Else
+            Return False
+        End If
+    End Function
 
 
     'Find Orphans
