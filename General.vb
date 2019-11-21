@@ -148,7 +148,16 @@ Public Module General
         filename = fparts(0)
         Return filename
     End Function
-
+    Public Function FilenameFromPath(n As String, WithExtension As Boolean) As String
+        Dim currentpath = n
+        Dim parts() = currentpath.Split("\")
+        Dim filename = parts(parts.Length - 1)
+        If Not WithExtension Then
+            Dim fparts() = filename.Split(".")
+            filename = fparts(0)
+        End If
+        Return filename
+    End Function
 
     ''' <summary>
     ''' Returns the path of the link defined in str
@@ -608,15 +617,17 @@ Public Module General
 
 
     Public Function SetPlayOrderNew(Order As Byte, List As List(Of String)) As List(Of String)
-        Dim x As New List(Of IO.FileInfo)
         Try
             Select Case Order
                 Case SortHandler.Order.Name
+                    List.Sort(New CompareByEndNumber)
                 Case SortHandler.Order.Size
                     Dim cpr As New CompareByFilesize
-                    x.Sort(cpr)
+                    List.Sort(cpr)
                 Case SortHandler.Order.DateTime
+
                 Case SortHandler.Order.PathName
+                    List.Sort()
                 Case SortHandler.Order.Random
                 Case SortHandler.Order.Type
 
@@ -629,6 +640,8 @@ Public Module General
 
 
     Public Function SetPlayOrder(Order As Byte, ByVal List As List(Of String)) As List(Of String)
+        'Return SetPlayOrderNew(Order, List)
+        'Exit Function
         Dim NewListS As New SortedList(Of String, String)
         Dim NewListL As New SortedList(Of Long, String)
         Dim NewListD As New SortedList(Of DateTime, String)
@@ -637,12 +650,15 @@ Public Module General
         Try
             Select Case Order
                 Case SortHandler.Order.Name
-                    SortByName(List, NewListS)
+                    List.Sort(New CompareByEndNumber)
+                    'SortByName(List, NewListS)
                 Case SortHandler.Order.Size
-                    SortBySize(List, NewListL)
+                    List.Sort(New CompareByFilesize)
+                    'SortBySize(List, NewListL)
 
                 Case SortHandler.Order.DateTime
-                    SortByDate(List, NewListD)
+                    List.Sort(New CompareByDate)
+                   ' SortByDate(List, NewListD)
                 Case SortHandler.Order.PathName
                     SortbyPathName(List, NewListS)
 
@@ -755,7 +771,9 @@ Public Module General
     End Sub
 
     Private Sub SortByName(List As List(Of String), NewListS As SortedList(Of String, String))
+
         For Each f In List
+
             If Len(f) > 247 Then Continue For
             Dim file As New FileInfo(f)
 
