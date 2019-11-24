@@ -574,6 +574,7 @@ Public Module General
             CurrentFolder = strPath
             ReDim FBCShown(0)
             NofShown = 0
+
             If AutoButtons Then
                 AssignLinear(CurrentFolder, LetterNumberFromAscii(Asc("0")), True)
                 ChangeButtonLetter(New KeyEventArgs(Keys.D0))
@@ -616,7 +617,7 @@ Public Module General
     End Function
 
 
-    Public Function SetPlayOrderNew(Order As Byte, List As List(Of String)) As List(Of String)
+    Public Function SetPlayOrder(Order As Byte, List As List(Of String)) As List(Of String)
         Try
             Select Case Order
                 Case SortHandler.Order.Name
@@ -625,23 +626,31 @@ Public Module General
                     Dim cpr As New CompareByFilesize
                     List.Sort(cpr)
                 Case SortHandler.Order.DateTime
-
+                    Dim cpr As New CompareByDate
+                    List.Sort(cpr)
                 Case SortHandler.Order.PathName
                     List.Sort()
                 Case SortHandler.Order.Random
+                    List = Randomize(Of String)(List)
+
                 Case SortHandler.Order.Type
+                    Dim cpr As New CompareByType
+                    List.Sort(cpr)
 
 
             End Select
         Catch ex As Exception
 
         End Try
+        If MainForm.PlayOrder.ReverseOrder Then
+            List.Reverse()
+        End If
+        Return List
     End Function
 
 
-    Public Function SetPlayOrder(Order As Byte, ByVal List As List(Of String)) As List(Of String)
-        'Return SetPlayOrderNew(Order, List)
-        'Exit Function
+    Public Function SetPlayOrderOld(Order As Byte, ByVal List As List(Of String)) As List(Of String)
+
         Dim NewListS As New SortedList(Of String, String)
         Dim NewListL As New SortedList(Of Long, String)
         Dim NewListD As New SortedList(Of DateTime, String)
@@ -660,7 +669,8 @@ Public Module General
                     List.Sort(New CompareByDate)
                    ' SortByDate(List, NewListD)
                 Case SortHandler.Order.PathName
-                    SortbyPathName(List, NewListS)
+                    List.Sort()
+'                    SortbyPathName(List, NewListS)
 
                 Case SortHandler.Order.Type
                     SortbyType(List, NewListS)
@@ -804,7 +814,9 @@ Public Module General
         lbx.Items.Insert(index, newitem)
 
     End Sub
-    Public Async Function GetDirSizeString(Rootfolder As String) As Task(Of String)
+    Public Function GetDirSizeString(Rootfolder As String) As String
+        Return "##"
+        Exit Function
         Dim size As Long = GetDirSize(Rootfolder, 0).Result
         Dim sizestring As String
         If size > 10 ^ 12 Then
@@ -829,7 +841,7 @@ Public Module General
     End Function
 
     Public Async Function GetDirSize(RootFolder As String, TotalSize As Long) As Task(Of Long)
-        Exit Function
+        ' Exit Function
         If RootFolder.EndsWith(":\") Then
             Return 0
             Exit Function
@@ -883,11 +895,16 @@ Public Module General
         lbx.SelectedItem = Nothing
         For i = 0 To lbx.Items.Count - 1
             If blnRegex Then
-                Dim r As New System.Text.RegularExpressions.Regex(s)
-                If r.Matches(lbx.Items(i)).Count > 0 Then
-                    lbx.SetSelected(i, True)
-                    ls.Add(lbx.Items(i))
-                End If
+                Try
+
+                    Dim r As New System.Text.RegularExpressions.Regex(s)
+                    If r.Matches(lbx.Items(i)).Count > 0 Then
+                        lbx.SetSelected(i, True)
+                        ls.Add(lbx.Items(i))
+                    End If
+                Catch ex As Exception
+                    MsgBox(ex.Message)
+                End Try
             Else
                 If InStr(UCase(lbx.Items(i)), UCase(s)) <> 0 Then
                     lbx.SetSelected(i, True)
@@ -918,7 +935,27 @@ Public Module General
         Next
         Return k
     End Function
+    ''' <summary>
+    ''' Randomizes the contents of the list using Fisher–Yates shuffle (a.k.a. Knuth shuffle).
+    ''' </summary>
+    ''' <typeparam name="T"></typeparam>
+    ''' <param name="list"></param>
+    ''' <returns>Randomized result</returns>
+    ''' <remarks></remarks>
 
+    Function Randomize(Of T)(ByVal list As List(Of T)) As List(Of T)
+        Dim rand As New Random()
+        Dim temp As T
+        Dim indexRand As Integer
+        Dim indexLast As Integer = list.Count - 1
+        For index As Integer = 0 To indexLast
+            indexRand = rand.Next(index, indexLast)
+            temp = list(indexRand)
+            list(indexRand) = list(index)
+            list(index) = temp
+        Next index
+        Return list
+    End Function
     Public Function BookmarkFromLinkName(path As String) As Long
         Dim s() = path.Split("%")
         If s.Length > 2 Then
@@ -992,6 +1029,9 @@ Public Module General
         Return th
     End Function
 
-
+    Friend Function FolderNameFromPath(path As String) As String
+        Dim parts() = path.Split("\")
+        Return parts(parts.Length - 1)
+    End Function
 
 End Module

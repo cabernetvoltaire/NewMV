@@ -190,6 +190,7 @@ Partial Class MainForm
         Me.HarvestFolderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeleteEmptyFoldersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.IncludingAllSubfoldersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.JustTopFoldersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HarvestFoldersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RecursiveToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
@@ -247,7 +248,7 @@ Partial Class MainForm
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
         Me.NewIndex = New System.Windows.Forms.Timer(Me.components)
         Me.Response = New System.Windows.Forms.Timer(Me.components)
-        Me.JustTopFoldersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.chbLoadButtonFiles = New System.Windows.Forms.CheckBox()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1223,6 +1224,7 @@ Partial Class MainForm
         '
         'GroupBox1
         '
+        Me.GroupBox1.Controls.Add(Me.chbLoadButtonFiles)
         Me.GroupBox1.Controls.Add(Me.chbAutoTrail)
         Me.GroupBox1.Controls.Add(Me.chbInDir)
         Me.GroupBox1.Controls.Add(Me.chbNextFile)
@@ -1706,6 +1708,14 @@ Partial Class MainForm
         Me.IncludingAllSubfoldersToolStripMenuItem.Size = New System.Drawing.Size(422, 30)
         Me.IncludingAllSubfoldersToolStripMenuItem.Text = "Including all subfolders"
         '
+        'JustTopFoldersToolStripMenuItem
+        '
+        Me.JustTopFoldersToolStripMenuItem.Name = "JustTopFoldersToolStripMenuItem"
+        Me.JustTopFoldersToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
+            Or System.Windows.Forms.Keys.E), System.Windows.Forms.Keys)
+        Me.JustTopFoldersToolStripMenuItem.Size = New System.Drawing.Size(422, 30)
+        Me.JustTopFoldersToolStripMenuItem.Text = "Just top folders"
+        '
         'HarvestFoldersToolStripMenuItem
         '
         Me.HarvestFoldersToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RecursiveToolStripMenuItem})
@@ -2081,13 +2091,18 @@ Partial Class MainForm
         'Response
         '
         '
-        'JustTopFoldersToolStripMenuItem
+        'chbLoadButtonFiles
         '
-        Me.JustTopFoldersToolStripMenuItem.Name = "JustTopFoldersToolStripMenuItem"
-        Me.JustTopFoldersToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
-            Or System.Windows.Forms.Keys.E), System.Windows.Forms.Keys)
-        Me.JustTopFoldersToolStripMenuItem.Size = New System.Drawing.Size(422, 30)
-        Me.JustTopFoldersToolStripMenuItem.Text = "Just top folders"
+        Me.chbLoadButtonFiles.AutoSize = True
+        Me.chbLoadButtonFiles.Checked = True
+        Me.chbLoadButtonFiles.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chbLoadButtonFiles.Location = New System.Drawing.Point(5, 122)
+        Me.chbLoadButtonFiles.Name = "chbLoadButtonFiles"
+        Me.chbLoadButtonFiles.Size = New System.Drawing.Size(186, 24)
+        Me.chbLoadButtonFiles.TabIndex = 4
+        Me.chbLoadButtonFiles.TabStop = False
+        Me.chbLoadButtonFiles.Text = "AutoLoadButtonFiles"
+        Me.chbLoadButtonFiles.UseVisualStyleBackColor = True
         '
         'MainForm
         '
@@ -2400,4 +2415,5 @@ Partial Class MainForm
     Friend WithEvents ListDeadFilesToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents IncludingAllSubfoldersToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents JustTopFoldersToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents chbLoadButtonFiles As CheckBox
 End Class

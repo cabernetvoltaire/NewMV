@@ -10,6 +10,7 @@ Public Class MainForm
 
 
     Public Initialising As Boolean = True
+    Public AutoLoadButtons As Boolean = False
     Public ButtonsHidden As Boolean = False
     Public defaultcolour As Color = Color.Aqua
     Public movecolour As Color = Color.Orange
@@ -48,7 +49,7 @@ Public Class MainForm
         emblem.Load()
     End Sub
     Public Sub OnListboxFilled(sender As Object) Handles FBH.ListBoxFilled
-        UpdateFileInfo()
+
     End Sub
 
 
@@ -169,8 +170,8 @@ Public Class MainForm
     End Sub
     Friend Sub OnFolderMoved(ByVal path As String)
         Dim d As New IO.DirectoryInfo(tvMain2.SelectedFolder)
-        tvMain2.RefreshTree(d.FullName)
-        'tvMain2.RemoveNode(path)
+        tvMain2.RemoveNode(path)
+        ' tvMain2.RefreshTree(d.FullName)
         'Dim dir As New IO.DirectoryInfo(path)
         'Dir.Delete()
     End Sub
@@ -196,7 +197,7 @@ Public Class MainForm
     End Sub
     Public Sub PopulateLinkList(filepath As String, Media As MediaHandler)
         If filepath = "" Then Exit Sub
-        ' Media.Markers.Clear()
+        Media.Markers.Clear()
         Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
         If Media.IsLink Then
         Else
@@ -225,11 +226,10 @@ Public Class MainForm
             If chbPreviewLinks.Checked Then
                 FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
             End If
-            'Dim markerslist As New List(Of Long)
 
-            'Media.Markers = markerslist
-            'Media.Markers.Sort()
-            Marks.Markers = Media.GetMarkersFromLinkList
+            Media.Markers = Media.GetMarkersFromLinkList
+            Media.Markers.Sort()
+            Marks.Markers = Media.Markers
             Scrubber.Update()
             DrawScrubberMarks()
             DrawScrubberMarks()
@@ -385,8 +385,8 @@ Public Class MainForm
                             If MSFiles.CurrentURLS.Contains(ff.FullName) Then
                                 MSFiles.CancelURL(ff.FullName)
                             End If
-
                             .DeleteFile(ff.FullName, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
+
                         Next
                         For Each fol In f.EnumerateDirectories
                             DeleteFolder(fol.FullName, tvw, False)
@@ -1143,43 +1143,15 @@ Public Class MainForm
         MainWMP2.stretchToFit = True
         MainWMP3.stretchToFit = True
         'Media.Player.uiMode = "FULL"
-        If Not separate Then
 
-            MainWMP1.Dock = DockStyle.Fill 'Swapper
-            MainWMP2.Dock = DockStyle.Fill
-            MainWMP3.Dock = DockStyle.Fill
-        Else
-            'MainWMP1.stretchToFit = False
-            'MainWMP2.stretchToFit = False
-            'MainWMP3.stretchToFit = False
-            ''MainWMP1.Width = 620
-            'MainWMP1.Height = 491
-            'MainWMP2.Size = MainWMP1.Size
-            'MainWMP3.Size = MainWMP1.Size
-
-            'MainWMP1.Dock = DockStyle.Left 'Swapper
-            'MainWMP2.Dock = DockStyle.Right
-            'MainWMP3.Dock = DockStyle.Bottom
-
-        End If
         MainWMP1.settings.volume = 100
         MainWMP2.settings.volume = 100
         MainWMP3.settings.volume = 100
-        If Not separate Then
-            PictureBox1.Dock = DockStyle.Fill
-            PictureBox2.Dock = DockStyle.Fill
-            PictureBox3.Dock = DockStyle.Fill
-        Else
-            PictureBox1.Dock = DockStyle.None
-            PictureBox2.Dock = DockStyle.None
-            PictureBox3.Dock = DockStyle.None
-
-        End If
-
+        MSFiles.DockMedias(separate)
 
     End Sub
     Private Sub GlobalInitialise()
-        Randomize()
+        'Randomize()
         PopulateLists()
         CollapseShowlist(True)
         SetupPlayers()
@@ -1516,7 +1488,7 @@ Public Class MainForm
     Public Sub UpdateFileInfo()
         If Initialising Then Exit Sub
         If Media.MediaPath = "" Then Exit Sub
-        If Not FileLengthCheck(Media.MediaPath) Then Exit Sub
+        ' If Not FileLengthCheck(Media.MediaPath) Then Exit Sub
         Dim f As New FileInfo(Media.MediaPath)
         If Not f.Exists Then Exit Sub
         Dim listcount = lbxFiles.Items.Count
@@ -1568,7 +1540,7 @@ Public Class MainForm
         Else
             tbFiles.Text = "FOLDER:" & listcount & " SHOW:" & showcount
         End If
-        tbFiles.Text = tbFiles.Text.Replace("SHOW:", "(" & GetDirSizeString(CurrentFolder).Result & ") SHOW:")
+        tbFiles.Text = tbFiles.Text.Replace("SHOW:", "(" & GetDirSizeString(CurrentFolder) & ") SHOW:")
         tbFilter.Text = "FILTER:" & UCase(CurrentFilterState.Description)
         tbLastFile.Text = Media.MediaPath
         tbRandom.Text = "ORDER:" & UCase(PlayOrder.Description)
@@ -1749,16 +1721,13 @@ Public Class MainForm
     Public Sub FillShowbox(lbx As ListBox, Filter As Byte, ByVal lst As List(Of String))
 
         If lst.Count = 0 Then Exit Sub
-        If lst.Count > 1000 Then
-            ProgressBarOn(lst.Count)
-        End If
+
         LBH.Filter.State = Filter
         LBH.FillBox(lst)
 
         If lbx.Name = "lbxShowList" Then
             CollapseShowlist(False)
         End If
-        ProgressBarOff()
     End Sub
 
 
@@ -1811,6 +1780,9 @@ Public Class MainForm
         'PreferencesSave()
         lbxGroups.Items.Clear()
         CurrentFolder = e.Directory.FullName
+        If AutoLoadButtons Then
+            Autoload(FolderNameFromPath(CurrentFolder))
+        End If
         tmrUpdateFileList.Enabled = True
         tmrUpdateFileList.Interval = 200
         CancelDisplay()
@@ -2001,10 +1973,15 @@ Public Class MainForm
 
 
         If Int(Rnd() * AT.AdvanceChance) + 1 = 1 Then
-            '    To change the file.
-            Debug.Print("Change file")
+            If CtrlDown Then
+            Else
 
-            HandleKeys(sender, New KeyEventArgs(KeyNextFile))
+
+                '    To change the file.
+                Debug.Print("Change file")
+
+                HandleKeys(sender, New KeyEventArgs(KeyNextFile))
+            End If
 
         End If
 
@@ -2224,7 +2201,7 @@ Public Class MainForm
     End Sub
 
     Private Sub AddCurrentFilesToShowList()
-        For Each f In lbxFiles.Items
+        For Each f In lbxFiles.SelectedItems
             AddSingleFileToList(Showlist, f)
         Next
         FillShowbox(lbxShowList, CurrentFilterState.State, Showlist)
@@ -2560,8 +2537,16 @@ Public Class MainForm
 
 
     Private Sub SelectNonFavouritsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectNonFavouritsToolStripMenuItem.Click
-        Op.ImportLinks(Showlist)
-
+        'Op.ImportLinks(Showlist)
+        'Select files with links
+        Dim hilist As New List(Of String)
+        For Each f In FBH.ItemList
+            If FaveMinder.GetLinksOf(f).Count = 0 Then
+                hilist.Add(f)
+            End If
+        Next
+        FBH.SelectItems = hilist
+        ' FBH.ListBox.SelectionMode = SelectionMode.One
     End Sub
 
     Private Sub AddCurrentToShowlistToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AddCurrentToShowlistToolStripMenuItem.Click
@@ -2671,21 +2656,8 @@ Public Class MainForm
 
     Private Sub chbSeparate_CheckedChanged(sender As Object, e As EventArgs) Handles chbSeparate.CheckedChanged
         separate = chbSeparate.Checked
+        MSFiles.DockMedias(separate)
 
-
-        If separate Then
-            MainWMP1.Dock = DockStyle.None
-            MainWMP2.Dock = DockStyle.None
-            MainWMP3.Dock = DockStyle.None
-            MainWMP1.SetBounds(0, 0, 600, 400)
-            MainWMP2.SetBounds(650, 0, 600, 400)
-            MainWMP3.SetBounds(250, 480, 600, 400)
-        Else
-            MainWMP1.Dock = DockStyle.Fill
-            MainWMP2.Dock = DockStyle.Fill
-            MainWMP3.Dock = DockStyle.Fill
-
-        End If
     End Sub
 
     Private Sub tvMain2_Load(sender As Object, e As EventArgs) Handles tvMain2.Load
@@ -2734,6 +2706,10 @@ Public Class MainForm
             FormDeadFiles.TextBox1.Text = FormDeadFiles.TextBox1.Text & f & vbCrLf
 
         Next
+    End Sub
+
+    Private Sub chbLoadButtonFiles_CheckedChanged(sender As Object, e As EventArgs) Handles chbLoadButtonFiles.CheckedChanged
+        AutoLoadButtons = chbLoadButtonFiles.Checked
     End Sub
 #End Region
 

@@ -27,6 +27,16 @@
         End Get
     End Property
 
+    Public WriteOnly Property SelectItems() As List(Of String)
+        Set(value As List(Of String))
+            mListbox.SelectionMode = SelectionMode.MultiExtended
+            For Each m In value
+                SetNamed(m)
+            Next
+        End Set
+    End Property
+
+
     Private WithEvents mListbox As New ListBox
 
     Public Property ListBox() As ListBox
@@ -50,17 +60,16 @@
 #Region "Methods"
     Public Sub FilterList()
         With Filter
-            .FileList = ItemList
-            ItemList = .FileList
+            .FileList = mItemList
+            mItemList = .FileList
         End With
     End Sub
     Public Sub OrderList()
-        With SortOrder
-            ItemList = SetPlayOrder(SortOrder.State, ItemList)
-        End With
+        mItemList = SetPlayOrder(SortOrder.State, ItemList)
 
     End Sub
     Public Sub IncrementIndex(Forward As Boolean)
+        If mListbox.SelectionMode <> SelectionMode.One Then mListbox.SelectionMode = SelectionMode.One
         If ListBox.Items.Count > 0 Then
 
             If Forward Then
@@ -77,10 +86,10 @@
     End Sub
     Public Sub FillBox(Optional List As List(Of String) = Nothing)
         ListBox.Items.Clear()
-        If List IsNot Nothing Then ItemList = List
+        If List IsNot Nothing Then mItemList = List
         FilterList()
         OrderList()
-        If ItemList.Count > 200 Then
+        If mItemList.Count > 200 Then
             ListBox.SuspendLayout()
         End If
         For Each f In ItemList
@@ -184,7 +193,7 @@ Public Class FileboxHandler
         Set
             _DirectoryPath = Value
             GetFiles()
-            FillBox()
+            FillBox(ItemList)
         End Set
     End Property
 

@@ -10,6 +10,8 @@ Module ButtonHandling
     ' Public fButtonDests(8, nletts, 3) As IO.DirectoryInfo
     Private iAlphaCount = nletts
     Public strButtonCaptions(8, nletts, 1)
+    Public Buttonfolder As String = "Q:\.msb"
+
 
     Public btnDest() As Button = {MainForm.btn1, MainForm.btn2, MainForm.btn3, MainForm.btn4, MainForm.btn5, MainForm.btn6, MainForm.btn7, MainForm.btn8}
 
@@ -408,7 +410,19 @@ Module ButtonHandling
         FolderSelect.Show()
         '   showPreview(sender, e)
     End Sub
+    Public Sub Autoload(Foldername As String)
+        'If directory name exists as buttonfile, then load button file (optionally)
 
+        'Check for button file
+        Dim f As New IO.DirectoryInfo(Buttonfolder)
+        Dim file As New IO.FileInfo(f.FullName & "\" & Foldername & ".msb")
+        If file.Exists Then
+            If MsgBox("Do you want to load the buttons?", MsgBoxStyle.YesNoCancel) = MsgBoxResult.Yes Then
+                KeyAssignmentsRestore(file.FullName)
+            End If
+        End If
+        'Load it (optionally)
+    End Sub
     Public Sub NewButtonList()
         ClearCurrentButtons()
         SaveButtonlist()
@@ -568,6 +582,22 @@ Public Class CompareByDate
         If GetDate(xf) = GetDate(yf) Then
             Return 0
         ElseIf GetDate(xf) < GetDate(yf) Then
+            Return -1
+        Else
+            Return 1
+        End If
+
+    End Function
+End Class
+Public Class CompareByType
+    Implements Generic.IComparer(Of String)
+
+    Public Function Compare(x As String, y As String) As Integer Implements IComparer(Of String).Compare
+        Dim xf As New IO.FileInfo(x)
+        Dim yf As New IO.FileInfo(y)
+        If xf.Extension = yf.Extension Then
+            Return 0
+        ElseIf xf.Extension < yf.Extension Then
             Return -1
         Else
             Return 1

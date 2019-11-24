@@ -120,6 +120,7 @@ Public Class MediaSwapper
                 MH.PlaceResetter(False)
                 'MH.MediaPath = path
                 MH.Picture.Visible = True
+                MH.Picture.Tag = path
             Case Else
 
         End Select
@@ -130,9 +131,9 @@ Public Class MediaSwapper
         If Media1.Player.URL = filepath Then Media1.Player.close()
         If Media2.Player.URL = filepath Then Media2.Player.close()
         If Media3.Player.URL = filepath Then Media3.Player.close()
-        If Media1.Picture.ImageLocation = filepath Then DisposePic(Media1.Picture)
-        If Media2.Picture.ImageLocation = filepath Then DisposePic(Media2.Picture)
-        If Media3.Picture.ImageLocation = filepath Then DisposePic(Media3.Picture)
+        If Media1.Picture.Tag = filepath Then DisposePic(Media1.Picture)
+        If Media2.Picture.Tag = filepath Then DisposePic(Media2.Picture)
+        If Media3.Picture.Tag = filepath Then DisposePic(Media3.Picture)
 
     End Sub
     Private Sub RotateMedia(ByRef ThisMH As MediaHandler, ByRef NextMH As MediaHandler, ByRef PrevMH As MediaHandler)
@@ -248,11 +249,32 @@ Public Class MediaSwapper
     End Sub
     Private Sub ShowPicture(ByRef MHX As MediaHandler)
         MuteAll()
-        HideMedias(MHX)
+        ' HideMedias(MHX)
         MHX.Picture.Visible = True
         MHX.Picture.BringToFront()
         RaiseEvent MediaShown(MHX)
 
+    End Sub
+    Public Sub DockMedias(separate As Boolean)
+        If separate Then
+            Media1.Picture.Dock = DockStyle.None
+            Media2.Picture.Dock = DockStyle.None
+            Media3.Picture.Dock = DockStyle.None
+            Media1.Player.Dock = DockStyle.None
+            Media2.Player.Dock = DockStyle.None
+            Media3.Player.Dock = DockStyle.None
+            Media1.Picture.SetBounds(0, 0, 600, 400)
+            Media2.Picture.SetBounds(650, 0, 600, 400)
+            Media3.Picture.SetBounds(250, 480, 600, 400)
+        Else
+            Media1.Picture.Dock = DockStyle.Fill
+            Media2.Picture.Dock = DockStyle.Fill
+            Media3.Picture.Dock = DockStyle.Fill
+            Media1.Player.Dock = DockStyle.Fill
+            Media2.Player.Dock = DockStyle.Fill
+            Media3.Player.Dock = DockStyle.Fill
+
+        End If
     End Sub
 #End Region
 
