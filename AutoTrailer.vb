@@ -2,14 +2,18 @@
     Private probs(3) As Decimal
     Private mDuration As Byte
     Private mProb As Decimal
-    Public Property RandomTimes As Byte() = {5, 5, 10, 5}
-    Public Property SelectionWeights As Decimal() = {0.25, 0.5, 0.75, 1}
+    Public Property RandomTimes As Byte() = {1, 2, 3, 4}
+    Public Property SelectionWeights As Decimal() = {0.1, 0.3, 0.5, 1}
     ''' <summary>
     ''' Framerates for each of the 3 different slow speeds
     ''' </summary>
     ''' <returns></returns>
     Public Property Framerates As Byte() = {5, 12, 20}
-    Public Property AdvanceChance As Integer = 15
+    ''' <summary>
+    ''' Reciprocal of probability of changing
+    ''' </summary>
+    ''' <returns></returns>
+    Public Property AdvanceChance As Integer = 8
 
     Public ReadOnly Property Duration() As Byte
         Get

@@ -51,6 +51,7 @@ Friend Module FileHandling
         Else
             MainForm.PopulateLinkList(M.MediaPath, M)
         End If
+        ' MainForm.AT.AdvanceChance = M.Markers.Count + 1
         'Media.IsCurrent = True
         Media.SetLink(0)
         'StartpointTester.Show()
@@ -303,7 +304,7 @@ Friend Module FileHandling
         Select Case NavigateMoveState.State
             Case StateHandler.StateOptions.Copy, StateHandler.StateOptions.CopyLink
             Case Else
-                MainForm.CancelDisplay()
+                MainForm.CancelDisplay(False)
         End Select
 
         t = New Thread(New ThreadStart(Sub() MovingFiles(files, strDest, s)))
@@ -348,7 +349,7 @@ Friend Module FileHandling
         For Each file In files
             '   If Media.Player.URL = file Then Media.Player.URL = ""
 
-            If Not FileLengthCheck(file) Then Continue For
+
             Dim m As New IO.FileInfo(file)
             With My.Computer.FileSystem
                 Dim i As Long = 0
@@ -360,7 +361,7 @@ Friend Module FileHandling
                     spath = s & "\" & m.Name
 
                 End If
-                While .FileExists(spath) AndAlso m.FullName = spath 'Existing path
+                While .FileExists(spath) AndAlso m.Name = FilenameFromPath(spath, True) 'Existing path
                     Dim x = m.Extension
                     Dim b = InStr(spath, "(")
                     If b = 0 Then
@@ -604,11 +605,16 @@ Friend Module FileHandling
 
         If blnRecurse Then
             For Each f In d.EnumerateDirectories("*", SearchOption.AllDirectories)
-                For Each fil In f.EnumerateFiles()
-                    If fil.FullName.Contains(strSearch) Or strSearch = "*" Then
-                        x.Add(fil.FullName)
-                    End If
-                Next
+                Try
+                    For Each fil In f.EnumerateFiles()
+                        If fil.FullName.Contains(strSearch) Or strSearch = "*" Then
+                            x.Add(fil.FullName)
+                        End If
+                    Next
+
+                Catch ex As Exception
+
+                End Try
             Next
 
         End If

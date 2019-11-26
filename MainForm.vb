@@ -70,7 +70,7 @@ Public Class MainForm
             Media.StartPoint.State = StartPointHandler.StartTypes.Random
         End If
         If Random.NextSelect Then
-            MSFiles.NextF.Randomised = True
+            MSFiles.RandomNext = True
         End If
         ToggleRandomAdvanceToolStripMenuItem.Checked = Random.NextSelect
         ToggleRandomSelectToolStripMenuItem.Checked = Random.OnDirChange
@@ -165,7 +165,7 @@ Public Class MainForm
     End Sub
     Public Sub OnRenameFolderStart(sender As Object, e As KeyEventArgs) Handles tvMain2.KeyDown
         If e.KeyCode = Keys.F2 Then
-            CancelDisplay()
+            CancelDisplay(True)
         End If
     End Sub
     Friend Sub OnFolderMoved(ByVal path As String)
@@ -348,7 +348,7 @@ Public Class MainForm
     End Sub
 
 
-    Public Sub CancelDisplay()
+    Public Sub CancelDisplay(SlideshowsOff As Boolean)
         '        MSFiles.URLSZero()
         '       MSFiles.ResettersOff()
 
@@ -364,10 +364,12 @@ Public Class MainForm
             currentPicBox.Image = Nothing
             GC.Collect()
         End If
-        tmrMovieSlideShow.Enabled = False
-        tmrSlideShow.Enabled = False
-        tmrAutoTrail.Enabled = False
-        SP.Slideshow = False
+        If SlideshowsOff Then
+            tmrMovieSlideShow.Enabled = False
+            tmrSlideShow.Enabled = False
+            tmrAutoTrail.Enabled = False
+            SP.Slideshow = False
+        End If
     End Sub
 
     Private Sub DeleteFolder(FolderName As String, tvw As FileSystemTree, blnConfirm As Boolean)
@@ -545,7 +547,7 @@ Public Class MainForm
             FullScreen.FirstMediaIndex = MSFiles.Listbox.SelectedIndex
             MSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
             FullScreen.Show()
-            CancelDisplay()
+            CancelDisplay(False)
         Else
             SplitterPlace(0.25)
             MSFiles.AssignPlayers(MainWMP1, MainWMP2, MainWMP3)
@@ -580,7 +582,7 @@ Public Class MainForm
         Dim count = LBHH.ItemList.Count
         ReDim Preserve FBCShown(count)
         If Random Then
-            MSFiles.NextF.Randomised = True
+            MSFiles.RandomNext = True
             LBHH.ListBox.SelectedItem = MSFiles.NextItem
         Else
             LBHH.IncrementIndex(blnForward)
@@ -717,7 +719,7 @@ Public Class MainForm
         Select Case e.KeyCode
 #Region "Function Keys"
             Case Keys.F2
-                CancelDisplay()
+                CancelDisplay(False)
             Case Keys.F4
                 If e.Alt Then
                     PreferencesSave()
@@ -768,8 +770,7 @@ Public Class MainForm
                     tvMain2.tvFiles_KeyDown(sender, e)
                 End If
             Case Keys.Escape
-                CancelDisplay()                'currentPicBox.Image.Dispose()
-                tmrAutoTrail.Enabled = False
+                CancelDisplay(True)                'currentPicBox.Image.Dispose()
                 'PlayOrder.Toggle()
             Case KeyToggleButtons
                 ToggleButtons()
@@ -793,7 +794,7 @@ Public Class MainForm
                     If FocusControl IsNot lbxFiles And FocusControl IsNot lbxShowList Then
                         ControlSetFocus(lbxFiles)
                         FBH.IncrementIndex(e.KeyCode = KeyNextFile)
-                        FBH.IncrementIndex(e.KeyCode = KeyNextFile)
+                        '  FBH.IncrementIndex(e.KeyCode = KeyNextFile)
                     End If
                 End If
                 'If e.Alt Then
@@ -874,24 +875,7 @@ Public Class MainForm
                 e.SuppressKeyPress = True
             Case KeyJumpToMark, LKeyMarkPoint
                 'Addmarker(Media.MediaPath)
-                If Media.Markers.Count <> 0 Then
-                    If e.Alt Then
-                        Media.LinkCounter = Media.RandomCounter
-                    Else
-                        'Media.StartPoint.IncrementMarker()
-                        Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
-                        '     Media.LinkCounter = Media.FindNearestCounter(e.Modifiers = Keys.Control)
-                    End If
-                    Media.Bookmark = -2
-                    Media.MediaJumpToMarker(ToMarker:=True)
-
-                Else
-                    MediaLargeJump(e, e.Modifiers = Keys.Control, True)
-
-                    'JumpRandom(e.Control And e.Shift)
-                End If
-                e.Handled = True
-                e.SuppressKeyPress = True
+                e = JumpToMark(e)
 
             Case KeyMuteToggle
                 Muted = Not Muted
@@ -919,7 +903,7 @@ Public Class MainForm
                 Else
                     SpeedChange(e)
                 End If
-            Case KeySpeed1, KeySpeed2, KeySpeed3, KeySpeed3 + Keys.Control
+            Case KeySpeed1, KeySpeed2, KeySpeed3, KeySpeed3 Or Keys.Control
                 SpeedChange(e)
 #End Region
 
@@ -1006,6 +990,27 @@ Public Class MainForm
         '    Response.Enabled = False
     End Sub
 
+    Private Function JumpToMark(e As KeyEventArgs) As KeyEventArgs
+        If Media.Markers.Count <> 0 Then
+            If e.Alt Then
+                Media.LinkCounter = Media.RandomCounter
+            Else
+                'Media.StartPoint.IncrementMarker()
+                Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
+                '     Media.LinkCounter = Media.FindNearestCounter(e.Modifiers = Keys.Control)
+            End If
+            Media.Bookmark = -2
+            Media.MediaJumpToMarker(ToMarker:=True)
+
+        Else
+            MediaLargeJump(e, e.Modifiers = Keys.Control, True)
+
+            'JumpRandom(e.Control And e.Shift)
+        End If
+        e.Handled = True
+        e.SuppressKeyPress = True
+        Return e
+    End Function
 
     Private Sub RemoveAllFavourites(mediaPath As String)
         Throw New NotImplementedException()
@@ -1014,7 +1019,7 @@ Public Class MainForm
     Private Sub DeleteFiles(e As KeyEventArgs)
         'Use Movefiles with current selected list, and option to delete. 
         Dim lbx As New ListBox
-        CancelDisplay()
+        CancelDisplay(False)
         If e.Shift Then
             DeleteFolder(CurrentFolder, tvMain2, NavigateMoveState.State = StateHandler.StateOptions.Navigate)
         Else
@@ -1259,6 +1264,7 @@ Public Class MainForm
         KeyDownFlag = True
         ShiftDown = e.Shift
         CtrlDown = e.Control
+        AltDown = e.Alt
         UpdateButtonAppearance()
         HandleKeys(sender, e)
         If e.KeyCode = KeyBackUndo Then
@@ -1586,7 +1592,7 @@ Public Class MainForm
         UpdateFileInfo()
         lastselection = s
 
-        CancelDisplay()
+        CancelDisplay(False)
         Return s
     End Function
 
@@ -1785,7 +1791,7 @@ Public Class MainForm
         End If
         tmrUpdateFileList.Enabled = True
         tmrUpdateFileList.Interval = 200
-        CancelDisplay()
+        CancelDisplay(False)
         ' FillListbox(lbxFiles, New DirectoryInfo(CurrentFolder), Random.OnDirChange)
 
 
@@ -1945,12 +1951,14 @@ Public Class MainForm
 
 
     Private Sub tmrAutoTrail_Tick(sender As Object, e As EventArgs) Handles tmrAutoTrail.Tick
+        AutoTrail(sender)
+
+    End Sub
+
+    Private Sub AutoTrail(sender As Object)
         Dim trail As New TrailMode
-        '  AT.AdvanceChance = TrackBar3.Value * 3
+
         AT.Framerates = SP.FrameRates
-        'Dim DurBinParam As Decimal = TrackBar1.Value / 10
-        'Dim SpeedBinParam As Decimal = TrackBar2.Value / 10
-        ' AT.Probability = SpeedBinParam
         Dim i As Byte = AT.SpeedIndex
 
 
@@ -1963,6 +1971,7 @@ Public Class MainForm
             Case 3
                 'Normal
                 Debug.Print("Normal")
+
                 tmrSlowMo.Enabled = False
                 Media.Player.settings.rate = 1
                 Media.Player.Ctlcontrols.play()
@@ -1970,9 +1979,9 @@ Public Class MainForm
 
                 tmrAutoTrail.Interval = Int(Rnd() * AT.RandomTimes(AT.Duration) * 500) + 500
         End Select
+        Dim count As Integer
 
-
-        If Int(Rnd() * AT.AdvanceChance) + 1 = 1 Then
+        If AltDown Or Int(Rnd() * AT.AdvanceChance) + 1 = 1 Then
             If CtrlDown Then
             Else
 
@@ -1981,12 +1990,20 @@ Public Class MainForm
                 Debug.Print("Change file")
 
                 HandleKeys(sender, New KeyEventArgs(KeyNextFile))
+                count = Media.Markers.Count
             End If
 
         End If
 
-        HandleKeys(sender, New KeyEventArgs(KeyJumpRandom)) 'This actually does the main job
-
+        Dim ex1 As New KeyEventArgs(KeyJumpRandom Or Keys.Alt)
+        Dim ex2 As New KeyEventArgs(KeyJumpRandom)
+        If count <> 0 And Rnd() > 0.1 Then
+            JumpToMark(ex1)
+            count -= 1
+        Else
+            JumpRandom(False)
+        End If
+        'This actually does the main job
     End Sub
 
 
@@ -2271,12 +2288,12 @@ Public Class MainForm
 
     End Sub
     Private Sub Filter(index As DateMove.DMY)
-        CancelDisplay()
+        CancelDisplay(False)
         DM.FilterByDate(CurrentFolder, False, index)
         tvMain2.RefreshTree(CurrentFolder)
     End Sub
     Private Sub FilterAlphabetic(Folders As Boolean, Files As Boolean)
-        CancelDisplay()
+        CancelDisplay(False)
         DM.FilterByAlpha(CurrentFolder, Folders:=Folders, Files:=Files)
         tvMain2.RefreshTree(CurrentFolder)
 

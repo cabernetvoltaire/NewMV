@@ -400,7 +400,7 @@ Public Class MediaHandler
             mPlayer.Ctlcontrols.currentPosition = mPlayPosition
             'Sound.Ctlcontrols.currentPosition = mPlayPosition
         End If
-        Report(Me.MediaPath & vbCrLf & Format(mMarkers.Count) & " markers" & vbCrLf & "Start point state is:" & StartPoint.Descriptions(StartPoint.State) & vbCrLf & " and has been set to " & StartPoint.StartPoint & "(" & mPlayPosition & ") " & vbCrLf & "with a duration of " & StartPoint.Duration, 1)
+        '        Report(Me.MediaPath & vbCrLf & Format(mMarkers.Count) & " markers" & vbCrLf & "Start point state is:" & StartPoint.Descriptions(StartPoint.State) & vbCrLf & " and has been set to " & StartPoint.StartPoint & "(" & mPlayPosition & ") " & vbCrLf & "with a duration of " & StartPoint.Duration, 1)
 
     End Sub
     Private Sub LoadMedia()
@@ -502,7 +502,7 @@ Public Class MediaHandler
                 mPlayer.Ctlcontrols.play()
             Case WMPLib.WMPPlayState.wmppsMediaEnded
                 If MainForm.tmrAutoTrail.Enabled = False AndAlso mPlayer.Equals(Media.Player) AndAlso mType = Filetype.Movie AndAlso Not LoopMovie Then
-                    MainForm.AdvanceFile(True, False)
+                    MainForm.AdvanceFile(True, MainForm.Random.NextSelect)
                 Else
                     MediaJumpToMarker()
                 End If

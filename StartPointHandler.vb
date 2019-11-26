@@ -159,8 +159,7 @@
     Private Function SetStartPoint() As Long
         Dim oldstartpoint As Long = mStartPoint
         Select Case mState
-            Case StartTypes.Beginning, StartTypes.FirstMarker
-
+            Case StartTypes.Beginning
                 mStartPoint = 0
             Case StartTypes.NearBeginning
                 mStartPoint = mDistance

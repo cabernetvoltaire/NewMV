@@ -71,15 +71,19 @@
     Public Sub IncrementIndex(Forward As Boolean)
         If mListbox.SelectionMode <> SelectionMode.One Then mListbox.SelectionMode = SelectionMode.One
         If ListBox.Items.Count > 0 Then
-
-            If Forward Then
-                ListBox.SelectedIndex = (ListBox.SelectedIndex + 1) Mod ListBox.Items.Count
+            If Random.NextSelect Then
+                SetNamed(MSFiles.NextItem)
             Else
-                If ListBox.SelectedIndex = 0 Then
-                    ListBox.SelectedIndex = ListBox.Items.Count - 1
-                Else
-                    ListBox.SelectedIndex = ListBox.SelectedIndex - 1
 
+                If Forward Then
+                    ListBox.SelectedIndex = (ListBox.SelectedIndex + 1) Mod ListBox.Items.Count
+                Else
+                    If ListBox.SelectedIndex = 0 Then
+                        ListBox.SelectedIndex = ListBox.Items.Count - 1
+                    Else
+                        ListBox.SelectedIndex = ListBox.SelectedIndex - 1
+
+                    End If
                 End If
             End If
         End If

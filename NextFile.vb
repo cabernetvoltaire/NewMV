@@ -1,6 +1,7 @@
 ﻿Public Class NextFile
     Private mListCount As Integer
     Private mListbox As New ListBox
+    Public Event RandomChanged(sender As Object, e As EventArgs)
     Public Property Listbox() As ListBox
         Get
             Return mListbox
@@ -27,30 +28,39 @@
         End Set
     End Property
     Private Property mNextItem As String
+    Public ReadOnly Property RandomItem As String
+        Get
+            RandomItem = mListbox.Items(Int(Rnd() * (mListCount)))
+
+        End Get
+    End Property
+
+
+
     Public Property NextItem As String
         Get
-            If Randomised Then
-                mNextItem = mListbox.Items(Int(Rnd() * (mListCount - 1)))
-            Else
-                If mListCount > 1 Then
-                    If Forwards Then
-                        mNextItem = mListbox.Items((mCurrentIndex + 1) Mod (mListCount))
-                    Else
-                        If mCurrentIndex = 0 Then
-                            mCurrentIndex = mListCount
-                        Else
-                            mNextItem = mListbox.Items((mCurrentIndex - 1) Mod (mListCount))
-                        End If
-                    End If
-                Else
-                    mNextItem = mListbox.Items(0)
+            'If Randomised Then
 
+            'Else
+            If mListCount > 1 Then
+                If Forwards Then
+                    mNextItem = mListbox.Items((mCurrentIndex + 1) Mod (mListCount))
+                Else
+                    If mCurrentIndex = 0 Then
+                        mCurrentIndex = mListCount
+                    Else
+                        mNextItem = mListbox.Items((mCurrentIndex - 1) Mod (mListCount))
+                    End If
                 End If
+            Else
+                mNextItem = mListbox.Items(0)
+
             End If
+            'End If
             Return mNextItem
         End Get
         Set(value As String)
-
+            mNextItem = value
         End Set
     End Property
 
@@ -87,8 +97,19 @@
         End Set
     End Property
 
-
+    Private Property mRandomised As Boolean
     Public Property Randomised As Boolean
+        Set(value As Boolean)
+            mRandomised = value
+            'If mRandomised Then
+            '    mNextItem = NextItem
+            '    RaiseEvent RandomChanged(Me, Nothing)
+            'End If
+        End Set
+        Get
+            Return mRandomised
+        End Get
+    End Property
 
 
 End Class

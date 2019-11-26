@@ -1,12 +1,12 @@
 ﻿Imports AxWMPLib
 Public Class MediaSwapper
 
-    Public NextF As New NextFile
+    Public WithEvents NextF As New NextFile
     Public WithEvents Media1 As New MediaHandler("mMedia1")
     Public WithEvents Media2 As New MediaHandler("mMedia2")
     Public WithEvents Media3 As New MediaHandler("mMedia3")
 
-
+    Public RandomNext As Boolean = False
     Private mFileList As New List(Of String) '
     Private mListIndex As Integer
     Private mListbox As New ListBox
@@ -15,6 +15,7 @@ Public Class MediaSwapper
     <CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")>
     Public Event LoadedMedia(MH As MediaHandler)
     Public Event MediaNotFound(MH As MediaHandler)
+
     Public Property NextItem As String
     Public Property CurrentItem As String
     Public Property PreviousItem As String
@@ -31,12 +32,26 @@ Public Class MediaSwapper
         End Get
         Set(ByVal value As ListBox)
             mListbox = value
+
             NextF.Listbox = value
+
             For Each m In mListbox.Items
                 mFileList.Add(m)
             Next
+            GetNext()
         End Set
     End Property
+    Private Sub GetNext()
+        If RandomNext Then
+            NextItem = NextF.RandomItem
+            Do Until NextItem <> CurrentItem
+                NextItem = NextF.RandomItem
+            Loop
+
+        Else
+                NextItem = NextF.NextItem
+        End If
+    End Sub
     ''' <summary>
     ''' Sets the listindex to make the currently shown medium.
     ''' </summary>
@@ -89,8 +104,11 @@ Public Class MediaSwapper
         NextF.CurrentIndex = index
 
         CurrentItem = NextF.CurrentItem
-        NextItem = NextF.NextItem
+        GetNext()
         PreviousItem = NextF.PreviousItem
+        Report("Current:" & CurrentItem, 0)
+        Report("Next:" & NextItem, 0)
+        Report("Previous:" & PreviousItem, 0)
         Select Case CurrentItem
 
             Case Media2.MediaPath
@@ -105,8 +123,10 @@ Public Class MediaSwapper
         oldindex = index
     End Sub
 
-    Private Sub Prepare(ByRef MH As MediaHandler, path As String)
-        Debug.Print("PREPARE: " & MH.Player.Name)
+
+
+    Private Function Prepare(ByRef MH As MediaHandler, path As String) As Boolean
+        Debug.Print("PREPARE: " & MH.Player.Name & " with " & path)
         If MH.MediaPath <> path Then
             MH.MediaPath = path
         End If
@@ -115,22 +135,31 @@ Public Class MediaSwapper
                 If separate Then MH.Player.uiMode = "mini"
                 MH.Player.Visible = True
                 MH.PlaceResetter(True)
+                Return True
                 RaiseEvent LoadedMedia(MH) 'Currently does nothing.
             Case Filetype.Pic
                 MH.PlaceResetter(False)
                 'MH.MediaPath = path
                 MH.Picture.Visible = True
                 MH.Picture.Tag = path
+                Return True
+
             Case Else
+                Return False
 
         End Select
         'NB Duration is not loaded by this point. 
 
-    End Sub
+    End Function
+    Function DisposeMedia(player As AxWindowsMediaPlayer) As Integer
+        player.close()
+        player.currentPlaylist.clear()
+        Return 0
+    End Function
     Public Sub CancelURL(filepath As String)
-        If Media1.Player.URL = filepath Then Media1.Player.close()
-        If Media2.Player.URL = filepath Then Media2.Player.close()
-        If Media3.Player.URL = filepath Then Media3.Player.close()
+        If Media1.Player.URL = filepath Then DisposeMedia(Media1.Player)
+        If Media2.Player.URL = filepath Then DisposeMedia(Media2.Player)
+        If Media3.Player.URL = filepath Then DisposeMedia(Media3.Player)
         If Media1.Picture.Tag = filepath Then DisposePic(Media1.Picture)
         If Media2.Picture.Tag = filepath Then DisposePic(Media2.Picture)
         If Media3.Picture.Tag = filepath Then DisposePic(Media3.Picture)
@@ -138,12 +167,15 @@ Public Class MediaSwapper
     End Sub
     Private Sub RotateMedia(ByRef ThisMH As MediaHandler, ByRef NextMH As MediaHandler, ByRef PrevMH As MediaHandler)
         CurrentURLS.Clear()
-        Prepare(PrevMH, NextF.PreviousItem)
-        Prepare(NextMH, NextF.NextItem)
-        Prepare(ThisMH, NextF.CurrentItem)
-        CurrentURLS.Add(NextF.PreviousItem)
-        CurrentURLS.Add(NextF.CurrentItem)
-        CurrentURLS.Add(NextF.NextItem)
+        Prepare(PrevMH, PreviousItem)
+        'While Not Prepare(NextMH, NextItem)
+        '    GetNext()
+        Prepare(NextMH, NextItem)
+        'End While
+        Prepare(ThisMH, CurrentItem)
+            CurrentURLS.Add(PreviousItem)
+        CurrentURLS.Add(CurrentItem)
+        CurrentURLS.Add(NextItem)
         ThisMH.IsCurrent = True
         NextMH.IsCurrent = False
         PrevMH.IsCurrent = False
@@ -223,6 +255,9 @@ Public Class MediaSwapper
     End Sub
     Private Sub OnMediaPlaying(sender As Object, e As EventArgs) Handles Media1.MediaPlaying, Media2.MediaPlaying, Media3.MediaPlaying
         '   RaiseEvent MediaShown(sender)
+    End Sub
+    Private Sub OnRandomChanged(sender As Object, e As EventArgs) Handles NextF.RandomChanged
+        NextItem = NextF.NextItem
     End Sub
 
     Public Sub ClickAllPics()

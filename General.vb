@@ -141,12 +141,16 @@ Public Module General
         If DestinationDirectory = CurrentFolder And Update Then MainForm.UpdatePlayOrder(MainForm.FBH)
     End Sub
     Public Function FilenameFromLink(n As String) As String
-        Dim currentlink = n
-        Dim parts() = currentlink.Split("\")
-        Dim filename = parts(parts.Length - 1)
-        Dim fparts() = filename.Split("%")
-        filename = fparts(0)
-        Return filename
+        If n = "" Then
+            Return ""
+        Else
+            Dim currentlink As String = n
+            Dim parts() = currentlink.Split("\")
+            Dim filename = parts(parts.Length - 1)
+            Dim fparts() = filename.Split("%")
+            filename = fparts(0)
+            Return filename
+        End If
     End Function
     Public Function FilenameFromPath(n As String, WithExtension As Boolean) As String
         Dim currentpath = n
@@ -906,7 +910,7 @@ Public Module General
                     MsgBox(ex.Message)
                 End Try
             Else
-                If InStr(UCase(lbx.Items(i)), UCase(s)) <> 0 Then
+                If InStr(UCase(FilenameFromPath(lbx.Items(i), False)), UCase(s)) <> 0 Then
                     lbx.SetSelected(i, True)
                     ls.Add(lbx.Items(i))
                 End If
