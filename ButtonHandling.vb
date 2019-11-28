@@ -211,12 +211,13 @@ Module ButtonHandling
 
         KeyAssignmentsStore(ButtonFilePath)
     End Sub
-    Public Sub AssignTreeNew(strStart As String, SizeMagnitude As Byte)
+    Public Sub AssignTreeNew(StartingFolder As String, SizeMagnitude As Byte)
         If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
 
         Dim exclude As String = ""
         exclude = InputBox("String to exclude from folders?", "")
-        Dim d As New DirectoryInfo(strStart)
+        ClearCurrentButtons()
+        Dim d As New DirectoryInfo(StartingFolder)
 
         Dim icomp As New MyComparer
         Dim dlist As New SortedList(Of Long, DirectoryInfo)(icomp)
@@ -254,7 +255,7 @@ Module ButtonHandling
 
         Next
 
-
+        ButtonFilePath = Buttonfolder & "\" & d.Name & ".msb"
         KeyAssignmentsStore(ButtonFilePath)
     End Sub
     Public Function FindNextTier(tier As SortedList(Of String, DirectoryInfo)) As SortedList(Of String, DirectoryInfo)
@@ -337,9 +338,7 @@ Module ButtonHandling
 
     End Sub
     Public Sub SaveButtonlist()
-        Dim path As String = ""
-
-        KeyAssignmentsStore(path)
+        KeyAssignmentsStore("")
     End Sub
 
 
@@ -416,11 +415,14 @@ Module ButtonHandling
         'Check for button file
         Dim f As New IO.DirectoryInfo(Buttonfolder)
         Dim file As New IO.FileInfo(f.FullName & "\" & Foldername & ".msb")
-        If file.Exists Then
-            If MsgBox("Do you want to load the buttons?", MsgBoxStyle.YesNoCancel) = MsgBoxResult.Yes Then
-                KeyAssignmentsRestore(file.FullName)
-            End If
+        Static lastasked As String
+        If file.Exists And file.FullName <> lastasked Then
+            '     If MsgBox("Do you want to load the buttons?", MsgBoxStyle.YesNoCancel) = MsgBoxResult.Yes Then
+            KeyAssignmentsRestore(file.FullName)
+            '     End If
+            lastasked = file.FullName
         End If
+
         'Load it (optionally)
     End Sub
     Public Sub NewButtonList()
@@ -436,7 +438,7 @@ Module ButtonHandling
             lblDest(i).Text = ""
 
         Next
-        buttons.Clear()
+        ClearCurrentButtons(buttons)
     End Sub
     Public Sub ClearCurrentButtons(b As ButtonSet)
         For Each row In b.CurrentSet
@@ -477,8 +479,9 @@ Module ButtonHandling
                 m.Label = (subs(3))
             End If
         Next
+        ButtonFilePath = path
         UpdateButtonAppearance()
-
+        MainForm.UpdateFileInfo()
     End Sub
     Public Sub KeyAssignmentsStore(path As String)
         Dim intLoop As Integer
@@ -522,7 +525,7 @@ Module ButtonHandling
         End Try
         ButtonFilePath = path
 
-
+        MainForm.UpdateFileInfo()
         PreferencesSave()
 
     End Sub
@@ -532,129 +535,4 @@ Module ButtonHandling
     End Sub
 
 End Module
-Public Class MyComparer
-    Implements Generic.IComparer(Of Long)
 
-    ''' <returns>
-    ''' Zero if x is equal to y;
-    ''' A value less than zero if x is greater than y;
-    ''' A value greater than zero if x is less than y.
-    ''' </returns>
-    ''' <remarks></remarks>
-    Public Function Compare(ByVal x As Long, ByVal y As Long) As Integer Implements System.Collections.Generic.IComparer(Of Long).Compare
-        If x = y Then
-            Return 0
-        ElseIf x > y Then
-            Return -1
-        Else
-            Return 1
-
-        End If
-
-
-    End Function
-
-
-End Class
-
-Public Class CompareByFilesize
-    Implements Generic.IComparer(Of String)
-
-    Public Function Compare(x As String, y As String) As Integer Implements IComparer(Of String).Compare
-        Dim xf As New IO.FileInfo(x)
-        Dim yf As New IO.FileInfo(y)
-        If xf.Length = yf.Length Then
-            Return 0
-        ElseIf xf.Length < yf.Length Then
-            Return -1
-        Else
-            Return 1
-        End If
-
-    End Function
-End Class
-Public Class CompareByDate
-    Implements Generic.IComparer(Of String)
-
-    Public Function Compare(x As String, y As String) As Integer Implements IComparer(Of String).Compare
-        Dim xf As New IO.FileInfo(x)
-        Dim yf As New IO.FileInfo(y)
-        If GetDate(xf) = GetDate(yf) Then
-            Return 0
-        ElseIf GetDate(xf) < GetDate(yf) Then
-            Return -1
-        Else
-            Return 1
-        End If
-
-    End Function
-End Class
-Public Class CompareByType
-    Implements Generic.IComparer(Of String)
-
-    Public Function Compare(x As String, y As String) As Integer Implements IComparer(Of String).Compare
-        Dim xf As New IO.FileInfo(x)
-        Dim yf As New IO.FileInfo(y)
-        If xf.Extension = yf.Extension Then
-            Return 0
-        ElseIf xf.Extension < yf.Extension Then
-            Return -1
-        Else
-            Return 1
-        End If
-
-    End Function
-End Class
-
-Public Class CompareByEndNumber
-    Implements Generic.IComparer(Of String)
-
-    Public Function Compare(x As String, y As String) As Integer Implements IComparer(Of String).Compare
-        x = FilenameFromPath(x, False)
-        y = FilenameFromPath(y, False)
-        'Counting from end, find the trailing numerics
-        Dim i = 0
-        Dim xnum, ynum As String
-        xnum = ""
-        ynum = ""
-        For i = 0 To x.Length - 1
-            Dim m = x.Length - 1 - i
-            If InStr("0123456789", x(m)) <> 0 Then
-                xnum = x(x.Length - i - 1) & xnum
-            Else
-                Exit For
-            End If
-        Next
-        For i = 0 To y.Length - 1
-            Dim m = y.Length - 1 - i
-            If InStr("0123456789", y(m)) <> 0 Then
-                ynum = y(y.Length - i - 1) & ynum
-            Else
-                Exit For
-            End If
-        Next
-        'If same Then order in normal way
-        If ynum.Length = xnum.Length Or ynum = "" Or xnum = "" Then
-            If y < x Then
-                Return 1
-            ElseIf x < y Then
-                Return -1
-            Else
-                Return 0
-            End If
-        Else
-            'Otherwise, order according to those numbers
-            Dim ynumnum = Val(ynum)
-            Dim xnumnum = Val(xnum)
-            If ynumnum < xnumnum Then
-                Return 1
-            ElseIf xnumnum < ynumnum Then
-                Return -1
-            Else
-                Return 0
-            End If
-        End If
-
-    End Function
-
-End Class

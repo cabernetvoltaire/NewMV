@@ -653,59 +653,6 @@ Public Module General
     End Function
 
 
-    Public Function SetPlayOrderOld(Order As Byte, ByVal List As List(Of String)) As List(Of String)
-
-        Dim NewListS As New SortedList(Of String, String)
-        Dim NewListL As New SortedList(Of Long, String)
-        Dim NewListD As New SortedList(Of DateTime, String)
-        'frmMain.ListBox1.BringToFront()
-
-        Try
-            Select Case Order
-                Case SortHandler.Order.Name
-                    List.Sort(New CompareByEndNumber)
-                    'SortByName(List, NewListS)
-                Case SortHandler.Order.Size
-                    List.Sort(New CompareByFilesize)
-                    'SortBySize(List, NewListL)
-
-                Case SortHandler.Order.DateTime
-                    List.Sort(New CompareByDate)
-                   ' SortByDate(List, NewListD)
-                Case SortHandler.Order.PathName
-                    List.Sort()
-'                    SortbyPathName(List, NewListS)
-
-                Case SortHandler.Order.Type
-                    SortbyType(List, NewListS)
-
-                Case SortHandler.Order.Random
-                    SortbyRandom(List, NewListS)
-                Case Else
-
-            End Select
-        Catch ex As System.ArgumentException 'TODO could do better than this. 
-            ReportFault("General.SetPlayOrder", ex.Message)
-        End Try
-
-        If NewListD.Count <> 0 Then
-            CopyList(List, NewListD)
-        ElseIf NewListS.Count <> 0 Then
-            CopyList(List, NewListS)
-        ElseIf NewListL.Count <> 0 Then
-            CopyList(List, NewListL)
-        End If
-
-        If MainForm.PlayOrder.ReverseOrder Then
-            List = ReverseListOrder(List)
-        End If
-
-        Return List
-
-
-
-
-    End Function
 
     Private Sub SortbyRandom(List As List(Of String), NewListS As SortedList(Of String, String))
         For Each f In List

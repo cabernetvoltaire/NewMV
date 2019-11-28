@@ -165,7 +165,7 @@
     End Sub
 
     Public Sub New(Lbx As ListBox)
-        ListBox = Lbx
+        mListbox = Lbx
     End Sub
 #End Region
 

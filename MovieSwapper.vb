@@ -44,9 +44,9 @@ Public Class MediaSwapper
     Private Sub GetNext()
         If RandomNext Then
             NextItem = NextF.RandomItem
-            Do Until NextItem <> CurrentItem
-                NextItem = NextF.RandomItem
-            Loop
+            'Do Until NextItem <> CurrentItem
+            '    NextItem = NextF.RandomItem
+            'Loop
 
         Else
                 NextItem = NextF.NextItem

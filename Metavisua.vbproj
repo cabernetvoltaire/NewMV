@@ -135,6 +135,7 @@
     </Compile>
     <Compile Include="ButtonSet.vb" />
     <Compile Include="ButtonRow.vb" />
+    <Compile Include="Comparers.vb" />
     <Compile Include="Dashboard.Designer.vb">
       <DependentUpon>Dashboard.vb</DependentUpon>
     </Compile>

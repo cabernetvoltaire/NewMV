@@ -69,9 +69,8 @@ Public Class MainForm
         If Random.StartPointFlag Then
             Media.StartPoint.State = StartPointHandler.StartTypes.Random
         End If
-        If Random.NextSelect Then
-            MSFiles.RandomNext = True
-        End If
+        MSFiles.RandomNext = Random.NextSelect
+
         ToggleRandomAdvanceToolStripMenuItem.Checked = Random.NextSelect
         ToggleRandomSelectToolStripMenuItem.Checked = Random.OnDirChange
         ToggleRandomStartToolStripMenuItem.Checked = Random.StartPointFlag
@@ -426,8 +425,8 @@ Public Class MainForm
             LBH.SetNamed(s)
         Else
             Dim e = New DirectoryInfo(CurrentFolder)
+            FillFileBox(lbxFiles, e, False)
             FBH.DirectoryPath = e.FullName
-            '            FillFileBox(lbxFiles, e, False)
             FBH.SetNamed(Media.MediaPath)
         End If
 
@@ -581,12 +580,11 @@ Public Class MainForm
         LBHH.ListBox.SelectionMode = SelectionMode.One
         Dim count = LBHH.ItemList.Count
         ReDim Preserve FBCShown(count)
+        MSFiles.RandomNext = Random
         If Random Then
-            MSFiles.RandomNext = True
             LBHH.ListBox.SelectedItem = MSFiles.NextItem
         Else
             LBHH.IncrementIndex(blnForward)
-
         End If
 
         NofShown += 1
@@ -1471,10 +1469,7 @@ Public Class MainForm
         tmrInitialise.Enabled = False
     End Sub
 
-    Private Sub ButtonListToolStripMenuItem_Click(sender As Object, e As EventArgs)
-        KeyAssignmentsRestore()
-        CollapseShowlist(False)
-    End Sub
+
 
     Private Sub ButtonListToolStripMenuItem1_Click(sender As Object, e As EventArgs)
         SaveButtonlist()
@@ -1788,6 +1783,7 @@ Public Class MainForm
         CurrentFolder = e.Directory.FullName
         If AutoLoadButtons Then
             Autoload(FolderNameFromPath(CurrentFolder))
+            UpdateFileInfo()
         End If
         tmrUpdateFileList.Enabled = True
         tmrUpdateFileList.Interval = 200
@@ -1928,7 +1924,7 @@ Public Class MainForm
         Dim size As Byte = Val(InputBox("Max size"))
         If size < 6 Then size = 11
         AssignTreeNew(CurrentFolder, size)
-        SaveButtonlist()
+        'SaveButtonlist()
 
     End Sub
 
@@ -2354,8 +2350,12 @@ Public Class MainForm
 
 
     Private Sub ShowlistToolStripMenuItem_Click_1(sender As Object, e As EventArgs) Handles ShowlistToolStripMenuItem.Click
-        'Dim x As New Listform
-        'x.Show()
+        If FocusControl Is lbxShowList Then
+
+            Dim x As New ShowListForm
+            x.Show()
+            x.ListofFiles = FBH.ItemList
+        End If
     End Sub
 
 
