@@ -34,10 +34,10 @@ Public Class MyComparer
                 If xf.Length = yf.Length Then
                     Return 0
                 ElseIf xf.Length < yf.Length Then
-                    Return -1
-                Else
-                    Return 1
-                End If
+                Return 1
+            Else
+                Return -1
+            End If
             Else
                 Return 0
             End If
@@ -103,19 +103,19 @@ Public Class MyComparer
             ynum = ""
             For i = 0 To x.Length - 1
                 Dim m = x.Length - 1 - i
-                If InStr("0123456789", x(m)) <> 0 Then
+                If Instr("0123456789", x(m)) <> 0 Then
                     xnum = x(x.Length - i - 1) & xnum
                 Else
-                    Exit For
-                End If
+                ' Exit For
+            End If
             Next
             For i = 0 To y.Length - 1
                 Dim m = y.Length - 1 - i
                 If InStr("0123456789", y(m)) <> 0 Then
                     ynum = y(y.Length - i - 1) & ynum
                 Else
-                    Exit For
-                End If
+                ' Exit For
+            End If
             Next
             'If same Then order in normal way
             If ynum.Length = xnum.Length Or ynum = "" Or xnum = "" Then

@@ -90,7 +90,7 @@
         'for each directory, 
         Dim max = DirectoriesList.Count
         While mFoundParents.Count < mOrphanList.Count And i < max
-            Dim filename, oldfilename As String
+            Dim filename As String
 
             For Each j In mOrphanList
 

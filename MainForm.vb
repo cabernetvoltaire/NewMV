@@ -200,13 +200,13 @@ Public Class MainForm
         Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
         If Media.IsLink Then
         Else
-            T = New Thread(New ThreadStart(Sub() Op.ReuniteWithFile(x, filepath))) With {
-           .IsBackground = True
-        }
-            T.SetApartmentState(ApartmentState.STA)
+            '    T = New Thread(New ThreadStart(Sub() Op.ReuniteWithFile(x, filepath))) With {
+            '   .IsBackground = True
+            '}
+            '    T.SetApartmentState(ApartmentState.STA)
 
-            T.Start()
-            ' Op.ReuniteWithFile(x, filepath)
+            '    T.Start()
+            '    ' Op.ReuniteWithFile(x, filepath)
         End If
 
         Dim i = 0
@@ -918,7 +918,7 @@ Public Class MainForm
 #End Region
 #Region "States"
             Case KeySelect
-                SelectSubList(False)
+                SelectSubList(FocusControl, False)
 
             Case KeyFullscreen
                 e.SuppressKeyPress = True
@@ -1199,7 +1199,7 @@ Public Class MainForm
         'x.MdiParent = Me
         FirstButtons.sbtns = {btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8}
         FirstButtons.lbls = {lbl1, lbl2, lbl3, lbl4, lbl5, lbl6, lbl7, lbl8}
-        FirstButtons.LoadButtonSet(ButtonFilePath)
+        FirstButtons.handler.LoadButtonSet(ButtonFilePath)
         If Not blnButtonsLoaded Then
             ToggleButtons()
         End If
@@ -1418,9 +1418,7 @@ Public Class MainForm
         SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
     End Sub
 
-    Protected Overrides Sub Finalize()
-        MyBase.Finalize()
-    End Sub
+
 
 
 
@@ -1565,8 +1563,13 @@ Public Class MainForm
         End If
         Text = Text & " - " & Media.DisplayerName 'TODO remove displayer name for release. 
     End Sub
-
-    Private Function SelectSubList(blnRegex As Boolean) As String
+    ''' <summary>
+    ''' Selects all files in the listbox matching a search string or regex
+    ''' Returns chosen directory name
+    ''' </summary>
+    ''' <param name="blnRegex"></param>
+    ''' <returns></returns>
+    Private Function SelectSubList(lbx As ListBox, blnRegex As Boolean) As String
         Dim s As String
         If blnRegex Then
             s = InputBox("Enter regex search string")
@@ -1577,12 +1580,7 @@ Public Class MainForm
             Return s
             Exit Function
         End If
-        Dim lbx As New ListBox
-        If FocusControl Is lbxFiles Or FocusControl Is lbxShowList Then
-            lbx = FocusControl
-        Else
-            lbx = lbxFiles
-        End If
+
         SelectFromListbox(lbx, s, blnRegex)
         UpdateFileInfo()
         lastselection = s
@@ -1772,7 +1770,7 @@ Public Class MainForm
 
     Private Sub BurstFolderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BurstFolderToolStripMenuItem.Click
         BurstFolder(New DirectoryInfo(CurrentFolder))
-        tvMain2.RemoveNode(CurrentFolder)
+        'tvMain2.RemoveNode(CurrentFolder)
         '        tvMain2.RefreshTree(New IO.DirectoryInfo(CurrentFolder).Parent.FullName)
     End Sub
 
@@ -1897,12 +1895,16 @@ Public Class MainForm
     Public Sub BundleFiles(lbx1 As ListBox, strFolder As String)
         If lbx1.SelectedItems.Count > 1 Then
         Else
-            SelectSubList(False)
+            SelectSubList(FocusControl, False)
 
         End If
-        blnSuppressCreate = False
-        MoveFiles(ListfromSelectedInListbox(lbx1), strFolder, lbx1)
-        tvMain2.RefreshTree(CurrentFolder)
+        Dim x As New BundleHandler(tvMain2, lbx1, strFolder)
+        x.List = ListfromSelectedInListbox(lbx1)
+        x.ListBox = lbx1
+        x.Bundle()
+        'blnSuppressCreate = False
+        'MoveFiles(ListfromSelectedInListbox(lbx1), strFolder, lbx1)
+        'tvMain2.RefreshTree(CurrentFolder)
         tmrUpdateFileList.Enabled = True
 
     End Sub
@@ -1922,8 +1924,9 @@ Public Class MainForm
 
     Private Sub ToolStripButton1_Click_1(sender As Object, e As EventArgs) Handles TreeToolStripMenuItem.Click
         Dim size As Byte = Val(InputBox("Max size"))
-        If size < 6 Then size = 11
+        'If size < 6 Then size = 11
         AssignTreeNew(CurrentFolder, size)
+        UpdateFileInfo()
         'SaveButtonlist()
 
     End Sub
@@ -2199,11 +2202,11 @@ Public Class MainForm
 
 
     Private Sub SearchToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SearchToolStripMenuItem.Click
-        SelectSubList(False)
+        SelectSubList(FocusControl, False)
     End Sub
 
     Private Sub RegexSearchToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RegexSearchToolStripMenuItem.Click
-        SelectSubList(True)
+        SelectSubList(FocusControl, True)
     End Sub
 
 
@@ -2295,6 +2298,12 @@ Public Class MainForm
 
     End Sub
 
+    Private Sub FilterAlphabetic(Folders As Boolean, Files As Boolean, Letters As Boolean)
+        CancelDisplay(False)
+        DM.FilterByAlpha(CurrentFolder, Folders, Files, Letters)
+        tvMain2.RefreshTree(CurrentFolder)
+
+    End Sub
 
     Private Sub tbAbsolute_MouseUp(sender As Object, e As MouseEventArgs) Handles tbAbsolute.MouseUp
         Media.StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute
@@ -2557,12 +2566,18 @@ Public Class MainForm
         'Op.ImportLinks(Showlist)
         'Select files with links
         Dim hilist As New List(Of String)
-        For Each f In FBH.ItemList
+        Dim FLBH As New ListBoxHandler(lbxFiles)
+        If FocusControl Is lbxFiles Then
+            FLBH = FBH
+        Else
+            FLBH = LBH
+        End If
+        For Each f In FLBH.ItemList
             If FaveMinder.GetLinksOf(f).Count = 0 Then
                 hilist.Add(f)
             End If
         Next
-        FBH.SelectItems = hilist
+        FLBH.SelectItems = hilist
         ' FBH.ListBox.SelectionMode = SelectionMode.One
     End Sub
 
@@ -2727,6 +2742,10 @@ Public Class MainForm
 
     Private Sub chbLoadButtonFiles_CheckedChanged(sender As Object, e As EventArgs) Handles chbLoadButtonFiles.CheckedChanged
         AutoLoadButtons = chbLoadButtonFiles.Checked
+    End Sub
+
+    Private Sub LettersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LettersToolStripMenuItem.Click
+        FilterAlphabetic(False, True, True)
     End Sub
 #End Region
 

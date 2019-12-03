@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{AE2A260B-7821-4E97-A843-D96814954527}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>MasaSam.Forms.Sample.MainForm</StartupObject>
+    <StartupObject>MasaSam.Forms.Sample.SplashScreen1</StartupObject>
     <RootNamespace>MasaSam.Forms.Sample</RootNamespace>
     <AssemblyName>Metavisua</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -127,12 +127,14 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AutoTrailer.vb" />
+    <Compile Include="BundleHandler.vb" />
     <Compile Include="ButtonForm.Designer.vb">
       <DependentUpon>ButtonForm.vb</DependentUpon>
     </Compile>
     <Compile Include="ButtonForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ButtonHandler.vb" />
     <Compile Include="ButtonSet.vb" />
     <Compile Include="ButtonRow.vb" />
     <Compile Include="Comparers.vb" />

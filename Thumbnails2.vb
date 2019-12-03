@@ -295,7 +295,7 @@
 
     End Sub
 
-    Private Sub Refresh_Click(sender As Object, e As EventArgs) Handles Refresh.Click
+    Private Sub Refresh_Click(sender As Object, e As EventArgs) Handles RefreshThumbnails.Click
         mRefresh = True
         LoadThumbnails()
         mRefresh = False

@@ -41,12 +41,8 @@ Module ButtonHandling
             lblDest(i).Text = buttons.CurrentRow.Buttons(i).Label
         Next
     End Sub
-    Public Sub ChangePreviewMedia()
-        If FolderSelect.Visible Then FolderSelect.ChangeMedia()
-    End Sub
-    Private Sub hidePreview(sender As Object, e As EventArgs)
-        FolderSelect.SendToBack()
-    End Sub
+
+
     Private Sub ShowPreview(Sender As Object, e As EventArgs)
 
 
@@ -157,7 +153,7 @@ Module ButtonHandling
         Dim d As New DirectoryInfo(Start)
         For Each di In d.EnumerateDirectories
             If InStr(di.Name, exclude) = 0 Then
-                plist.Add(GetDirSize(di.Name, 0).Result, di)
+                plist.Add(GetDirSize(di.Name, 0), di)
             End If
         Next
 
@@ -224,7 +220,7 @@ Module ButtonHandling
 
         For Each di In d.EnumerateDirectories("*", searchOption:=IO.SearchOption.AllDirectories)
 
-            Dim disize = GetDirSize(di.FullName, 0).Result
+            Dim disize = GetDirSize(di.FullName, 0)
             If (exclude = "" Or Not di.Name.Contains(exclude)) And disize > 10 ^ SizeMagnitude Then
                 'MsgBox(di.Name & " is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###.#"))
                 While dlist.Keys.Contains(disize)
@@ -256,7 +252,9 @@ Module ButtonHandling
         Next
 
         ButtonFilePath = Buttonfolder & "\" & d.Name & ".msb"
+
         KeyAssignmentsStore(ButtonFilePath)
+
     End Sub
     Public Function FindNextTier(tier As SortedList(Of String, DirectoryInfo)) As SortedList(Of String, DirectoryInfo)
         Dim i As Int16 = 0
@@ -498,6 +496,7 @@ Module ButtonHandling
             With MainForm.SaveFileDialog1
                 .DefaultExt = "msb"
                 .Filter = "Metavisua button files|*.msb|All files|*.*"
+                .FileName = path
                 If .ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                     path = .FileName
                     ButtonFilePath = path

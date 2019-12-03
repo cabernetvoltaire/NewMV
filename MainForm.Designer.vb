@@ -120,6 +120,7 @@ Partial Class MainForm
         Me.tbxPercentage = New System.Windows.Forms.TextBox()
         Me.cbxStartPoint = New System.Windows.Forms.ComboBox()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.chbLoadButtonFiles = New System.Windows.Forms.CheckBox()
         Me.chbAutoTrail = New System.Windows.Forms.CheckBox()
         Me.chbInDir = New System.Windows.Forms.CheckBox()
         Me.chbNextFile = New System.Windows.Forms.CheckBox()
@@ -248,7 +249,7 @@ Partial Class MainForm
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
         Me.NewIndex = New System.Windows.Forms.Timer(Me.components)
         Me.Response = New System.Windows.Forms.Timer(Me.components)
-        Me.chbLoadButtonFiles = New System.Windows.Forms.CheckBox()
+        Me.LettersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1236,6 +1237,19 @@ Partial Class MainForm
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Random"
         '
+        'chbLoadButtonFiles
+        '
+        Me.chbLoadButtonFiles.AutoSize = True
+        Me.chbLoadButtonFiles.Checked = True
+        Me.chbLoadButtonFiles.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chbLoadButtonFiles.Location = New System.Drawing.Point(5, 122)
+        Me.chbLoadButtonFiles.Name = "chbLoadButtonFiles"
+        Me.chbLoadButtonFiles.Size = New System.Drawing.Size(186, 24)
+        Me.chbLoadButtonFiles.TabIndex = 4
+        Me.chbLoadButtonFiles.TabStop = False
+        Me.chbLoadButtonFiles.Text = "AutoLoadButtonFiles"
+        Me.chbLoadButtonFiles.UseVisualStyleBackColor = True
+        '
         'chbAutoTrail
         '
         Me.chbAutoTrail.AutoSize = True
@@ -1837,14 +1851,15 @@ Partial Class MainForm
         '
         'FilesToolStripMenuItem
         '
+        Me.FilesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LettersToolStripMenuItem})
         Me.FilesToolStripMenuItem.Name = "FilesToolStripMenuItem"
-        Me.FilesToolStripMenuItem.Size = New System.Drawing.Size(154, 30)
+        Me.FilesToolStripMenuItem.Size = New System.Drawing.Size(252, 30)
         Me.FilesToolStripMenuItem.Text = "Files"
         '
         'FoldersToolStripMenuItem
         '
         Me.FoldersToolStripMenuItem.Name = "FoldersToolStripMenuItem"
-        Me.FoldersToolStripMenuItem.Size = New System.Drawing.Size(154, 30)
+        Me.FoldersToolStripMenuItem.Size = New System.Drawing.Size(252, 30)
         Me.FoldersToolStripMenuItem.Text = "Folders"
         '
         'PromoteFolderToolStripMenuItem
@@ -2091,18 +2106,11 @@ Partial Class MainForm
         'Response
         '
         '
-        'chbLoadButtonFiles
+        'LettersToolStripMenuItem
         '
-        Me.chbLoadButtonFiles.AutoSize = True
-        Me.chbLoadButtonFiles.Checked = True
-        Me.chbLoadButtonFiles.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chbLoadButtonFiles.Location = New System.Drawing.Point(5, 122)
-        Me.chbLoadButtonFiles.Name = "chbLoadButtonFiles"
-        Me.chbLoadButtonFiles.Size = New System.Drawing.Size(186, 24)
-        Me.chbLoadButtonFiles.TabIndex = 4
-        Me.chbLoadButtonFiles.TabStop = False
-        Me.chbLoadButtonFiles.Text = "AutoLoadButtonFiles"
-        Me.chbLoadButtonFiles.UseVisualStyleBackColor = True
+        Me.LettersToolStripMenuItem.Name = "LettersToolStripMenuItem"
+        Me.LettersToolStripMenuItem.Size = New System.Drawing.Size(252, 30)
+        Me.LettersToolStripMenuItem.Text = "Letters"
         '
         'MainForm
         '
@@ -2416,4 +2424,5 @@ Partial Class MainForm
     Friend WithEvents IncludingAllSubfoldersToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents JustTopFoldersToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents chbLoadButtonFiles As CheckBox
+    Friend WithEvents LettersToolStripMenuItem As ToolStripMenuItem
 End Class

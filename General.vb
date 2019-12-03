@@ -294,7 +294,20 @@ Public Module General
         End If
         x.TextBox1.Text = DefaultFolderName
     End Sub
+    Public Function LoadButtonFileName(path As String) As String
+        If path = "" Then
+            With New OpenFileDialog
+                .DefaultExt = "msb"
+                .Filter = "Metavisua button files|*.msb|All files|*.*"
 
+                If .ShowDialog() = System.Windows.Forms.DialogResult.OK Then
+                    path = .FileName
+                End If
+            End With
+        End If
+        Return path
+
+    End Function
     Public Function TryOtherDriveLetters(str As String) As String
         Dim original = str
         Dim m As New List(Of DriveInfo)
@@ -321,7 +334,7 @@ Public Module General
 
 #Region "Rotation Functions"
 
-    Public Function ImageOrientation(ByVal img As Image) As ExifOrientations
+    Public Function ImageOrientation(ByRef img As Image) As ExifOrientations
         ' Get the index of the orientation property.
         Dim orientation_index As Integer = Array.IndexOf(img.PropertyIdList, OrientationId)
 
@@ -768,7 +781,7 @@ Public Module General
     Public Function GetDirSizeString(Rootfolder As String) As String
         Return "##"
         Exit Function
-        Dim size As Long = GetDirSize(Rootfolder, 0).Result
+        Dim size As Long = GetDirSize(Rootfolder, 0)
         Dim sizestring As String
         If size > 10 ^ 12 Then
             sizestring = Str(Format(size / 1024 / 1024 / 1024 / 1024, "###,###,###,###,###.#")) & " Tb"
@@ -791,7 +804,7 @@ Public Module General
         Return sizestring
     End Function
 
-    Public Async Function GetDirSize(RootFolder As String, TotalSize As Long) As Task(Of Long)
+    Public Function GetDirSize(RootFolder As String, TotalSize As Long) As Long
         ' Exit Function
         If RootFolder.EndsWith(":\") Then
             Return 0

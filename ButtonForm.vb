@@ -2,24 +2,12 @@
 Public Class ButtonForm
 
     Public WithEvents buttons As New ButtonSet
+    Public handler As New ButtonHandler
     Private ofd As New OpenFileDialog
     Private sfd As New SaveFileDialog
     Public sbtns As Button()
     Public lbls As Label()
-    Public Function LoadButtonFileName(path As String) As String
-        If path = "" Then
-            With ofd
-                .DefaultExt = "msb"
-                .Filter = "Metavisua button files|*.msb|All files|*.*"
 
-                If .ShowDialog() = System.Windows.Forms.DialogResult.OK Then
-                    path = .FileName
-                End If
-            End With
-        End If
-        Return path
-
-    End Function
     Public Function SaveButtonFileName() As String
         Dim path As String = ""
 
@@ -45,10 +33,20 @@ Public Class ButtonForm
     Private Sub ButtonForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         sbtns = {Me.Button4, Me.Button2, Me.btn1, Me.Button1, Me.Button9, Me.Button7, Me.Button5, Me.Button6}
         lbls = {Me.Label4, Me.Label2, Me.lbl1, Me.Label1, Me.Label9, Me.Label7, Me.Label5, Me.Label6}
-        LoadButtonSet(LoadButtonFileName(ButtonFilePath))
+        ' FocusOnMain()
+        handler.LoadButtonSet(LoadButtonFileName(ButtonFilePath))
         ' buttons.CurrentLetter = LetterNumberFromAscii(Asc("A"))
         'TranscribeButtons(buttons.CurrentRow)
     End Sub
+    Private Sub FocusOnMain()
+        With MainForm
+            sbtns = { .btn1, .btn2, .btn3, .btn4, .btn5, .btn6, .btn7, .btn8}
+            lbls = { .lbl1, .lbl2, .lbl3, .lbl4, .lbl5, .lbl6, .lbl7, .lbl8}
+        End With
+
+    End Sub
+
+
     Public Sub TranscribeButtons(m As ButtonRow)
         For i = 0 To 7
             sbtns(i).Text = m.Buttons(i).FaceText
@@ -84,21 +82,21 @@ Public Class ButtonForm
                 If e.Control AndAlso e.Alt Then
                     Select Case e.KeyCode
                         Case Keys.L
-                            AssignLinear(New DirectoryInfo(CurrentFolder), buttons)
+                            handler.AssignLinear(New DirectoryInfo(CurrentFolder), buttons)
                         Case Keys.A
-                            AssignAlphabetical(New DirectoryInfo(CurrentFolder), buttons)
+                            handler.AssignAlphabetical(New DirectoryInfo(CurrentFolder), buttons)
                         Case Keys.T
                             buttons.Clear()
-                            AssignTree(New DirectoryInfo(CurrentFolder), buttons)
+                            handler.AssignTree(New DirectoryInfo(CurrentFolder), buttons)
                     End Select
                 End If
 
                 If e.Control AndAlso Not e.Alt Then
                     Select Case e.KeyCode
                         Case Keys.L
-                            LoadButtonSet(LoadButtonFileName(""))
+                            handler.LoadButtonSet(LoadButtonFileName(""))
                         Case Keys.S
-                            SaveButtonSet(SaveButtonFileName)
+                            handler.SaveButtonSet(SaveButtonFileName)
                     End Select
                 Else
                     If buttons.CurrentLetter = LetterNumberFromAscii(e.KeyCode) Then
@@ -117,121 +115,6 @@ Public Class ButtonForm
 
         End Select
     End Sub
-    Public Sub LoadButtonSet(Optional filename As String = "")
-
-        Dim path As String
-        If filename = "" Then
-            path = LoadButtonFileName("")
-        Else
-            path = filename
-        End If
-        If path = "" Then Exit Sub
-        ClearCurrentButtons(buttons)
-        'Get the file path
-
-        Dim btnList As New List(Of String)
-        ReadListfromFile(btnList, path, True)
-        Dim subs As String()
-        For Each s In btnList
-            subs = s.Split("|")
-            If subs.Length <> 4 Then
-                MsgBox("Not a button file")
-                Exit Sub
-            Else
-                Dim m As New MVButton
-                m.Position = (subs(0))
-                m.Letter = (subs(1))
-                m.Path = (subs(2))
-                m.Label = (subs(3))
-                AddLoadedButtonToSet(m)
-
-            End If
-        Next
-
-
-    End Sub
-    Public Sub SaveButtonSet(Optional filename As String = "")
-        Dim path As String
-        If filename = "" Then
-            path = LoadButtonFileName("")
-        Else
-            path = filename
-        End If
-        If path = "" Then Exit Sub
-        'Get the file path
-        Dim output As New List(Of String)
-        For Each r In buttons.CurrentSet
-            For Each b In r.Buttons
-                output.Add(String.Format("{0}|{1}|{2}|{3}", b.Position, b.Letter, b.Path, b.Label))
-            Next
-
-
-        Next
-        WriteListToFile(output, path, True)
-
-    End Sub
-    Private Sub AddLoadedButtonToSet(btn As MVButton)
-        With buttons
-            buttons.CurrentLetter = btn.Letter
-            buttons.CurrentSet(btn.Letter).Current = True
-            btn.FaceText = buttons.CurrentRow.Buttons(btn.Position).FaceText
-            If Not buttons.CurrentRow.Buttons(btn.Position).Empty Then
-                buttons.InsertRow(btn.Letter)
-            End If
-            buttons.CurrentRow.Buttons(btn.Position) = btn
-
-        End With
-    End Sub
-    Private Sub AssignLinear(e As DirectoryInfo, btnset As ButtonSet)
-        Dim i = 0
-        For Each d In e.EnumerateDirectories("*", SearchOption.TopDirectoryOnly)
-            Dim btn As MVButton = btnset.CurrentRow.Buttons(i)
-            If Not btn.Empty Then
-                btnset.InsertRow(btnset.CurrentLetter)
-            End If
-            btnset.CurrentRow.Buttons(i).Path = d.FullName
-            i = (i + 1) Mod 8
-        Next
-    End Sub
-    Private Sub AssignAlphabetical(e As DirectoryInfo, btnset As ButtonSet)
-        btnset.Clear()
-        Dim i = 0
-        Dim lst As New Dictionary(Of String, String)
-        For Each d In e.EnumerateDirectories("*", SearchOption.AllDirectories)
-            lst.Add(d.FullName, d.Name)
-        Next
-        lst = lst.OrderBy(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(x) x.Value)
-        For Each d In lst
-
-            Dim m As Char = UCase(d.Value(0))
-            m = UCase(m)
-            btnset.CurrentLetter = LetterNumberFromAscii(Asc(m))
-            Dim btn As MVButton
-            btn = btnset.FirstFree(btnset.CurrentLetter)
-            btn.Path = d.Key
-        Next
-    End Sub
-    Private Sub AssignTree(e As DirectoryInfo, btnset As ButtonSet)
-        Dim i = 0
-        Dim lst As New Dictionary(Of String, String)
-        For Each d In e.EnumerateDirectories("*", SearchOption.TopDirectoryOnly).Where(Function(x) x.Attributes <> FileAttributes.System)
-
-            lst.Add(d.FullName, d.Name)
-        Next
-        For Each d In lst
-
-            Dim m As Char = UCase(d.Value(0))
-            m = UCase(m)
-            btnset.CurrentLetter = LetterNumberFromAscii(Asc(m))
-            Dim btn As MVButton
-            btn = btnset.FirstFree(btnset.CurrentLetter)
-            btn.Path = d.Key
-        Next
-        For Each d In e.EnumerateDirectories("*", SearchOption.TopDirectoryOnly)
-            AssignTree(d, btnset)
-        Next
-    End Sub
-
     Private Sub OnLetterChanged(letter As Integer, count As Integer) Handles buttons.LetterChanged
         lblAlpha.Text = Chr(AsciifromLetterNumber(letter))
         TranscribeButtons(buttons.CurrentRow)
@@ -241,3 +124,4 @@ Public Class ButtonForm
 
 
 End Class
+

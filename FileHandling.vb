@@ -240,7 +240,9 @@ Friend Module FileHandling
         For Each d In SourceDir.EnumerateDirectories("*", SearchOption.AllDirectories)
             MoveDirectoryContents(TargetDir, SourceDir, d, True)
         Next
-
+        If SourceDir.GetFiles.Count = 0 And SourceDir.GetDirectories.Count = 0 Then
+            SourceDir.Delete()
+        End If
 
     End Sub
 
@@ -402,7 +404,7 @@ Friend Module FileHandling
                             Try
 
                                 m.MoveTo(spath)
-                                AllFaveMinder.CheckFile(New IO.FileInfo(m.FullName))
+                                AllFaveMinder.CheckFile(f)
                                 'AssignSpecialButton("0", strDest)
                             Catch ex As System.IO.IOException
                             Catch ex As Exception
@@ -544,7 +546,7 @@ Friend Module FileHandling
 
         With My.Computer.FileSystem
             If .FileExists(s) Then
-                MSFiles.CancelURL(s)
+                'MSFiles.CancelURL(s)
                 Try
                     .DeleteFile(s, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
                     'If MainForm.lbxFiles.FindString(s) <> -1 Then
@@ -663,32 +665,35 @@ Friend Module FileHandling
         End If
     End Sub
     Public Function DeleteEmptyFolders(d As DirectoryInfo, blnRecurse As Boolean) As Boolean
-
-        If blnRecurse Then
-            Try
-                For Each di In d.EnumerateDirectories
-
-                    DeleteEmptyFolders(di, True)
-                Next
-            Catch
-            End Try
-        End If
-        If d.EnumerateDirectories.Count = 0 And d.EnumerateFiles.Count = 0 Then
-            Dim s As String = d.Parent.FullName
-            Try
-                MainForm.tvMain2.RemoveNode(d.FullName)
-                My.Computer.FileSystem.DeleteDirectory(d.FullName, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
-                DirectoriesList.Remove(d.FullName)
-
-            Catch ex As Exception
-                Return False
-                Exit Function
-            End Try
-            ' MainForm.tvMain2.RefreshTree(s)
-        End If
-
-
+        Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
+        x.RemoveEmptyFolders(x.Path)
         Return True
+        Exit Function
+        'If blnRecurse Then
+        '    Try
+        '        For Each di In d.EnumerateDirectories
+
+        '            DeleteEmptyFolders(di, True)
+        '        Next
+        '    Catch
+        '    End Try
+        'End If
+        'If d.EnumerateDirectories.Count = 0 And d.EnumerateFiles.Count = 0 Then
+        '    Dim s As String = d.Parent.FullName
+        '    Try
+        '        MainForm.tvMain2.RemoveNode(d.FullName)
+        '        My.Computer.FileSystem.DeleteDirectory(d.FullName, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
+        '        DirectoriesList.Remove(d.FullName)
+
+        '    Catch ex As Exception
+        '        Return False
+        '        Exit Function
+        '    End Try
+        '    ' MainForm.tvMain2.RefreshTree(s)
+        'End If
+
+
+        'Return True
     End Function
     Public Function FolderCount(d As DirectoryInfo, count As Integer, blnRecurse As Boolean) As Long
         Try
@@ -722,10 +727,12 @@ Friend Module FileHandling
         Return count
     End Function
     Public Sub HarvestBelow(d As DirectoryInfo)
-        For Each di In d.EnumerateDirectories
-            BurstFolder(di)
+        Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
+        x.HarvestBelow(25)
+        'For Each di In d.EnumerateDirectories
+        '    BurstFolder(di)
 
-        Next
+        'Next
     End Sub
     Public Sub HarvestFolder(d As DirectoryInfo, Recurse As Boolean, Parent As Boolean)
         If Recurse Then
@@ -767,7 +774,10 @@ Friend Module FileHandling
         RaiseEvent FolderMoved(d.FullName)
     End Sub
     Public Sub BurstFolder(d As DirectoryInfo)
-        HarvestFolder(d, True, True)
+        Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
+
+        x.Burst(25)
+        '        HarvestFolder(d, True, True)
 
     End Sub
 

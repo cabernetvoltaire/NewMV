@@ -1,6 +1,7 @@
 ﻿Imports System.Security.Cryptography
 
 Public NotInheritable Class Encryption
+
     Public Event NotEncrypted()
 
     Private TripleDes As New TripleDESCryptoServiceProvider
@@ -69,6 +70,7 @@ Public NotInheritable Class Encryption
             Return System.Text.Encoding.Unicode.GetString(ms.ToArray)
         Catch ex As Exception
             Return encryptedtext
+            Throw ex
             RaiseEvent NotEncrypted()
         End Try
 
