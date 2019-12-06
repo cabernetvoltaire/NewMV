@@ -318,7 +318,7 @@
                 If iScreenstate <> Screenstate.Zoomed Then
                     ' If ZoomJustStarted Then
                     Dim x As Control = pbx.Parent
-                    pbx.Dock = DockStyle.None 'TODO It's how we prepare for this which is the problem 
+                    pbx.Dock = DockStyle.None
                     pbx.Width = x.Width
                     pbx.Height = x.Height
                     pbx.Left = x.Left
@@ -350,7 +350,7 @@
         Else
             iZoomFactor = iZoomFactor * Reduce
             If pbx.Width * Reduce >= x.Width Or pbx.Height * Reduce >= x.Height Then
-                pbx.Width = pbx.Width * Reduce 'Todo Need limitations to prevent going smaller than container asymmetrically.
+                pbx.Width = pbx.Width * Reduce
                 pbx.Left = Math.Min(0, pbx.Left + (ePicMousePoint.X - pbx.Left) * Percentage / 100)
                 pbx.Top = Math.Min(0, pbx.Top + (ePicMousePoint.Y - pbx.Top) * Percentage / 100)
                 pbx.Height = pbx.Height * Reduce

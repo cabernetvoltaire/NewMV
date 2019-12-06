@@ -61,7 +61,7 @@ Public Module General
             .Maximum = max 'Math.Max(lngListSizeBytes, 100)
             .Visible = True
         End With
-
+        MainForm.tmrProgressBar.Enabled = True
     End Sub
     Public Sub ProgressIncrement(st As Integer)
         With MainForm.TSPB
@@ -71,6 +71,7 @@ Public Module General
         'MainForm.Update()
     End Sub
     Public Sub ProgressBarOff()
+        MainForm.tmrProgressBar.Enabled = False
         With MainForm.TSPB
             .Visible = False
         End With
@@ -152,13 +153,16 @@ Public Module General
             Return filename
         End If
     End Function
-    Public Function FilenameFromPath(n As String, WithExtension As Boolean) As String
+    Public Function FilenameFromPath(n As String, WithExtension As Boolean, Optional WithoutBrackets As Boolean = False) As String
         Dim currentpath = n
         Dim parts() = currentpath.Split("\")
         Dim filename = parts(parts.Length - 1)
         If Not WithExtension Then
             Dim fparts() = filename.Split(".")
             filename = fparts(0)
+        End If
+        If WithoutBrackets Then
+            filename = Left(filename, InStr(filename, "("))
         End If
         Return filename
     End Function
@@ -180,6 +184,7 @@ Public Module General
                 If str = x Then
                     'Report(str & "target not found", 1, False)
                 End If
+                'TODO TrywithoutBrackets
             End If
             Return str
         Catch ex As Exception
@@ -899,6 +904,22 @@ Public Module General
         Next
         Return k
     End Function
+    Sub RemoveBrackets(list As List(Of String))
+        For Each f In list
+            Dim file As New IO.FileInfo(f)
+            If file.Exists Then
+                Dim n As String = file.Name
+                n = n.Replace("(0)", "")
+                n = n.Replace("(1)", "")
+                n = n.Replace("(2)", "")
+                If file.Name <> n Then
+                    My.Computer.FileSystem.RenameFile(file.FullName, n)
+                End If
+
+            End If
+
+        Next
+    End Sub
     ''' <summary>
     ''' Randomizes the contents of the list using Fisher–Yates shuffle (a.k.a. Knuth shuffle).
     ''' </summary>

@@ -432,6 +432,7 @@ Public Class MediaHandler
             If mPlayer Is Nothing Then
             Else
                 Try
+
                     mPlayer.URL = URL
 
                     '     Sound.URL = URL
@@ -546,7 +547,7 @@ Public Class MediaHandler
     ''' Ensures mPlayPosition is always up to date (to within interval)
     ''' </summary>
     Private Sub UpdatePosition() Handles PositionUpdater.Tick
-        Exit Sub
+        Exit Sub 'TODO Reinstate
         Try
             If Speed.Paused Then
 

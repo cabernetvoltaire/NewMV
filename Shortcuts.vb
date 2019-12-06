@@ -79,10 +79,14 @@ Public Class ShortcutHandler
                 sName = f.FullName
 
             End If
-            Dim exf As New IO.FileInfo(sName)
-            If exf.Exists Then exf.Delete()
+        Dim dt As Date
+        Dim exf As New IO.FileInfo(sName)
+        If exf.Exists Then
+            dt = exf.LastWriteTime
+            exf.Delete()
+        End If
 
-            If bkmk <> -1 Then
+        If bkmk <> -1 Then
                 If InStr(sName, "%") <> 0 Then
                     Dim m() As String = sName.Split("%")
                     sName = m(0) & "%" & Str(bkmk - MarkOffset) & "%" & m(m.Length - 1)
@@ -94,16 +98,18 @@ Public Class ShortcutHandler
             oShortcut = oShell.CreateShortcut(sName)
 
             With oShortcut
-                Dim d As New IO.DirectoryInfo(sShortcutPath)
-                If d.Exists Then
-
-                Else
-                    d.Create()
+            Dim d As New IO.DirectoryInfo(sShortcutPath)
+            If d.Exists Then
+            Else
+                d.Create()
                 End If
             Try
-                .TargetPath = sTargetPath
-                .Save()
 
+                .TargetPath = sTargetPath
+
+                .Save()
+                Dim newshtcut As New IO.FileInfo(sName)
+                newshtcut.LastWriteTime = dt
             Catch ex As Exception
 
             End Try

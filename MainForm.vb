@@ -15,6 +15,7 @@ Public Class MainForm
     Public defaultcolour As Color = Color.Aqua
     Public movecolour As Color = Color.Orange
     Public sound As New AxWindowsMediaPlayer
+    Public AutoTraverse As Boolean = True
     Public WithEvents FNG As New FileNamesGrouper
     Public WithEvents Random As New RandomHandler
     Public WithEvents NavigateMoveState As New StateHandler()
@@ -52,6 +53,9 @@ Public Class MainForm
 
     End Sub
 
+    Public Sub OnEndReached(sender As Object, e As EventArgs) Handles FBH.EndReached
+        If AutoTraverse Then tvMain2.Traverse(False)
+    End Sub
 
     Public Sub OnParentNotFound(sender As Object, e As EventArgs) Handles X.ParentNotFound, Op.ParentNotFound
         '  lbxReport.Items.Add("Not found")
@@ -166,6 +170,9 @@ Public Class MainForm
         If e.KeyCode = Keys.F2 Then
             CancelDisplay(True)
         End If
+        If e.KeyCode = KeyTraverseTree Or e.KeyCode = KeyTraverseTreeBack Then
+            tvMain2.tvFiles_KeyDown(sender, e)
+        End If
     End Sub
     Friend Sub OnFolderMoved(ByVal path As String)
         Dim d As New IO.DirectoryInfo(tvMain2.SelectedFolder)
@@ -181,7 +188,12 @@ Public Class MainForm
         '       e.SuppressKeyPress = True
         DrawScrubberMarks()
     End Sub
-
+    Private Function RefreshLinks(List As List(Of String))
+        For Each filename In List
+            Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filename)
+            If x.Count <> 0 Then Op.ReuniteWithFile(x, filename)
+        Next
+    End Function
     Public Sub RemoveMarker(filepath As String, timecode As Long)
         Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
         For Each f In x
@@ -200,13 +212,17 @@ Public Class MainForm
         Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
         If Media.IsLink Then
         Else
-            '    T = New Thread(New ThreadStart(Sub() Op.ReuniteWithFile(x, filepath))) With {
-            '   .IsBackground = True
-            '}
-            '    T.SetApartmentState(ApartmentState.STA)
+            If x.Count = 0 Then
+            Else
 
-            '    T.Start()
-            '    ' Op.ReuniteWithFile(x, filepath)
+                T = New Thread(New ThreadStart(Sub() Op.ReuniteWithFile(x, filepath))) With {
+            .IsBackground = True
+        }
+                T.SetApartmentState(ApartmentState.STA)
+
+                T.Start() 'Causing memory leak
+                ' Op.ReuniteWithFile(x, filepath)
+            End If
         End If
 
         Dim i = 0
@@ -1313,7 +1329,7 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub Listbox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged 'TODO Swapper
+    Private Sub Listbox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged
 
         NewIndex.Enabled = False
 
@@ -1779,10 +1795,7 @@ Public Class MainForm
         'PreferencesSave()
         lbxGroups.Items.Clear()
         CurrentFolder = e.Directory.FullName
-        If AutoLoadButtons Then
-            Autoload(FolderNameFromPath(CurrentFolder))
-            UpdateFileInfo()
-        End If
+
         tmrUpdateFileList.Enabled = True
         tmrUpdateFileList.Interval = 200
         CancelDisplay(False)
@@ -1901,7 +1914,7 @@ Public Class MainForm
         Dim x As New BundleHandler(tvMain2, lbx1, strFolder)
         x.List = ListfromSelectedInListbox(lbx1)
         x.ListBox = lbx1
-        x.Bundle()
+        x.Bundle("")
         'blnSuppressCreate = False
         'MoveFiles(ListfromSelectedInListbox(lbx1), strFolder, lbx1)
         'tvMain2.RefreshTree(CurrentFolder)
@@ -2396,6 +2409,10 @@ Public Class MainForm
 
 
     Private Sub tmrUpdateFileList_Tick(sender As Object, e As EventArgs) Handles tmrUpdateFileList.Tick
+        If AutoLoadButtons Then
+            Autoload(FolderNameFromPath(CurrentFolder))
+            UpdateFileInfo()
+        End If
         FillFileBox(lbxFiles, New DirectoryInfo(CurrentFolder), Random.OnDirChange)
         If Random.OnDirChange Then
             FBH.SetFirst()
@@ -2543,6 +2560,11 @@ Public Class MainForm
     End Sub
 
     Private Sub RefreshSelectedLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RefreshSelectedLinksToolStripMenuItem.Click, SelectedDeepToolStripMenuItem.Click
+        RefreshSelectedLinks(sender)
+    End Sub
+
+    Private Sub RefreshSelectedLinks(sender As Object)
+        ProgressBarOn(100)
         Dim op2 As New OrphanFinder
         Dim lbx As New ListBox
         Dim files As New List(Of String)
@@ -2553,8 +2575,8 @@ Public Class MainForm
         Next
         op2.OrphanList = files
         If op2.FindOrphans(sender Is SelectedDeepToolStripMenuItem) Then FBH.FillBox()
+        ProgressBarOff()
     End Sub
-
 
     Private Sub lbxGroups_DoubleClick(sender As Object, e As EventArgs) Handles lbxGroups.DoubleClick
         FNG.AdvanceOption()
@@ -2637,18 +2659,12 @@ Public Class MainForm
     End Sub
 
     Private Sub RemoveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RemoveToolStripMenuItem.Click
-        MsgBox("Not implemented yet")
-        Exit Sub
+        If FocusControl Is LBH.ListBox Then
+            RemoveBrackets(LBH.ItemList)
+        Else
+            RemoveBrackets(FBH.ItemList)
 
-        For Each m In CurrentFileList
-            Dim f = New FileInfo(m)
-
-            If f.Exists Then
-                Dim r As New System.Text.RegularExpressions.Regex("[\(0-9\)]+")
-
-
-            End If
-        Next
+        End If
     End Sub
 
 
@@ -2666,7 +2682,11 @@ Public Class MainForm
     End Sub
 
     Private Sub InvertSelectionToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles InvertSelectionToolStripMenuItem.Click
-        FBH.InvertSelected()
+        If FocusControl Is FBH.ListBox Then
+            FBH.InvertSelected()
+        Else
+            LBH.InvertSelected()
+        End If
     End Sub
 
 
@@ -2746,6 +2766,35 @@ Public Class MainForm
 
     Private Sub LettersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LettersToolStripMenuItem.Click
         FilterAlphabetic(False, True, True)
+    End Sub
+
+    Private Sub ContextMenuStrip1_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip1.Opening
+
+    End Sub
+
+    Private Sub SelectThenRefreshToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectThenRefreshToolStripMenuItem.Click
+        ProgressBarOn(1000)
+        SelectDeadLinks(FocusControl)
+        RefreshSelectedLinks(sender)
+        ProgressBarOff()
+    End Sub
+
+    Private Sub tmrProgressBar_Tick(sender As Object, e As EventArgs) Handles tmrProgressBar.Tick
+        tmrProgressBar.Interval = 1000
+        ProgressIncrement(10)
+    End Sub
+
+    Private Sub SelectAndBundleToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectAndBundleToolStripMenuItem.Click
+        SelectDeadLinks(FocusControl)
+        Dim m As New BundleHandler(tvMain2, FocusControl, CurrentFolder)
+        m.Bundle("Dead")
+
+    End Sub
+
+    Private Sub RefreshAllFilesWithLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RefreshAllFilesWithLinksToolStripMenuItem.Click
+        SelectDeadLinks(FocusControl)
+        InvertSelectionToolStripMenuItem_Click(sender, e)
+        RefreshLinks(ListfromSelectedInListbox(FocusControl))
     End Sub
 #End Region
 

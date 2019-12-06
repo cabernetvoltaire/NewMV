@@ -53,7 +53,7 @@
                     End If
                 End If
             Else
-                mNextItem = mListbox.Items(0)
+                mNextItem = CurrentItem
 
             End If
             'End If

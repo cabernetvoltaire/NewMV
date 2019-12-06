@@ -31,9 +31,6 @@
             mOrphanList = value
         End Set
     End Property
-    ''' <summary>
-    ''' Gets a list of all possible folders to be searched
-    ''' </summary>
 
     ''' <summary>
     ''' Dictionary containing (new parent,link) pairs
@@ -65,6 +62,12 @@
             Exit Sub
         End If
         Dim foundparent As Boolean = False
+        foundparent = FindBracketed(foundparent)
+
+        For Each x In mFoundParents.Keys
+            mOrphanList.Remove(x)
+        Next
+
         foundparent = FindInSubFolders(foundparent)
 
         For Each x In mFoundParents.Keys
@@ -133,14 +136,15 @@
                     filename = spl(spl.Length - 1)
                     While Not found And i < searchdir.Count
                         Dim newtarget = searchdir(i) & "\" & filename
+                        For j = 0 To 3
+                            found = FindTarget(f, found, newtarget)
+                            If found Then
+                                Exit For
+                            Else
+                                newtarget = newtarget.Replace(".", "(" & Right(Str(j), 1) & ").")
 
-                        If My.Computer.FileSystem.FileExists(newtarget) Then
-                            If Not mFoundParents.Keys.Contains(f) Then
-                                mFoundParents.Add(f, newtarget)
-                                found = True
                             End If
-
-                        End If
+                        Next
                         i += 1
                     End While
                     i = 0
@@ -157,6 +161,18 @@
         Next
 
         Return i
+    End Function
+
+    Private Function FindTarget(f As String, found As Boolean, newtarget As String) As Boolean
+        If My.Computer.FileSystem.FileExists(newtarget) Then
+            If Not mFoundParents.Keys.Contains(f) Then
+                mFoundParents.Add(f, newtarget)
+                found = True
+            End If
+
+        End If
+
+        Return found
     End Function
 
     Private Function FindInSubFolders(foundparent As Boolean) As Boolean
@@ -178,7 +194,6 @@
                                 mFoundParents.Add(n, newlink)
 
                             End If
-
                         End If
                     End If
 
@@ -189,7 +204,30 @@
 
         Return foundparent
     End Function
+    Private Function FindBracketed(foundparent As Boolean) As Boolean
+        For Each n In mOrphanList
+            Dim filename = FilenameFromLink(n) 'name of the file 
+            'Dim aimfile As String = LinkTarget(n) 'non-existent file which is the linktarget
+            Dim finfo As New IO.FileInfo(filename)
+            filename = finfo.Name 'in case it was wrong?
+            For i = 0 To 3
+                Dim newlink = finfo.Directory.FullName & "\" & finfo.Name.Replace(".", "(" & Right(Str(i), 1) & ").")
+                If My.Computer.FileSystem.FileExists(newlink) Then
+                    foundparent = True
+                    If Not mFoundParents.Keys.Contains(n) Then
+                        mFoundParents.Add(n, newlink)
 
+                    End If
+                Else
+                    foundparent = False
+
+                End If
+            Next
+
+        Next
+
+        Return foundparent
+    End Function
     Public Function FindOrphans(Optional Deep As Boolean = False) As Boolean
         FindOrphans2(Deep)
         Reunite()

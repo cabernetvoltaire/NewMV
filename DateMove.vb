@@ -154,7 +154,9 @@ Class DateMove
             Else
                 f.Directory.CreateSubdirectory(f.Extension & "\")
             End If
-            f.MoveTo(f.DirectoryName & "\" & f.Extension & "\" & f.Name)
+
+            Dim destfile As String = f.DirectoryName & "\" & f.Extension
+            MoveFiles(f.FullName, destfile, MainForm.lbxFiles)
         Next
         RaiseEvent FilesMoved(Nothing, Nothing)
     End Sub

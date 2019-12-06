@@ -107,15 +107,15 @@ Friend Module Mysettings
 
 
     End Sub
-    Private Function GetterSetter(Name As String, Value As Object, Getter As Boolean) As Object
-        With My.Computer.Registry.CurrentUser
-            If Getter Then
-                Return .GetValue(Name, Value)
-            Else
-                .SetValue(Name, Value)
-            End If
-        End With
-    End Function
+    'Private Function GetterSetter(Name As String, Value As Object, Getter As Boolean) As Object
+    '    With My.Computer.Registry.CurrentUser
+    '        If Getter Then
+    '            Return .GetValue(Name, Value)
+    '        Else
+    '            .SetValue(Name, Value)
+    '        End If
+    '    End With
+    'End Function
     Public Sub PreferencesGet()
         'Preferences(True)
         'Exit Sub

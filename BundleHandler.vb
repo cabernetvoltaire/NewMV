@@ -34,16 +34,20 @@ Public Class BundleHandler
         mPath = Path
         mDirectory = New IO.DirectoryInfo(mPath)
     End Sub
-    Public Sub Bundle()
+    Public Sub Bundle(name As String)
         'For all the files in the list
         'Create a folder (asking for name if necessary)
         'Put the files in it. 
-        MoveFiles(mList, Path, ListBox)
+        mList = ListfromSelectedInListbox(ListBox)
+
+        MoveFiles(mList, Path, ListBox,, name)
         FSTree.RefreshTree(Path)
         'Add a folder node representing it. 
     End Sub
-    Public Sub Burst(Maxfiles As Integer, Optional Harvest As Boolean = False)
+    Public Sub Burst(Optional Harvest As Boolean = False)
+        Dim Maxfiles As Integer = Val(InputBox("Min no. of files to preserve folder? (Blank means all folders burst)",, "25"))
         'Get the parent folder
+
         Dim folders As New List(Of IO.DirectoryInfo)
         Dim Parentfolder As New IO.DirectoryInfo(Path)
         If Harvest Then
@@ -85,7 +89,7 @@ Public Class BundleHandler
 
     End Sub
     Public Sub HarvestBelow(Maxfiles As Integer)
-        Burst(Maxfiles, True)
+        Burst(True)
         'For each folder under Path
         'Burst it. 
 
@@ -102,21 +106,27 @@ Public Class BundleHandler
 
     Public Sub RemoveEmptyFolders(path)
         Dim folder As New IO.DirectoryInfo(path)
-        For Each s In folder.EnumerateDirectories("*", IO.SearchOption.AllDirectories)
-            Try
-
-                If s.EnumerateFiles.Count = 0 And s.EnumerateDirectories.Count = 0 Then
-                    FSTree.RemoveNode(s.FullName)
-                    s.Delete()
-                Else
+        Try
+            Dim NoOfFiless = folder.EnumerateFiles.Count
+            Dim NoOfFolders = folder.EnumerateDirectories.Count
+            If NoOfFiless = 0 And NoOfFolders = 0 Then
+                FSTree.RemoveNode(folder.FullName)
+                folder.Delete()
+                DirectoriesList.Remove(folder.FullName)
+            Else
+                For Each s In folder.EnumerateDirectories("*", IO.SearchOption.AllDirectories)
                     RemoveEmptyFolders(s.FullName)
-                    DirectoriesList.Remove(s.FullName)
-                End If
+                    ' DirectoriesList.Remove(s.FullName)
+                Next
+            End If
+        Catch ex As Exception
 
-            Catch ex As Exception
 
-            End Try
-        Next
+        End Try
+
+        'FSTree.RemoveNode(folder.FullName)
+        'folder.Delete()
+        'DirectoriesList.Remove(folder.FullName)
     End Sub
 
 #End Region

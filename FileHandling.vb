@@ -288,7 +288,7 @@ Friend Module FileHandling
     ''' <param name="files"></param>
     ''' <param name="strDest"></param>
     ''' <param name="lbx1"></param>
-    Public Sub MoveFiles(files As List(Of String), strDest As String, lbx1 As ListBox, Optional Folder As Boolean = False)
+    Public Sub MoveFiles(files As List(Of String), strDest As String, lbx1 As ListBox, Optional Folder As Boolean = False, Optional dirname As String = "")
         Dim Fileundo As New Undo
         With Fileundo
             .FileList = files
@@ -300,8 +300,8 @@ Friend Module FileHandling
 
 
         Dim s As String = strDest 'if strDest is empty then delete
-        If files.Count > 1 And strDest <> "" Then
-            If Not blnSuppressCreate Then s = CreateNewDirectory(MainForm.tvMain2, strDest, True)
+        If files.Count > 0 And strDest <> "" Then
+            If Not blnSuppressCreate Then s = CreateNewDirectory(MainForm.tvMain2, strDest, True, dirname)
         End If
         Select Case NavigateMoveState.State
             Case StateHandler.StateOptions.Copy, StateHandler.StateOptions.CopyLink
@@ -482,13 +482,17 @@ Friend Module FileHandling
         End If
     End Sub
 
-    Public Function CreateNewDirectory(tv As FileSystemTree, strDest As String, blnAsk As Boolean) As String
+    Public Function CreateNewDirectory(tv As FileSystemTree, strDest As String, blnAsk As Boolean, Optional name As String = "") As String
         Dim blnCreate As Boolean = True
         Dim blnAssign As Boolean = False
         Dim s As String = ""
         If blnAsk Then
-            s = InputBox("Name of folder to create? (Blank means none)", "Create sub-folder", lastselection)
-            If s = "" Then blnCreate = False
+            If name = "" Then
+                s = InputBox("Name of folder to create? (Blank means none)", "Create sub-folder", lastselection)
+                If s = "" Then blnCreate = False
+            Else
+                s = name
+            End If
             s = strDest & "\" & s
         Else
             s = strDest & "\"
@@ -776,7 +780,8 @@ Friend Module FileHandling
     Public Sub BurstFolder(d As DirectoryInfo)
         Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
 
-        x.Burst(25)
+
+        x.Burst()
         '        HarvestFolder(d, True, True)
 
     End Sub

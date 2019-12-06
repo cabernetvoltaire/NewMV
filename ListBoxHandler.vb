@@ -3,10 +3,12 @@
     Public Property SortOrder As New SortHandler
     Public Property Filter As New FilterHandler
     Public Property Random As New RandomHandler
+    Public Property FolderAdvance As Boolean = True
 
     Private mItemList As New List(Of String)
     Public Event ListBoxFilled(l As ListBox)
     Public Event ListboxChanged(l As ListBox)
+    Public Event EndReached(sender As Object, e As EventArgs)
 
     Public Property ItemList() As List(Of String)
         Get
@@ -77,15 +79,21 @@
 
                 If Forward Then
                     ListBox.SelectedIndex = (ListBox.SelectedIndex + 1) Mod ListBox.Items.Count
+                    If FolderAdvance And ListBox.SelectedIndex = 0 Then RaiseEvent EndReached(ListBox, Nothing)
                 Else
                     If ListBox.SelectedIndex = 0 Then
-                        ListBox.SelectedIndex = ListBox.Items.Count - 1
+                        If FolderAdvance Then RaiseEvent EndReached(ListBox, Nothing)
+                        If ListBox.Items.Count >= 1 Then
+                            ListBox.SelectedIndex = ListBox.Items.Count - 1
+                        End If
                     Else
                         ListBox.SelectedIndex = ListBox.SelectedIndex - 1
 
                     End If
                 End If
             End If
+        Else
+            RaiseEvent EndReached(ListBox, Nothing)
         End If
     End Sub
     Public Sub FillBox(Optional List As List(Of String) = Nothing)
@@ -201,7 +209,7 @@ Public Class FileboxHandler
         End Set
     End Property
 
-    Public Sub GetFiles()
+    Private Sub GetFiles()
         ItemList.Clear()
         Dim dir As New IO.DirectoryInfo(DirectoryPath)
         If dir.Exists Then
