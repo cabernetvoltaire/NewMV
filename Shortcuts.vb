@@ -118,8 +118,8 @@ Public Class ShortcutHandler
 
         End With
 
-            oShortcut = Nothing
-            oShell = Nothing
+        oShortcut = Nothing
+        oShell = Nothing
             Return sName
         End Function
 

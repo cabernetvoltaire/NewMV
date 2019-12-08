@@ -8,7 +8,7 @@ Module ButtonHandling
     ' Public currentlayer As Byte
     Public strButtonFilePath(8, nletts, 1) As String
     ' Public fButtonDests(8, nletts, 3) As IO.DirectoryInfo
-    Private iAlphaCount = nletts
+    Private ReadOnly iAlphaCount = nletts
     Public strButtonCaptions(8, nletts, 1)
     Public Buttonfolder As String = "Q:\.msb"
 
@@ -466,7 +466,7 @@ Module ButtonHandling
 
             If subs.Length <> 4 Then
                 'MsgBox("Not a button file")
-                Exit Sub
+                ' Exit Sub
             Else
                 intIndex = Val(subs(0))
                 intLetter = Val(subs(1))

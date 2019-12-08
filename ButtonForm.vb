@@ -87,7 +87,7 @@ Public Class ButtonForm
                             handler.AssignAlphabetical(New DirectoryInfo(CurrentFolder), buttons)
                         Case Keys.T
                             buttons.Clear()
-                            handler.AssignTree(New DirectoryInfo(CurrentFolder), buttons)
+                            handler.AssignTreeNew(CurrentFolder, 5)
                     End Select
                 End If
 
@@ -108,10 +108,10 @@ Public Class ButtonForm
 
                 End If
 
-                MainForm.frmMain_KeyDown(sender, e)
+                MainForm.Main_KeyDown(sender, e)
                 e.Handled = True
             Case Else
-                MainForm.frmMain_KeyDown(sender, e)
+                MainForm.Main_KeyDown(sender, e)
 
         End Select
     End Sub

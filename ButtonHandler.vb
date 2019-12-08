@@ -114,4 +114,53 @@ Public Class ButtonHandler
             AssignTree(d, btnset)
         Next
     End Sub
+    Public Sub AssignTreeNew(StartingFolder As String, SizeMagnitude As Byte)
+        If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
+
+        Dim exclude As String = ""
+        exclude = InputBox("String to exclude from folders?", "")
+        ClearCurrentButtons()
+        Dim d As New DirectoryInfo(StartingFolder)
+
+        Dim icomp As New MyComparer
+        Dim dlist As New SortedList(Of Long, DirectoryInfo)(icomp)
+
+        For Each di In d.EnumerateDirectories("*", searchOption:=IO.SearchOption.AllDirectories)
+
+            Dim disize = GetDirSize(di.FullName, 0)
+            If (exclude = "" Or Not di.Name.Contains(exclude)) And disize > 10 ^ SizeMagnitude Then
+                'MsgBox(di.Name & " is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###.#"))
+                While dlist.Keys.Contains(disize)
+                    disize += 1
+                End While
+                dlist.Add(disize, di)
+            End If
+
+        Next
+        Dim i As Int16 = 0
+        'dlist.Reverse
+        '   dlist.Reverse
+
+        Dim n(nletts) As Integer
+
+        For Each dx In dlist
+            Dim di As IO.DirectoryInfo
+            di = dx.Value
+            Dim l As String = UCase(di.Name(0))
+            Dim ButtonNumber As Integer = LetterNumberFromAscii(Asc(l))
+            buttons.CurrentLetter = ButtonNumber
+            Dim firstbtn As New MVButton()
+            firstbtn.Letter = ButtonNumber
+            firstbtn.Position = buttons.CurrentRow.GetFirstFree()
+            firstbtn.Path = di.FullName
+            If firstbtn.Position < 8 Then AssignButton(firstbtn.Position, firstbtn.Letter, 1, di.FullName)
+
+
+        Next
+
+        ButtonFilePath = Buttonfolder & "\" & d.Name & ".msb"
+
+        KeyAssignmentsStore(ButtonFilePath)
+
+    End Sub
 End Class

@@ -40,7 +40,7 @@ Public Class BundleHandler
         'Put the files in it. 
         mList = ListfromSelectedInListbox(ListBox)
 
-        MoveFiles(mList, Path, ListBox,, name)
+        MoveFiles(mList, Path, ListBox)
         FSTree.RefreshTree(Path)
         'Add a folder node representing it. 
     End Sub

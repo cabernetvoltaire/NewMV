@@ -15,7 +15,7 @@ Public Class MainForm
     Public defaultcolour As Color = Color.Aqua
     Public movecolour As Color = Color.Orange
     Public sound As New AxWindowsMediaPlayer
-    Public AutoTraverse As Boolean = True
+    Public AutoTraverse As Boolean = False
     Public WithEvents FNG As New FileNamesGrouper
     Public WithEvents Random As New RandomHandler
     Public WithEvents NavigateMoveState As New StateHandler()
@@ -1237,7 +1237,7 @@ Public Class MainForm
         ' AddHandler FileSystemWatcher1.Renamed, AddressOf logrename
         FileSystemWatcher1.EnableRaisingEvents = True
     End Sub
-    Private Sub logchange(ByVal source As Object, ByVal e As System.IO.FileSystemEventArgs) Handles FileSystemWatcher1.Changed
+    Private Sub Logchange(ByVal source As Object, ByVal e As System.IO.FileSystemEventArgs) Handles FileSystemWatcher1.Changed
         If e.ChangeType = System.IO.WatcherChangeTypes.Changed Then
             Exit Sub 'TODO This gets repeatedly called. 
             MsgBox("File " & e.FullPath & " has been modified")
@@ -1273,7 +1273,7 @@ Public Class MainForm
 
 
 
-    Public Sub frmMain_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+    Public Sub Main_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
         'ry
         KeyDownFlag = True
         ShiftDown = e.Shift
@@ -1288,7 +1288,7 @@ Public Class MainForm
         'sgBox(ex.Message)
         'End Try
     End Sub
-    Private Sub frmMain_KeyUp(sender As Object, e As KeyEventArgs) Handles MyBase.KeyUp
+    Private Sub Main_KeyUp(sender As Object, e As KeyEventArgs) Handles MyBase.KeyUp
         KeyDownFlag = False
         ShiftDown = e.Shift
         CtrlDown = e.Control
@@ -1309,7 +1309,7 @@ Public Class MainForm
         e.SuppressKeyPress = True
 
     End Sub
-    Private Sub frmMain_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+    Private Sub Main_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
 
         ' DeleteThumbs()
         PreferencesSave()
@@ -1914,7 +1914,10 @@ Public Class MainForm
         Dim x As New BundleHandler(tvMain2, lbx1, strFolder)
         x.List = ListfromSelectedInListbox(lbx1)
         x.ListBox = lbx1
+        Dim blnold = blnSuppressCreate
+        blnSuppressCreate = False
         x.Bundle("")
+        blnSuppressCreate = blnold
         'blnSuppressCreate = False
         'MoveFiles(ListfromSelectedInListbox(lbx1), strFolder, lbx1)
         'tvMain2.RefreshTree(CurrentFolder)

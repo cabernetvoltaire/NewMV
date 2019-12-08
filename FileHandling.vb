@@ -288,7 +288,7 @@ Friend Module FileHandling
     ''' <param name="files"></param>
     ''' <param name="strDest"></param>
     ''' <param name="lbx1"></param>
-    Public Sub MoveFiles(files As List(Of String), strDest As String, lbx1 As ListBox, Optional Folder As Boolean = False, Optional dirname As String = "")
+    Public Sub MoveFiles(files As List(Of String), strDest As String, lbx1 As ListBox, Optional Folder As Boolean = False)
         Dim Fileundo As New Undo
         With Fileundo
             .FileList = files
@@ -301,7 +301,7 @@ Friend Module FileHandling
 
         Dim s As String = strDest 'if strDest is empty then delete
         If files.Count > 0 And strDest <> "" Then
-            If Not blnSuppressCreate Then s = CreateNewDirectory(MainForm.tvMain2, strDest, True, dirname)
+            If Not blnSuppressCreate Then s = CreateNewDirectory(MainForm.tvMain2, strDest, True)
         End If
         Select Case NavigateMoveState.State
             Case StateHandler.StateOptions.Copy, StateHandler.StateOptions.CopyLink
@@ -419,13 +419,14 @@ Friend Module FileHandling
                         m.MoveTo(spath)
                         Dim sh As New ShortcutHandler
                         CreateLink(sh, m.FullName, CurrentFolder, f.Name, Bookmark:=Media.Position)
-
+                        sh = Nothing
                     Case StateHandler.StateOptions.CopyLink
                         'Paste a link in destination
                         Dim fpath As New FileInfo(spath)
                         Dim sh As New ShortcutHandler
 
                         CreateLink(sh, m.FullName, fpath.Directory.FullName, m.Name, Bookmark:=Media.Position)
+
                     Case StateHandler.StateOptions.ExchangeLink
                         'Only works on links
                         Dim sh As New ShortcutHandler
@@ -438,6 +439,7 @@ Friend Module FileHandling
                             CreateLink(sh, f.FullName, New FileInfo(spath).Directory.FullName, m.Name, Media.Bookmark)
                             m.Delete()
                         End If
+
                     Case StateHandler.StateOptions.MoveOriginal
                         'Only works on links
                         Dim sh As New ShortcutHandler
@@ -482,17 +484,13 @@ Friend Module FileHandling
         End If
     End Sub
 
-    Public Function CreateNewDirectory(tv As FileSystemTree, strDest As String, blnAsk As Boolean, Optional name As String = "") As String
+    Public Function CreateNewDirectory(tv As FileSystemTree, strDest As String, blnAsk As Boolean) As String
         Dim blnCreate As Boolean = True
         Dim blnAssign As Boolean = False
         Dim s As String = ""
         If blnAsk Then
-            If name = "" Then
-                s = InputBox("Name of folder to create? (Blank means none)", "Create sub-folder", lastselection)
-                If s = "" Then blnCreate = False
-            Else
-                s = name
-            End If
+            s = InputBox("Name of folder to create? (Blank means none)", "Create sub-folder", lastselection)
+            If s = "" Then blnCreate = False
             s = strDest & "\" & s
         Else
             s = strDest & "\"

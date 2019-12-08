@@ -110,7 +110,7 @@ Public Module General
         Dim sh As New ShortcutHandler
         CreateLink(sh, Filepath, CurrentFavesPath, "", False, Bookmark:=Media.Position)
         AllFaveMinder.NewPath(GlobalFavesPath)
-
+        sh = Nothing
     End Sub
     Public Function LinkTargetExists(Linkfile As String) As Boolean
         Dim f As String

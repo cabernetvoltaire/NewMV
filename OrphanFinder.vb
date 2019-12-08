@@ -107,6 +107,7 @@
                     If My.Computer.FileSystem.FileExists(newlink) Then
                         If Not mFoundParents.Keys.Contains(j) Then
                             mFoundParents.Add(j, newlink)
+                            If mFoundParents.Count > 10 Then Reunite()
                         End If
                     End If
                 End If
@@ -287,6 +288,7 @@
             Dim f As New IO.FileInfo(m.Value)
             If f.Exists = True Then mSHandler.ReAssign_ShortCutPath(m.Value, mn)
         Next
+        mFoundParents.Clear()
     End Sub
     Public Function ListOfDeadFiles() As List(Of String)
         Dim list As New List(Of String)

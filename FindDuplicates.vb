@@ -142,7 +142,7 @@ Public Class FindDuplicates
 
 
 #Region "Events"
-    Private Sub previewover(sender As Object, e As AxWMPLib._WMPOCXEvents_MouseDownEvent)
+    Private Sub Previewover(sender As Object, e As AxWMPLib._WMPOCXEvents_MouseDownEvent)
         ToolTipDups.SetToolTip(sender, sender.tag)
         Dim m As AxWMPLib.AxWindowsMediaPlayer
         m = sender
@@ -156,20 +156,20 @@ Public Class FindDuplicates
         End If
     End Sub
 
-    Private Sub picdoubleclick(sender As Object, e As AxWMPLib._WMPOCXEvents_DoubleClickEvent)
+    Private Sub Picdoubleclick(sender As Object, e As AxWMPLib._WMPOCXEvents_DoubleClickEvent)
         If e.nShiftState Then
 
             sender.visible = False
         End If
     End Sub
-    Private Sub previewover(sender As Object, e As MouseEventArgs)
+    Private Sub Previewover(sender As Object, e As MouseEventArgs)
         ToolTipDups.SetToolTip(sender, sender.tag)
         Media.MediaPath = sender.tag
         MainForm.lbxFiles.SelectionMode = SelectionMode.One
         '  MainForm.tmrPicLoad.Enabled = True
     End Sub
 
-    Private Sub picdoubleclick(sender As Object, e As MouseEventArgs)
+    Private Sub Picdoubleclick(sender As Object, e As MouseEventArgs)
         RemoveThumbnail(sender)
     End Sub
 
