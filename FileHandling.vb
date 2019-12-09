@@ -300,7 +300,7 @@ Friend Module FileHandling
 
 
         Dim s As String = strDest 'if strDest is empty then delete
-        If files.Count > 0 And strDest <> "" Then
+        If files.Count > 1 And strDest <> "" Then
             If Not blnSuppressCreate Then s = CreateNewDirectory(MainForm.tvMain2, strDest, True)
         End If
         Select Case NavigateMoveState.State
