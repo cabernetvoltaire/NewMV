@@ -6,7 +6,7 @@ Class DateMove
     Public Event FilesMoved(sender As Object, e As EventArgs)
     Private mFolder As String
 
-    Private mFolders As New List(Of IO.DirectoryInfo)
+    Private ReadOnly mFolders As New List(Of IO.DirectoryInfo)
     Private mYears As String = ""
     Public Enum DMY As Byte
         Year
@@ -17,9 +17,9 @@ Class DateMove
         Calendar
 
     End Enum
-    Private MonthNames As String() = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}
-    Private SizeNames As String() = {"Size 0- Tiny", "Size 1-Small", "Size 2-Medium", "Size 3-Large", "Size 4-Very Large", "Size 5-Gigantic"}
-    Private AlphaName As String() = {"A-F", "G-L", "M-R", "S-Z"}
+    Private ReadOnly MonthNames As String() = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}
+    Private ReadOnly SizeNames As String() = {"Size 0- Tiny", "Size 1-Small", "Size 2-Medium", "Size 3-Large", "Size 4-Very Large", "Size 5-Gigantic"}
+    Private ReadOnly AlphaName As String() = {"A-F", "G-L", "M-R", "S-Z"}
     Public Property Folder() As String
         Get
             Return mFolder
@@ -164,24 +164,27 @@ Class DateMove
         Dim s As New IO.DirectoryInfo(FolderName)
         If Letters Then
             Dim letter As Char
+            Dim dest As String
+            Dim list As New List(Of String)
             For Each f In s.GetFiles
                 letter = UCase(f.Name(0))
                 If s.GetDirectories(letter).Length > 0 Then
                 Else
                     s.CreateSubdirectory(UCase(letter) & "\")
                 End If
-                Dim dest As String = f.DirectoryName & "\" & UCase(letter)
+                dest = f.DirectoryName & "\" & UCase(letter)
                 'Move each file into it. 
-                MoveFiles(f.FullName, dest, MainForm.lbxFiles)
 
             Next
+            MoveFiles(list, dest, MainForm.lbxFiles)
         Else
 
             If Files Then
                 'For each group
                 For i = 0 To 3
                     Dim Alpha As String = "Alpha_" & AlphaName(i)
-
+                    Dim list As New List(Of String)
+                    Dim dest As String = ""
                     For Each f In s.GetFiles
                         'If first name precedes last letter in the group (or equal to)
                         If LCase(f.Name(0)) <= LCase(AlphaName(i)(Len(AlphaName(i)) - 1)) Then
@@ -190,15 +193,17 @@ Class DateMove
                             Else
                                 s.CreateSubdirectory(Alpha & "\")
                             End If
-                            Dim dest As String = f.DirectoryName & "\" & Alpha
-                            'Move each file into it. 
-                            MoveFiles(f.FullName, dest, MainForm.lbxFiles)
+                            dest = f.DirectoryName & "\" & Alpha
+                            'Move each file into it.
+                            list.Add(f.FullName)
                         End If
                     Next
+                    MoveFiles(list, dest, MainForm.lbxFiles)
                 Next
             End If
             If Folders Then
                 For i = 0 To 3
+                    Dim dest As String
                     Dim Alpha As String = "Alpha_" & AlphaName(i)
                     For Each f In s.EnumerateDirectories("*", IO.SearchOption.TopDirectoryOnly)
                         If LCase(f.Name(0)) <= LCase(AlphaName(i)(Len(AlphaName(i)) - 1)) And LCase(f.Name(0)) >= LCase(AlphaName(i)(0)) Then
@@ -211,7 +216,7 @@ Class DateMove
 
                                 End If
                             End If
-                            Dim dest As String = s.FullName & "\" & Alpha
+                            dest = s.FullName & "\" & Alpha
                             If Not f.Name.Contains("Alpha") Then MoveFolder(f.FullName, dest)
                         End If
                     Next

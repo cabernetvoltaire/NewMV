@@ -22,6 +22,7 @@ Public Module General
     Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif"
     Public DirectoriesListFile
     Public separate As Boolean = False
+
     Public t As Threading.Thread
     Public CurrentFolder As String
     Public DirectoriesList As New List(Of String)
@@ -538,20 +539,7 @@ Public Module General
         Debug.Print(Int(Now().Second) & "." & Int(Now().Millisecond) & " " & str)
     End Sub
 #End Region
-    Public Sub DeleteThumbs()
-        Exit Sub
-        If Application.OpenForms.Count = 1 Then
-            Dim d As New IO.DirectoryInfo("Q:\Thumbs")
-            For Each f In d.GetFiles
-                Try
-                    f.Delete()
 
-                Catch ex As Exception
-
-                End Try
-            Next
-        End If
-    End Sub
     Public Function FindType(file As String) As Filetype
         Try
             Dim info As New IO.FileInfo(file)
@@ -844,11 +832,11 @@ Public Module General
             Try
                 Dim MyImage As Image = Image.FromStream(FileStream1)
                 FileStream1.Close()
-                FileStream1.Dispose()
+                '  FileStream1.Dispose()
                 Return MyImage
             Catch ex As System.ArgumentException
                 FileStream1.Close()
-                FileStream1.Dispose()
+                ' FileStream1.Dispose()
                 Return Nothing
             End Try
         Catch ex As Exception
@@ -1018,5 +1006,11 @@ Public Module General
         Dim parts() = path.Split("\")
         Return parts(parts.Length - 1)
     End Function
+    Public Sub MovietoPic(pic As PictureBox, img As Image)
+        PreparePic(pic, img)
+        'SndH.Muted = True
+
+
+    End Sub
 
 End Module

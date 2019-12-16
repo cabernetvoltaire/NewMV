@@ -11,7 +11,7 @@ Public Class MainForm
 
     Public Initialising As Boolean = True
     Public AutoLoadButtons As Boolean = False
-    Public ButtonsHidden As Boolean = False
+    'Public ButtonsHidden As Boolean = False
     Public defaultcolour As Color = Color.Aqua
     Public movecolour As Color = Color.Orange
     Public sound As New AxWindowsMediaPlayer
@@ -287,12 +287,6 @@ Public Class MainForm
     ''' Switches between picbox and movie
     ''' </summary>
     ''' <param name="img"></param>
-    Public Sub MovietoPic(img As Image)
-        PreparePic(currentPicBox, img)
-        'SndH.Muted = True
-        tbState.Text = ""
-
-    End Sub
 
     Public Sub OrientPic(img As Image)
         tbZoom.Text = UCase("Orientation -" & Orientation(ImageOrientation(img)))
@@ -329,8 +323,8 @@ Public Class MainForm
                 ButtonFilePath = path
             End If
         End With
+        AddToButtonFilesList(path)
         Return path
-
     End Function
     Private Sub LoadShowList()
         Dim path As String = ""
@@ -615,7 +609,7 @@ Public Class MainForm
 
 
     Public Sub CollapseShowlist(Collapse As Boolean)
-        ButtonsHidden = Collapse
+        '    ButtonsHidden = Collapse
         MasterContainer.Panel2Collapsed = Collapse
         lbxFiles.SelectionMode = SelectionMode.One
         ControlSetFocus(lbxFiles)
@@ -789,38 +783,7 @@ Public Class MainForm
             Case KeyToggleButtons
                 ToggleButtons()
             Case KeyNextFile, KeyPreviousFile, LKeyNextFile, LKeyPreviousFile
-                If FocusControl Is lbxFiles Then
-                    If e.Control Then
-                        ControlSetFocus(lbxShowList)
-                        LBH.IncrementIndex(e.KeyCode = KeyNextFile)
-                    Else
-                        FBH.IncrementIndex(e.KeyCode = KeyNextFile)
-                    End If
-                ElseIf FocusControl Is lbxShowList Then
-                    If e.Control Then
-                        ControlSetFocus(lbxFiles)
-                        FBH.IncrementIndex(e.KeyCode = KeyNextFile)
-                    Else
-                        LBH.IncrementIndex(e.KeyCode = KeyNextFile)
-
-                    End If
-                Else
-                    If FocusControl IsNot lbxFiles And FocusControl IsNot lbxShowList Then
-                        ControlSetFocus(lbxFiles)
-                        FBH.IncrementIndex(e.KeyCode = KeyNextFile)
-                        '  FBH.IncrementIndex(e.KeyCode = KeyNextFile)
-                    End If
-                End If
-                'If e.Alt Then
-                '    AdvanceFile(e.KeyCode = KeyNextFile, True)
-                'Else
-                '    AdvanceFile(e.KeyCode = KeyNextFile, Random.NextSelect)
-
-                'End If
-
-                e.SuppressKeyPress = True
-                tmrSlideShow.Enabled = False
-                tmrMovieSlideShow.Enabled = False
+                e = SelectNextFile(e)
 
 
 #End Region
@@ -1004,6 +967,62 @@ Public Class MainForm
         '    Response.Enabled = False
     End Sub
 
+    Private Function SelectNextFile(e As KeyEventArgs) As KeyEventArgs
+        Dim LLBH As New ListBoxHandler(FocusControl)
+
+        If FocusControl Is lbxFiles Then
+            If e.Control Then
+                ControlSetFocus(lbxShowList)
+                LLBH.ListBox = lbxShowList
+            End If
+        Else
+            If e.Control Then
+                ControlSetFocus(lbxFiles)
+                LLBH.ListBox = lbxFiles
+            End If
+        End If
+        LLBH.IncrementIndex(e.KeyCode = KeyNextFile)
+
+        e.SuppressKeyPress = True
+        tmrSlideShow.Enabled = False
+        tmrMovieSlideShow.Enabled = False
+        Return e
+    End Function
+    Private Function OldSelectNextFile(e As KeyEventArgs) As KeyEventArgs
+        If FocusControl Is lbxFiles Then
+            If e.Control Then
+                ControlSetFocus(lbxShowList)
+                LBH.IncrementIndex(e.KeyCode = KeyNextFile)
+            Else
+                FBH.IncrementIndex(e.KeyCode = KeyNextFile)
+            End If
+        ElseIf FocusControl Is lbxShowList Then
+            If e.Control Then
+                ControlSetFocus(lbxFiles)
+                FBH.IncrementIndex(e.KeyCode = KeyNextFile)
+            Else
+                LBH.IncrementIndex(e.KeyCode = KeyNextFile)
+
+            End If
+        Else
+            If FocusControl IsNot lbxFiles And FocusControl IsNot lbxShowList Then
+                ControlSetFocus(lbxFiles)
+                FBH.IncrementIndex(e.KeyCode = KeyNextFile)
+                '  FBH.IncrementIndex(e.KeyCode = KeyNextFile)
+            End If
+        End If
+        'If e.Alt Then
+        '    AdvanceFile(e.KeyCode = KeyNextFile, True)
+        'Else
+        '    AdvanceFile(e.KeyCode = KeyNextFile, Random.NextSelect)
+
+        'End If
+
+        e.SuppressKeyPress = True
+        tmrSlideShow.Enabled = False
+        tmrMovieSlideShow.Enabled = False
+        Return e
+    End Function
     Private Function JumpToMark(e As KeyEventArgs) As KeyEventArgs
         If Media.Markers.Count <> 0 Then
             If e.Alt Then
@@ -1089,19 +1108,15 @@ Public Class MainForm
 
 
     Friend Sub HighlightCurrent(strPath As String)
-        'Exit Sub
-        'If strPath is a link, it highlights the link, not the file
-        If strPath = "" Then Exit Sub 'Empty
-        If Len(strPath) > 247 Then Exit Sub 'Too long
 
+        If strPath = "" Then Exit Sub 'Empty
         Dim finfo As New FileInfo(strPath)
-        'Change the tree
+        'Change the tree if it needs changing
         Dim s As String = Path.GetDirectoryName(strPath)
-        '  tvMain2.Validate()
 
         If tvMain2.SelectedFolder <> s Then
-            tvMain2.SelectedFolder = s 'Only change tree if it needs changing
-            '  FillListbox(lbxFiles, New DirectoryInfo(s), False)
+            tvMain2.SelectedFolder = s
+            FBH.DirectoryPath = s
         End If
         'Select file in filelist
         FBH.SetNamed(strPath)
@@ -1112,13 +1127,13 @@ Public Class MainForm
             Att.Text = ""
         End If
 
-        If Not ButtonsHidden Then 'Showlist is visible
-            'Select in the showlist unless CTRL held
-            If FocusControl Is lbxShowList AndAlso Not CtrlDown Then
-                LBH.SetNamed(strPath)
-                '                If lbxShowList.FindString(strPath) <> -1 Then lbxShowList.SelectedIndex = lbxShowList.FindString(strPath)
-            End If
+        ' If Not ButtonsHidden Then 'Showlist is visible
+        'Select in the showlist unless CTRL held
+        If FocusControl Is lbxShowList AndAlso Not CtrlDown Then
+            LBH.SetNamed(strPath)
+            '                If lbxShowList.FindString(strPath) <> -1 Then lbxShowList.SelectedIndex = lbxShowList.FindString(strPath)
         End If
+        '  End If
 
     End Sub
 
@@ -1333,7 +1348,7 @@ Public Class MainForm
 
         NewIndex.Enabled = False
 
-        NewIndex.Interval = 100
+        NewIndex.Interval = 10
 
         NewIndex.Enabled = True
 
@@ -1352,31 +1367,17 @@ Public Class MainForm
     End Sub
 
     Public Sub IndexHandler(sender As Object, e As EventArgs) ' Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged
-        ' If KeyDownFlag Then Exit Sub
-
-        Dim lbx As ListBox
-
-        If TypeOf (sender) Is ListBox Then
-            lbx = sender
-
-        Else
-            lbx = lbxFiles
-        End If
-
-
+        Dim lbx As ListBox = sender
         If lbx.SelectionMode = SelectionMode.One Then
             Dim i As Long = lbx.SelectedIndex
             If i = -1 Then
             Else
-                Debug.Print(vbCrLf & vbCrLf & "NEXT SELECTION ---------------------------------------")
+                ' Debug.Print(vbCrLf & vbCrLf & "NEXT SELECTION ---------------------------------------")
                 MSFiles.Listbox = lbx
                 MSFiles.ListIndex = i
                 Media.MediaPath = lbx.Items(i)
             End If
         End If
-
-
-
     End Sub
 
     Private Sub tmrSlideShow_Tick(sender As Object, e As EventArgs) Handles tmrSlideShow.Tick
@@ -1697,37 +1698,35 @@ Public Class MainForm
 
 
 
-    Private Sub DeleteEmptyFoldersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteEmptyFoldersToolStripMenuItem.Click, IncludingAllSubfoldersToolStripMenuItem.Click
+    Private Async Sub DeleteEmptyFoldersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteEmptyFoldersToolStripMenuItem.Click, IncludingAllSubfoldersToolStripMenuItem.Click
 
         'If Not MsgBox("This deletes all empty directories", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
         '    Exit Sub
         'Else
-        DeleteEmptyFolders(New DirectoryInfo(CurrentFolder), sender Is IncludingAllSubfoldersToolStripMenuItem)
+        Await DeleteEmptyFolders(New DirectoryInfo(CurrentFolder), sender Is IncludingAllSubfoldersToolStripMenuItem)
         tvMain2.RefreshTree(CurrentFolder)
         'End If
 
     End Sub
 
     Private Sub HarvestFoldersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HarvestFoldersToolStripMenuItem.Click
-        HarvestCurrent()
-        tvMain2.RefreshTree(CurrentFolder)
+        'HarvestCurrent()
+        'tvMain2.RefreshTree(CurrentFolder)
 
     End Sub
 
-    ''' <summary>
-    ''' Takes all files in subfolders of di, and places them in di
-    ''' </summary>
-    Private Sub HarvestCurrent()
-        Dim di As New DirectoryInfo(CurrentFolder)
-        HarvestFolder(di, True, False)
-        DeleteEmptyFolders(di, True)
-        FBH.DirectoryPath = di.FullName
-        '        FillFileBox(lbxFiles, di, False)
-        FBH.SetFirst()
-        SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
-        'SetControlColours(blnMoveMode)
 
-    End Sub
+    'Private Sub HarvestCurrent()
+    '    Dim di As New DirectoryInfo(CurrentFolder)
+    '    HarvestFolder(di, True, False)
+    '    DeleteEmptyFolders(di, True)
+    '    FBH.DirectoryPath = di.FullName
+    '    '        FillFileBox(lbxFiles, di, False)
+    '    FBH.SetFirst()
+    '    SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
+    '    'SetControlColours(blnMoveMode)
+
+    'End Sub
     Public Sub AddCurrentType(Recurse As Boolean)
         Showlist = AddFilesToCollection(strFilterExtensions(CurrentFilterState.State), Recurse)
         FillShowbox(lbxShowList, CurrentFilterState.State, Showlist)
@@ -1760,6 +1759,7 @@ Public Class MainForm
 
         ButtonFilePath = LoadButtonList()
         KeyAssignmentsRestore(ButtonFilePath)
+        AddToButtonFilesList(ButtonFilePath)
     End Sub
 
     Private Sub SaveListasToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SaveListToolStripMenuItem.Click
@@ -1784,8 +1784,8 @@ Public Class MainForm
         UpdateButtonAppearance()
     End Sub
 
-    Private Sub BurstFolderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BurstFolderToolStripMenuItem.Click
-        BurstFolder(New DirectoryInfo(CurrentFolder))
+    Private Async Sub BurstFolderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BurstFolderToolStripMenuItem.Click
+        Await BurstFolder(New DirectoryInfo(CurrentFolder))
         'tvMain2.RemoveNode(CurrentFolder)
         '        tvMain2.RefreshTree(New IO.DirectoryInfo(CurrentFolder).Parent.FullName)
     End Sub
@@ -2360,8 +2360,9 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub RecursiveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RecursiveToolStripMenuItem.Click
-        HarvestBelow(New DirectoryInfo(CurrentFolder))
+    Private Async Sub RecursiveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RecursiveToolStripMenuItem.Click
+        Dim x As New BundleHandler(tvMain2, lbxFiles, CurrentFolder)
+        Await x.HarvestBelow(25)
         tvMain2.RefreshTree(CurrentFolder)
         tmrUpdateFileList.Enabled = True
 
@@ -2413,7 +2414,7 @@ Public Class MainForm
 
     Private Sub tmrUpdateFileList_Tick(sender As Object, e As EventArgs) Handles tmrUpdateFileList.Tick
         If AutoLoadButtons Then
-            Autoload(FolderNameFromPath(CurrentFolder))
+            AddToButtonFilesList(CurrentFolder)
             UpdateFileInfo()
         End If
         FillFileBox(lbxFiles, New DirectoryInfo(CurrentFolder), Random.OnDirChange)
@@ -2423,6 +2424,15 @@ Public Class MainForm
             FBH.SetNamed(Media.MediaPath)
         End If
         tmrUpdateFileList.Enabled = False
+    End Sub
+
+    Private Sub AddToButtonFilesList(path As String)
+        Dim folder As String = Autoload(FilenameFromPath(path, False))
+        If CBXButtonFiles.Items.Contains(folder) Or folder = "" Then
+        Else
+            CBXButtonFiles.Items.Add(folder)
+            CBXButtonFiles.SelectedItem = folder
+        End If
     End Sub
     'Private Sub ChangedTree() Handles tvMain2.DirectorySelected
     '    ChangeFolder(tvMain2.SelectedFolder)
@@ -2799,6 +2809,18 @@ Public Class MainForm
         InvertSelectionToolStripMenuItem_Click(sender, e)
         RefreshLinks(ListfromSelectedInListbox(FocusControl))
     End Sub
+
+    Private Sub CBXButtonFiles_SelectedIndexChanged(sender As Object, e As EventArgs) Handles CBXButtonFiles.SelectedIndexChanged
+        Dim folder As String = CBXButtonFiles.SelectedItem
+        Autoload(FilenameFromPath(folder, False))
+    End Sub
+
+    Private Sub CHBAutoAdvance_CheckedChanged(sender As Object, e As EventArgs) Handles CHBAutoAdvance.CheckedChanged
+        AutoTraverse = CHBAutoAdvance.Checked
+        chbInDir.Checked = Not AutoTraverse
+    End Sub
+
+
 #End Region
 
 End Class

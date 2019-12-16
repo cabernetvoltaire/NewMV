@@ -16,7 +16,7 @@ Public Class MediaHandler
     Public WithEvents PositionUpdater As New Timer With {.Interval = 10}
     Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 150000}
 
-    Private DefaultFile As String = "C:\exiftools.exe"
+    Private ReadOnly DefaultFile As String = "C:\exiftools.exe"
     Public WithEvents StartPoint As New StartPointHandler
     Public WithEvents Speed As New SpeedHandler
     Public DisplayerName As String
@@ -467,11 +467,13 @@ Public Class MediaHandler
         '    blnRestartSlideShowFlag = False
         'End If
         currentPicBox = mPicBox
-        MainForm.MovietoPic(img)
+        General.MovietoPic(currentPicBox, img)
         DisplayerName = mPicBox.Name
     End Sub
     Public Sub MovietoPic(img As Image)
+
         PreparePic(currentPicBox, img)
+
         'SndH.Muted = True
 
     End Sub
@@ -495,7 +497,7 @@ Public Class MediaHandler
         ' MsgBox("Error in MediaPlayer")
     End Sub
 
-    Private mResetCounter As Integer
+    Private ReadOnly mResetCounter As Integer
 
     Private Sub PlaystateChange(sender As Object, e As _WMPOCXEvents_PlayStateChangeEvent) Handles mPlayer.PlayStateChange
         Select Case e.newState

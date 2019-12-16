@@ -548,31 +548,27 @@ Friend Module FileHandling
 
         With My.Computer.FileSystem
             If .FileExists(s) Then
-                'MSFiles.CancelURL(s)
                 Try
                     .DeleteFile(s, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
-                    'If MainForm.lbxFiles.FindString(s) <> -1 Then
-                    'MainForm.lbxFiles.Items.Remove(s)
-                    'End If
+
                 Catch ex As Exception
-                    'Exit Sub
-                    'Catch ex As
+
                 End Try
             End If
 
         End With
     End Sub
-    Public Function CountSubFiles(strPath As String) As Integer
-        Dim dir As New DirectoryInfo(strPath)
-        Dim i As Integer
-        If dir.EnumerateDirectories.Count <> 0 Then
-            For Each f In dir.EnumerateDirectories
-                i = i + CountSubFiles(f.FullName)
-            Next
-        End If
-        i = i + dir.EnumerateFiles.Count
-        Return i
-    End Function
+    'Public Function CountSubFiles(strPath As String) As Integer
+    '    Dim dir As New DirectoryInfo(strPath)
+    '    Dim i As Integer
+    '    If dir.EnumerateDirectories.Count <> 0 Then
+    '        For Each f In dir.EnumerateDirectories
+    '            i = i + CountSubFiles(f.FullName)
+    '        Next
+    '    End If
+    '    i = i + dir.EnumerateFiles.Count
+    '    Return i
+    'End Function
     Public Function ListSubFiles(strPath As String) As List(Of String)
         Dim dir As New DirectoryInfo(strPath)
         Dim ls As New List(Of String)
@@ -589,15 +585,7 @@ Friend Module FileHandling
         Next
         Return ls
     End Function
-    ''' <summary>
-    ''' Adds all files in d of given extension, or removes them, to the list, only including strSearch 
-    ''' </summary>
-    ''' <param name="d"></param>
-    ''' <param name="list"></param>
-    ''' <param name="extensions"></param>
-    ''' <param name="blnRemove"></param>
-    ''' <param name="strSearch"></param>
-    ''' <param name="blnRecurse"></param>
+
     Public Function FindAllFilesBelow(d As DirectoryInfo, list As List(Of String), extensions As String, blnRemove As Boolean, strSearch As String, blnRecurse As Boolean, blnOneOnly As Boolean) As List(Of String)
         Dim x As New List(Of String)
         If strSearch = "" Then strSearch = "*"
@@ -666,9 +654,9 @@ Friend Module FileHandling
             Next
         End If
     End Sub
-    Public Function DeleteEmptyFolders(d As DirectoryInfo, blnRecurse As Boolean) As Boolean
+    Public Async Function DeleteEmptyFolders(d As DirectoryInfo, blnRecurse As Boolean) As Task(Of Boolean)
         Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
-        x.RemoveEmptyFolders(x.Path)
+        Await x.RemoveEmptyFolders(x.Path, blnRecurse)
         Return True
         Exit Function
         'If blnRecurse Then
@@ -697,50 +685,50 @@ Friend Module FileHandling
 
         'Return True
     End Function
-    Public Function FolderCount(d As DirectoryInfo, count As Integer, blnRecurse As Boolean) As Long
-        Try
-            count = count + d.EnumerateDirectories.Count
+    'Public Function FolderCount(d As DirectoryInfo, count As Integer, blnRecurse As Boolean) As Long
+    '    Try
+    '        count = count + d.EnumerateDirectories.Count
 
-        Catch ex As UnauthorizedAccessException
-            Return 0
-            Exit Function
-        End Try
-        If blnRecurse Then
-            For Each di In d.EnumerateDirectories
-                count = FolderCount(di, count, True)
-            Next
-        End If
-        Return count
-    End Function
-    Public Function FileCount(d As DirectoryInfo, count As Integer, blnRecurse As Boolean) As Long
-        Try
-            count = count + d.EnumerateFiles.Count
+    '    Catch ex As UnauthorizedAccessException
+    '        Return 0
+    '        Exit Function
+    '    End Try
+    '    If blnRecurse Then
+    '        For Each di In d.EnumerateDirectories
+    '            count = FolderCount(di, count, True)
+    '        Next
+    '    End If
+    '    Return count
+    'End Function
+    'Public Function FileCount(d As DirectoryInfo, count As Integer, blnRecurse As Boolean) As Long
+    '    Try
+    '        count = count + d.EnumerateFiles.Count
 
 
-        Catch ex As Exception
-            Return 0
-            Exit Function
-        End Try
-        If blnRecurse Then
-            For Each di In d.EnumerateDirectories
-                count = FileCount(di, count, True)
-            Next
-        End If
-        Return count
-    End Function
-    Public Sub HarvestBelow(d As DirectoryInfo)
+    '    Catch ex As Exception
+    '        Return 0
+    '        Exit Function
+    '    End Try
+    '    If blnRecurse Then
+    '        For Each di In d.EnumerateDirectories
+    '            count = FileCount(di, count, True)
+    '        Next
+    '    End If
+    '    Return count
+    'End Function
+    Public Async Function HarvestBelow(d As DirectoryInfo) As Task
         Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
-        x.HarvestBelow(25)
+        Await x.HarvestBelow(25)
         'For Each di In d.EnumerateDirectories
         '    BurstFolder(di)
 
         'Next
-    End Sub
-    Public Sub HarvestFolder(d As DirectoryInfo, Recurse As Boolean, Parent As Boolean)
+    End Function
+    Public Async Function HarvestFolder(d As DirectoryInfo, Recurse As Boolean, Parent As Boolean) As Task
         If Recurse Then
             Try
                 For Each di In d.EnumerateDirectories
-                    HarvestFolder(di, Recurse, Parent)
+                    Await HarvestFolder(di, Recurse, Parent)
                 Next
             Catch ex As Exception
                 MsgBox(ex.Message)
@@ -772,17 +760,17 @@ Friend Module FileHandling
         '        f.MoveTo(CurrentFolder & "\" & f.Name)
         '    End If
         'Next
-        DeleteEmptyFolders(d, True)
+        Await DeleteEmptyFolders(d, True)
         RaiseEvent FolderMoved(d.FullName)
-    End Sub
-    Public Sub BurstFolder(d As DirectoryInfo)
+    End Function
+    Public Async Function BurstFolder(d As DirectoryInfo) As Task
         Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
 
 
-        x.Burst()
+        Await x.Burst()
         '        HarvestFolder(d, True, True)
 
-    End Sub
+    End Function
 
     Public Sub PromoteFile(path As String)
 

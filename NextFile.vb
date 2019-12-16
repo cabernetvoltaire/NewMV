@@ -30,7 +30,12 @@
     Private Property mNextItem As String
     Public ReadOnly Property RandomItem As String
         Get
-            RandomItem = mListbox.Items(Int(Rnd() * (mListCount)))
+            If mListCount > 0 Then
+
+                RandomItem = mListbox.Items(Int(Rnd() * (mListCount)))
+            Else
+                RandomItem = ""
+            End If
 
         End Get
     End Property

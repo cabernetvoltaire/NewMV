@@ -12,7 +12,7 @@
     Public Event StateChanged(sender As Object, e As EventArgs)
     Public Event StartPointChanged(sender As Object, e As EventArgs)
     Public Event JumpKey()
-    Private mOrder = {
+    Private ReadOnly mOrder = {
         "Beginning",
         "First Marker",
         "Particular(s)",

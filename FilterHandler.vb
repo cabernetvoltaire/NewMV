@@ -2,7 +2,6 @@
     Public Enum FilterState As Byte
         All
         PicVid
-
         Piconly
         Vidonly
         LinkOnly
@@ -82,7 +81,7 @@
                 Select Case CurrentfilterState.State
                     Case FilterHandler.FilterState.All
                     Case FilterHandler.FilterState.NoPicVid
-                        If InStr(PICEXTENSIONS & VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
+                        If InStr(PICEXTENSIONS & VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And f.Extension.Length <> 0 Then
                         Else
                             lst.Remove(m)
                         End If

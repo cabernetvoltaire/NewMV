@@ -290,8 +290,8 @@ Public Class MediaSwapper
         RaiseEvent MediaShown(MHX)
 
     End Sub
-    Public Sub DockMedias(separate As Boolean)
-        If separate Then
+    Public Sub DockMedias(separated As Boolean)
+        If separated Then
             Media1.Picture.Dock = DockStyle.None
             Media2.Picture.Dock = DockStyle.None
             Media3.Picture.Dock = DockStyle.None

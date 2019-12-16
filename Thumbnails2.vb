@@ -86,6 +86,7 @@
         MainForm.Random.OnDirChange = False
         MainForm.HighlightCurrent(pb.Tag)
         MainForm.lbxFiles.SelectionMode = SelectionMode.One
+        Me.Activate()
         'MainForm.tmrPicLoad.Enabled = True
 
     End Sub
@@ -292,6 +293,7 @@
         Dim flp As FlowLayoutPanel = x.Parent
         '   flp.Controls.SetChildIndex(y, 0)
         flp.Controls.SetChildIndex(x, 0)
+
 
     End Sub
 

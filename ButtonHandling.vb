@@ -407,7 +407,7 @@ Module ButtonHandling
         FolderSelect.Show()
         '   showPreview(sender, e)
     End Sub
-    Public Sub Autoload(Foldername As String)
+    Public Function Autoload(Foldername As String) As String
         'If directory name exists as buttonfile, then load button file (optionally)
 
         'Check for button file
@@ -417,12 +417,15 @@ Module ButtonHandling
         If file.Exists And file.FullName <> lastasked Then
             '     If MsgBox("Do you want to load the buttons?", MsgBoxStyle.YesNoCancel) = MsgBoxResult.Yes Then
             KeyAssignmentsRestore(file.FullName)
+            Foldername = file.Name
             '     End If
             lastasked = file.FullName
+        Else
+            Foldername = ""
         End If
-
+        Return Foldername
         'Load it (optionally)
-    End Sub
+    End Function
     Public Sub NewButtonList()
         ClearCurrentButtons()
         SaveButtonlist()
@@ -478,6 +481,7 @@ Module ButtonHandling
             End If
         Next
         ButtonFilePath = path
+
         UpdateButtonAppearance()
         MainForm.UpdateFileInfo()
     End Sub
