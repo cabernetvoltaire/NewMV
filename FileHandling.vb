@@ -301,7 +301,8 @@ Friend Module FileHandling
 
         Dim s As String = strDest 'if strDest is empty then delete
         If files.Count > 1 And strDest <> "" Then
-            If Not blnSuppressCreate Then s = CreateNewDirectory(MainForm.tvMain2, strDest, True)
+            If Not blnSuppressCreate Then s = CreateNewDirectory(MainForm.tvMain2, strDest, True) 'Attention
+
         End If
         Select Case NavigateMoveState.State
             Case StateHandler.StateOptions.Copy, StateHandler.StateOptions.CopyLink
@@ -356,7 +357,7 @@ Friend Module FileHandling
             With My.Computer.FileSystem
                 Dim i As Long = 0
                 Dim spath As String
-                If InStr(s, "\") = s.Length - 1 Or s = "" Then
+                If s.EndsWith("\") Or s = "" Then
                     spath = s & m.Name
 
                 Else

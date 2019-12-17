@@ -277,7 +277,7 @@
     End Sub
     Public Sub Reunite()
         TotalFoundCount = TotalFoundCount + mFoundParents.Count
-        For Each m In mFoundParents
+        For Each m In mFoundParents.ToList
             mSHandler.ShortcutName = m.Key
             mSHandler.MarkOffset = 0
             Dim s As String = Right(m.Key, 7)

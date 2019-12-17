@@ -11,7 +11,7 @@ Public Class MainForm
 
     Public Initialising As Boolean = True
     Public AutoLoadButtons As Boolean = False
-    'Public ButtonsHidden As Boolean = False
+    Public ButtonsHidden As Boolean = False
     Public defaultcolour As Color = Color.Aqua
     Public movecolour As Color = Color.Orange
     Public sound As New AxWindowsMediaPlayer
@@ -609,7 +609,7 @@ Public Class MainForm
 
 
     Public Sub CollapseShowlist(Collapse As Boolean)
-        '    ButtonsHidden = Collapse
+        ButtonsHidden = Collapse
         MasterContainer.Panel2Collapsed = Collapse
         lbxFiles.SelectionMode = SelectionMode.One
         ControlSetFocus(lbxFiles)
@@ -1127,13 +1127,13 @@ Public Class MainForm
             Att.Text = ""
         End If
 
-        ' If Not ButtonsHidden Then 'Showlist is visible
-        'Select in the showlist unless CTRL held
-        If FocusControl Is lbxShowList AndAlso Not CtrlDown Then
-            LBH.SetNamed(strPath)
-            '                If lbxShowList.FindString(strPath) <> -1 Then lbxShowList.SelectedIndex = lbxShowList.FindString(strPath)
+        If Not ButtonsHidden Then 'Showlist is visible
+            'Select in the showlist unless CTRL held
+            If FocusControl Is lbxShowList AndAlso Not CtrlDown Then
+                LBH.SetNamed(strPath)
+                '                If lbxShowList.FindString(strPath) <> -1 Then lbxShowList.SelectedIndex = lbxShowList.FindString(strPath)
+            End If
         End If
-        '  End If
 
     End Sub
 
@@ -1345,12 +1345,12 @@ Public Class MainForm
     End Sub
 
     Private Sub Listbox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged
-
+        IndexHandler(FocusControl, e)
         NewIndex.Enabled = False
 
-        NewIndex.Interval = 10
+        'NewIndex.Interval = 100
 
-        NewIndex.Enabled = True
+        'NewIndex.Enabled = True
 
     End Sub
 

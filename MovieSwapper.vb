@@ -173,7 +173,7 @@ Public Class MediaSwapper
         Prepare(NextMH, NextItem)
         'End While
         Prepare(ThisMH, CurrentItem)
-            CurrentURLS.Add(PreviousItem)
+        CurrentURLS.Add(PreviousItem)
         CurrentURLS.Add(CurrentItem)
         CurrentURLS.Add(NextItem)
         ThisMH.IsCurrent = True

@@ -47,6 +47,8 @@
         End Get
         Set(ByVal value As ListBox)
             mListbox = value
+
+
         End Set
     End Property
     Private Property mCurrentIndex As Integer
