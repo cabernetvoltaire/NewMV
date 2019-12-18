@@ -99,84 +99,31 @@ Friend Module FileHandling
 
     End Sub
     Public strFilterExtensions(6) As String
-    Public Sub AssignExtensionFilters()
-        strFilterExtensions(FilterHandler.FilterState.All) = ""
-        strFilterExtensions(FilterHandler.FilterState.Piconly) = PICEXTENSIONS
-        strFilterExtensions(FilterHandler.FilterState.PicVid) = PICEXTENSIONS & VIDEOEXTENSIONS
-        strFilterExtensions(FilterHandler.FilterState.LinkOnly) = ".lnk"
-        strFilterExtensions(FilterHandler.FilterState.Vidonly) = VIDEOEXTENSIONS
-        strFilterExtensions(FilterHandler.FilterState.NoPicVid) = PICEXTENSIONS & VIDEOEXTENSIONS & "NOT"
-    End Sub
+    'Public Sub AssignExtensionFilters()
+    '    'strFilterExtensions(FilterHandler.FilterState.All) = ""
+    '    'strFilterExtensions(FilterHandler.FilterState.Piconly) = PICEXTENSIONS
+    '    'strFilterExtensions(FilterHandler.FilterState.PicVid) = PICEXTENSIONS & VIDEOEXTENSIONS
+    '    'strFilterExtensions(FilterHandler.FilterState.LinkOnly) = ".lnk"
+    '    'strFilterExtensions(FilterHandler.FilterState.Vidonly) = VIDEOEXTENSIONS
+    '    'strFilterExtensions(FilterHandler.FilterState.NoPicVid) = PICEXTENSIONS & VIDEOEXTENSIONS & "NOT"
+    'End Sub
     ''' <summary>
     ''' Create a list from e and filter it
     ''' </summary>
     ''' <param name="e"></param>
     ''' <param name="lst"></param>
     ''' <returns></returns>
-    Public Function FilterLBList(e As DirectoryInfo, ByRef lst As List(Of String)) As List(Of String)
-        lst.Clear()
-        For Each f In e.EnumerateFiles
-            lst.Add(f.FullName)
-        Next
-        MainForm.CurrentFilterState.FileList = lst
-        Return MainForm.CurrentFilterState.FileList
-        Exit Function
-        'lst.Clear()
+    'Public Function FilterLBList(e As DirectoryInfo, ByRef lst As List(Of String)) As List(Of String)
+    '    lst.Clear()
+    '    For Each f In e.EnumerateFiles
+    '        lst.Add(f.FullName)
+    '    Next
+    '    MainForm.CurrentFilterState.FileList = lst
+    '    Return MainForm.CurrentFilterState.FileList
+    '    Exit Function
 
-        'For Each f In e.EnumerateFiles
-        '    lst.Add(f.FullName)
-        'Next
+    'End Function
 
-        'Select Case CurrentfilterState.State
-        '    Case FilterHandler.FilterState.All
-        '    Case FilterHandler.FilterState.NoPicVid
-        '        For Each f In e.EnumerateFiles
-        '            If InStr(PICEXTENSIONS & VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
-        '            Else
-        '                lst.Remove(f.FullName)
-        '            End If
-        '        Next
-        '    Case FilterHandler.FilterState.LinkOnly
-
-        '        For Each f In e.EnumerateFiles
-        '            If LCase(f.Extension) = ".lnk" Then
-        '            Else
-        '                lst.Remove(f.FullName)
-        '            End If
-        '        Next
-        '    Case FilterHandler.FilterState.Piconly
-
-        '        For Each f In e.EnumerateFiles
-        '            If InStr(PICEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
-        '                lst.Remove(f.FullName)
-        '            Else
-        '            End If
-        '        Next
-        '    Case FilterHandler.FilterState.PicVid
-
-        '        For Each f In e.EnumerateFiles
-        '            If InStr(PICEXTENSIONS & VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
-        '                lst.Remove(f.FullName)
-        '            Else
-        '            End If
-        '        Next
-        '    Case FilterHandler.FilterState.Vidonly
-
-        '        For Each f In e.EnumerateFiles
-        '            If InStr(VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And Len(f.Extension) <> 0 Then
-        '                lst.Remove(f.FullName)
-        '            Else
-        '            End If
-        '        Next
-
-        'End Select
-        'Return lst
-    End Function
-    Public Sub StoreList(list As List(Of String), Dest As String)
-        If Dest = "" Then Exit Sub
-        WriteListToFile(list, Dest, Encrypted)
-
-    End Sub
     ''' <summary>
     ''' Loads Dest into List, and adds all to lbx. Any files not found are put in notlist, which can then be removed from the lbx
     ''' </summary>
@@ -268,18 +215,18 @@ Friend Module FileHandling
     End Sub
 
 
-    Private Sub GetFiles(dir As DirectoryInfo, flist As List(Of String))
-        For Each m In dir.EnumerateFiles("*", SearchOption.AllDirectories)
-            flist.Add(m.FullName)
-        Next
-        Exit Sub
-        For Each m In dir.EnumerateFiles()
-            flist.Add(m.FullName)
-        Next
-        For Each x In dir.EnumerateDirectories
-            GetFiles(x, flist)
-        Next
-    End Sub
+    'Private Sub GetFiles(dir As DirectoryInfo, flist As List(Of String))
+    '    For Each m In dir.EnumerateFiles("*", SearchOption.AllDirectories)
+    '        flist.Add(m.FullName)
+    '    Next
+    '    Exit Sub
+    '    For Each m In dir.EnumerateFiles()
+    '        flist.Add(m.FullName)
+    '    Next
+    '    For Each x In dir.EnumerateDirectories
+    '        GetFiles(x, flist)
+    '    Next
+    'End Sub
 
 
     ''' <summary>
@@ -300,7 +247,7 @@ Friend Module FileHandling
 
 
         Dim s As String = strDest 'if strDest is empty then delete
-        If files.Count > 1 And strDest <> "" Then
+        If files.Count > 0 And strDest <> "" Then
             If Not blnSuppressCreate Then s = CreateNewDirectory(MainForm.tvMain2, strDest, True) 'Attention
 
         End If
@@ -323,17 +270,10 @@ Friend Module FileHandling
         If Folder Then
 
         Else
-            'If t.IsAlive Then
-            'Else
 
             RaiseEvent FileMoved(files, lbx1)
 
-            'End If
         End If
-
-        'Deal with the list box
-
-
     End Sub
     Public Sub MoveFiles(file As String, strDest As String, lbx1 As ListBox, Optional Folder As Boolean = False)
         Dim files As New List(Of String)
@@ -364,7 +304,7 @@ Friend Module FileHandling
                     spath = s & "\" & m.Name
 
                 End If
-                While .FileExists(spath) AndAlso m.Name = FilenameFromPath(spath, True) 'Existing path
+                While .FileExists(spath) AndAlso m.Name = FilenameFromPath(spath, True) 'Existing path - rename
                     Dim x = m.Extension
                     Dim b = InStr(spath, "(")
                     If b = 0 Then
@@ -403,8 +343,9 @@ Friend Module FileHandling
                             Dim f As New IO.FileInfo(m.FullName)
                             AllFaveMinder.DestinationPath = spath
                             Try
-
-                                m.MoveTo(spath)
+                                m.CopyTo(spath)
+                                Dim fil2 As New IO.FileInfo(spath)
+                                If fil2.Exists Then m.Delete()
                                 AllFaveMinder.CheckFile(f)
                                 'AssignSpecialButton("0", strDest)
                             Catch ex As System.IO.IOException
@@ -768,7 +709,7 @@ Friend Module FileHandling
         Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
 
 
-        Await x.Burst()
+        Await x.Burst() 'Needs Attention
         '        HarvestFolder(d, True, True)
 
     End Function

@@ -220,6 +220,10 @@ Public Class FileboxHandler
             Next
         End If
     End Sub
+    Public Sub Refresh()
+        GetFiles()
+        FillBox(ItemList)
+    End Sub
     Public Sub New(Lbx As ListBox)
         MyBase.New(Lbx)
         ListBox = Lbx

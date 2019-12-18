@@ -22,7 +22,7 @@ Public Module General
     Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif"
     Public DirectoriesListFile
     Public separate As Boolean = False
-
+    Public DebugOn As Boolean = True
     Public t As Threading.Thread
     Public CurrentFolder As String
     Public DirectoriesList As New List(Of String)
@@ -513,15 +513,17 @@ Public Module General
         End If
     End Sub
     Public Sub Report(str As String, gaps As Integer, Optional Sound As Boolean = False)
-        If Sound Then SystemSounds.Asterisk.Play()
+        If DebugOn Then
+            If Sound Then SystemSounds.Asterisk.Play()
 
-        For i = 1 To gaps
-            Console.WriteLine()
-        Next
-        Console.WriteLine(str)
-        For i = 1 To gaps
-            Console.WriteLine()
-        Next
+            For i = 1 To gaps
+                Console.WriteLine()
+            Next
+            Console.WriteLine(str)
+            For i = 1 To gaps
+                Console.WriteLine()
+            Next
+        End If
 
     End Sub
     Public Sub LabelStartPoint(ByRef MH As MediaHandler)
@@ -1012,5 +1014,9 @@ Public Module General
 
 
     End Sub
+    Public Sub StoreList(list As List(Of String), Dest As String)
+        If Dest = "" Then Exit Sub
+        WriteListToFile(list, Dest, Encrypted)
 
+    End Sub
 End Module

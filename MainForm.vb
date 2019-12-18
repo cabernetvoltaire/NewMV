@@ -2676,7 +2676,7 @@ Public Class MainForm
             RemoveBrackets(LBH.ItemList)
         Else
             RemoveBrackets(FBH.ItemList)
-
+            FBH.Refresh()
         End If
     End Sub
 

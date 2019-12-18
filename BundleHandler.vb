@@ -45,7 +45,7 @@ Public Class BundleHandler
         'Add a folder node representing it. 
     End Sub
     Public Async Function Burst(Optional Harvest As Boolean = False) As Task
-        Dim Maxfiles As Integer = Val(InputBox("Min no. of files to preserve folder? (Blank means all folders burst)",, "25"))
+        Dim Maxfiles As Integer = Val(InputBox("Min no. of files to preserve folder? (Blank means all folders burst)",, ""))
         'Get the parent folder
 
         Dim folders As New List(Of IO.DirectoryInfo)
@@ -84,8 +84,10 @@ Public Class BundleHandler
             For Each f In mDirectory.EnumerateFiles("*", IO.SearchOption.AllDirectories)
                 list.Add(f.FullName)
             Next
+            Report("Moving Files", 2)
             MoveFiles(list, Parentfolder.FullName, ListBox)
-            mDirectory.Delete(True)
+            Report("Deleting directory", 1)
+            'mDirectory.Delete(True)
             FSTree.RemoveNode(Path)
         End If
         'Remove all the nodes of the folders removed.
