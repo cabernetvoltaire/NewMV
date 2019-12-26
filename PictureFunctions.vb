@@ -36,7 +36,7 @@
 #Region "Functions"
     Public Function GetImage(strPath As String) As Image
         If strPath = "" Then Return Nothing
-        If InStr(strPath, ".gif") = 0 Then
+        If strPath.EndsWith(".gif") = 0 Then
             Return LoadImage(strPath)
 
             ' Exit Function 'This Causes problems if extension is .gif

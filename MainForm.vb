@@ -1652,12 +1652,14 @@ Public Class MainForm
             ElseIf e.Shift Then
                 MovingFolder(tvMain2.SelectedFolder, strVisibleButtons(i))
             Else
-
+                Dim flag = blnSuppressCreate
+                blnSuppressCreate = True
                 If lbxShowList.Visible Then
                     MoveFiles(ListfromSelectedInListbox(lbxShowList), strVisibleButtons(i), lbxShowList)
                 Else
                     MoveFiles(ListfromSelectedInListbox(lbxFiles), strVisibleButtons(i), lbxFiles)
                 End If
+                blnSuppressCreate = flag
             End If
         Else
             'Navigate behaviour
@@ -2523,7 +2525,7 @@ Public Class MainForm
 
     Private Sub FavouritesFolderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FavouritesFolderToolStripMenuItem.Click
         Try
-            If CurrentFolder = "" Then
+            If CurrentFavesPath = "" Then
                 CurrentFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) & "\MVFavourites"
             End If
             If MsgBox("Make " & CurrentFolder & " the new Favourites folder?", MsgBoxStyle.OkCancel, "Assign Favourites folder") = MsgBoxResult.Ok Then

@@ -903,7 +903,13 @@ Public Module General
                 n = n.Replace("(1)", "")
                 n = n.Replace("(2)", "")
                 If file.Name <> n Then
-                    My.Computer.FileSystem.RenameFile(file.FullName, n)
+
+                    Try
+                        My.Computer.FileSystem.RenameFile(file.FullName, n)
+
+                    Catch ex As Exception
+
+                    End Try
                 End If
 
             End If
