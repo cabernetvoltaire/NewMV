@@ -1121,7 +1121,7 @@ Public Class MainForm
         'Select file in filelist
         FBH.SetNamed(strPath)
         Att.DestinationLabel = lblAttributes
-        If Not tmrSlideShow.Enabled And CheckBox1.Checked Then
+        If Not tmrSlideShow.Enabled And chbShowAttr.Checked Then
             Att.UpdateLabel(strPath)
         Else
             Att.Text = ""
@@ -1412,16 +1412,7 @@ Public Class MainForm
             '  currentPicBox.ImageLocation = Media.MediaPath
         End With
     End Sub
-    Private Function StringList(List As List(Of String), strSearch As String) As List(Of String)
-        Application.DoEvents()
-        Dim Newlist As New List(Of String)
-        For Each s In List
-            If InStr(LCase(s), LCase(strSearch)) <> 0 Then
-                Newlist.Add(s)
-            End If
-        Next
-        Return Newlist
-    End Function
+
 
     Private Sub ControlEnter(sender As Object, e As EventArgs) Handles lbxShowList.Enter, lbxFiles.Enter
         'PFocus = CtrlFocus.Tree

@@ -160,7 +160,14 @@ Public Module General
         Dim filename = parts(parts.Length - 1)
         If Not WithExtension Then
             Dim fparts() = filename.Split(".")
+            'Could sometimes have . as part of filename
+            Dim i = 1
             filename = fparts(0)
+            While i < fparts.Length - 1
+                filename = filename + "." + fparts(i)
+                i += 1
+            End While
+            '            filename = fparts(0)
         End If
         If WithoutBrackets Then
             filename = Left(filename, InStr(filename, "("))
@@ -313,6 +320,26 @@ Public Module General
         End If
         Return path
 
+    End Function
+    Public Function BrowseToFolder(Title As String) As String
+        Dim path As String
+        With New FolderBrowserDialog
+            .Description = Title
+            If .ShowDialog() = DialogResult.OK Then
+                path = .SelectedPath
+            End If
+        End With
+        Return path
+    End Function
+    Public Function BrowseToFile(Title As String) As String
+        Dim path As String
+        With New OpenFileDialog
+            .Title = Title
+            If .ShowDialog() = DialogResult.OK Then
+                path = .FileName
+            End If
+        End With
+        Return path
     End Function
     Public Function TryOtherDriveLetters(str As String) As String
         Dim original = str

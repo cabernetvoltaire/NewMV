@@ -81,10 +81,10 @@
 
                 If Forward Then
                     ListBox.SelectedIndex = (ListBox.SelectedIndex + 1) Mod ListBox.Items.Count
-                    If FolderAdvance And ListBox.SelectedIndex = 0 Then RaiseEvent EndReached(ListBox, Nothing)
+                    If FolderAdvance And ListBox.SelectedIndex = 0 Then RaiseEvent EndReached(Me, Nothing)
                 Else
                     If ListBox.SelectedIndex = 0 Then
-                        If FolderAdvance Then RaiseEvent EndReached(ListBox, Nothing)
+                        If FolderAdvance Then RaiseEvent EndReached(Me, Nothing)
                         If ListBox.Items.Count >= 1 Then
                             ListBox.SelectedIndex = ListBox.Items.Count - 1
                         End If

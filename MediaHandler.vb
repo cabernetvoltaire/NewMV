@@ -549,7 +549,7 @@ Public Class MediaHandler
     ''' Ensures mPlayPosition is always up to date (to within interval)
     ''' </summary>
     Private Sub UpdatePosition() Handles PositionUpdater.Tick
-        Exit Sub 'TODO Reinstate
+        'Exit Sub 'TODO Reinstate
         Try
             If Speed.Paused Then
 

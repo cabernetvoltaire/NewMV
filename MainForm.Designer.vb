@@ -136,7 +136,7 @@ Partial Class MainForm
         Me.chbSeparate = New System.Windows.Forms.CheckBox()
         Me.chbEncrypt = New System.Windows.Forms.CheckBox()
         Me.chbPreviewLinks = New System.Windows.Forms.CheckBox()
-        Me.CheckBox1 = New System.Windows.Forms.CheckBox()
+        Me.chbShowAttr = New System.Windows.Forms.CheckBox()
         Me.CHBAutoAdvance = New System.Windows.Forms.CheckBox()
         Me.lblNavigateState = New System.Windows.Forms.Label()
         Me.CBXButtonFiles = New System.Windows.Forms.ComboBox()
@@ -1328,7 +1328,7 @@ Partial Class MainForm
         'chbNextFile
         '
         Me.chbNextFile.AutoSize = True
-        Me.chbNextFile.Location = New System.Drawing.Point(6, 31)
+        Me.chbNextFile.Location = New System.Drawing.Point(5, 30)
         Me.chbNextFile.Name = "chbNextFile"
         Me.chbNextFile.Size = New System.Drawing.Size(96, 24)
         Me.chbNextFile.TabIndex = 0
@@ -1355,7 +1355,7 @@ Partial Class MainForm
         '
         Me.lblAttributes.AutoSize = True
         Me.lblAttributes.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.lblAttributes.Location = New System.Drawing.Point(1426, 169)
+        Me.lblAttributes.Location = New System.Drawing.Point(1426, 146)
         Me.lblAttributes.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblAttributes.Name = "lblAttributes"
         Me.lblAttributes.Size = New System.Drawing.Size(57, 20)
@@ -1367,12 +1367,12 @@ Partial Class MainForm
         Me.GroupBox3.Controls.Add(Me.chbSeparate)
         Me.GroupBox3.Controls.Add(Me.chbEncrypt)
         Me.GroupBox3.Controls.Add(Me.chbPreviewLinks)
-        Me.GroupBox3.Controls.Add(Me.CheckBox1)
+        Me.GroupBox3.Controls.Add(Me.chbShowAttr)
         Me.GroupBox3.Controls.Add(Me.CHBAutoAdvance)
-        Me.GroupBox3.Dock = System.Windows.Forms.DockStyle.Top
+        Me.GroupBox3.Dock = System.Windows.Forms.DockStyle.Fill
         Me.GroupBox3.Location = New System.Drawing.Point(1488, 3)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Size = New System.Drawing.Size(197, 183)
+        Me.GroupBox3.Size = New System.Drawing.Size(197, 160)
         Me.GroupBox3.TabIndex = 49
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Options"
@@ -1418,18 +1418,18 @@ Partial Class MainForm
         Me.chbPreviewLinks.Text = "Preview Links"
         Me.chbPreviewLinks.UseVisualStyleBackColor = True
         '
-        'CheckBox1
+        'chbShowAttr
         '
-        Me.CheckBox1.AutoSize = True
-        Me.CheckBox1.Dock = System.Windows.Forms.DockStyle.Top
-        Me.CheckBox1.Location = New System.Drawing.Point(3, 22)
-        Me.CheckBox1.Margin = New System.Windows.Forms.Padding(2)
-        Me.CheckBox1.Name = "CheckBox1"
-        Me.CheckBox1.Size = New System.Drawing.Size(191, 24)
-        Me.CheckBox1.TabIndex = 47
-        Me.CheckBox1.TabStop = False
-        Me.CheckBox1.Text = "Show Attributes (loads slower)"
-        Me.CheckBox1.UseVisualStyleBackColor = True
+        Me.chbShowAttr.AutoSize = True
+        Me.chbShowAttr.Dock = System.Windows.Forms.DockStyle.Top
+        Me.chbShowAttr.Location = New System.Drawing.Point(3, 22)
+        Me.chbShowAttr.Margin = New System.Windows.Forms.Padding(2)
+        Me.chbShowAttr.Name = "chbShowAttr"
+        Me.chbShowAttr.Size = New System.Drawing.Size(191, 24)
+        Me.chbShowAttr.TabIndex = 47
+        Me.chbShowAttr.TabStop = False
+        Me.chbShowAttr.Text = "Show Attributes (loads slower)"
+        Me.chbShowAttr.UseVisualStyleBackColor = True
         '
         'CHBAutoAdvance
         '
@@ -2502,7 +2502,7 @@ Partial Class MainForm
     Friend WithEvents Response As Timer
     Friend WithEvents GroupBox3 As GroupBox
     Friend WithEvents chbPreviewLinks As CheckBox
-    Friend WithEvents CheckBox1 As CheckBox
+    Friend WithEvents chbShowAttr As CheckBox
     Friend WithEvents DisplayedToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SelectedToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents chbEncrypt As CheckBox
