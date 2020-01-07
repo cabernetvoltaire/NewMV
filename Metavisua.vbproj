@@ -434,7 +434,6 @@
     <None Include="Resources\FileAccess_Alpha_frmMain_Icon1.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Class2.cs" />
     <Content Include="FIlterHandler.cs" />
     <Content Include="Resources\Key_empty_Small.png" />
     <Content Include="Resources\MVSplash.PNG" />

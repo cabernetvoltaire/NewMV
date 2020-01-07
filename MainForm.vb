@@ -53,7 +53,7 @@ Public Class MainForm
 
     End Sub
 
-    Public Sub OnEndReached(sender As Object, e As EventArgs) Handles FBH.EndReached
+    Public Sub OnEndReached(sender As Object, e As EventArgs) Handles FBH.EndReached, LBH.EndReached
         If AutoTraverse Then tvMain2.Traverse(False)
     End Sub
 
@@ -79,7 +79,7 @@ Public Class MainForm
         ToggleRandomSelectToolStripMenuItem.Checked = Random.OnDirChange
         ToggleRandomStartToolStripMenuItem.Checked = Random.StartPointFlag
         chbNextFile.Checked = Random.NextSelect
-        chbInDir.Checked = Random.OnDirChange
+        chbOnDir.Checked = Random.OnDirChange
 
 
     End Sub
@@ -170,7 +170,7 @@ Public Class MainForm
         If e.KeyCode = Keys.F2 Then
             CancelDisplay(True)
         End If
-        If e.KeyCode = KeyTraverseTree Or e.KeyCode = KeyTraverseTreeBack Then
+        If e.KeyCode = KeyTraverseTree Or e.KeyCode = KeyTraverseTreeBack Or e.KeyCode = Keys.Down Or e.KeyCode = Keys.Up Then
             tvMain2.tvFiles_KeyDown(sender, e)
         End If
     End Sub
@@ -871,7 +871,14 @@ Public Class MainForm
                 e.SuppressKeyPress = True
 
             Case KeyJumpRandom
-                JumpRandom(e.Control And e.Shift) 'Autotrail if both held)
+                If e.Control AndAlso e.Shift Then
+                    JumpRandom(True)
+                ElseIf e.Alt Then
+                    tmrJumpRandom.Enabled = Not tmrJumpRandom.Enabled
+                Else
+                    JumpRandom(False)
+                End If
+                'JumpRandom(e.Control And e.Shift) 'Autotrail if both held)
 
             Case KeyToggleSpeed
                 If Media.Speed.Fullspeed Then
@@ -968,20 +975,27 @@ Public Class MainForm
     End Sub
 
     Private Function SelectNextFile(e As KeyEventArgs) As KeyEventArgs
-        Dim LLBH As New ListBoxHandler(FocusControl)
+        'Dim LLBH As New ListBoxHandler(FocusControl)
 
         If FocusControl Is lbxFiles Then
             If e.Control Then
                 ControlSetFocus(lbxShowList)
-                LLBH.ListBox = lbxShowList
+                LBH.ListBox = lbxShowList
+                LBH.IncrementIndex(e.KeyCode = KeyNextFile)
+            Else
+                FBH.IncrementIndex(e.KeyCode = KeyNextFile)
             End If
         Else
             If e.Control Then
                 ControlSetFocus(lbxFiles)
-                LLBH.ListBox = lbxFiles
+                FBH.ListBox = lbxFiles
+                FBH.IncrementIndex(e.KeyCode = KeyNextFile)
+            Else
+                LBH.IncrementIndex(e.KeyCode = KeyNextFile)
+
             End If
         End If
-        LLBH.IncrementIndex(e.KeyCode = KeyNextFile)
+        '        LLBH.IncrementIndex(e.KeyCode = KeyNextFile)
 
         e.SuppressKeyPress = True
         tmrSlideShow.Enabled = False
@@ -1246,9 +1260,9 @@ Public Class MainForm
         FileSystemWatcher1.Path = path
         FileSystemWatcher1.NotifyFilter = IO.NotifyFilters.LastWrite
 
-        AddHandler FileSystemWatcher1.Changed, AddressOf logchange
-        AddHandler FileSystemWatcher1.Created, AddressOf logchange
-        AddHandler FileSystemWatcher1.Deleted, AddressOf logchange
+        AddHandler FileSystemWatcher1.Changed, AddressOf Logchange
+        AddHandler FileSystemWatcher1.Created, AddressOf Logchange
+        AddHandler FileSystemWatcher1.Deleted, AddressOf Logchange
         ' AddHandler FileSystemWatcher1.Renamed, AddressOf logrename
         FileSystemWatcher1.EnableRaisingEvents = True
     End Sub
@@ -2646,8 +2660,8 @@ Public Class MainForm
         FaveMinder.RedirectShortCutList(New FileInfo(lbxFiles.SelectedItem), AllfromListbox(lbxShowList))
     End Sub
 
-    Private Sub chbInDir_CheckedChanged(sender As Object, e As EventArgs) Handles chbInDir.CheckedChanged
-        Random.OnDirChange = chbInDir.Checked
+    Private Sub chbInDir_CheckedChanged(sender As Object, e As EventArgs) Handles chbOnDir.CheckedChanged
+        Random.OnDirChange = chbOnDir.Checked
     End Sub
 
     Private Sub chbEncrypt_CheckedChanged(sender As Object, e As EventArgs) Handles chbEncrypt.CheckedChanged
@@ -2803,14 +2817,31 @@ Public Class MainForm
         RefreshLinks(ListfromSelectedInListbox(FocusControl))
     End Sub
 
-    Private Sub CBXButtonFiles_SelectedIndexChanged(sender As Object, e As EventArgs) Handles CBXButtonFiles.SelectedIndexChanged
+    Private Sub CBXButtonFiles_SelectedIndexChanged(sender As Object, e As EventArgs)
         Dim folder As String = CBXButtonFiles.SelectedItem
         Autoload(FilenameFromPath(folder, False))
     End Sub
 
     Private Sub CHBAutoAdvance_CheckedChanged(sender As Object, e As EventArgs) Handles CHBAutoAdvance.CheckedChanged
         AutoTraverse = CHBAutoAdvance.Checked
-        chbInDir.Checked = Not AutoTraverse
+        chbOnDir.Checked = Not AutoTraverse
+    End Sub
+
+    Private Sub chbShowAttr_CheckedChanged(sender As Object, e As EventArgs) Handles chbShowAttr.CheckedChanged
+        MsgBox("Attribute Changed")
+    End Sub
+
+    Private Sub chbAutoTrail_CheckedChanged(sender As Object, e As EventArgs) Handles chbAutoTrail.CheckedChanged
+        tmrAutoTrail.Enabled = chbAutoTrail.Checked
+    End Sub
+
+    Private Sub MovieScanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles MovieScanToolStripMenuItem.Click
+        tmrJumpRandom.Interval = 375
+        tmrJumpRandom.Enabled = Not tmrJumpRandom.Enabled
+    End Sub
+
+    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles tmrJumpRandom.Tick
+        JumpRandom(False)
     End Sub
 
 

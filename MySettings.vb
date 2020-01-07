@@ -75,7 +75,7 @@ Friend Module Mysettings
             .Add("Directories List" & "$" & "Q:\Directories.txt") 'DirectoriesListFile)
             .Add("GlobalFaves" & "$" & GlobalFavesPath)
             .Add("RandomNextFile" & "$" & MainForm.chbNextFile.Checked)
-            .Add("RandomOnDirectoryChange" & "$" & MainForm.chbInDir.Checked)
+            .Add("RandomOnDirectoryChange" & "$" & MainForm.chbOnDir.Checked)
             .Add("RandomAutoTrail" & "$" & MainForm.chbAutoTrail.Checked)
             .Add("RandomAutoLoadButtons" & "$" & MainForm.chbLoadButtonFiles.Checked)
             .Add("OptionsShowAttr" & "$" & MainForm.chbShowAttr.Checked)
@@ -89,7 +89,7 @@ Friend Module Mysettings
         End With
         Dim appdata As String = "C:\MVPrefs.txt" 'GetFolderPath(SpecialFolder.LocalApplicationData)
         WriteListToFile(PrefsList, appdata, True)
-       
+
 
     End Sub
 
@@ -117,7 +117,7 @@ Friend Module Mysettings
                         MainForm.CurrentFilterState.State = value
 
                     Case "SortOrder"
-                        If value = "" Then value =
+                        If value = "" Then value = 0
                         MainForm.PlayOrder.State = value
                     Case "StartPoint"
                         If value = "" Then value = 0
@@ -144,7 +144,7 @@ Friend Module Mysettings
                         If value = "" Then value = "C:\Directories.txt"
 
                         DirectoriesListFile = value
-
+                        GetDirectoriesList(value)
                     Case "GlobalFaves"
                         If value = "" Then value = BrowseToFolder("Choose global favourites path")
                         GlobalFavesPath = value
@@ -158,7 +158,7 @@ Friend Module Mysettings
                         MainForm.chbNextFile.Checked = value
                     Case "RandomOnDirectoryChange"
                         If value = "" Then value = False
-                        MainForm.chbInDir.Checked = value
+                        MainForm.chbOnDir.Checked = value
                     Case "RandomAutoTrail"
                         If value = "" Then value = False
                         MainForm.chbAutoTrail.Checked = value

@@ -343,9 +343,9 @@ Friend Module FileHandling
                             Dim f As New IO.FileInfo(m.FullName)
                             AllFaveMinder.DestinationPath = spath
                             Try
-                                m.CopyTo(spath)
-                                Dim fil2 As New IO.FileInfo(spath)
-                                If fil2.Exists Then m.Delete()
+                                m.MoveTo(spath)
+                                'Dim fil2 As New IO.FileInfo(spath)
+                                'If fil2.Exists Then m.Delete()
                                 AllFaveMinder.CheckFile(f)
                                 'AssignSpecialButton("0", strDest)
                             Catch ex As System.IO.IOException

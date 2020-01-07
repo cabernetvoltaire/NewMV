@@ -533,9 +533,5 @@ Module ButtonHandling
 
     End Sub
 
-    Private Sub SaveASButton(path As String)
-        Throw New NotImplementedException()
-    End Sub
-
 End Module
 

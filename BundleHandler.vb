@@ -87,8 +87,8 @@ Public Class BundleHandler
             Report("Moving Files", 2)
             MoveFiles(list, Parentfolder.FullName, ListBox)
             Report("Deleting directory", 1)
-            'mDirectory.Delete(True)
-            FSTree.RemoveNode(Path)
+            Await RemoveEmptyFolders(Path, True)
+            'FSTree.RemoveNode(Path)
         End If
         'Remove all the nodes of the folders removed.
 
