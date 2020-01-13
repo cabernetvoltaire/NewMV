@@ -16,7 +16,7 @@ Public Module General
         RightBottom = 7
         LeftBottom = 8
     End Enum
-    Public ThumbDestination As String = "Q:\Thumbs\"
+
 
     Public VIDEOEXTENSIONS = ".divx.vob.webm.avi.flv.mov.m4p.mpeg.f4v.mpg.m4a.m4v.mkv.mp4.rm.ram.wmv.wav.mp3.3gp"
     Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif"
@@ -26,8 +26,7 @@ Public Module General
     Public t As Threading.Thread
     Public CurrentFolder As String
     Public DirectoriesList As New List(Of String)
-    Public Rootpath As String = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
-    Public GlobalFavesPath As String
+
     Public Encrypted As Boolean = False
     Public WithEvents Encrypter As New Encryption("Spunky")
     Public UndoOperations As New Stack(Of Undo)

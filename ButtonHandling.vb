@@ -10,7 +10,7 @@ Module ButtonHandling
     ' Public fButtonDests(8, nletts, 3) As IO.DirectoryInfo
     Private ReadOnly iAlphaCount = nletts
     Public strButtonCaptions(8, nletts, 1)
-    Public Buttonfolder As String = "Q:\.msb"
+    Public Buttonfolder As String = New IO.DirectoryInfo(ButtonFilePath).FullName
 
 
     Public btnDest() As Button = {MainForm.btn1, MainForm.btn2, MainForm.btn3, MainForm.btn4, MainForm.btn5, MainForm.btn6, MainForm.btn7, MainForm.btn8}

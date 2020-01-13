@@ -2,9 +2,7 @@
 Imports System.Threading
 Imports MasaSam.Forms.Controls
 Friend Module FileHandling
-    Public blnSuppressCreate As Boolean = False
-    Public blnChooseOne As Boolean = False
-    Public Muted As Boolean = False
+
     '  Public WithEvents StartPoint As New StartPointHandler
 
     Public CurrentfilterState As FilterHandler = MainForm.CurrentFilterState
@@ -18,10 +16,10 @@ Friend Module FileHandling
     Public WithEvents Media As New MediaHandler("Media")
     Public WithEvents MSFiles As New MediaSwapper(MainForm.MainWMP1, MainForm.MainWMP2, MainForm.MainWMP3, MainForm.PictureBox1, MainForm.PictureBox2, MainForm.PictureBox3)
     '   Public WithEvents MSShow As New MovieSwapper(MainForm.MainWMP, MainForm.MainWMP2)
-    'Public AllFaveMinder As New FavouritesMinder(GlobalFavesPath)
-    'Public FaveMinder As New FavouritesMinder(CurrentFavesPath)
-    Public AllFaveMinder As New FavouritesMinder("Q:\Favourites")
-    Public FaveMinder As New FavouritesMinder("Q:\Favourites")
+    Public AllFaveMinder As New FavouritesMinder(GlobalFavesPath)
+    Public FaveMinder As New FavouritesMinder(CurrentFavesPath)
+    'Public AllFaveMinder As New FavouritesMinder("Q:\Favourites")
+    'Public FaveMinder As New FavouritesMinder("Q:\Favourites")
     '
     '  Public WithEvents SndH As New SoundController
     Public Sub OnMediaPlaying(sender As Object, e As EventArgs) Handles Media.MediaPlaying

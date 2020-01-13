@@ -12,18 +12,24 @@ Friend Module Mysettings
     Public Autozoomrate As Decimal = 0.4
     Public iCurrentAlpha As Integer = 0
     Public blnLoopPlay As Boolean = True
+    Public blnSuppressCreate As Boolean = False
+    Public blnChooseOne As Boolean = False
+    Public Muted As Boolean = False
 
 #End Region
 
 #Region "Paths"
 
 
-    Public CurrentFavesPath As String
     Public ButtonFilePath As String
-    Public ThumbsPath As String
+    Public ThumbDestination As String
     Public ListFilePath As String
     Public PrefsPath As String = GetFolderPath(SpecialFolder.ApplicationData) & "\Metavisua\Preferences\"
     Public PrefsFilePath As String = PrefsPath & "\MVPrefs.txt"
+    Public Rootpath As String = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
+    Public GlobalFavesPath As String
+    Public CurrentFavesPath As String
+
 #End Region
 #Region "Stacks"
     Public LastPlayed As New Stack(Of String)
@@ -113,10 +119,10 @@ Friend Module Mysettings
         End With
         Dim f As New IO.FileInfo(PrefsFilePath)
         If f.Exists = False Then
-            WriteListToFile(PrefsList, PrefsFilePath, True)
         Else
             PrefsFilePath = PrefsFilePath.Replace(".", Str(Int(Rnd() * 1000)) & ".")
         End If
+        WriteListToFile(PrefsList, PrefsFilePath, True)
 
 
     End Sub
@@ -125,8 +131,19 @@ Friend Module Mysettings
     Public Sub PreferencesGet()
         Dim prefslist As New List(Of String)
         Dim f As New IO.FileInfo(PrefsFilePath)
+        Dim prefs As New IO.DirectoryInfo(PrefsPath)
+
+        If prefs.Exists = False Then
+            InitialiseFolders()
+        End If
+
+        For Each m In prefs.GetFiles
+            If m.CreationTimeUtc > f.CreationTimeUtc AndAlso m.FullName.Contains("MVPrefs") Then
+                f = m
+            End If
+        Next
         If f.Exists Then
-            ReadListfromFile(prefslist, PrefsFilePath, True)
+            ReadListfromFile(prefslist, f.FullName, True)
             MainForm.ctrPicAndButtons.SplitterDistance = 8.7 * MainForm.ctrPicAndButtons.Height / 10
             For Each s In prefslist
                 If InStr(s, "$") <> 0 Then
@@ -278,7 +295,7 @@ Friend Module Mysettings
             Dim subsub As New IO.DirectoryInfo(subdir.FullName & "\" & x(i))
             Select Case i
                 Case 0
-                    ThumbsPath = subsub.FullName
+                    ThumbDestination = subsub.FullName
                 Case 1
                     ButtonFilePath = subsub.FullName
                 Case 2
@@ -287,6 +304,7 @@ Friend Module Mysettings
                     PrefsFilePath = subsub.FullName & "\MVPrefs.txt"
                 Case 4
                     CurrentFavesPath = subsub.FullName
+                    GlobalFavesPath = subsub.FullName
 
             End Select
         Next

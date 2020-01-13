@@ -612,7 +612,7 @@ Public Class MainForm
         ButtonsHidden = Collapse
         MasterContainer.Panel2Collapsed = Collapse
         lbxFiles.SelectionMode = SelectionMode.One
-        ControlSetFocus(lbxFiles)
+       ' ControlSetFocus(lbxFiles)
         MasterContainer.SplitterDistance = MasterContainer.Height / 3
         UpdateFileInfo()
     End Sub
@@ -1200,17 +1200,18 @@ Public Class MainForm
 
     End Sub
     Private Sub GlobalInitialise()
+        Initialising = True
         'Randomize()
         PopulateLists()
         CollapseShowlist(True)
         SetupPlayers()
         PositionUpdater.Enabled = False
+        PreferencesGet()
 
         currentPicBox = PictureBox1
         Media.Picture = currentPicBox
         tbPercentage.Enabled = True
 
-        PreferencesGet()
 
         AddHandler FileHandling.FolderMoved, AddressOf OnFolderMoved
         AddHandler FileHandling.FileMoved, AddressOf OnFilesMoved
