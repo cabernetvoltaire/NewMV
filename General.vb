@@ -380,6 +380,23 @@ Public Module General
 #End Region
 
 
+#Region "File Name Functions"
+
+    Friend Function ThumbnailName(Filename As String) As String
+        Dim th As String
+        Dim f As New IO.FileInfo(Filename)
+        th = ThumbDestination & f.Name.Replace(".", "") & "thn.png"
+        Return th
+    End Function
+
+    Friend Function FolderNameFromPath(path As String) As String
+        Dim parts() = path.Split("\")
+        Return parts(parts.Length - 1)
+    End Function
+#End Region
+
+#Region "Meta Data Functions"
+
 
 
     Public Sub ExtractMetaData(theImage As Image)
@@ -417,6 +434,7 @@ Public Module General
         'End Try
 
     End Sub
+#End Region
     Public Sub TransferURLS(MS1 As MediaSwapper, MS2 As MediaSwapper)
         MS1.Media1 = MS2.Media1
         MS1.Media2 = MS2.Media2
@@ -598,17 +616,13 @@ Public Module General
 
     End Function
     Public Sub ChangeFolder(strPath As String)
-        'If strPath <> FavesFolderPath Then
-        '    CurrentfilterState.State = CurrentfilterState.OldState
-        'End If
+
         If strPath = CurrentFolder Then
         Else
             If Not LastFolder.Contains(CurrentFolder) Then
                 LastFolder.Push(CurrentFolder)
-
             End If
             MainForm.FNG.Clear()
-            ' MainForm.tvMain2.SelectedFolder = strPath
             ChangeWatcherPath(strPath)
             CurrentFolder = strPath
             ReDim FBCShown(0)
@@ -633,29 +647,12 @@ Public Module General
 
     End Sub
 
-    Public Function FileLengthCheck(file As String) As Boolean
-        Return True
-        Exit Function
-        If Len(file) > 247 Then
-            If MsgBox("Filename too long - truncate?", MsgBoxStyle.YesNo, "Filename too long") = MsgBoxResult.Yes Then
-                Dim m As New FileInfo(file)
-                Dim i As Integer = Len(m.FullName)
-                Dim l As Integer = Len(m.Directory.FullName)
-                If l > 247 Then
-                    ReportFault("FileLengthCheck", "Unsuccessful - folder name alone is too long")
-                    Return False
-                    Exit Function
-                Else
-                    Dim str As String = Right(m.Name, 247 - l)
-                    m.MoveTo(m.Directory.FullName & "\" & str)
-                    Return True
-                End If
-            End If
-        End If
-        Return False
-    End Function
 
 
+
+
+
+#Region "List Sorting Functions"
     Public Function SetPlayOrder(Order As Byte, List As List(Of String)) As List(Of String)
         Try
             Select Case Order
@@ -686,8 +683,6 @@ Public Module General
         End If
         Return List
     End Function
-
-
 
     Private Sub SortbyRandom(List As List(Of String), NewListS As SortedList(Of String, String))
         For Each f In List
@@ -785,6 +780,7 @@ Public Module General
             NewListS.Add(s, file.FullName)
         Next
     End Sub
+#End Region
 
     Function GetDate(f As FileInfo) As DateTime
         Dim time As DateTime = f.CreationTime
@@ -856,8 +852,6 @@ Public Module General
     Public Function LoadImage(fname As String) As Image
         Try
             Dim FileStream1 As New System.IO.FileStream(fname, IO.FileMode.Open, IO.FileAccess.Read)
-
-
             Try
                 Dim MyImage As Image = Image.FromStream(FileStream1)
                 FileStream1.Close()
@@ -1030,17 +1024,6 @@ Public Module General
         End If
     End Function
 
-    Friend Function ThumbnailName(Filename As String) As String
-        Dim th As String
-        Dim f As New IO.FileInfo(Filename)
-        th = ThumbDestination & f.Name.Replace(".", "") & "thn.png"
-        Return th
-    End Function
-
-    Friend Function FolderNameFromPath(path As String) As String
-        Dim parts() = path.Split("\")
-        Return parts(parts.Length - 1)
-    End Function
     Public Sub MovietoPic(pic As PictureBox, img As Image)
         PreparePic(pic, img)
         'SndH.Muted = True

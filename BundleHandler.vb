@@ -121,7 +121,7 @@ Public Class BundleHandler
 
                     For Each s In folder.EnumerateDirectories("*", IO.SearchOption.AllDirectories)
                         Await RemoveEmptyFolders(s.FullName, recurse)
-                        ' DirectoriesList.Remove(s.FullName)
+                        'DirectoriesList.Remove(s.FullName)
                     Next
                 End If
             End If
@@ -130,9 +130,6 @@ Public Class BundleHandler
 
         End Try
 
-        'FSTree.RemoveNode(folder.FullName)
-        'folder.Delete()
-        'DirectoriesList.Remove(folder.FullName)
     End Function
 
 #End Region

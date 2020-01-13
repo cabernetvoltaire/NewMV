@@ -2478,24 +2478,24 @@ Public Class MainForm
     End Sub
 
     Private Sub DuplicatesToolStripMenuItem1_Click_1(sender As Object, e As EventArgs) Handles DuplicatesToolStripMenuItem1.Click
-        With FindDuplicates
+        'With FindDuplicates
 
-            If FocusControl Is lbxShowList Then
-                .List = LBH.ItemList
-            Else
+        '    If FocusControl Is lbxShowList Then
+        '        .List = LBH.ItemList
+        '    Else
 
-                .List = FBH.ItemList
+        '        .List = FBH.ItemList
 
 
-            End If
-            If .DuplicatesCount > 0 Then
-                .ThumbnailHeight = 150
-                .SetBounds(-1920, 0, 750, 900)
-                .Show()
-            Else
-                MsgBox("No duplicates found.")
-            End If
-        End With
+        '    End If
+        '    If .DuplicatesCount > 0 Then
+        '        .ThumbnailHeight = 150
+        '        .SetBounds(-1920, 0, 750, 900)
+        '        .Show()
+        '    Else
+        '        MsgBox("No duplicates found.")
+        '    End If
+        'End With
     End Sub
 
 

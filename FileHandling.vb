@@ -99,30 +99,6 @@ Friend Module FileHandling
 
     End Sub
     Public strFilterExtensions(6) As String
-    'Public Sub AssignExtensionFilters()
-    '    'strFilterExtensions(FilterHandler.FilterState.All) = ""
-    '    'strFilterExtensions(FilterHandler.FilterState.Piconly) = PICEXTENSIONS
-    '    'strFilterExtensions(FilterHandler.FilterState.PicVid) = PICEXTENSIONS & VIDEOEXTENSIONS
-    '    'strFilterExtensions(FilterHandler.FilterState.LinkOnly) = ".lnk"
-    '    'strFilterExtensions(FilterHandler.FilterState.Vidonly) = VIDEOEXTENSIONS
-    '    'strFilterExtensions(FilterHandler.FilterState.NoPicVid) = PICEXTENSIONS & VIDEOEXTENSIONS & "NOT"
-    'End Sub
-    ''' <summary>
-    ''' Create a list from e and filter it
-    ''' </summary>
-    ''' <param name="e"></param>
-    ''' <param name="lst"></param>
-    ''' <returns></returns>
-    'Public Function FilterLBList(e As DirectoryInfo, ByRef lst As List(Of String)) As List(Of String)
-    '    lst.Clear()
-    '    For Each f In e.EnumerateFiles
-    '        lst.Add(f.FullName)
-    '    Next
-    '    MainForm.CurrentFilterState.FileList = lst
-    '    Return MainForm.CurrentFilterState.FileList
-    '    Exit Function
-
-    'End Function
 
     ''' <summary>
     ''' Loads Dest into List, and adds all to lbx. Any files not found are put in notlist, which can then be removed from the lbx
@@ -213,20 +189,6 @@ Friend Module FileHandling
         MoveFiles(flist, newpath, Listbox, True)
 
     End Sub
-
-
-    'Private Sub GetFiles(dir As DirectoryInfo, flist As List(Of String))
-    '    For Each m In dir.EnumerateFiles("*", SearchOption.AllDirectories)
-    '        flist.Add(m.FullName)
-    '    Next
-    '    Exit Sub
-    '    For Each m In dir.EnumerateFiles()
-    '        flist.Add(m.FullName)
-    '    Next
-    '    For Each x In dir.EnumerateDirectories
-    '        GetFiles(x, flist)
-    '    Next
-    'End Sub
 
 
     ''' <summary>
@@ -412,19 +374,6 @@ Friend Module FileHandling
     ''' <param name="f"></param>
     ''' <param name="path"></param>
 
-    Private Sub Movelink(f As IO.FileInfo, path As String)
-        Dim links As New List(Of String)
-        Dim faves As New IO.DirectoryInfo(CurrentFavesPath)
-        For Each j In faves.GetFiles
-            If links.Contains(j.FullName) Then
-            Else
-                links.Add(LinkTarget(j.FullName))
-            End If
-        Next
-        If links.Contains(f.FullName) Then
-            CreateFavourite(path)
-        End If
-    End Sub
 
     Public Function CreateNewDirectory(tv As FileSystemTree, strDest As String, blnAsk As Boolean) As String
         Dim blnCreate As Boolean = True
@@ -500,17 +449,7 @@ Friend Module FileHandling
 
         End With
     End Sub
-    'Public Function CountSubFiles(strPath As String) As Integer
-    '    Dim dir As New DirectoryInfo(strPath)
-    '    Dim i As Integer
-    '    If dir.EnumerateDirectories.Count <> 0 Then
-    '        For Each f In dir.EnumerateDirectories
-    '            i = i + CountSubFiles(f.FullName)
-    '        Next
-    '    End If
-    '    i = i + dir.EnumerateFiles.Count
-    '    Return i
-    'End Function
+
     Public Function ListSubFiles(strPath As String) As List(Of String)
         Dim dir As New DirectoryInfo(strPath)
         Dim ls As New List(Of String)
@@ -600,111 +539,8 @@ Friend Module FileHandling
         Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
         Await x.RemoveEmptyFolders(x.Path, blnRecurse)
         Return True
-        Exit Function
-        'If blnRecurse Then
-        '    Try
-        '        For Each di In d.EnumerateDirectories
-
-        '            DeleteEmptyFolders(di, True)
-        '        Next
-        '    Catch
-        '    End Try
-        'End If
-        'If d.EnumerateDirectories.Count = 0 And d.EnumerateFiles.Count = 0 Then
-        '    Dim s As String = d.Parent.FullName
-        '    Try
-        '        MainForm.tvMain2.RemoveNode(d.FullName)
-        '        My.Computer.FileSystem.DeleteDirectory(d.FullName, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
-        '        DirectoriesList.Remove(d.FullName)
-
-        '    Catch ex As Exception
-        '        Return False
-        '        Exit Function
-        '    End Try
-        '    ' MainForm.tvMain2.RefreshTree(s)
-        'End If
-
-
-        'Return True
     End Function
-    'Public Function FolderCount(d As DirectoryInfo, count As Integer, blnRecurse As Boolean) As Long
-    '    Try
-    '        count = count + d.EnumerateDirectories.Count
 
-    '    Catch ex As UnauthorizedAccessException
-    '        Return 0
-    '        Exit Function
-    '    End Try
-    '    If blnRecurse Then
-    '        For Each di In d.EnumerateDirectories
-    '            count = FolderCount(di, count, True)
-    '        Next
-    '    End If
-    '    Return count
-    'End Function
-    'Public Function FileCount(d As DirectoryInfo, count As Integer, blnRecurse As Boolean) As Long
-    '    Try
-    '        count = count + d.EnumerateFiles.Count
-
-
-    '    Catch ex As Exception
-    '        Return 0
-    '        Exit Function
-    '    End Try
-    '    If blnRecurse Then
-    '        For Each di In d.EnumerateDirectories
-    '            count = FileCount(di, count, True)
-    '        Next
-    '    End If
-    '    Return count
-    'End Function
-    Public Async Function HarvestBelow(d As DirectoryInfo) As Task
-        Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
-        Await x.HarvestBelow(25)
-        'For Each di In d.EnumerateDirectories
-        '    BurstFolder(di)
-
-        'Next
-    End Function
-    Public Async Function HarvestFolder(d As DirectoryInfo, Recurse As Boolean, Parent As Boolean) As Task
-        If Recurse Then
-            Try
-                For Each di In d.EnumerateDirectories
-                    Await HarvestFolder(di, Recurse, Parent)
-                Next
-            Catch ex As Exception
-                MsgBox(ex.Message)
-            End Try
-        End If
-        blnSuppressCreate = True
-        Dim l As New List(Of String)
-        For Each f In d.EnumerateFiles
-            l.Add(f.FullName)
-        Next
-        If Parent Then
-            MoveFiles(l, d.Parent.FullName, MainForm.lbxFiles)
-        Else
-            MoveFiles(l, CurrentFolder, MainForm.lbxFiles)
-
-            blnSuppressCreate = False
-        End If
-
-        'For Each f In d.EnumerateFiles
-        '    If Parent Then
-        '        Dim m As String = d.Parent.FullName & "\" & f.Name
-        '        Dim fi As New FileInfo(m)
-        '        If fi.Exists Then
-        '        Else
-        '            'Use an encapsulated move routine
-        '            f.MoveTo(m)
-        '        End If
-        '    Else
-        '        f.MoveTo(CurrentFolder & "\" & f.Name)
-        '    End If
-        'Next
-        Await DeleteEmptyFolders(d, True)
-        RaiseEvent FolderMoved(d.FullName)
-    End Function
     Public Async Function BurstFolder(d As DirectoryInfo) As Task
         Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
 
