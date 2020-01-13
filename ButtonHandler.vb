@@ -127,7 +127,7 @@ Public Class ButtonHandler
 
         For Each di In d.EnumerateDirectories("*", searchOption:=IO.SearchOption.AllDirectories)
 
-            Dim disize = GetDirSize(di.FullName, 0)
+            Dim disize = GetDirSize(di.FullName, 0, True)
             If (exclude = "" Or Not di.Name.Contains(exclude)) And disize > 10 ^ SizeMagnitude Then
                 'MsgBox(di.Name & " is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###.#"))
                 While dlist.Keys.Contains(disize)

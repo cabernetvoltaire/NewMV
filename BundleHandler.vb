@@ -65,7 +65,10 @@ Public Class BundleHandler
                     For Each f In subfolder.GetFiles
                         list.Add(f.FullName)
                     Next
+                    Dim old As Boolean = blnSuppressCreate
+                    blnSuppressCreate = True
                     MoveFiles(list, Path, ListBox)
+                    blnSuppressCreate = old
                     Await RemoveEmptyFolders(subfolder.FullName, True)
                 End If
             Catch ex As Exception

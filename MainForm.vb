@@ -317,7 +317,7 @@ Public Class MainForm
         With OpenFileDialog1
             .DefaultExt = "msb"
             .Filter = "Metavisua button files|*.msb|All files|*.*"
-
+            .Title = "Choose file containing button assignments..."
             If .ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                 path = .FileName
                 ButtonFilePath = path
@@ -777,6 +777,7 @@ Public Class MainForm
                     ControlSetFocus(tvMain2)
                     tvMain2.tvFiles_KeyDown(sender, e)
                 End If
+
             Case Keys.Escape
                 CancelDisplay(True)                'currentPicBox.Image.Dispose()
                 'PlayOrder.Toggle()
@@ -1141,13 +1142,13 @@ Public Class MainForm
             Att.Text = ""
         End If
 
-        If Not ButtonsHidden Then 'Showlist is visible
-            'Select in the showlist unless CTRL held
-            If FocusControl Is lbxShowList AndAlso Not CtrlDown Then
-                LBH.SetNamed(strPath)
-                '                If lbxShowList.FindString(strPath) <> -1 Then lbxShowList.SelectedIndex = lbxShowList.FindString(strPath)
-            End If
-        End If
+        'If Not ButtonsHidden Then 'Showlist is visible
+        '    'Select in the showlist unless CTRL held
+        '    If FocusControl Is lbxShowList AndAlso Not CtrlDown Then
+        '        'LBH.SetNamed(strPath)
+        '        '                If lbxShowList.FindString(strPath) <> -1 Then lbxShowList.SelectedIndex = lbxShowList.FindString(strPath)
+        '    End If
+        'End If
 
     End Sub
 
@@ -1359,12 +1360,12 @@ Public Class MainForm
     End Sub
 
     Private Sub Listbox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged
-        IndexHandler(FocusControl, e)
+        '  IndexHandler(FocusControl, e)
         NewIndex.Enabled = False
 
-        'NewIndex.Interval = 100
+        NewIndex.Interval = 100
 
-        'NewIndex.Enabled = True
+        NewIndex.Enabled = True
 
     End Sub
 
@@ -1389,7 +1390,7 @@ Public Class MainForm
                 ' Debug.Print(vbCrLf & vbCrLf & "NEXT SELECTION ---------------------------------------")
                 MSFiles.Listbox = lbx
                 MSFiles.ListIndex = i
-                Media.MediaPath = lbx.Items(i)
+                'Media.MediaPath = lbx.Items(i)
             End If
         End If
     End Sub
@@ -1978,6 +1979,7 @@ Public Class MainForm
     End Sub
 
     Private Sub AutoTrail(sender As Object)
+        'Exit Sub
         Dim trail As New TrailMode
 
         AT.Framerates = SP.FrameRates
@@ -2118,7 +2120,7 @@ Public Class MainForm
 
         LinearToolStripMenuItem.ToolTipText = "Assigns next 8 folders to the f buttons"
         AlphaToolStripMenuItem.ToolTipText = "Assigns subfolders to the f buttons, alphabetically"
-        TreeToolStripMenuItem.ToolTipText = "Assigns subfolders to the f buttons, hierarchically (preference given to higher up tree)"
+        TreeToolStripMenuItem.ToolTipText = "Assigns subfolders to the f buttons, hierarchically (preference given to larger folders)"
 
 
     End Sub
@@ -2435,11 +2437,11 @@ Public Class MainForm
 
     Private Sub AddToButtonFilesList(path As String)
         Dim folder As String = Autoload(FilenameFromPath(path, False))
-        If CBXButtonFiles.Items.Contains(folder) Or folder = "" Then
-        Else
+        If CBXButtonFiles.Items.Contains(folder) Then
+        ElseIf folder <> "" Then
             CBXButtonFiles.Items.Add(folder)
-            CBXButtonFiles.SelectedItem = folder
         End If
+        CBXButtonFiles.SelectedItem = folder
     End Sub
     'Private Sub ChangedTree() Handles tvMain2.DirectorySelected
     '    ChangeFolder(tvMain2.SelectedFolder)
@@ -2515,7 +2517,7 @@ Public Class MainForm
 
 
     Private Sub ResetToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetToolStripMenuItem.Click
-        PreferencesReset()
+        PreferencesReset(True)
     End Sub
 
     Private Sub SaveToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles SaveToolStripMenuItem1.Click
@@ -2817,7 +2819,7 @@ Public Class MainForm
         RefreshLinks(ListfromSelectedInListbox(FocusControl))
     End Sub
 
-    Private Sub CBXButtonFiles_SelectedIndexChanged(sender As Object, e As EventArgs)
+    Private Sub CBXButtonFiles_SelectedIndexChanged(sender As Object, e As EventArgs) Handles CBXButtonFiles.SelectedIndexChanged
         Dim folder As String = CBXButtonFiles.SelectedItem
         Autoload(FilenameFromPath(folder, False))
     End Sub
@@ -2842,6 +2844,15 @@ Public Class MainForm
 
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles tmrJumpRandom.Tick
         JumpRandom(False)
+    End Sub
+
+    Private Sub ResetButtonsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetButtonsToolStripMenuItem.Click
+        CBXButtonFiles.SelectedItem = "Watch.msb" 'TODO Make general
+
+    End Sub
+
+    Private Sub PreferencesToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles PreferencesToolStripMenuItem1.Click
+        Mysettings.LoadForm()
     End Sub
 
 

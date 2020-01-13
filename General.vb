@@ -826,7 +826,7 @@ Public Module General
         Return sizestring
     End Function
 
-    Public Function GetDirSize(RootFolder As String, TotalSize As Long) As Long
+    Public Function GetDirSize(RootFolder As String, TotalSize As Long, Optional NoSubs As Boolean = False) As Long
         ' Exit Function
         If RootFolder.EndsWith(":\") Then
             Return 0
@@ -835,12 +835,22 @@ Public Module General
 
         Dim fso = CreateObject("Scripting.FileSystemObject")
         Dim dir As New IO.DirectoryInfo(RootFolder)
-        If dir.Exists Then
-            Dim profile = fso.GetFolder(RootFolder)
+        Dim filessize As Long
+        If Not NoSubs Then
 
-            TotalSize = profile.size
+            If dir.Exists Then
+                Dim profile = fso.GetFolder(RootFolder)
+
+                TotalSize = profile.size
+            End If
+        Else
+
+            For Each f In dir.GetFiles
+                Dim profile = fso.getfile(f.FullName)
+                filessize = filessize + profile.size
+            Next
+            TotalSize = filessize
         End If
-
         'Dim FolderInfo = New IO.DirectoryInfo(RootFolder)
         'For Each File In FolderInfo.GetFiles : TotalSize += File.Length
         'Next

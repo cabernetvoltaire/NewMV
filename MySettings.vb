@@ -11,13 +11,19 @@ Friend Module Mysettings
     Public PlaybackSpeed As Double = 30
     Public Autozoomrate As Decimal = 0.4
     Public iCurrentAlpha As Integer = 0
+    Public blnLoopPlay As Boolean = True
 
 #End Region
 
 #Region "Paths"
-    Public blnLoopPlay As Boolean = True
+
+
     Public CurrentFavesPath As String
     Public ButtonFilePath As String
+    Public ThumbsPath As String
+    Public ListFilePath As String
+    Public PrefsPath As String = GetFolderPath(SpecialFolder.ApplicationData) & "\Metavisua\Preferences\"
+    Public PrefsFilePath As String = PrefsPath & "\MVPrefs.txt"
 #End Region
 #Region "Stacks"
     Public LastPlayed As New Stack(Of String)
@@ -25,6 +31,28 @@ Friend Module Mysettings
 
 #End Region
     Public Property LastShowList As String
+    Private Property VariablesDescriptor() = {"Vertical Split position",
+        "Horizontal split position",
+        "Last file loaded",
+        "Current filter state",
+        "Current sort order",
+        "Current start point state",
+        "Current navigate/move state",
+        "Last button file loaded",
+        "Current alphabet button",
+        "Current favourites location",
+        "Preview links?",
+        "Root scan path",
+        "Directories list:",
+        "Global favourites directory",
+        "Choose next file at random",
+        "Always choose random file on directory change",
+        "Auto trail mode",
+    "Auto load button sets",
+    "Show attributes",
+    "Preview links",
+    "Encrypt text files",
+    "Auto advance"}
 #Region "Internal"
     Public Property blnSecondScreen As Boolean = True
     Public blnRestartSlideShowFlag As Boolean = False
@@ -71,8 +99,8 @@ Friend Module Mysettings
             .Add("LastAlpha" & "$" & iCurrentAlpha)
             .Add("Favourites" & "$" & CurrentFavesPath)
             .Add("PreviewLinks" & "$" & MainForm.chbPreviewLinks.Checked)
-            .Add("RootScanPath" & "$" & "Q:\") 'Rootpath)
-            .Add("Directories List" & "$" & "Q:\Directories.txt") 'DirectoriesListFile)
+            .Add("RootScanPath" & "$" & Rootpath)
+            .Add("Directories List" & "$" & DirectoriesListFile) 'DirectoriesListFile)
             .Add("GlobalFaves" & "$" & GlobalFavesPath)
             .Add("RandomNextFile" & "$" & MainForm.chbNextFile.Checked)
             .Add("RandomOnDirectoryChange" & "$" & MainForm.chbOnDir.Checked)
@@ -82,13 +110,13 @@ Friend Module Mysettings
             .Add("OptionsPreviewLinks" & "$" & MainForm.chbPreviewLinks.Checked)
             .Add("OptionsEncrypt" & "$" & MainForm.chbEncrypt.Checked)
             .Add("OptionsAutoAdvance" & "$" & MainForm.CHBAutoAdvance.Checked)
-
-
-
-
         End With
-        Dim appdata As String = "C:\MVPrefs.txt" 'GetFolderPath(SpecialFolder.LocalApplicationData)
-        WriteListToFile(PrefsList, appdata, True)
+        Dim f As New IO.FileInfo(PrefsFilePath)
+        If f.Exists = False Then
+            WriteListToFile(PrefsList, PrefsFilePath, True)
+        Else
+            PrefsFilePath = PrefsFilePath.Replace(".", Str(Int(Rnd() * 1000)) & ".")
+        End If
 
 
     End Sub
@@ -96,117 +124,113 @@ Friend Module Mysettings
 
     Public Sub PreferencesGet()
         Dim prefslist As New List(Of String)
-        ReadListfromFile(prefslist, "C:\MVPrefs.txt", True)
-        MainForm.ctrPicAndButtons.SplitterDistance = 8.7 * MainForm.ctrPicAndButtons.Height / 10
-        For Each s In prefslist
-            If InStr(s, "$") <> 0 Then
+        Dim f As New IO.FileInfo(PrefsFilePath)
+        If f.Exists Then
+            ReadListfromFile(prefslist, PrefsFilePath, True)
+            MainForm.ctrPicAndButtons.SplitterDistance = 8.7 * MainForm.ctrPicAndButtons.Height / 10
+            For Each s In prefslist
+                If InStr(s, "$") <> 0 Then
 
-                Dim name As String = Split(s, "$")(0)
-                Dim value As String = Split(s, "$")(1)
-                Select Case name
-                    Case "VertSplit"
-                        MainForm.ctrFileBoxes.SplitterDistance = value
-                    Case "HorSplit"
-                        MainForm.ctrMainFrame.SplitterDistance = value
-                    Case "File"
-                        Dim st As String = value
-                        If st = "" Then st = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
-                        Media.MediaPath = st
-                    Case "Filter"
-                        If value = "" Then value = 0
-                        MainForm.CurrentFilterState.State = value
+                    Dim name As String = Split(s, "$")(0)
+                    Dim value As String = Split(s, "$")(1)
+                    Select Case name
+                        Case "VertSplit"
+                            MainForm.ctrFileBoxes.SplitterDistance = value
+                        Case "HorSplit"
+                            MainForm.ctrMainFrame.SplitterDistance = value
+                        Case "File"
+                            Dim st As String = value
+                            If st = "" Then st = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
+                            Media.MediaPath = st
+                        Case "Filter"
+                            If value = "" Then value = 0
+                            MainForm.CurrentFilterState.State = value
 
-                    Case "SortOrder"
-                        If value = "" Then value = 0
-                        MainForm.PlayOrder.State = value
-                    Case "StartPoint"
-                        If value = "" Then value = 0
-                        Media.StartPoint.State = value
-                    Case "State"
-                        If value = "" Then value = 0
-                        MainForm.NavigateMoveState.State = value
-                    Case "LastButtonFile"
-                        If value = "" Then LoadButtonFileName("")
-                        ButtonFilePath = value
-                    Case "LastAlpha"
-                        If value = "" Then value = 0
-                        iCurrentAlpha = value
-                    Case "Favourites"
-                        If value = "" Then value = BrowseToFolder("Choose favourites path")
-                        CurrentFavesPath = value
-                    Case "PreviewLinks"
-                        If value = "" Then value = False
-                        MainForm.chbPreviewLinks.Checked = value
-                    Case "RootScanPath"
-                        If value = "" Then value = BrowseToFolder("Choose root scanning path")
-                        Rootpath = value
-                    Case "Directories List"
-                        If value = "" Then value = "C:\Directories.txt"
+                        Case "SortOrder"
+                            If value = "" Then value = 0
+                            MainForm.PlayOrder.State = value
+                        Case "StartPoint"
+                            If value = "" Then value = 0
+                            Media.StartPoint.State = value
+                        Case "State"
+                            If value = "" Then value = 0
+                            MainForm.NavigateMoveState.State = value
+                        Case "LastButtonFile"
+                            If value = "" Then LoadButtonFileName("")
+                            ButtonFilePath = value
+                        Case "LastAlpha"
+                            If value = "" Then value = 0
+                            iCurrentAlpha = value
+                        Case "Favourites"
+                            If value = "" Then value = BrowseToFolder("Choose favourites path")
+                            CurrentFavesPath = value
+                        Case "PreviewLinks"
+                            If value = "" Then value = False
+                            MainForm.chbPreviewLinks.Checked = value
+                        Case "RootScanPath"
+                            If value = "" Then value = BrowseToFolder("Choose root scanning path")
+                            Rootpath = value
+                        Case "Directories List"
+                            If value = "" Then value = PrefsPath & "Directories.txt"
 
-                        DirectoriesListFile = value
-                        GetDirectoriesList(value)
-                    Case "GlobalFaves"
-                        If value = "" Then value = BrowseToFolder("Choose global favourites path")
-                        GlobalFavesPath = value
-                    Case "AutoLoadButtons"
-                        If value = "" Then value = False
-                        MainForm.chbLoadButtonFiles.Checked = value
+                            DirectoriesListFile = value
+                            Dim ff As New IO.FileInfo(value)
+                            If ff.Exists = False Then
+                                GetDirectoriesList(Rootpath, True)
+                            Else
+                                GetDirectoriesList(value)
 
-                    Case "RandomNextFile"
-                        If value = "" Then value = False
 
-                        MainForm.chbNextFile.Checked = value
-                    Case "RandomOnDirectoryChange"
-                        If value = "" Then value = False
-                        MainForm.chbOnDir.Checked = value
-                    Case "RandomAutoTrail"
-                        If value = "" Then value = False
-                        MainForm.chbAutoTrail.Checked = value
-                    Case "RandomAutoLoadButtons"
-                        If value = "" Then value = False
-                        MainForm.chbLoadButtonFiles.Checked = value
-                    Case "OptionsShowAttr"
-                        If value = "" Then value = False
-                        MainForm.chbShowAttr.Checked = value
-                    Case "OptionsPreviewLinks"
-                        If value = "" Then value = False
-                        MainForm.chbPreviewLinks.Checked = value
-                    Case "OptionsEncrypt"
-                        If value = "" Then value = False
-                        MainForm.chbEncrypt.Checked = value
-                    Case "OptionsAutoAdvance"
-                        If value = "" Then value = False
-                        MainForm.CHBAutoAdvance.Checked = value
-                End Select
+                            End If
+                        Case "GlobalFaves"
+                            If value = "" Then value = BrowseToFolder("Choose global favourites path")
+                            GlobalFavesPath = value
+                        Case "AutoLoadButtons"
+                            If value = "" Then value = False
+                            MainForm.chbLoadButtonFiles.Checked = value
 
-            End If
-        Next
-        'With My.Computer.Registry.CurrentUser
-        '    'Appearance
-        '    'States
-        '    'Files
-        '    '   Dim fol As New IO.DirectoryInfo(CurrentFavesPath) 'TODO This whole thing is a mess
-        '    'All .lnk files in this hierarchy get recognised and changed when files are moved. 
+                        Case "RandomNextFile"
+                            If value = "" Then value = False
 
-        '    Rootpath = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer)
-        '    If fol.Exists = False Then
-        '        MainForm.FavouritesFolderToolStripMenuItem.PerformClick()
-        '    End If
-        'End With
-        ''Catch ex As Exception
-        'PreferencesReset()
-        'End Try
+                            MainForm.chbNextFile.Checked = value
+                        Case "RandomOnDirectoryChange"
+                            If value = "" Then value = False
+                            MainForm.chbOnDir.Checked = value
+                        Case "RandomAutoTrail"
+                            If value = "" Then value = False
+                            MainForm.chbAutoTrail.Checked = value
+                        Case "RandomAutoLoadButtons"
+                            If value = "" Then value = False
+                            MainForm.chbLoadButtonFiles.Checked = value
+                        Case "OptionsShowAttr"
+                            If value = "" Then value = False
+                            MainForm.chbShowAttr.Checked = value
+                        Case "OptionsPreviewLinks"
+                            If value = "" Then value = False
+                            MainForm.chbPreviewLinks.Checked = value
+                        Case "OptionsEncrypt"
+                            If value = "" Then value = False
+                            MainForm.chbEncrypt.Checked = value
+                        Case "OptionsAutoAdvance"
+                            If value = "" Then value = False
+                            MainForm.CHBAutoAdvance.Checked = value
+                    End Select
+
+                End If
+            Next
+        Else
+            PreferencesReset(False)
+        End If
         MainForm.tssMoveCopy.Text = CurrentFolder
     End Sub
-    Public Sub PreferencesReset()
+    Public Sub PreferencesReset(Check As Boolean)
         If MsgBox("Reset preferences?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+            InitialiseFolders()
+
             With My.Computer.Registry.CurrentUser
                 Dim s As String = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
                 CurrentFolder = s
                 Dim fol As New IO.DirectoryInfo(s)
-                'Media.MediaPath = New IO.DirectoryInfo(CurrentFolder).EnumerateFiles("*", IO.SearchOption.AllDirectories).First.FullName
-                CurrentFavesPath = s & "\MVFavourites\"
-                '            strButtonfile=Media.MediaPath
             End With
             With MainForm
                 .ctrFileBoxes.SplitterDistance = .ctrFileBoxes.Height / 4
@@ -221,6 +245,52 @@ Friend Module Mysettings
             Media.StartPoint.State = 0
             PreferencesSave()
         End If
+    End Sub
+
+    Public Sub LoadForm()
+        Dim prefslist As New List(Of String)
+        ReadListfromFile(prefslist, PrefsFilePath, True)
+        Dim screed As String = ""
+
+        Preferences.Show()
+
+        Dim s() As String = prefslist.ToArray()
+        For i = 0 To s.GetUpperBound(0)
+            Dim name As String = Split(s(i), "$")(0)
+            Dim value As String = Split(s(i), "$")(1)
+            screed = screed + VariablesDescriptor(i) + "$" + value + vbCrLf
+
+        Next
+        screed = screed.Replace("$", vbTab + vbTab + vbTab + vbTab + vbTab + vbTab + vbTab)
+        Preferences.PrefsText.Text = screed
+
+    End Sub
+    Private Sub InitialiseFolders()
+        Dim f As New IO.DirectoryInfo(GetFolderPath(SpecialFolder.ApplicationData))
+        f.CreateSubdirectory("Metavisua")
+        Dim subdir As New IO.DirectoryInfo(f.FullName & "\Metavisua")
+        Dim x() As String = {"Thumbs", "Buttons", "Lists", "Preferences", "Shortcuts"}
+        For i = 0 To x.Length - 1
+            subdir.CreateSubdirectory(x(i))
+
+        Next
+        For i = 0 To x.Length - 1
+            Dim subsub As New IO.DirectoryInfo(subdir.FullName & "\" & x(i))
+            Select Case i
+                Case 0
+                    ThumbsPath = subsub.FullName
+                Case 1
+                    ButtonFilePath = subsub.FullName
+                Case 2
+                    ListFilePath = subsub.FullName
+                Case 3
+                    PrefsFilePath = subsub.FullName & "\MVPrefs.txt"
+                Case 4
+                    CurrentFavesPath = subsub.FullName
+
+            End Select
+        Next
+
     End Sub
 
 End Module
