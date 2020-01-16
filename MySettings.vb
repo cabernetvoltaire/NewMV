@@ -116,13 +116,14 @@ Friend Module Mysettings
             .Add("OptionsPreviewLinks" & "$" & MainForm.chbPreviewLinks.Checked)
             .Add("OptionsEncrypt" & "$" & MainForm.chbEncrypt.Checked)
             .Add("OptionsAutoAdvance" & "$" & MainForm.CHBAutoAdvance.Checked)
+            .Add("ThumbnailDestination" & "$" & ThumbDestination)
         End With
         Dim f As New IO.FileInfo(PrefsFilePath)
         If f.Exists = False Then
         Else
-            PrefsFilePath = PrefsFilePath.Replace(".", Str(Int(Rnd() * 1000)) & ".")
+            ' PrefsFilePath = PrefsFilePath.Replace(".", Str(Int(Rnd() * 1000)) & ".")
         End If
-        WriteListToFile(PrefsList, PrefsFilePath, True)
+        WriteListToFile(PrefsList, PrefsFilePath, False)
 
 
     End Sub
@@ -143,7 +144,7 @@ Friend Module Mysettings
             End If
         Next
         If f.Exists Then
-            ReadListfromFile(prefslist, f.FullName, True)
+            ReadListfromFile(prefslist, f.FullName, False)
             MainForm.ctrPicAndButtons.SplitterDistance = 8.7 * MainForm.ctrPicAndButtons.Height / 10
             For Each s In prefslist
                 If InStr(s, "$") <> 0 Then
@@ -173,7 +174,7 @@ Friend Module Mysettings
                             If value = "" Then value = 0
                             MainForm.NavigateMoveState.State = value
                         Case "LastButtonFile"
-                            If value = "" Then LoadButtonFileName("")
+                            If value = "" Then value=LoadButtonFileName("")
                             ButtonFilePath = value
                         Case "LastAlpha"
                             If value = "" Then value = 0
@@ -231,6 +232,9 @@ Friend Module Mysettings
                         Case "OptionsAutoAdvance"
                             If value = "" Then value = False
                             MainForm.CHBAutoAdvance.Checked = value
+                        Case "ThumbnailDestination"
+                            If value = "" Then value = BrowseToFolder("Choose Thumbnail Destination")
+                            ThumbDestination = value
                     End Select
 
                 End If
@@ -266,7 +270,7 @@ Friend Module Mysettings
 
     Public Sub LoadForm()
         Dim prefslist As New List(Of String)
-        ReadListfromFile(prefslist, PrefsFilePath, True)
+        ReadListfromFile(prefslist, PrefsFilePath, False)
         Dim screed As String = ""
 
         Preferences.Show()

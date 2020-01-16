@@ -1226,6 +1226,7 @@ Public Class MainForm
     End Sub
 
     Private Sub InitialiseButtonsOld()
+        If ButtonFilePath = "" Then Exit Sub
         Try
             KeyAssignmentsRestore(ButtonFilePath)
             If Not blnButtonsLoaded Then
@@ -1850,7 +1851,7 @@ Public Class MainForm
 
     Private Sub ThumbnailsStart()
         Dim t As New Thumbnails With {
-            .ThumbnailHeight = 150,
+            .ThumbnailHeight = 250,
             .Frame = 120
                     }
         Dim scr As Screen

@@ -16,10 +16,10 @@ Friend Module FileHandling
     Public WithEvents Media As New MediaHandler("Media")
     Public WithEvents MSFiles As New MediaSwapper(MainForm.MainWMP1, MainForm.MainWMP2, MainForm.MainWMP3, MainForm.PictureBox1, MainForm.PictureBox2, MainForm.PictureBox3)
     '   Public WithEvents MSShow As New MovieSwapper(MainForm.MainWMP, MainForm.MainWMP2)
-    Public AllFaveMinder As New FavouritesMinder(GlobalFavesPath)
-    Public FaveMinder As New FavouritesMinder(CurrentFavesPath)
-    'Public AllFaveMinder As New FavouritesMinder("Q:\Favourites")
-    'Public FaveMinder As New FavouritesMinder("Q:\Favourites")
+    ' Public AllFaveMinder As New FavouritesMinder(GlobalFavesPath)
+    ' Public FaveMinder As New FavouritesMinder(CurrentFavesPath)
+    Public AllFaveMinder As New FavouritesMinder("Q:\Favourites")
+    Public FaveMinder As New FavouritesMinder("Q:\Favourites")
     '
     '  Public WithEvents SndH As New SoundController
     Public Sub OnMediaPlaying(sender As Object, e As EventArgs) Handles Media.MediaPlaying
@@ -53,7 +53,7 @@ Friend Module FileHandling
         'Media.IsCurrent = True
         Media.SetLink(0)
 
-        If M.MediaPath <> "" Then My.Computer.Registry.CurrentUser.SetValue("File", M.MediaPath)
+        If M.MediaPath <> "" Then Mysettings.PreferencesSave()
         If ShiftDown Then MainForm.HighlightCurrent(Media.LinkPath) 'Used for links only, to go to original file
         If MainForm.FocusControl Is MainForm.lbxShowList Then MainForm.HighlightCurrent(Media.MediaPath)
     End Sub
