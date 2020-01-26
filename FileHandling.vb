@@ -52,10 +52,10 @@ Friend Module FileHandling
         ' MainForm.AT.AdvanceChance = M.Markers.Count + 1
         'Media.IsCurrent = True
         Media.SetLink(0)
-
+        MainForm.AT.Counter = Media.Markers.Count
         If M.MediaPath <> "" Then Mysettings.PreferencesSave()
         If ShiftDown Then MainForm.HighlightCurrent(Media.LinkPath) 'Used for links only, to go to original file
-        If MainForm.FocusControl Is MainForm.lbxShowList Then MainForm.HighlightCurrent(Media.MediaPath)
+        ' If MainForm.FocusControl Is MainForm.lbxShowList Then MainForm.HighlightCurrent(Media.MediaPath)
     End Sub
     Private Sub DebugStartpoint(M As MediaHandler)
         Debug.Print(M.MediaPath & " loaded into " & M.Player.Name)
@@ -470,7 +470,7 @@ Friend Module FileHandling
         Next
         Return x
     End Function
-    Public Sub AddSingleFileToList(ByVal list As List(Of String), strPath As String)
+    Public Sub AddSingleFileToList(list As List(Of String), strPath As String)
         list.Add(strPath)
 
     End Sub

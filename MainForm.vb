@@ -39,6 +39,7 @@ Public Class MainForm
     Public FirstButtons As New ButtonForm
     Public bmp As Bitmap
     Public ScrubberProportion As Decimal = 0.97
+
     Public Marks As New MarkPlacement
     Public speedkeys = {KeySpeed1, KeySpeed2, KeySpeed3}
     Public WithEvents FBH As New FileboxHandler(lbxFiles)
@@ -49,9 +50,7 @@ Public Class MainForm
         emblem.ImageLocation = file
         emblem.Load()
     End Sub
-    Public Sub OnListboxFilled(sender As Object) Handles FBH.ListBoxFilled
 
-    End Sub
 
     Public Sub OnEndReached(sender As Object, e As EventArgs) Handles FBH.EndReached, LBH.EndReached
         If AutoTraverse Then tvMain2.Traverse(False)
@@ -1154,8 +1153,11 @@ Public Class MainForm
 
     Private Sub AddFiles(blnRecurse As Boolean)
         ProgressBarOn(1000)
+        Dim x As New List(Of String)
+        x = Showlist
 
         Showlist = AddFilesToCollection("", blnRecurse)
+        Showlist = x.Concat(Showlist)
         LBH.FillBox(Showlist)
         '        FillShowbox(lbxShowList, CurrentFilterState.State, Showlist)
         ProgressBarOff()
@@ -1423,10 +1425,17 @@ Public Class MainForm
 
             ' Dim b As Bitmap = InitializeStandaloneImageCopy(Media.MediaPath)
             currentPicBox.Image.Dispose()
-            finfo.Delete()
-            b.Save(Media.MediaPath)
-            finfo.LastWriteTime = dt
-            '  currentPicBox.ImageLocation = Media.MediaPath
+            Try
+
+
+                finfo.Delete()
+                b.Save(Media.MediaPath)
+                finfo.LastWriteTime = dt
+                '  currentPicBox.ImageLocation = Media.MediaPath
+            Catch ex As System.UnauthorizedAccessException
+                MsgBox("Enable write permissions on this folder")
+
+            End Try
         End With
     End Sub
 
@@ -1976,7 +1985,7 @@ Public Class MainForm
 
 
     Private Sub tmrAutoTrail_Tick(sender As Object, e As EventArgs) Handles tmrAutoTrail.Tick
-        AutoTrail(sender)
+        If Not CtrlDown Then AutoTrail(sender)
 
     End Sub
 
@@ -1986,26 +1995,22 @@ Public Class MainForm
 
         AT.Framerates = SP.FrameRates
         Dim i As Byte = AT.SpeedIndex
-
+        AT.RandomTimes = {5, 5, 8, 10}
+        AT.AdvanceChance = 25
 
         Select Case i
             Case 0, 1, 2
                 SP.FrameRate = AT.Framerates(i)
                 SpeedChange(New KeyEventArgs(speedkeys(i)))
                 '       AT.Probability = DurBinParam
-                tmrAutoTrail.Interval = Int(Rnd() * AT.RandomTimes(AT.Duration) * 500) + 500
             Case 3
-                'Normal
-                Debug.Print("Normal")
-
                 tmrSlowMo.Enabled = False
                 Media.Player.settings.rate = 1
                 Media.Player.Ctlcontrols.play()
-                '      AT.Probability = DurBinParam
-
-                tmrAutoTrail.Interval = Int(Rnd() * AT.RandomTimes(AT.Duration) * 500) + 500
+                '        tmrAutoTrail.Interval = Int(Rnd() * AT.RandomTimes(AT.Duration) * 500) + 500
         End Select
-        Dim count As Integer
+        tmrAutoTrail.Interval = Int(Rnd() * AT.RandomTimes(AT.Duration) * 500) + 500
+
 
         If AltDown Or Int(Rnd() * AT.AdvanceChance) + 1 = 1 Then
             If CtrlDown Then
@@ -2016,16 +2021,17 @@ Public Class MainForm
                 Debug.Print("Change file")
 
                 HandleKeys(sender, New KeyEventArgs(KeyNextFile))
-                count = Media.Markers.Count
+                'count = Media.Markers.Count
             End If
 
         End If
 
         Dim ex1 As New KeyEventArgs(KeyJumpRandom Or Keys.Alt)
         Dim ex2 As New KeyEventArgs(KeyJumpRandom)
-        If count <> 0 And Rnd() > 0.1 Then
+        'Go to markers first
+        If AT.Counter > 0 Or (AT.Counter = 0 And Rnd() > 0.6) Then
             JumpToMark(ex1)
-            count -= 1
+            If AT.Counter > 0 Then AT.Counter -= 1
         Else
             JumpRandom(False)
         End If
@@ -2239,11 +2245,25 @@ Public Class MainForm
 
 
     Private Sub AddCurrentFileToShowlistToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AddCurrentFileListToolStripMenuItem.Click
-        AddCurrentFilesToShowList() 'This one
+        AddAlltoShowlist() 'This one
 
     End Sub
-
+    Private Sub AddAlltoShowlist()
+        CollapseShowlist(False)
+        LBH.AddList(FBH.ItemList)
+    End Sub
     Private Sub AddCurrentFilesToShowList()
+        Dim list As New List(Of String)
+
+        For Each f In lbxFiles.SelectedItems
+            list.Add(f)
+        Next
+
+        CollapseShowlist(False)
+        LBH.AddList(list)
+    End Sub
+    Private Sub AddCurrentFilesToShowListold()
+
         For Each f In lbxFiles.SelectedItems
             AddSingleFileToList(Showlist, f)
         Next
@@ -2429,7 +2449,7 @@ Public Class MainForm
             UpdateFileInfo()
         End If
         FillFileBox(lbxFiles, New DirectoryInfo(CurrentFolder), Random.OnDirChange)
-        If Random.OnDirChange Then
+        If Not Random.OnDirChange Then
             FBH.SetFirst()
         Else
             FBH.SetNamed(Media.MediaPath)
@@ -2840,7 +2860,8 @@ Public Class MainForm
     End Sub
 
     Private Sub MovieScanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles MovieScanToolStripMenuItem.Click
-        tmrJumpRandom.Interval = 375
+
+        tmrJumpRandom.Interval = 200
         tmrJumpRandom.Enabled = Not tmrJumpRandom.Enabled
     End Sub
 
@@ -2855,6 +2876,10 @@ Public Class MainForm
 
     Private Sub PreferencesToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles PreferencesToolStripMenuItem1.Click
         Mysettings.LoadForm()
+    End Sub
+
+    Private Sub LBH_ListboxChanged(sender As Object, e As EventArgs) Handles LBH.ListIndexChanged
+        HighlightCurrent(lbxShowList.SelectedItem)
     End Sub
 
 

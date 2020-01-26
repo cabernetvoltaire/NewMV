@@ -320,9 +320,10 @@ Public Module General
         Return path
 
     End Function
-    Public Function BrowseToFolder(Title As String) As String
+    Public Function BrowseToFolder(Title As String, DefaultPath As String) As String
         Dim path As String
         With New FolderBrowserDialog
+            .SelectedPath = DefaultPath
             .Description = Title
             If .ShowDialog() = DialogResult.OK Then
                 path = .SelectedPath
@@ -1042,7 +1043,7 @@ Public Module General
     Friend Function ThumbnailName(Filename As String) As String
         Dim th As String
         Dim f As New IO.FileInfo(Filename)
-        th = ThumbDestination & f.Name.Replace(".", "") & "thn.png"
+        th = ThumbDestination & "\" & f.Name.Replace(".", "") & "thn.png"
         Return th
     End Function
 

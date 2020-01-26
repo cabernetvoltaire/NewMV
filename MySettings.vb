@@ -22,13 +22,14 @@ Friend Module Mysettings
 
 
     Public ButtonFilePath As String
+    Public Buttonfolder As String
     Public ThumbDestination As String
     Public ListFilePath As String
     Public PrefsPath As String = GetFolderPath(SpecialFolder.ApplicationData) & "\Metavisua\Preferences\"
-    Public PrefsFilePath As String = PrefsPath & "\MVPrefs.txt"
+    Public PrefsFilePath As String = PrefsPath & "\" & DrivesScan() & "MVPrefs.txt"
     Public Rootpath As String = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
-    Public GlobalFavesPath As String
-    Public CurrentFavesPath As String
+    Public GlobalFavesPath As String = Rootpath
+    Public CurrentFavesPath As String = Rootpath
 
 #End Region
 #Region "Stacks"
@@ -58,7 +59,10 @@ Friend Module Mysettings
     "Show attributes",
     "Preview links",
     "Encrypt text files",
-    "Auto advance"}
+    "Auto advance",
+    "Directory containing thumbnails",
+    "Directory containing button files"
+    }
 #Region "Internal"
     Public Property blnSecondScreen As Boolean = True
     Public blnRestartSlideShowFlag As Boolean = False
@@ -117,12 +121,16 @@ Friend Module Mysettings
             .Add("OptionsEncrypt" & "$" & MainForm.chbEncrypt.Checked)
             .Add("OptionsAutoAdvance" & "$" & MainForm.CHBAutoAdvance.Checked)
             .Add("ThumbnailDestination" & "$" & ThumbDestination)
+            .Add("ButtonFolder" & "$" & Buttonfolder)
         End With
+
         Dim f As New IO.FileInfo(PrefsFilePath)
         If f.Exists = False Then
         Else
+            f.Delete()
             ' PrefsFilePath = PrefsFilePath.Replace(".", Str(Int(Rnd() * 1000)) & ".")
         End If
+
         WriteListToFile(PrefsList, PrefsFilePath, False)
 
 
@@ -139,7 +147,8 @@ Friend Module Mysettings
         End If
 
         For Each m In prefs.GetFiles
-            If m.CreationTimeUtc > f.CreationTimeUtc AndAlso m.FullName.Contains("MVPrefs") Then
+            Dim drives As String = DrivesScan()
+            If m.CreationTimeUtc > f.CreationTimeUtc AndAlso m.FullName.Contains(drives) Then
                 f = m
             End If
         Next
@@ -180,13 +189,13 @@ Friend Module Mysettings
                             If value = "" Then value = 0
                             iCurrentAlpha = value
                         Case "Favourites"
-                            If value = "" Then value = BrowseToFolder("Choose favourites path")
+                            If value = "" Then value = BrowseToFolder("Choose favourites path", PrefsPath)
                             CurrentFavesPath = value
                         Case "PreviewLinks"
                             If value = "" Then value = False
                             MainForm.chbPreviewLinks.Checked = value
                         Case "RootScanPath"
-                            If value = "" Then value = BrowseToFolder("Choose root scanning path")
+                            If value = "" Then value = BrowseToFolder("Choose root scanning path", PrefsPath)
                             Rootpath = value
                         Case "Directories List"
                             If value = "" Then value = PrefsPath & "Directories.txt"
@@ -201,7 +210,10 @@ Friend Module Mysettings
 
                             End If
                         Case "GlobalFaves"
-                            If value = "" Then value = BrowseToFolder("Choose global favourites path")
+                            Dim ff As New IO.DirectoryInfo(value)
+                            If value = "" Or Not ff.Exists Then
+                                value = BrowseToFolder("Choose global favourites path", PrefsPath)
+                            End If
                             GlobalFavesPath = value
                         Case "AutoLoadButtons"
                             If value = "" Then value = False
@@ -233,8 +245,11 @@ Friend Module Mysettings
                             If value = "" Then value = False
                             MainForm.CHBAutoAdvance.Checked = value
                         Case "ThumbnailDestination"
-                            If value = "" Then value = BrowseToFolder("Choose Thumbnail Destination")
+                            If value = "" Then value = BrowseToFolder("Choose Thumbnail Destination", PrefsPath)
                             ThumbDestination = value
+                        Case "ButtonFolder"
+                            If value = "" Then value = BrowseToFolder("Choose Button folder", PrefsPath)
+                            Buttonfolder = value
                     End Select
 
                 End If
@@ -245,27 +260,35 @@ Friend Module Mysettings
         MainForm.tssMoveCopy.Text = CurrentFolder
     End Sub
     Public Sub PreferencesReset(Check As Boolean)
-        If MsgBox("Reset preferences?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
-            InitialiseFolders()
-
-            With My.Computer.Registry.CurrentUser
-                Dim s As String = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
-                CurrentFolder = s
-                Dim fol As New IO.DirectoryInfo(s)
-            End With
-            With MainForm
-                .ctrFileBoxes.SplitterDistance = .ctrFileBoxes.Height / 4
-                .ctrMainFrame.SplitterDistance = .ctrFileBoxes.Width / 2
-
-                .CurrentFilterState.State = 0
-                .PlayOrder.State = 0
-                .NavigateMoveState.State = 0
-                iCurrentAlpha = 0
-                ButtonFilePath = ""
-            End With
-            Media.StartPoint.State = 0
-            PreferencesSave()
+        If Check Then
+            If MsgBox("Reset preferences?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+                ResetDefaultPrefs()
+            End If
+        Else
+            ResetDefaultPrefs()
         End If
+    End Sub
+
+    Private Sub ResetDefaultPrefs()
+        InitialiseFolders()
+
+        With My.Computer.Registry.CurrentUser
+            Dim s As String = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
+            CurrentFolder = s
+            Dim fol As New IO.DirectoryInfo(s)
+        End With
+        With MainForm
+            .ctrFileBoxes.SplitterDistance = .ctrFileBoxes.Height / 4
+            .ctrMainFrame.SplitterDistance = .ctrFileBoxes.Width / 2
+
+            .CurrentFilterState.State = 0
+            .PlayOrder.State = 0
+            .NavigateMoveState.State = 0
+            iCurrentAlpha = 0
+            ButtonFilePath = ""
+        End With
+        Media.StartPoint.State = 0
+        PreferencesSave()
     End Sub
 
     Public Sub LoadForm()
@@ -301,7 +324,7 @@ Friend Module Mysettings
                 Case 0
                     ThumbDestination = subsub.FullName
                 Case 1
-                    ButtonFilePath = subsub.FullName
+                    Buttonfolder = subsub.FullName
                 Case 2
                     ListFilePath = subsub.FullName
                 Case 3
@@ -314,5 +337,14 @@ Friend Module Mysettings
         Next
 
     End Sub
+    Private Function DrivesScan() As String
+        Dim drivestring As String
+        For Each m In My.Computer.FileSystem.Drives
+            drivestring = drivestring + m.Name
+            drivestring = drivestring.Replace(":\", "")
+        Next
+        Return drivestring
+    End Function
+
 
 End Module

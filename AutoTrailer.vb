@@ -1,9 +1,19 @@
 ﻿Public Class AutoTrailer
+    Private WithEvents timer As New Timer
     Private probs(3) As Decimal
     Private mDuration As Byte
     Private mProb As Decimal
-    Public Property RandomTimes As Byte() = {1, 2, 3, 4}
-    Public Property SelectionWeights As Decimal() = {0.1, 0.3, 0.5, 1}
+    Public Property Counter As Byte
+    ''' <summary>
+    ''' Seeds of the relative durations of different selections
+    ''' </summary>
+    ''' <returns></returns>
+    Public Property RandomTimes As Byte()
+    ''' <summary>
+    ''' Cumulative probabilities of selecting each of the 4 speeds
+    ''' </summary>
+    ''' <returns></returns>
+    Public Property SelectionWeights As Decimal() = {0.1, 0.3, 0.6, 1}
     ''' <summary>
     ''' Framerates for each of the 3 different slow speeds
     ''' </summary>

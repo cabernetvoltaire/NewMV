@@ -190,6 +190,8 @@ Partial Class MainForm
         Me.ForceDirectoriesReloadToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CloneToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RemoveToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator14 = New System.Windows.Forms.ToolStripSeparator()
+        Me.PreferencesToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem10 = New System.Windows.Forms.ToolStripMenuItem()
         Me.LinearToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AlphaToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -265,8 +267,6 @@ Partial Class MainForm
         Me.Response = New System.Windows.Forms.Timer(Me.components)
         Me.tmrProgressBar = New System.Windows.Forms.Timer(Me.components)
         Me.tmrJumpRandom = New System.Windows.Forms.Timer(Me.components)
-        Me.ToolStripSeparator14 = New System.Windows.Forms.ToolStripSeparator()
-        Me.PreferencesToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -876,9 +876,9 @@ Partial Class MainForm
         '
         'Scrubber
         '
+        Me.Scrubber.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom), System.Windows.Forms.AnchorStyles)
         Me.Scrubber.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.btnRow.SetColumnSpan(Me.Scrubber, 10)
-        Me.Scrubber.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Scrubber.Location = New System.Drawing.Point(2, 2)
         Me.Scrubber.Margin = New System.Windows.Forms.Padding(2)
         Me.Scrubber.Name = "Scrubber"
@@ -1743,6 +1743,17 @@ Partial Class MainForm
         Me.RemoveToolStripMenuItem.Size = New System.Drawing.Size(260, 30)
         Me.RemoveToolStripMenuItem.Text = "Remove ""(#)"""
         '
+        'ToolStripSeparator14
+        '
+        Me.ToolStripSeparator14.Name = "ToolStripSeparator14"
+        Me.ToolStripSeparator14.Size = New System.Drawing.Size(257, 6)
+        '
+        'PreferencesToolStripMenuItem1
+        '
+        Me.PreferencesToolStripMenuItem1.Name = "PreferencesToolStripMenuItem1"
+        Me.PreferencesToolStripMenuItem1.Size = New System.Drawing.Size(260, 30)
+        Me.PreferencesToolStripMenuItem1.Text = "Preferences"
+        '
         'ToolStripMenuItem10
         '
         Me.ToolStripMenuItem10.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LinearToolStripMenuItem, Me.AlphaToolStripMenuItem, Me.TreeToolStripMenuItem, Me.ToolStripSeparator12, Me.AutoButton, Me.ResetButtonsToolStripMenuItem})
@@ -2237,17 +2248,6 @@ Partial Class MainForm
         'tmrJumpRandom
         '
         Me.tmrJumpRandom.Interval = 500
-        '
-        'ToolStripSeparator14
-        '
-        Me.ToolStripSeparator14.Name = "ToolStripSeparator14"
-        Me.ToolStripSeparator14.Size = New System.Drawing.Size(257, 6)
-        '
-        'PreferencesToolStripMenuItem1
-        '
-        Me.PreferencesToolStripMenuItem1.Name = "PreferencesToolStripMenuItem1"
-        Me.PreferencesToolStripMenuItem1.Size = New System.Drawing.Size(260, 30)
-        Me.PreferencesToolStripMenuItem1.Text = "Preferences"
         '
         'MainForm
         '

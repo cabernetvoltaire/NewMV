@@ -6,8 +6,9 @@
     Public Property FolderAdvance As Boolean = True
 
     Private mItemList As New List(Of String)
-    Public Event ListBoxFilled(l As ListBox)
-    Public Event ListboxChanged(l As ListBox)
+    Public Event ListBoxFilled(sender As Object, e As EventArgs)
+    Public Event ListboxChanged(sender As Object, e As EventArgs)
+    Public Event ListIndexChanged(sender As Object, e As EventArgs)
     Public Event EndReached(sender As Object, e As EventArgs)
 
     Public Property ItemList() As List(Of String)
@@ -54,7 +55,7 @@
     Private Property mCurrentIndex As Integer
     Public Property CurrentIndex() As Integer
         Get
-            Return mCurrentIndex
+            Return mListbox.SelectedIndex
         End Get
         Set(ByVal value As Integer)
             mCurrentIndex = value
@@ -71,6 +72,12 @@
     Public Sub OrderList()
         mItemList = SetPlayOrder(SortOrder.State, ItemList)
 
+    End Sub
+    Public Sub AddList(list As List(Of String))
+        For Each m In list
+            mItemList.Add(m)
+        Next
+        FillBox()
     End Sub
     Public Sub IncrementIndex(Forward As Boolean)
         If mListbox.SelectionMode <> SelectionMode.One Then mListbox.SelectionMode = SelectionMode.One
@@ -110,7 +117,7 @@
             ListBox.Items.Add(f)
         Next
         ListBox.ResumeLayout()
-        RaiseEvent ListBoxFilled(ListBox)
+        RaiseEvent ListBoxFilled(ListBox, Nothing)
         'SetFirst()
     End Sub
     Private Function InvertListBoxSelections(ByRef tempListBox As ListBox) As Integer
@@ -142,7 +149,7 @@
         Dim i = ListBox.FindString(List(0))
         For Each m In List
             ListBox.Items.Remove(m)
-            RaiseEvent LIstboxChanged(mListbox)
+            RaiseEvent ListboxChanged(ListBox, Nothing)
         Next
         If i > ListBox.Items.Count - 1 Then
             SetIndex(ListBox.Items.Count - 1)
@@ -167,7 +174,7 @@
         If ListBox.Items.Count > 0 Then
             Dim i = ListBox.FindString(Name)
             If i > -1 Then
-                ListBox.SelectedIndex = ListBox.FindString(Name)
+                ListBox.SelectedIndex = i'ListBox.FindString(Name)
             Else
                 ListBox.SelectedIndex = 0
             End If
@@ -185,6 +192,9 @@
     '        mListbox.SelectionMode = SelectionMode.One
     '    End If
     'End Sub
+    Private Sub IndexChanged(sender As Object, e As EventArgs) Handles mListbox.SelectedIndexChanged
+        RaiseEvent ListIndexChanged(sender, e)
+    End Sub
 
 #End Region
 
