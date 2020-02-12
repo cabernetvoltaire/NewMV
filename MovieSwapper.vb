@@ -140,7 +140,7 @@ Public Class MediaSwapper
             Case Filetype.Pic
                 MH.PlaceResetter(False)
                 'MH.MediaPath = path
-                MH.Picture.Visible = True
+                ' MH.Picture.Visible = True
                 MH.Picture.Tag = path
                 Return True
 
@@ -149,7 +149,8 @@ Public Class MediaSwapper
 
         End Select
         'NB Duration is not loaded by this point. 
-
+        CurrentURLS.Add(path)
+        MH.IsCurrent = False
     End Function
     Function DisposeMedia(player As AxWindowsMediaPlayer) As Integer
         player.close()
@@ -167,18 +168,11 @@ Public Class MediaSwapper
     End Sub
     Private Sub RotateMedia(ByRef ThisMH As MediaHandler, ByRef NextMH As MediaHandler, ByRef PrevMH As MediaHandler)
         CurrentURLS.Clear()
+
         Prepare(PrevMH, PreviousItem)
-        'While Not Prepare(NextMH, NextItem)
-        '    GetNext()
         Prepare(NextMH, NextItem)
-        'End While
         Prepare(ThisMH, CurrentItem)
-        CurrentURLS.Add(PreviousItem)
-        CurrentURLS.Add(CurrentItem)
-        CurrentURLS.Add(NextItem)
         ThisMH.IsCurrent = True
-        NextMH.IsCurrent = False
-        PrevMH.IsCurrent = False
 
         Select Case ThisMH.MediaType
             Case Filetype.Movie
@@ -239,7 +233,7 @@ Public Class MediaSwapper
     Private Sub ShowPlayer(ByRef MHX As MediaHandler)
         MuteAll()
         If Not separate Then
-            HideMedias(MHX)
+            '   HideMedias(MHX)
         End If
         MHX.PlaceResetter(False)
         With MHX.Player

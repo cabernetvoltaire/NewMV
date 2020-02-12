@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class Test
+Partial Class Form5
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -22,27 +22,9 @@ Partial Class Test
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.Panel1 = New System.Windows.Forms.Panel()
-        Me.SuspendLayout()
-        '
-        'Panel1
-        '
-        Me.Panel1.Location = New System.Drawing.Point(109, 141)
-        Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(645, 133)
-        Me.Panel1.TabIndex = 0
-        '
-        'Test
-        '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(11.0!, 24.0!)
+        components = New System.ComponentModel.Container
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 450)
-        Me.Controls.Add(Me.Panel1)
-        Me.Name = "Test"
-        Me.Text = "Test"
-        Me.ResumeLayout(False)
-
+        Me.Text = "Form5"
     End Sub
-
-    Friend WithEvents Panel1 As Panel
 End Class

@@ -199,7 +199,7 @@ Public Module General
         End Try
 
     End Function
-    Private Function GenerateSafeFolderList(ByVal folder As String) _
+    Public Function GenerateSafeFolderList(ByVal folder As String) _
             As List(Of String)
 
         ' -------------------------------------------
@@ -468,6 +468,7 @@ Public Module General
 
 
     Public Sub RefreshListbox(lbx As ListBox, list As List(Of String))
+
         For Each m In list
             lbx.Items.Remove(m)
         Next
@@ -844,11 +845,15 @@ Public Module General
                 TotalSize = profile.size
             End If
         Else
+            Try
 
-            For Each f In dir.GetFiles
-                Dim profile = fso.getfile(f.FullName)
-                filessize = filessize + profile.size
-            Next
+                For Each f In dir.GetFiles
+                    Dim profile = fso.getfile(f.FullName)
+                    filessize = filessize + profile.size
+                Next
+            Catch ex As Exception
+
+            End Try
             TotalSize = filessize
         End If
         'Dim FolderInfo = New IO.DirectoryInfo(RootFolder)
@@ -1051,6 +1056,16 @@ Public Module General
         Dim parts() = path.Split("\")
         Return parts(parts.Length - 1)
     End Function
+    Friend Function FolderPathFromPath(path As String) As String
+        Dim parts() = path.Split("\")
+        Dim s As String
+
+        For i = 0 To parts.Length - 2
+            s = s + parts(i) & "\"
+        Next
+        Return s
+    End Function
+
     Public Sub MovietoPic(pic As PictureBox, img As Image)
         PreparePic(pic, img)
         'SndH.Muted = True

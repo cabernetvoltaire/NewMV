@@ -443,11 +443,7 @@ Module ButtonHandling
         ClearCurrentButtons(buttons)
     End Sub
     Public Sub ClearCurrentButtons(b As ButtonSet)
-        For Each row In b.CurrentSet
-            For Each btn In row.Buttons
-                btn.Clear()
-            Next
-        Next
+        b.Clear()
     End Sub
     Public Sub KeyAssignmentsRestore(Optional filename As String = "")
 

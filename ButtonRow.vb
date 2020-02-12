@@ -7,6 +7,7 @@
             Buttons(i) = New MVButton
             Buttons(i).FaceText = "f" & Str(i + 5)
             Buttons(i).Label = S(i)
+            Buttons(i).Position = i
         Next
 
         'Current = False
@@ -19,6 +20,7 @@
             Buttons(i).FaceText = "f" & Str(i + 5)
             Buttons(i).Label = S(i)
             Buttons(i).Letter = letter
+            Buttons(i).Position = i
         Next
         mLetter = letter
         'Current = False

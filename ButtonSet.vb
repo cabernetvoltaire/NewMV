@@ -110,6 +110,9 @@ Public Class ButtonSet
             InsertRow(letter)
             i = 0
         End If
+        CurrentRow.Buttons(i).Position = i
+        CurrentRow.Buttons(i).Letter = letter
+
         Return CurrentRow.Buttons(i)
     End Function
     Public Sub New()

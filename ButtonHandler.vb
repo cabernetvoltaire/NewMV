@@ -1,5 +1,6 @@
 ﻿Imports System.IO
 Public Class ButtonHandler
+    Public WithEvents buttons As New ButtonSet
     Public Sub LoadButtonSet(Optional filename As String = "")
 
         Dim path As String
@@ -9,7 +10,7 @@ Public Class ButtonHandler
             path = filename
         End If
         If path = "" Then Exit Sub
-        ClearCurrentButtons(buttons)
+        buttons.Clear()
         'Get the file path
 
         Dim btnList As New List(Of String)
@@ -18,8 +19,8 @@ Public Class ButtonHandler
         For Each s In btnList
             subs = s.Split("|")
             If subs.Length <> 4 Then
-                MsgBox("Not a button file")
-                Exit Sub
+                'MsgBox("Not a button file")
+                'Exit Sub
             Else
                 Dim m As New MVButton
                 m.Position = (subs(0))
@@ -65,6 +66,11 @@ Public Class ButtonHandler
 
         End With
     End Sub
+    ''' <summary>
+    ''' Assigns all subdirectories linearly to btnset
+    ''' </summary>
+    ''' <param name="e"></param>
+    ''' <param name="btnset"></param>
     Public Sub AssignLinear(e As DirectoryInfo, btnset As ButtonSet)
         Dim i = 0
         For Each d In e.EnumerateDirectories("*", SearchOption.TopDirectoryOnly)
@@ -94,32 +100,13 @@ Public Class ButtonHandler
             btn.Path = d.Key
         Next
     End Sub
-    Public Sub AssignTree(e As DirectoryInfo, btnset As ButtonSet)
-        Dim i = 0
-        Dim lst As New Dictionary(Of String, String)
-        For Each d In e.EnumerateDirectories("*", SearchOption.TopDirectoryOnly).Where(Function(x) x.Attributes <> FileAttributes.System)
 
-            lst.Add(d.FullName, d.Name)
-        Next
-        For Each d In lst
-
-            Dim m As Char = UCase(d.Value(0))
-            m = UCase(m)
-            btnset.CurrentLetter = LetterNumberFromAscii(Asc(m))
-            Dim btn As MVButton
-            btn = btnset.FirstFree(btnset.CurrentLetter)
-            btn.Path = d.Key
-        Next
-        For Each d In e.EnumerateDirectories("*", SearchOption.TopDirectoryOnly)
-            AssignTree(d, btnset)
-        Next
-    End Sub
     Public Sub AssignTreeNew(StartingFolder As String, SizeMagnitude As Byte)
         If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
 
         Dim exclude As String = ""
         exclude = InputBox("String to exclude from folders?", "")
-        ClearCurrentButtons()
+        buttons.Clear()
         Dim d As New DirectoryInfo(StartingFolder)
 
         Dim icomp As New MyComparer
@@ -163,4 +150,28 @@ Public Class ButtonHandler
         KeyAssignmentsStore(ButtonFilePath)
 
     End Sub
+    Public Sub AssignButton(ByVal ButtonNumber As Byte, ByVal ButtonLetter As Integer, ByVal Layer As Byte, ByVal Path As String, Optional Store As Boolean = False)
+        Dim f As New DirectoryInfo(Path)
+
+        With buttons.CurrentRow.Buttons(ButtonNumber)
+            Try
+                .Path = Path
+                .Label = f.Name
+                .Position = ButtonNumber
+                .Letter = ButtonLetter
+            Catch ex As Exception
+
+            End Try
+        End With
+        'strVisibleButtons(ButtonNumber) = Path
+        'strButtonFilePath(ButtonNumber, ButtonLetter, Layer) = Path
+
+        'lblDest(ButtonNumber).Text = f.Name
+        'strButtonCaptions(ButtonNumber, ButtonLetter, Layer) = f.Name
+        'UpdateButtonAppearance()
+        'If Store Then
+        '    KeyAssignmentsStore(ButtonFilePath)
+        'End If
+    End Sub
+
 End Class

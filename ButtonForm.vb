@@ -1,8 +1,8 @@
 ﻿Imports System.IO
 Public Class ButtonForm
 
-    Public WithEvents buttons As New ButtonSet
-    Public handler As New ButtonHandler
+    '    Public WithEvents buttons As New ButtonSet
+    Public WithEvents handler As New ButtonHandler
     Private ofd As New OpenFileDialog
     Private sfd As New SaveFileDialog
     Public sbtns As Button()
@@ -35,8 +35,12 @@ Public Class ButtonForm
         lbls = {Me.Label4, Me.Label2, Me.lbl1, Me.Label1, Me.Label9, Me.Label7, Me.Label5, Me.Label6}
         ' FocusOnMain()
         handler.LoadButtonSet(LoadButtonFileName(ButtonFilePath))
-        ' buttons.CurrentLetter = LetterNumberFromAscii(Asc("A"))
-        'TranscribeButtons(buttons.CurrentRow)
+        ' buttons = handler.buttons
+        handler.buttons.CurrentLetter = LetterNumberFromAscii(Asc("A"))
+        TranscribeButtons(buttons.CurrentRow)
+        For i = 0 To sbtns.Length - 1
+            AddHandler sbtns(i).KeyDown, AddressOf MainForm.HandleFunctionKeyDown
+        Next
     End Sub
     Private Sub FocusOnMain()
         With MainForm
@@ -80,18 +84,20 @@ Public Class ButtonForm
 
             Case Keys.A To Keys.Z, Keys.D0 To Keys.D9
                 If e.Control AndAlso e.Alt Then
+                    handler.buttons.CurrentLetter = buttons.CurrentLetter
+
                     Select Case e.KeyCode
                         Case Keys.L
                             handler.AssignLinear(New DirectoryInfo(CurrentFolder), buttons)
                         Case Keys.A
                             handler.AssignAlphabetical(New DirectoryInfo(CurrentFolder), buttons)
                         Case Keys.T
-                            buttons.Clear()
                             handler.AssignTreeNew(CurrentFolder, 5)
                     End Select
                 End If
 
                 If e.Control AndAlso Not e.Alt Then
+
                     Select Case e.KeyCode
                         Case Keys.L
                             handler.LoadButtonSet(LoadButtonFileName(""))
@@ -104,9 +110,14 @@ Public Class ButtonForm
                     Else
                         buttons.CurrentLetter = LetterNumberFromAscii(e.KeyCode)
                     End If
-                    OnLetterChanged(buttons.CurrentLetter, buttons.RowIndex)
+                    lblAlpha.Text = Chr(AsciifromLetterNumber(handler.buttons.CurrentLetter))
+                    TranscribeButtons(buttons.CurrentRow)
+                    pbrButtons.Maximum = buttons.RowIndexCount
+                    pbrButtons.Value = buttons.RowIndex + 1
+                    'OnLetterChanged(buttons.CurrentLetter, buttons.RowIndex)
 
                 End If
+                buttons = handler.buttons
 
                 MainForm.Main_KeyDown(sender, e)
                 e.Handled = True
@@ -115,12 +126,12 @@ Public Class ButtonForm
 
         End Select
     End Sub
-    Private Sub OnLetterChanged(letter As Integer, count As Integer) Handles buttons.LetterChanged
-        lblAlpha.Text = Chr(AsciifromLetterNumber(letter))
-        TranscribeButtons(buttons.CurrentRow)
-        pbrButtons.Maximum = buttons.RowIndexCount
-        pbrButtons.Value = buttons.RowIndex + 1
-    End Sub
+    'Private Sub OnLetterChanged(letter As Integer, count As Integer) Handles handler.buttons.LetterChanged
+    '    lblAlpha.Text = Chr(AsciifromLetterNumber(letter))
+    '    TranscribeButtons(buttons.CurrentRow)
+    '    pbrButtons.Maximum = buttons.RowIndexCount
+    '    pbrButtons.Value = buttons.RowIndex + 1
+    'End Sub
 
 
 End Class

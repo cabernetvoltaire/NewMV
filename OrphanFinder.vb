@@ -29,9 +29,12 @@
         End Get
         Set(ByVal value As List(Of String))
             mOrphanList = value
+            For Each f In mOrphanList
+                If LinkTarget(f) <> "" Then mOrphanTargetPairs.Add(f, LinkTarget(f))
+            Next
         End Set
     End Property
-
+    Private mOrphanTargetPairs As New Dictionary(Of String, String)
     ''' <summary>
     ''' Dictionary containing (new parent,link) pairs
     ''' </summary>
@@ -92,12 +95,12 @@
         'otherwise, have to do a complete search
         'for each directory, 
         Dim max = DirectoriesList.Count
-        While mFoundParents.Count < mOrphanList.Count And i < max
+        While mFoundParents.Count < mOrphanTargetPairs.Count And i < max
             Dim filename As String
 
-            For Each j In mOrphanList
+            For Each j In mOrphanTargetPairs
 
-                filename = LinkTarget(j) 'name of the file 
+                filename = j.Value 'name of the file 
 
                 Dim spl = filename.Split("\")
                 filename = spl(spl.Length - 1)
@@ -105,8 +108,8 @@
                     Dim newlink = DirectoriesList(i) & "\" & filename
                     '          Report("Trying " & newlink, 0)
                     If My.Computer.FileSystem.FileExists(newlink) Then
-                        If Not mFoundParents.Keys.Contains(j) Then
-                            mFoundParents.Add(j, newlink)
+                        If Not mFoundParents.Keys.Contains(j.Key) Then
+                            mFoundParents.Add(j.Key, newlink)
                             If mFoundParents.Count > 10 Then Reunite()
                         End If
                     End If
@@ -118,8 +121,37 @@
 
         Return i
     End Function
-
     Private Function FindInNamedFolders(i As Integer) As Integer
+        For Each n In mOrphanTargetPairs
+            If n.Value = "" Then
+                Continue For
+            Else
+                Dim tgt As New IO.DirectoryInfo(n.Value)
+                Dim found As Boolean = False
+                While Not found And tgt.Parent.Name <> tgt.Root.FullName
+                    Dim parentname = tgt.Parent.Name
+                    Dim searchdir As New List(Of String)
+                    searchdir = DirectoriesList.FindAll(Function(x) x.Contains(parentname))
+                    Dim filename = FilenameFromPath(n.Value, True)
+                    While Not found And i < searchdir.Count
+                        Dim newtarget = searchdir(i) & "\" & filename
+                        found = FindTarget(n.Key, found, newtarget)
+                        i += 1
+                    End While
+                    i = 0
+                    If tgt.Parent.Name <> "Watch" Then
+
+                        tgt = tgt.Parent
+                    Else
+                        Exit While
+                    End If
+                End While
+            End If
+            i = 0
+        Next
+        Return i
+    End Function
+    Private Function FindInNamedFoldersOld(i As Integer) As Integer
         For Each f In mOrphanList
             Dim fname As String = LinkTarget(f)
             If fname <> "" Then
@@ -175,55 +207,111 @@
 
         Return found
     End Function
-
     Private Function FindInSubFolders(foundparent As Boolean) As Boolean
+        For Each n In mOrphanTargetPairs
+            If n.Value <> "" Then
+                Dim aimfile As New IO.FileInfo(n.Value)
+                If aimfile.Directory.Exists Then
+                    Dim dirs = GenerateSafeFolderList(aimfile.Directory.FullName)
+                    For Each dirname In dirs
+                        If foundparent Then
+                            Exit For
+                        Else
+                            Dim newtarget = dirname & "\" & aimfile.Name
+                            If My.Computer.FileSystem.FileExists(newtarget) Then
+                                foundparent = True
+                                If Not mFoundParents.Keys.Contains(n.Key) Then
+                                    mFoundParents.Add(n.Key, newtarget)
+
+                                End If
+                            Else
+                                foundparent = False
+                            End If
+
+                        End If
+                    Next
+                End If
+            End If
+        Next
+        Return foundparent
+    End Function
+
+    Private Function FindInSubFoldersold(foundparent As Boolean) As Boolean
         For Each n In mOrphanList
             Dim filename = FilenameFromLink(n) 'name of the file 
-            'Dim aimfile As String = LinkTarget(n) 'non-existent file which is the linktarget
-            Dim finfo As New IO.FileInfo(filename)
-            filename = finfo.Name 'in case it was wrong?
-            If finfo.Directory.Exists Then 'Not going to use this method if the original folder has been destroyed
-                Dim dirs = finfo.Directory.EnumerateDirectories
-                For Each subdir In dirs
-                    If foundparent Then
-                        Exit For
-                    Else
-                        Dim newlink = subdir.FullName & "\" & finfo.Name
-                        If My.Computer.FileSystem.FileExists(newlink) Then
-                            foundparent = True
-                            If Not mFoundParents.Keys.Contains(n) Then
-                                mFoundParents.Add(n, newlink)
+            Dim aimfile As String = LinkTarget(n) 'non-existent file which is the linktarget
+            If aimfile <> "" And aimfile <> "C:\exiftools.exe" Then
 
+                Dim finfo As New IO.FileInfo(aimfile)
+                filename = finfo.Name 'in case it was wrong?
+                If finfo.Directory.Exists Then 'Not going to use this method if the original folder has been destroyed
+                    Dim dirs = GenerateSafeFolderList(FolderPathFromPath(aimfile))
+                    '                    Dim dirs = finfo.Directory.EnumerateDirectories("*", IO.SearchOption.AllDirectories)
+                    For Each subdir In dirs
+                        If foundparent Then
+                            Exit For
+                        Else
+                            Dim subd As New IO.DirectoryInfo(subdir)
+                            Dim newlink = subd.FullName & "\" & finfo.Name
+                            If My.Computer.FileSystem.FileExists(newlink) Then
+                                foundparent = True
+                                If Not mFoundParents.Keys.Contains(n) Then
+                                    mFoundParents.Add(n, newlink)
+
+                                End If
                             End If
                         End If
-                    End If
 
-                Next
-                foundparent = False
+                    Next
+                    foundparent = False
+                End If
             End If
         Next
 
         Return foundparent
     End Function
     Private Function FindBracketed(foundparent As Boolean) As Boolean
+        For Each n In mOrphanTargetPairs
+            Dim finfo As New IO.FileInfo(n.Value)
+            If n.Value <> "" Then
+                For i = 0 To 3
+                    Dim newtarget = finfo.FullName.Replace(finfo.Extension, "(" & Right(Str(i), 1) & ")" & finfo.Extension)
+                    If My.Computer.FileSystem.FileExists(newtarget) Then
+                        foundparent = True
+                        If Not mFoundParents.Keys.Contains(n.Key) Then
+                            mFoundParents.Add(n.Key, newtarget)
+                        End If
+                    Else
+                        foundparent = False
+                    End If
+                Next
+            End If
+        Next
+        Return foundparent
+    End Function
+    Private Function FindBracketedOld(foundparent As Boolean) As Boolean
         For Each n In mOrphanList
             Dim filename = FilenameFromLink(n) 'name of the file 
-            'Dim aimfile As String = LinkTarget(n) 'non-existent file which is the linktarget
-            Dim finfo As New IO.FileInfo(filename)
-            filename = finfo.Name 'in case it was wrong?
-            For i = 0 To 3
-                Dim newlink = finfo.Directory.FullName & "\" & finfo.Name.Replace(".", "(" & Right(Str(i), 1) & ").")
-                If My.Computer.FileSystem.FileExists(newlink) Then
-                    foundparent = True
-                    If Not mFoundParents.Keys.Contains(n) Then
-                        mFoundParents.Add(n, newlink)
+            Dim aimfile As String = LinkTarget(n) 'non-existent file which is the linktarget
+            If aimfile <> "" Then
+
+                Dim finfo As New IO.FileInfo(aimfile)
+                filename = finfo.Name 'in case it was wrong?
+
+                For i = 0 To 3
+                    Dim newlink = finfo.Directory.FullName & "\" & finfo.Name.Replace(".", "(" & Right(Str(i), 1) & ").")
+                    If My.Computer.FileSystem.FileExists(newlink) Then
+                        foundparent = True
+                        If Not mFoundParents.Keys.Contains(n) Then
+                            mFoundParents.Add(n, newlink)
+
+                        End If
+                    Else
+                        foundparent = False
 
                     End If
-                Else
-                    foundparent = False
-
-                End If
-            Next
+                Next
+            End If
 
         Next
 
@@ -238,6 +326,7 @@
         Else
             Return False
         End If
+        mFoundParents.Clear()
     End Function
 
 
@@ -288,7 +377,7 @@
             Dim f As New IO.FileInfo(m.Value)
             If f.Exists = True Then mSHandler.ReAssign_ShortCutPath(m.Value, mn)
         Next
-        mFoundParents.Clear()
+        ' mFoundParents.Clear()
     End Sub
     Public Function ListOfDeadFiles() As List(Of String)
         Dim list As New List(Of String)

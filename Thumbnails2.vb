@@ -293,6 +293,7 @@
         Dim flp As FlowLayoutPanel = x.Parent
         '   flp.Controls.SetChildIndex(y, 0)
         flp.Controls.SetChildIndex(x, 0)
+        ' flp.Controls(0).Tag = x.Tag
 
 
     End Sub

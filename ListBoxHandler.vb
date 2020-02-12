@@ -96,7 +96,7 @@
                             ListBox.SelectedIndex = ListBox.Items.Count - 1
                         End If
                     Else
-                        ListBox.SelectedIndex = ListBox.SelectedIndex - 1
+                        If ListBox.SelectedIndex > 0 Then ListBox.SelectedIndex = ListBox.SelectedIndex - 1
 
                     End If
                 End If
@@ -106,18 +106,18 @@
         End If
     End Sub
     Public Sub FillBox(Optional List As List(Of String) = Nothing)
-        ListBox.Items.Clear()
+        mListbox.Items.Clear()
         If List IsNot Nothing Then mItemList = List
         FilterList()
         OrderList()
         If mItemList.Count > 200 Then
-            ListBox.SuspendLayout()
+            mListbox.SuspendLayout()
         End If
         For Each f In ItemList
-            ListBox.Items.Add(f)
+            mListbox.Items.Add(f)
         Next
-        ListBox.ResumeLayout()
-        RaiseEvent ListBoxFilled(ListBox, Nothing)
+        mListbox.ResumeLayout()
+        RaiseEvent ListBoxFilled(mListbox, Nothing)
         'SetFirst()
     End Sub
     Private Function InvertListBoxSelections(ByRef tempListBox As ListBox) As Integer
@@ -174,12 +174,14 @@
         If ListBox.Items.Count > 0 Then
             Dim i = ListBox.FindString(Name)
             If i > -1 Then
-                ListBox.SelectedIndex = i'ListBox.FindString(Name)
+                ListBox.SelectedIndex = i 'ListBox.FindString(Name)
             Else
                 ListBox.SelectedIndex = 0
             End If
         End If
     End Sub
+
+
 
     Public Sub New(Lbx As ListBox)
         mListbox = Lbx

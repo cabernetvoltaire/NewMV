@@ -148,7 +148,7 @@ Friend Module Mysettings
 
         For Each m In prefs.GetFiles
             Dim drives As String = DrivesScan()
-            If m.CreationTimeUtc > f.CreationTimeUtc AndAlso m.FullName.Contains(drives) Then
+            If m.CreationTimeUtc > f.CreationTimeUtc AndAlso m.FullName.Contains(drives + "MV") Then
                 f = m
             End If
         Next
@@ -203,9 +203,9 @@ Friend Module Mysettings
                             DirectoriesListFile = value
                             Dim ff As New IO.FileInfo(value)
                             If ff.Exists = False Then
-                                GetDirectoriesList(Rootpath, True)
+                                DirectoriesList = GetDirectoriesList(Rootpath, True)
                             Else
-                                GetDirectoriesList(value)
+                                DirectoriesList = GetDirectoriesList(value)
 
 
                             End If
@@ -338,7 +338,7 @@ Friend Module Mysettings
 
     End Sub
     Private Function DrivesScan() As String
-        Dim drivestring As String
+        Dim drivestring As String = ""
         For Each m In My.Computer.FileSystem.Drives
             drivestring = drivestring + m.Name
             drivestring = drivestring.Replace(":\", "")

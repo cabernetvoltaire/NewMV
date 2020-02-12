@@ -426,9 +426,9 @@ Public Class MediaHandler
         End Select
     End Sub
     Private Sub HandleMovie(URL As String)
-
+        'TODO: Won't load if LastURL not persisting for some reason.
         Static LastURL As String
-        If URL <> LastURL Then
+        If URL <> mPlayer.URL Then
             If mPlayer Is Nothing Then
             Else
                 Try
@@ -436,7 +436,7 @@ Public Class MediaHandler
                     mPlayer.URL = URL
 
                     '     Sound.URL = URL
-                    LastURL = URL 'Prevents reloading into a given player
+                    'LastURL = URL 'Prevents reloading into a given player
                 Catch EX As Exception
                     Debug.Print(EX.Message)
                 End Try

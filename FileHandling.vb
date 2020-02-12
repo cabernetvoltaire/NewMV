@@ -76,12 +76,12 @@ Friend Module FileHandling
                     ReplaceListboxItem(lbx1, ind, f)
                     lbx1.SelectedItem = lbx1.Items(ind)
 
-                    RefreshListbox(lbx1, files)
                 Case Else
-                    RefreshListbox(lbx1, files)
+                    '            RefreshListbox(lbx1, files)
             End Select
             MSFiles.ResettersOff()
         Next
+        RefreshListbox(lbx1, files)
 
         If lbx1.Items.Count <> 0 Then lbx1.SetSelected(Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0), True)
 
@@ -236,6 +236,7 @@ Friend Module FileHandling
 
 
         Dim s As String = strDest 'if strDest is empty then delete
+
         If files.Count > 0 And strDest <> "" Then
             If Not blnSuppressCreate Then s = CreateNewDirectory(MainForm.tvMain2, strDest, True) 'Attention
 
@@ -255,6 +256,7 @@ Friend Module FileHandling
         t.IsBackground = True
         t.SetApartmentState(ApartmentState.STA)
         t.Start()
+        GC.Collect()
 
         If Folder Then
 
@@ -311,7 +313,7 @@ Friend Module FileHandling
                             AllFaveMinder.DestinationPath = strDest
                             AllFaveMinder.CheckFile(f)
                             If AllFaveMinder.OkToDelete Then
-                                'AllFaveMinder.DeleteFavourite(m.FullName)
+                                AllFaveMinder.DeleteFavourite(m.FullName)
                                 Deletefile(m.FullName)
                             End If
                         Else
@@ -325,7 +327,7 @@ Friend Module FileHandling
                             AllFaveMinder.DestinationPath = strDest
                             AllFaveMinder.CheckFile(f)
                             If AllFaveMinder.OkToDelete Then
-                                'AllFaveMinder.DeleteFavourite(m.FullName)
+                                AllFaveMinder.DeleteFavourite(m.FullName)
                                 Deletefile(m.FullName)
                             End If
                         Else

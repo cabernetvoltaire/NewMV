@@ -28,7 +28,14 @@
     Public Sub DeleteFavourite(path As String)
         Dim templist As New List(Of String)
         '  templist = Duplicatelist(mFavesList)
-
+        'For i = 0 To mFavesList.Count - 1
+        '    Dim m As String = mFavesList(i)
+        '    Dim x = LinkTarget(m)
+        '    Dim f As New IO.FileInfo(m)
+        '    f.Delete()
+        '    mFavesList.Remove(m)
+        'Next
+        'Exit Sub
         For Each m In mFavesList
             Dim x = LinkTarget(m)
             '      Debug.Print(x)
@@ -132,8 +139,11 @@
         ' Exit Function
         Dim finfo As New IO.FileInfo(Path)
         Dim list As New List(Of String)
-        list = FavesList.FindAll(Function(x) FilenameFromLink(x) = finfo.Name And x.Contains("%"))
-        Return list
+        If finfo.Exists Then
+
+            list = FavesList.FindAll(Function(x) FilenameFromLink(x) = finfo.Name And x.Contains("%"))
+        End If
+        Return List
     End Function
     Public Property OkToDelete As Boolean = True
 End Class
