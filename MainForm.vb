@@ -1091,7 +1091,10 @@ Public Class MainForm
             If lbx Is lbxShowList And NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
                 LBH.RemoveItems(m)
             Else
+                FBH.RemoveItems(m)
+                blnSuppressCreate = True
                 MoveFiles(m, "", lbx)
+
             End If
 
             'If NavigateMoveState.State = StateHandler.StateOptions.Move Or NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
@@ -1679,9 +1682,14 @@ Public Class MainForm
                 Dim flag = blnSuppressCreate
                 blnSuppressCreate = True
                 If lbxShowList.Visible Then
-                    MoveFiles(ListfromSelectedInListbox(lbxShowList), strVisibleButtons(i), lbxShowList)
+                    Dim m = LBH.SelectedItemsList
+                    LBH.RemoveItems(m)
+                    MoveFiles(m, strVisibleButtons(i), lbxShowList)
+
                 Else
-                    MoveFiles(ListfromSelectedInListbox(lbxFiles), strVisibleButtons(i), lbxFiles)
+                    Dim m = FBH.SelectedItemsList
+                    FBH.RemoveItems(m)
+                    MoveFiles(m, strVisibleButtons(i), lbxFiles)
                 End If
                 blnSuppressCreate = flag
             End If
@@ -2904,6 +2912,7 @@ Public Class MainForm
             tvMain2.Focus()
         End If
     End Sub
+
 
 
 #End Region

@@ -873,6 +873,7 @@ Partial Class MainForm
         Me.CBXButtonFiles.Size = New System.Drawing.Size(238, 28)
         Me.CBXButtonFiles.Sorted = True
         Me.CBXButtonFiles.TabIndex = 54
+        Me.CBXButtonFiles.TabStop = False
         '
         'Scrubber
         '

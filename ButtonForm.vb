@@ -83,6 +83,7 @@ Public Class ButtonForm
                 End If
 
             Case Keys.A To Keys.Z, Keys.D0 To Keys.D9
+                buttons = handler.buttons
                 If e.Control AndAlso e.Alt Then
                     handler.buttons.CurrentLetter = buttons.CurrentLetter
 
@@ -117,7 +118,6 @@ Public Class ButtonForm
                     'OnLetterChanged(buttons.CurrentLetter, buttons.RowIndex)
 
                 End If
-                buttons = handler.buttons
 
                 MainForm.Main_KeyDown(sender, e)
                 e.Handled = True

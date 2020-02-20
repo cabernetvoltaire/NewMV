@@ -62,7 +62,17 @@ Public Class MVButton
             End If
         End Set
     End Property
+    Private Property mPosition
     Public Property Position As Byte
+        Set(value As Byte)
+            mPosition = value
+            mFaceText = "f" & Str(value + 5)
+        End Set
+        Get
+            Return mPosition
+        End Get
+    End Property
+
     ''' <summary>
     ''' This Letter is an integer representing the position from A-Z
     ''' and then from 1 to 0

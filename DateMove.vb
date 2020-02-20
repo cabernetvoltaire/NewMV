@@ -156,6 +156,7 @@ Class DateMove
             End If
 
             Dim destfile As String = f.DirectoryName & "\" & f.Extension
+            blnSuppressCreate = True
             MoveFiles(f.FullName, destfile, MainForm.lbxFiles)
         Next
         RaiseEvent FilesMoved(Nothing, Nothing)

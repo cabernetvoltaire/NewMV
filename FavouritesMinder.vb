@@ -36,13 +36,15 @@
         '    mFavesList.Remove(m)
         'Next
         'Exit Sub
-        For Each m In mFavesList
-            Dim x = LinkTarget(m)
-            '      Debug.Print(x)
-            If x = path Then
-                templist.Add(m)
-            End If
-        Next
+        templist = mFavesList.FindAll(Function(x) LinkTarget(x) = path)
+
+        'For Each m In mFavesList
+        '    Dim x = LinkTarget(m)
+        '    '      Debug.Print(x)
+        '    If x = path Then
+        '        templist.Add(m)
+        '    End If
+        'Next
         For Each m In templist
             Dim f As New IO.FileInfo(m)
             f.Delete()
@@ -141,7 +143,7 @@
         Dim list As New List(Of String)
         If finfo.Exists Then
 
-            list = FavesList.FindAll(Function(x) FilenameFromLink(x) = finfo.Name And x.Contains("%"))
+            list = FavesList.FindAll(Function(x) x.Contains(finfo.Name))
         End If
         Return List
     End Function

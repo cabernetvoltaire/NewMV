@@ -62,6 +62,7 @@ Module ButtonHandling
         FolderSelect.Alpha = iCurrentAlpha
         FolderSelect.Show()
         Dim s As String = buttons.CurrentRow.Buttons(index - 1).Path
+        s = strButtonFilePath(FolderSelect.ButtonNumber, iCurrentAlpha, 1)
         If s = "" Then s = CurrentFolder
         FolderSelect.Folder = s
         Debug.Print("New Folder" & s)
@@ -473,8 +474,13 @@ Module ButtonHandling
                 strButtonFilePath(intIndex, intLetter, 1) = (subs(2))
                 strButtonCaptions(intIndex, intLetter, 1) = (subs(3))
                 Dim m As New MVButton
+                m.Position = intIndex
                 m.Path = (subs(2))
                 m.Label = (subs(3))
+                buttons.CurrentLetter = intLetter
+                buttons.CurrentRow.Buttons(intIndex) = m
+
+
             End If
         Next
         ButtonFilePath = path

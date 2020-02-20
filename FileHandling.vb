@@ -65,23 +65,25 @@ Friend Module FileHandling
         Debug.Print("")
     End Sub
     Public Sub OnFilesMoved(files As List(Of String), lbx1 As ListBox)
-        ' Exit Sub
+        'MainForm.FBH.DirectoryPath = CurrentFolder
+        'MainForm.FBH.Refresh()
+        'Exit Sub
         lbx1.SelectionMode = SelectionMode.One
         Dim ind As Long = lbx1.SelectedIndex
         For Each f In files
             Select Case NavigateMoveState.State
                 Case StateHandler.StateOptions.Copy, StateHandler.StateOptions.CopyLink
                 Case StateHandler.StateOptions.MoveLeavingLink
-                    MainForm.UpdatePlayOrder(MainForm.FBH)
                     ReplaceListboxItem(lbx1, ind, f)
                     lbx1.SelectedItem = lbx1.Items(ind)
+                    MainForm.UpdatePlayOrder(MainForm.FBH)
 
                 Case Else
                     '            RefreshListbox(lbx1, files)
             End Select
             MSFiles.ResettersOff()
         Next
-        RefreshListbox(lbx1, files)
+        'RefreshListbox(lbx1, files)
 
         If lbx1.Items.Count <> 0 Then lbx1.SetSelected(Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0), True)
 
@@ -262,7 +264,7 @@ Friend Module FileHandling
 
         Else
 
-            RaiseEvent FileMoved(files, lbx1)
+            ' RaiseEvent FileMoved(files, lbx1)
 
         End If
     End Sub
@@ -327,7 +329,7 @@ Friend Module FileHandling
                             AllFaveMinder.DestinationPath = strDest
                             AllFaveMinder.CheckFile(f)
                             If AllFaveMinder.OkToDelete Then
-                                AllFaveMinder.DeleteFavourite(m.FullName)
+                                'AllFaveMinder.DeleteFavourite(m.FullName)
                                 Deletefile(m.FullName)
                             End If
                         Else
@@ -395,7 +397,7 @@ Friend Module FileHandling
             End With
         Next
 
-        'RaiseEvent FileMoved(files, MainForm.lbxFiles)
+        '  RaiseEvent FileMoved(files, MainForm.lbxFiles)
     End Sub
     ''' <summary>
     ''' Checks to see if f is in the favourite links, and if so, updates the link. 
@@ -462,12 +464,21 @@ Friend Module FileHandling
         MainForm.Cursor = Cursors.Default
         Return List
     End Function
-    Public Function GetFileFromEachFolder(d As DirectoryInfo, s As String) As List(Of String)
+    Public Function GetFileFromEachFolder(d As DirectoryInfo, s As String, Optional Random As Boolean = True) As List(Of String)
 
         Dim x As New List(Of String)
         For Each Di In d.EnumerateDirectories(s, SearchOption.AllDirectories)
-            If Di.GetFiles.Count > 0 Then
-                x.Add(Di.EnumerateFiles.First.FullName)
+            Dim dirs() As FileInfo
+            dirs = Di.GetFiles
+            Dim i = Int(Rnd() * dirs.Count)
+            If dirs.Count > 0 Then
+                If Random Then
+                    x.Add(dirs(i).FullName)
+
+                Else
+                    x.Add(Di.EnumerateFiles.First.FullName)
+
+                End If
             End If
         Next
         Return x
@@ -680,19 +691,6 @@ Friend Module FileHandling
             blnSuppressCreate = False
         End If
 
-        'For Each f In d.EnumerateFiles
-        '    If Parent Then
-        '        Dim m As String = d.Parent.FullName & "\" & f.Name
-        '        Dim fi As New FileInfo(m)
-        '        If fi.Exists Then
-        '        Else
-        '            'Use an encapsulated move routine
-        '            f.MoveTo(m)
-        '        End If
-        '    Else
-        '        f.MoveTo(CurrentFolder & "\" & f.Name)
-        '    End If
-        'Next
         Await DeleteEmptyFolders(d, True)
         RaiseEvent FolderMoved(d.FullName)
     End Function

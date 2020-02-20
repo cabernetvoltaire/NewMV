@@ -147,6 +147,7 @@ Public Class ButtonSet
             CurrentSet.Insert(index, mCurrentRow)
         End If
         CurrentRow = mCurrentRow
+        mRowIndexCount = mRowIndexCount + 1
     End Sub
     Private Function LetterFromNumber(Num As Integer) As Char
         Dim ch As Char = alph(Num)

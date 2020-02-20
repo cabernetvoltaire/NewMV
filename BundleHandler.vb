@@ -39,6 +39,7 @@ Public Class BundleHandler
         'Create a folder (asking for name if necessary)
         'Put the files in it. 
         mList = ListfromSelectedInListbox(ListBox)
+        blnSuppressCreate = False
 
         MoveFiles(mList, Path, ListBox)
         FSTree.RefreshTree(Path)
@@ -88,6 +89,7 @@ Public Class BundleHandler
                 list.Add(f.FullName)
             Next
             Report("Moving Files", 2)
+            blnSuppressCreate = True
             MoveFiles(list, Parentfolder.FullName, ListBox)
             Report("Deleting directory", 1)
             Await RemoveEmptyFolders(Path, True)
