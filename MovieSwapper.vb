@@ -98,29 +98,42 @@ Public Class MediaSwapper
     ''' <param name="index"></param>
     Private Sub SetIndex(index As Integer)
         mListcount = Listbox.Items.Count
-        Static oldindex As Integer
+        If mListcount >= 0 Then
 
-        NextF.Forwards = (mListIndex > oldindex) Or (mListIndex = 0)
-        NextF.CurrentIndex = index
+            Static oldindex As Integer
+            'Find the next and previous items for easy forward and backward
+            NextF.Forwards = (mListIndex > oldindex) Or (mListIndex = 0)
+            NextF.CurrentIndex = index
 
-        CurrentItem = NextF.CurrentItem
-        GetNext()
-        PreviousItem = NextF.PreviousItem
-        Report("Current:" & CurrentItem, 0)
-        Report("Next:" & NextItem, 0)
-        Report("Previous:" & PreviousItem, 0)
-        Select Case CurrentItem
+            CurrentItem = NextF.CurrentItem
+            GetNext()
+            PreviousItem = NextF.PreviousItem
+            Report("Current:" & CurrentItem, 0)
+            Report("Next:" & NextItem, 0)
+            Report("Previous:" & PreviousItem, 0)
+            Select Case CurrentItem
 
-            Case Media2.MediaPath
-                RotateMedia(Media2, Media3, Media1)
-            Case Media3.MediaPath
-                RotateMedia(Media3, Media1, Media2)
-            Case Else
-                RotateMedia(Media1, Media2, Media3)
-        End Select
+                Case Media2.MediaPath
+                    RotateMedia(Media2, Media3, Media1)
+                Case Media3.MediaPath
+                    RotateMedia(Media3, Media1, Media2)
+                Case Else
+                    RotateMedia(Media1, Media2, Media3)
+            End Select
 
 
-        oldindex = index
+            oldindex = index
+        Else
+            'Maybe use this later, to avoid multiple loadings which is inefficient.
+            'For the moment - meh.
+            Select Case mListcount
+                Case 1
+                    Prepare(Media1, CurrentItem)
+                    ShowPlayer(Media1)
+                Case 2
+
+            End Select
+        End If
     End Sub
 
 

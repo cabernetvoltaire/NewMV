@@ -107,12 +107,16 @@
                 If Len(filename) > 8 Then
                     Dim newlink = DirectoriesList(i) & "\" & filename
                     '          Report("Trying " & newlink, 0)
+                    'If SearchTreeForFile("Q:\", filename, newlink) = 1 Then
+
                     If My.Computer.FileSystem.FileExists(newlink) Then
                         If Not mFoundParents.Keys.Contains(j.Key) Then
                             mFoundParents.Add(j.Key, newlink)
                             If mFoundParents.Count > 10 Then Reunite()
                         End If
+
                     End If
+
                 End If
             Next
             i += 1

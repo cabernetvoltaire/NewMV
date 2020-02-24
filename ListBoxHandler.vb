@@ -22,8 +22,9 @@
     Private Property mSelectedItems As New List(Of String)
     Public ReadOnly Property SelectedItemsList() As List(Of String)
         Get
+            mSelectedItems.Clear()
             For Each m In mListbox.SelectedItems
-                mSelectedItems.add(m.ToString)
+                mSelectedItems.Add(m.ToString)
             Next
             Return mSelectedItems
 

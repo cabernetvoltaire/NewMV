@@ -16,6 +16,8 @@ Public Module General
         RightBottom = 7
         LeftBottom = 8
     End Enum
+    Private Declare Function SearchTreeForFile Lib "imagehlp" (ByVal RootPath As String, ByVal InputPathName As String, ByVal OutputPathBuffer As String) As Long
+
 
 
     Public VIDEOEXTENSIONS = ".divx.vob.webm.avi.flv.mov.m4p.mpeg.f4v.mpg.m4a.m4v.mkv.mp4.rm.ram.wmv.wav.mp3.3gp"
@@ -802,32 +804,25 @@ Public Module General
 
     End Sub
     Public Function GetDirSizeString(Rootfolder As String) As String
-        Return "##"
-        Exit Function
+        'Return "##"
+        'Exit Function
         Dim size As Long = GetDirSize(Rootfolder, 0)
-        Dim sizestring As String
-        If size > 10 ^ 12 Then
-            sizestring = Str(Format(size / 1024 / 1024 / 1024 / 1024, "###,###,###,###,###.#")) & " Tb"
-        ElseIf size > 10 ^ 9 Then
-            sizestring = Str(Format(size / 1024 / 1024 / 1024, "###,###,###,###,###.#")) & " Mb"
-
-        ElseIf size > 10 ^ 6 Then
-            sizestring = Str(Format(size / 1024 / 1024, "###,###,###,###,###.#")) & " Mb"
-        ElseIf size > 10 ^ 3 Then
-            sizestring = Str(Format(size / 1024, "###,###,###,###,###.#")) & " Kb"
-        Else
-            If size = 0 Then
-                sizestring = "0 bytes"
-            Else
-                sizestring = Str(Format(size, "###,###,###,###,###.#")) & " bytes"
-
-            End If
-
+        If size = 0 Then
+            Return "0"
+            Exit Function
         End If
+        Dim sizestring As String
+        'This could be done in almost one line. 
+        'eg
+        Dim log As Integer = Int(Math.Log(size) / Math.Log(1024))
+        Dim suffix() As String = {" bytes", " Kb", " Mb", " Gb", " Tb"}
+        sizestring = Str(Format(size / (1024) ^ Int(log), "###,###,###,###,###.#")) & suffix(log)
         Return sizestring
+
     End Function
 
     Public Function GetDirSize(RootFolder As String, TotalSize As Long, Optional NoSubs As Boolean = False) As Long
+
         ' Exit Function
         If RootFolder.EndsWith(":\") Then
             Return 0

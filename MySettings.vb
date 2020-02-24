@@ -166,7 +166,7 @@ Friend Module Mysettings
                         Case "HorSplit"
                             MainForm.ctrMainFrame.SplitterDistance = value
                         Case "File"
-                            Dim st As String = value
+                            Dim st As String = value 'TODO: Don't load if last time unsuccessful
                             If st = "" Then st = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
                             Media.MediaPath = st
                         Case "Filter"

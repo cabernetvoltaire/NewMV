@@ -282,120 +282,125 @@ Friend Module FileHandling
         End If
         Dim file As String = ""
 
-        For Each file In files
-            '   If Media.Player.URL = file Then Media.Player.URL = ""
+        Try
+            For Each file In files
+                '   If Media.Player.URL = file Then Media.Player.URL = ""
 
 
-            Dim m As New IO.FileInfo(file)
-            With My.Computer.FileSystem
-                Dim i As Long = 0
-                Dim spath As String
-                If s.EndsWith("\") Or s = "" Then
-                    spath = s & m.Name
+                Dim m As New IO.FileInfo(file)
+                With My.Computer.FileSystem
+                    Dim i As Long = 0
+                    Dim spath As String
+                    If s.EndsWith("\") Or s = "" Then
+                        spath = s & m.Name
 
-                Else
-                    spath = s & "\" & m.Name
-
-                End If
-                While .FileExists(spath) AndAlso m.Name = FilenameFromPath(spath, True) 'Existing path - rename
-                    Dim x = m.Extension
-                    Dim b = InStr(spath, "(")
-                    If b = 0 Then
-                        spath = Replace(spath, x, "(" & i & ")" & x)
                     Else
-                        spath = Left(spath, b - 1) & "(" & i & ")" & x
+                        spath = s & "\" & m.Name
+
                     End If
-
-                    i += 1
-                End While
-                Select Case NavigateMoveState.State
-                    Case StateHandler.StateOptions.Copy
-                        If strDest = "" Then
-                            Dim f As New IO.FileInfo(m.FullName)
-                            AllFaveMinder.DestinationPath = strDest
-                            AllFaveMinder.CheckFile(f)
-                            If AllFaveMinder.OkToDelete Then
-                                AllFaveMinder.DeleteFavourite(m.FullName)
-                                Deletefile(m.FullName)
-                            End If
+                    While .FileExists(spath) AndAlso m.Name = FilenameFromPath(spath, True) 'Existing path - rename
+                        Dim x = m.Extension
+                        Dim b = InStr(spath, "(")
+                        If b = 0 Then
+                            spath = Replace(spath, x, "(" & i & ")" & x)
                         Else
-                            .CopyFile(m.FullName, spath)
-
+                            spath = Left(spath, b - 1) & "(" & i & ")" & x
                         End If
-                    Case StateHandler.StateOptions.Move, StateHandler.StateOptions.Navigate
-                        'If Not currentPicBox.Image Is Nothing Then DisposePic(currentPicBox)
-                        If strDest = "" Then
-                            Dim f As New IO.FileInfo(m.FullName)
-                            AllFaveMinder.DestinationPath = strDest
-                            AllFaveMinder.CheckFile(f)
-                            If AllFaveMinder.OkToDelete Then
-                                'AllFaveMinder.DeleteFavourite(m.FullName)
-                                Deletefile(m.FullName)
+
+                        i += 1
+                    End While
+                    Select Case NavigateMoveState.State
+                        Case StateHandler.StateOptions.Copy
+                            If strDest = "" Then
+                                Dim f As New IO.FileInfo(m.FullName)
+                                AllFaveMinder.DestinationPath = strDest
+                                AllFaveMinder.CheckFile(f)
+                                If AllFaveMinder.OkToDelete Then
+                                    AllFaveMinder.DeleteFavourite(m.FullName)
+                                    Deletefile(m.FullName)
+                                End If
+                            Else
+                                .CopyFile(m.FullName, spath)
+
                             End If
-                        Else
+                        Case StateHandler.StateOptions.Move, StateHandler.StateOptions.Navigate
+                            'If Not currentPicBox.Image Is Nothing Then DisposePic(currentPicBox)
+                            If strDest = "" Then
+                                Dim f As New IO.FileInfo(m.FullName)
+                                AllFaveMinder.DestinationPath = strDest
+                                AllFaveMinder.CheckFile(f)
+                                If AllFaveMinder.OkToDelete Then
+                                    'AllFaveMinder.DeleteFavourite(m.FullName)
+                                    Deletefile(m.FullName)
+                                End If
+                            Else
+                                Dim f As New IO.FileInfo(m.FullName)
+                                AllFaveMinder.DestinationPath = spath
+                                Try
+                                    m.MoveTo(spath)
+                                    'Dim fil2 As New IO.FileInfo(spath)
+                                    'If fil2.Exists Then m.Delete()
+                                    AllFaveMinder.CheckFile(f)
+                                    'AssignSpecialButton("0", strDest)
+                                Catch ex As System.IO.IOException
+                                Catch ex As Exception
+                                    MsgBox(ex.Message)
+                                End Try
+                            End If
+                        Case StateHandler.StateOptions.MoveLeavingLink
+                            'Move, and place link here
                             Dim f As New IO.FileInfo(m.FullName)
                             AllFaveMinder.DestinationPath = spath
-                            Try
-                                m.MoveTo(spath)
-                                'Dim fil2 As New IO.FileInfo(spath)
-                                'If fil2.Exists Then m.Delete()
-                                AllFaveMinder.CheckFile(f)
-                                'AssignSpecialButton("0", strDest)
-                            Catch ex As System.IO.IOException
-                            Catch ex As Exception
-                                MsgBox(ex.Message)
-                            End Try
-                        End If
-                    Case StateHandler.StateOptions.MoveLeavingLink
-                        'Move, and place link here
-                        Dim f As New IO.FileInfo(m.FullName)
-                        AllFaveMinder.DestinationPath = spath
-                        AllFaveMinder.CheckFile(f)
-                        m.MoveTo(spath)
-                        Dim sh As New ShortcutHandler
-                        CreateLink(sh, m.FullName, CurrentFolder, f.Name, Bookmark:=Media.Position)
-                        sh = Nothing
-                    Case StateHandler.StateOptions.CopyLink
-                        'Paste a link in destination
-                        Dim fpath As New FileInfo(spath)
-                        Dim sh As New ShortcutHandler
+                            AllFaveMinder.CheckFile(f)
+                            m.MoveTo(spath)
+                            Dim sh As New ShortcutHandler
+                            CreateLink(sh, m.FullName, CurrentFolder, f.Name, Bookmark:=Media.Position)
+                            sh = Nothing
+                        Case StateHandler.StateOptions.CopyLink
+                            'Paste a link in destination
+                            Dim fpath As New FileInfo(spath)
+                            Dim sh As New ShortcutHandler
 
-                        CreateLink(sh, m.FullName, fpath.Directory.FullName, m.Name, Bookmark:=Media.Position)
+                            CreateLink(sh, m.FullName, fpath.Directory.FullName, m.Name, Bookmark:=Media.Position)
 
-                    Case StateHandler.StateOptions.ExchangeLink
-                        'Only works on links
-                        Dim sh As New ShortcutHandler
+                        Case StateHandler.StateOptions.ExchangeLink
+                            'Only works on links
+                            Dim sh As New ShortcutHandler
 
-                        If m.Extension = ".lnk" Then
-                            Dim f As New IO.FileInfo(LinkTarget(m.FullName))
-                            spath = f.FullName
-                            f.MoveTo(CurrentFolder & "\" & f.Name)
+                            If m.Extension = ".lnk" Then
+                                Dim f As New IO.FileInfo(LinkTarget(m.FullName))
+                                spath = f.FullName
+                                f.MoveTo(CurrentFolder & "\" & f.Name)
 
-                            CreateLink(sh, f.FullName, New FileInfo(spath).Directory.FullName, m.Name, Media.Bookmark)
-                            m.Delete()
-                        End If
+                                CreateLink(sh, f.FullName, New FileInfo(spath).Directory.FullName, m.Name, Media.Bookmark)
+                                m.Delete()
+                            End If
 
-                    Case StateHandler.StateOptions.MoveOriginal
-                        'Only works on links
-                        Dim sh As New ShortcutHandler
+                        Case StateHandler.StateOptions.MoveOriginal
+                            'Only works on links
+                            Dim sh As New ShortcutHandler
 
-                        If m.Extension = ".lnk" Then
-                            Dim f As New IO.FileInfo(LinkTarget(m.FullName))
-                            ' spath = f.FullName
-                            strDest = strDest & "\" & f.Name
-                            Try
-                                f.MoveTo(strDest)
+                            If m.Extension = ".lnk" Then
+                                Dim f As New IO.FileInfo(LinkTarget(m.FullName))
+                                ' spath = f.FullName
+                                strDest = strDest & "\" & f.Name
+                                Try
+                                    f.MoveTo(strDest)
 
-                            Catch ex As IO.IOException
-                                MsgBox("File already exists in destination")
-                            End Try
-                        End If
+                                Catch ex As IO.IOException
+                                    MsgBox("File already exists in destination")
+                                End Try
+                            End If
 
 
 
-                End Select
-            End With
-        Next
+                    End Select
+                End With
+
+            Next
+        Catch ex As Exception
+            MsgBox(ex.Message)
+        End Try
 
         '  RaiseEvent FileMoved(files, MainForm.lbxFiles)
     End Sub
