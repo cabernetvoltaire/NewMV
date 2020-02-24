@@ -382,6 +382,18 @@ Public Class MainForm
 
     Private Sub DeleteFolder(FolderName As String, tvw As FileSystemTree, blnConfirm As Boolean)
 
+        If My.Computer.FileSystem.DirectoryExists(FolderName) Then
+            Dim m As MsgBoxResult = MsgBoxResult.No
+            If blnConfirm Then
+                m = MsgBox("Delete folder " & FolderName & "?", MsgBoxStyle.YesNoCancel)
+            End If
+            If Not blnConfirm OrElse m = MsgBoxResult.Yes Then
+                MoveFolder(FolderName, "")
+                tvw.Traverse(False)
+                tvw.RemoveNode(FolderName)
+            End If
+        End If
+        Exit Sub
         With My.Computer.FileSystem
             Dim m As MsgBoxResult = MsgBoxResult.No
             If .DirectoryExists(FolderName) Then

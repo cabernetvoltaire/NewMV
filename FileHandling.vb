@@ -167,19 +167,29 @@ Friend Module FileHandling
         Next
     End Sub
     Public Sub MoveFolder(Dir As String, Dest As String)
+        If Dest = "" Then
+            Dim SourceDir As New DirectoryInfo(Dir)
+            DirectoriesList.Remove(SourceDir.FullName)
+            For Each d In SourceDir.EnumerateDirectories("*", SearchOption.AllDirectories)
+                MoveDirectoryContents(SourceDir, True)
+            Next
+            MoveDirectoryContents(SourceDir, True)
+        Else
 
-        Dim TargetDir As New DirectoryInfo(Dest)
-        Dim SourceDir As New DirectoryInfo(Dir)
-        DirectoriesList.Remove(SourceDir.FullName)
-        DirectoriesList.Add(TargetDir.FullName)
 
-        'Make target subdirectories.
-        MoveDirectoryContents(TargetDir, SourceDir, SourceDir, True)
-        For Each d In SourceDir.EnumerateDirectories("*", SearchOption.AllDirectories)
-            MoveDirectoryContents(TargetDir, SourceDir, d, True)
-        Next
-        If SourceDir.GetFiles.Count = 0 And SourceDir.GetDirectories.Count = 0 Then
-            SourceDir.Delete()
+            Dim TargetDir As New DirectoryInfo(Dest)
+            Dim SourceDir As New DirectoryInfo(Dir)
+            DirectoriesList.Remove(SourceDir.FullName)
+            DirectoriesList.Add(TargetDir.FullName)
+
+            'Make target subdirectories.
+            MoveDirectoryContents(TargetDir, SourceDir, SourceDir, True)
+            For Each d In SourceDir.EnumerateDirectories("*", SearchOption.AllDirectories)
+                MoveDirectoryContents(TargetDir, SourceDir, d, True)
+            Next
+            If SourceDir.GetFiles.Count = 0 And SourceDir.GetDirectories.Count = 0 Then
+                SourceDir.Delete()
+            End If
         End If
 
     End Sub
@@ -205,7 +215,15 @@ Friend Module FileHandling
 
     End Sub
 
+    Private Sub MoveDirectoryContents(SourceDir As DirectoryInfo, Optional Parent As Boolean = False)
+        Dim flist As New List(Of String)
+        For Each f In SourceDir.EnumerateFiles("*", SearchOption.TopDirectoryOnly)
+            flist.Add(f.FullName)
+        Next
+        blnSuppressCreate = True
+        MoveFiles(flist, "", Listbox, True)
 
+    End Sub
     'Private Sub GetFiles(dir As DirectoryInfo, flist As List(Of String))
     '    For Each m In dir.EnumerateFiles("*", SearchOption.AllDirectories)
     '        flist.Add(m.FullName)

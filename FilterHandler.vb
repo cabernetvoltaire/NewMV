@@ -2,8 +2,8 @@
     Public Enum FilterState As Byte
         All
         PicVid
-        Piconly
         Vidonly
+        Piconly
         LinkOnly
         NoPicVid
     End Enum
@@ -19,8 +19,8 @@
 
 
     Public Event StateChanged(sender As Object, e As EventArgs)
-    Private mColour = {Color.MintCream, Color.LemonChiffon, Color.LightPink, Color.LightSeaGreen, Color.LightBlue, Color.PaleTurquoise}
-    Private mDescription = {"All files", "Only pictures and videos", "Only pictures", "Only videos", "Only links", "No pictures or videos"}
+    Private mColour = {Color.MintCream, Color.LemonChiffon, Color.LightSeaGreen, Color.LightPink, Color.LightBlue, Color.PaleTurquoise}
+    Private mDescription = {"All files", "Only pictures and videos", "Only videos", "Only pictures", "Only links", "No pictures or videos"}
     Public ReadOnly Property Colour() As Color
         Get
             Return mColour(mState)

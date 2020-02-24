@@ -82,8 +82,8 @@ Public Class FolderSelect
         End If
     End Sub
 
-    Private newChosenFolder As Integer
-    Public ReadOnly Property ChosenFolder() As Integer
+    Private newChosenFolder As String
+    Public ReadOnly Property ChosenFolder() As String
         Get
             Dim s As String
             If TextBox1.Text <> "" Then
@@ -106,7 +106,7 @@ Public Class FolderSelect
     End Sub
 
     Private Sub btnAssign_Click(sender As Object, e As EventArgs) Handles btnAssign.Click
-        AssignButton(ButtonNumber, Alpha, 1, Folder, True)
+        AssignButton(ButtonNumber, Alpha, 1, ChosenFolder, True)
         'Me.Close()
     End Sub
     Private Sub Label1_DoubleClick(sender As Object, e As EventArgs) Handles Label1.DoubleClick
