@@ -128,7 +128,6 @@ Partial Class MainForm
         Me.cbxStartPoint = New System.Windows.Forms.ComboBox()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.chbLoadButtonFiles = New System.Windows.Forms.CheckBox()
-        Me.chbAutoTrail = New System.Windows.Forms.CheckBox()
         Me.chbOnDir = New System.Windows.Forms.CheckBox()
         Me.chbNextFile = New System.Windows.Forms.CheckBox()
         Me.lbxGroups = New System.Windows.Forms.ListBox()
@@ -140,6 +139,11 @@ Partial Class MainForm
         Me.chbShowAttr = New System.Windows.Forms.CheckBox()
         Me.CHBAutoAdvance = New System.Windows.Forms.CheckBox()
         Me.lblNavigateState = New System.Windows.Forms.Label()
+        Me.gpbAutoTrail = New System.Windows.Forms.GroupBox()
+        Me.tbScanRate = New System.Windows.Forms.TrackBar()
+        Me.chbScan = New System.Windows.Forms.CheckBox()
+        Me.chbAutoTrail = New System.Windows.Forms.CheckBox()
+        Me.chbSlideShow = New System.Windows.Forms.CheckBox()
         Me.tmrUpdateFileList = New System.Windows.Forms.Timer(Me.components)
         Me.tmrPicLoad = New System.Windows.Forms.Timer(Me.components)
         Me.tmrJumpVideo = New System.Windows.Forms.Timer(Me.components)
@@ -267,6 +271,7 @@ Partial Class MainForm
         Me.Response = New System.Windows.Forms.Timer(Me.components)
         Me.tmrProgressBar = New System.Windows.Forms.Timer(Me.components)
         Me.tmrJumpRandom = New System.Windows.Forms.Timer(Me.components)
+        Me.tbAutoTrail = New System.Windows.Forms.TrackBar()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -312,8 +317,11 @@ Partial Class MainForm
         CType(Me.tbPercentage, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
+        Me.gpbAutoTrail.SuspendLayout()
+        CType(Me.tbScanRate, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.FileSystemWatcher1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip2.SuspendLayout()
+        CType(Me.tbAutoTrail, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'FileToolStripMenuItem
@@ -1161,10 +1169,12 @@ Partial Class MainForm
         Me.FlowLayoutPanel1.Controls.Add(Me.lblAttributes)
         Me.FlowLayoutPanel1.Controls.Add(Me.GroupBox3)
         Me.FlowLayoutPanel1.Controls.Add(Me.lblNavigateState)
+        Me.FlowLayoutPanel1.Controls.Add(Me.gpbAutoTrail)
+        Me.FlowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.FlowLayoutPanel1.Location = New System.Drawing.Point(2, 2)
         Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(2)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(2327, 162)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(3197, 162)
         Me.FlowLayoutPanel1.TabIndex = 19
         '
         'GroupFilters
@@ -1296,7 +1306,6 @@ Partial Class MainForm
         'GroupBox1
         '
         Me.GroupBox1.Controls.Add(Me.chbLoadButtonFiles)
-        Me.GroupBox1.Controls.Add(Me.chbAutoTrail)
         Me.GroupBox1.Controls.Add(Me.chbOnDir)
         Me.GroupBox1.Controls.Add(Me.chbNextFile)
         Me.GroupBox1.Dock = System.Windows.Forms.DockStyle.Top
@@ -1312,24 +1321,13 @@ Partial Class MainForm
         Me.chbLoadButtonFiles.AutoSize = True
         Me.chbLoadButtonFiles.Checked = True
         Me.chbLoadButtonFiles.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chbLoadButtonFiles.Location = New System.Drawing.Point(5, 122)
+        Me.chbLoadButtonFiles.Location = New System.Drawing.Point(6, 98)
         Me.chbLoadButtonFiles.Name = "chbLoadButtonFiles"
         Me.chbLoadButtonFiles.Size = New System.Drawing.Size(186, 24)
         Me.chbLoadButtonFiles.TabIndex = 4
         Me.chbLoadButtonFiles.TabStop = False
         Me.chbLoadButtonFiles.Text = "AutoLoadButtonFiles"
         Me.chbLoadButtonFiles.UseVisualStyleBackColor = True
-        '
-        'chbAutoTrail
-        '
-        Me.chbAutoTrail.AutoSize = True
-        Me.chbAutoTrail.Location = New System.Drawing.Point(5, 92)
-        Me.chbAutoTrail.Name = "chbAutoTrail"
-        Me.chbAutoTrail.Size = New System.Drawing.Size(102, 24)
-        Me.chbAutoTrail.TabIndex = 3
-        Me.chbAutoTrail.TabStop = False
-        Me.chbAutoTrail.Text = "Auto Trail"
-        Me.chbAutoTrail.UseVisualStyleBackColor = True
         '
         'chbOnDir
         '
@@ -1469,6 +1467,62 @@ Partial Class MainForm
         Me.lblNavigateState.Size = New System.Drawing.Size(57, 20)
         Me.lblNavigateState.TabIndex = 54
         Me.lblNavigateState.Text = "Label2"
+        '
+        'gpbAutoTrail
+        '
+        Me.gpbAutoTrail.Controls.Add(Me.tbAutoTrail)
+        Me.gpbAutoTrail.Controls.Add(Me.tbScanRate)
+        Me.gpbAutoTrail.Controls.Add(Me.chbScan)
+        Me.gpbAutoTrail.Controls.Add(Me.chbAutoTrail)
+        Me.gpbAutoTrail.Controls.Add(Me.chbSlideShow)
+        Me.gpbAutoTrail.Location = New System.Drawing.Point(1752, 3)
+        Me.gpbAutoTrail.Name = "gpbAutoTrail"
+        Me.gpbAutoTrail.Size = New System.Drawing.Size(586, 151)
+        Me.gpbAutoTrail.TabIndex = 55
+        Me.gpbAutoTrail.TabStop = False
+        Me.gpbAutoTrail.Text = "Autotrail"
+        '
+        'tbScanRate
+        '
+        Me.tbScanRate.Location = New System.Drawing.Point(154, 63)
+        Me.tbScanRate.Maximum = 1200
+        Me.tbScanRate.Minimum = 50
+        Me.tbScanRate.Name = "tbScanRate"
+        Me.tbScanRate.Size = New System.Drawing.Size(288, 69)
+        Me.tbScanRate.SmallChange = 10
+        Me.tbScanRate.TabIndex = 4
+        Me.tbScanRate.Value = 200
+        '
+        'chbScan
+        '
+        Me.chbScan.AutoSize = True
+        Me.chbScan.Location = New System.Drawing.Point(11, 58)
+        Me.chbScan.Name = "chbScan"
+        Me.chbScan.Size = New System.Drawing.Size(117, 24)
+        Me.chbScan.TabIndex = 1
+        Me.chbScan.Text = "Movie Scan"
+        Me.chbScan.UseVisualStyleBackColor = True
+        '
+        'chbAutoTrail
+        '
+        Me.chbAutoTrail.AutoSize = True
+        Me.chbAutoTrail.Location = New System.Drawing.Point(12, 108)
+        Me.chbAutoTrail.Name = "chbAutoTrail"
+        Me.chbAutoTrail.Size = New System.Drawing.Size(102, 24)
+        Me.chbAutoTrail.TabIndex = 3
+        Me.chbAutoTrail.TabStop = False
+        Me.chbAutoTrail.Text = "Auto Trail"
+        Me.chbAutoTrail.UseVisualStyleBackColor = True
+        '
+        'chbSlideShow
+        '
+        Me.chbSlideShow.AutoSize = True
+        Me.chbSlideShow.Location = New System.Drawing.Point(12, 28)
+        Me.chbSlideShow.Name = "chbSlideShow"
+        Me.chbSlideShow.Size = New System.Drawing.Size(114, 24)
+        Me.chbSlideShow.TabIndex = 0
+        Me.chbSlideShow.Text = "Slide Show"
+        Me.chbSlideShow.UseVisualStyleBackColor = True
         '
         'tmrUpdateFileList
         '
@@ -2250,6 +2304,15 @@ Partial Class MainForm
         '
         Me.tmrJumpRandom.Interval = 500
         '
+        'tbAutoTrail
+        '
+        Me.tbAutoTrail.Location = New System.Drawing.Point(154, 114)
+        Me.tbAutoTrail.Minimum = 1
+        Me.tbAutoTrail.Name = "tbAutoTrail"
+        Me.tbAutoTrail.Size = New System.Drawing.Size(288, 69)
+        Me.tbAutoTrail.TabIndex = 5
+        Me.tbAutoTrail.Value = 1
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
@@ -2326,9 +2389,13 @@ Partial Class MainForm
         Me.GroupBox1.PerformLayout()
         Me.GroupBox3.ResumeLayout(False)
         Me.GroupBox3.PerformLayout()
+        Me.gpbAutoTrail.ResumeLayout(False)
+        Me.gpbAutoTrail.PerformLayout()
+        CType(Me.tbScanRate, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.FileSystemWatcher1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.MenuStrip2.ResumeLayout(False)
         Me.MenuStrip2.PerformLayout()
+        CType(Me.tbAutoTrail, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -2581,4 +2648,9 @@ Partial Class MainForm
     Friend WithEvents ResetButtonsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator14 As ToolStripSeparator
     Friend WithEvents PreferencesToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents gpbAutoTrail As GroupBox
+    Friend WithEvents tbScanRate As TrackBar
+    Friend WithEvents chbScan As CheckBox
+    Friend WithEvents chbSlideShow As CheckBox
+    Friend WithEvents tbAutoTrail As TrackBar
 End Class

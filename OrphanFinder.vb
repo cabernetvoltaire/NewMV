@@ -71,11 +71,11 @@
             mOrphanList.Remove(x)
         Next
 
-        foundparent = FindInSubFolders(foundparent)
+        ' foundparent = FindInSubFolders(foundparent)
 
-        For Each x In mFoundParents.Keys
-            mOrphanList.Remove(x)
-        Next
+        'For Each x In mFoundParents.Keys
+        'mOrphanList.Remove(x)
+        'Next
 
         'Alternative
         'Get parent folder name
@@ -106,7 +106,7 @@
                 filename = spl(spl.Length - 1)
                 If Len(filename) > 8 Then
                     Dim newlink = DirectoriesList(i) & "\" & filename
-                    '          Report("Trying " & newlink, 0)
+                    Report("Trying " & newlink, 0)
                     'If SearchTreeForFile("Q:\", filename, newlink) = 1 Then
 
                     If My.Computer.FileSystem.FileExists(newlink) Then

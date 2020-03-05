@@ -804,8 +804,8 @@ Public Module General
 
     End Sub
     Public Function GetDirSizeString(Rootfolder As String) As String
-        'Return "##"
-        'Exit Function
+        Return "##"
+        Exit Function
         Dim size As Long = GetDirSize(Rootfolder, 0)
         If size = 0 Then
             Return "0"

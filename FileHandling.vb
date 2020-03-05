@@ -348,7 +348,7 @@ Friend Module FileHandling
                                 AllFaveMinder.DestinationPath = strDest
                                 AllFaveMinder.CheckFile(f)
                                 If AllFaveMinder.OkToDelete Then
-                                    'AllFaveMinder.DeleteFavourite(m.FullName)
+                                    '    AllFaveMinder.DeleteFavourite(m.FullName)
                                     Deletefile(m.FullName)
                                 End If
                             Else
@@ -358,9 +358,9 @@ Friend Module FileHandling
                                     m.MoveTo(spath)
                                     'Dim fil2 As New IO.FileInfo(spath)
                                     'If fil2.Exists Then m.Delete()
-                                    AllFaveMinder.CheckFile(f)
                                     'AssignSpecialButton("0", strDest)
-                                Catch ex As System.IO.IOException
+                                    AllFaveMinder.CheckFile(f)
+                                    'Catch ex As System.IO.IOException
                                 Catch ex As Exception
                                     MsgBox(ex.Message)
                                 End Try
@@ -685,7 +685,7 @@ Friend Module FileHandling
     'End Function
     Public Async Function HarvestBelow(d As DirectoryInfo) As Task
         Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
-        Await x.HarvestBelow(25)
+        Await x.Burst(d, d, True)
         'For Each di In d.EnumerateDirectories
         '    BurstFolder(di)
 
@@ -721,7 +721,7 @@ Friend Module FileHandling
         Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
 
 
-        Await x.Burst() 'Needs Attention
+        Await x.Burst(d, d.Parent) 'Needs Attention
         '        HarvestFolder(d, True, True)
 
     End Function

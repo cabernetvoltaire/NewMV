@@ -12,6 +12,7 @@
     ''' Where the favourite will be moved to
     ''' </summary>
     Private mDestPath As String
+
     Public Property DestinationPath() As String
         Get
             Return mDestPath
@@ -109,7 +110,7 @@
         ElseIf destinationpath = "" Then
             If MsgBox(f.Name & " - There are links to this file. Delete?", MsgBoxStyle.YesNoCancel, "Delete file?") = MsgBoxResult.Yes Then
                 OkToDelete = True
-                FavesList.RemoveAll(Function(e) mf.Exists(Function(x) x = e))
+                ' FavesList.RemoveAll(Function(e) mf.Exists(Function(x) x = e))
             Else
                 OkToDelete = False
             End If

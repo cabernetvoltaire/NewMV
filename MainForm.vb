@@ -219,7 +219,7 @@ Public Class MainForm
         }
                 T.SetApartmentState(ApartmentState.STA)
 
-                T.Start() 'Causing memory leak
+                T.Start() 'Causing memory leak?
                 ' Op.ReuniteWithFile(x, filepath)
             End If
         End If
@@ -244,7 +244,7 @@ Public Class MainForm
             Media.Markers = Media.GetMarkersFromLinkList
             Media.Markers.Sort()
             Marks.Markers = Media.Markers
-            Scrubber.Update()
+            ' Scrubber.Update()
             DrawScrubberMarks()
             DrawScrubberMarks()
         End If
@@ -266,7 +266,7 @@ Public Class MainForm
             'Scrubber.Visible = False
             If Marks.Markers.Count > 0 Then
                 Marks.Create()
-                ' Scrubber.Visible = True
+                'Scrubber.Visible = True
             End If
         End If
 
@@ -357,8 +357,8 @@ Public Class MainForm
 
 
     Public Sub CancelDisplay(SlideshowsOff As Boolean)
-        '        MSFiles.URLSZero()
-        '       MSFiles.ResettersOff()
+        'MSFiles.CancelURL(Media.MediaPath)
+        'MSFiles.ResettersOff()
 
         Try
 
@@ -661,6 +661,7 @@ Public Class MainForm
 
     End Sub
     Public Sub JumpRandom(blnAutoTrail As Boolean)
+
         If Media.MediaType = Filetype.Movie Or Media.IsLink Then
 
             If Not blnAutoTrail Then
@@ -684,6 +685,7 @@ Public Class MainForm
     Public Sub ToggleAutoTrail()
         Static m As New StartPointHandler
         tmrAutoTrail.Enabled = Not tmrAutoTrail.Enabled
+        chbAutoTrail.Checked = tmrAutoTrail.Enabled
         TrailerModeToolStripMenuItem.Checked = tmrAutoTrail.Enabled
         If tmrAutoTrail.Enabled Then
             m = Media.StartPoint
@@ -815,19 +817,29 @@ Public Class MainForm
 
 #Region "Video Navigation"
             Case KeySmallJumpDown, KeySmallJumpUp, LKeySmallJumpDown, LKeySmallJumpUp
-                If e.Alt Then
-                    If e.Control Then
-                        SP.ChangeJump(False, e.KeyCode = KeySmallJumpUp)
-                        UpdateFileInfo()
+                If tmrJumpRandom.Enabled Then
+                    If e.KeyCode = KeySmallJumpUp Then
+                        tbScanRate.Value = Math.Min(tbScanRate.Maximum, tbScanRate.Maximum * 0.1 + tbScanRate.Value)
                     Else
+                        tbScanRate.Value = Math.Max(tbScanRate.Minimum, -tbScanRate.Maximum * 0.1 + tbScanRate.Value)
 
-                        SpeedIncrease(e)
                     End If
-
                 Else
-                    MediaSmallJump(e)
+
+                    If e.Alt Then
+                        If e.Control Then
+                            SP.ChangeJump(False, e.KeyCode = KeySmallJumpUp)
+                            UpdateFileInfo()
+                        Else
+
+                            SpeedIncrease(e)
+                        End If
+
+                    Else
+                        MediaSmallJump(e)
+                    End If
+                    ' e.SuppressKeyPress = True
                 End If
-               ' e.SuppressKeyPress = True
 
             Case KeyBigJumpOn, KeyBigJumpBack
                 If e.Alt Then
@@ -898,7 +910,7 @@ Public Class MainForm
                 If e.Control AndAlso e.Shift Then
                     JumpRandom(True)
                 ElseIf e.Alt Then
-                    tmrJumpRandom.Enabled = Not tmrJumpRandom.Enabled
+                    ToggleRandomJump()
                 Else
                     JumpRandom(False)
                 End If
@@ -984,10 +996,12 @@ Public Class MainForm
                     tmrMovieSlideShow.Interval = 950
                     tmrMovieSlideShow.Enabled = Not tmrMovieSlideShow.Enabled
                     SP.Slideshow = Not tmrMovieSlideShow.Enabled
+                    chbSlideShow.Checked = tmrMovieSlideShow.Enabled
 
                 Else
                     tmrSlideShow.Enabled = Not tmrSlideShow.Enabled
                     SP.Slideshow = tmrSlideShow.Enabled
+                    chbSlideShow.Checked = tmrSlideShow.Enabled
 
                 End If
 
@@ -2025,7 +2039,8 @@ Public Class MainForm
 
         AT.Framerates = SP.FrameRates
         Dim i As Byte = AT.SpeedIndex
-        AT.RandomTimes = {1, 3, 5, 10}
+        Dim TimeUnit As Byte = tbAutoTrail.Value
+        AT.RandomTimes = {1 * TimeUnit, 3 * TimeUnit, 5 * TimeUnit, 10 * TimeUnit}
         AT.AdvanceChance = 25
 
         Select Case i
@@ -2041,7 +2056,7 @@ Public Class MainForm
         End Select
         tmrAutoTrail.Interval = Math.Max(Int(Rnd() * AT.RandomTimes(AT.Duration) * 500), 1000)
 
-
+        'If we are holding Alt, change the file
         If AltDown Or Int(Rnd() * AT.AdvanceChance) + 1 = 1 Then
             If CtrlDown Then
             Else
@@ -2056,6 +2071,7 @@ Public Class MainForm
 
         End If
 
+        'This actually does the main job
         Dim ex1 As New KeyEventArgs(KeyJumpRandom Or Keys.Alt)
         Dim ex2 As New KeyEventArgs(KeyJumpRandom)
         'Go to markers first
@@ -2065,7 +2081,6 @@ Public Class MainForm
         Else
             JumpRandom(False)
         End If
-        'This actually does the main job
     End Sub
 
 
@@ -2423,7 +2438,9 @@ Public Class MainForm
 
     Private Async Sub RecursiveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RecursiveToolStripMenuItem.Click
         Dim x As New BundleHandler(tvMain2, lbxFiles, CurrentFolder)
-        Await x.HarvestBelow(25)
+        x.Maxfiles = Val(InputBox("Min no. of files to preserve folder? (Blank means all folders burst)",, ""))
+
+        Await x.Burst(New IO.DirectoryInfo(CurrentFolder), New IO.DirectoryInfo(CurrentFolder), True)
         tvMain2.RefreshTree(CurrentFolder)
         tmrUpdateFileList.Enabled = True
 
@@ -2895,12 +2912,17 @@ Public Class MainForm
     End Sub
 
     Private Sub MovieScanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles MovieScanToolStripMenuItem.Click
+        ToggleRandomJump()
+    End Sub
 
-        tmrJumpRandom.Interval = 200
+    Private Sub ToggleRandomJump()
+        tmrJumpRandom.Interval = tbScanRate.Value
         tmrJumpRandom.Enabled = Not tmrJumpRandom.Enabled
+        chbScan.Checked = tmrJumpRandom.Enabled
     End Sub
 
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles tmrJumpRandom.Tick
+        tmrJumpRandom.Interval = tbScanRate.Value
         JumpRandom(False)
     End Sub
 
@@ -2923,6 +2945,10 @@ Public Class MainForm
         Else
             tvMain2.Focus()
         End If
+    End Sub
+
+    Private Sub tbScanRate_ValueChanged(sender As Object, e As EventArgs) Handles tbScanRate.ValueChanged
+        tmrJumpRandom.Interval = tbScanRate.Value
     End Sub
 
 

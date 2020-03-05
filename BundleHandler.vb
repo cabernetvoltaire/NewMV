@@ -43,8 +43,33 @@ Public Class BundleHandler
 
         MoveFiles(mList, Path, ListBox)
         FSTree.RefreshTree(Path)
+
         'Add a folder node representing it. 
     End Sub
+    Public Property Maxfiles As Integer
+    Public Async Function Burst(CurrentFolder As IO.DirectoryInfo, DestinationFolder As IO.DirectoryInfo, Optional Harvest As Boolean = False) As Task
+        'If Harvest Then DestinationFolder = CurrentFolder
+        Dim folders As New List(Of IO.DirectoryInfo)
+        For Each subfolder In CurrentFolder.GetDirectories("*", IO.SearchOption.AllDirectories)
+            If subfolder.GetFiles.Count > Maxfiles Then
+                folders.Add(subfolder)
+            End If
+        Next
+        Dim list As New List(Of String)
+        If Harvest Then
+        Else
+
+            For Each f In CurrentFolder.GetFiles
+                list.Add(f.FullName)
+            Next
+            blnSuppressCreate = True
+            MoveFiles(list, DestinationFolder.FullName, ListBox)
+        End If
+        For Each fol In folders
+            Await Burst(fol, DestinationFolder, False)
+        Next
+        Await RemoveEmptyFolders(CurrentFolder.FullName, True)
+    End Function
     Public Async Function Burst(Optional Harvest As Boolean = False) As Task
         Dim Maxfiles As Integer = Val(InputBox("Min no. of files to preserve folder? (Blank means all folders burst)",, ""))
         'Get the parent folder

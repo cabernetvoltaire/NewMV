@@ -145,7 +145,12 @@ Public Class MediaSwapper
         End If
         Select Case MH.MediaType
             Case Filetype.Movie
-                If separate Then MH.Player.uiMode = "mini"
+                If separate Then
+                    MH.Player.uiMode = "mini"
+                Else
+
+                    MH.Player.uiMode = "Full"
+                End If
                 MH.Player.Visible = True
                 MH.PlaceResetter(True)
                 Return True
@@ -225,7 +230,7 @@ Public Class MediaSwapper
             ''Media1.Picture.Image = Nothing
             'Media2.Picture.Image = Nothing
             'Media3.Picture.Image = Nothing
-            'GC.Collect()
+            GC.Collect()
         Catch ex As Exception
             MsgBox(ex.Message)
         End Try
@@ -251,7 +256,12 @@ Public Class MediaSwapper
         MHX.PlaceResetter(False)
         With MHX.Player
 
-            If separate Then .uiMode = "Full"
+            If separate Then
+                .uiMode = "mini"
+            Else
+                .uiMode = "full"
+
+            End If
             .Visible = True
             .BringToFront()
             .settings.mute = Muted
@@ -261,7 +271,7 @@ Public Class MediaSwapper
 
     End Sub
     Private Sub OnMediaPlaying(sender As Object, e As EventArgs) Handles Media1.MediaPlaying, Media2.MediaPlaying, Media3.MediaPlaying
-        '   RaiseEvent MediaShown(sender)
+        'RaiseEvent MediaShown(sender)
     End Sub
     Private Sub OnRandomChanged(sender As Object, e As EventArgs) Handles NextF.RandomChanged
         NextItem = NextF.NextItem
@@ -308,6 +318,10 @@ Public Class MediaSwapper
             Media1.Picture.SetBounds(0, 0, 600, 400)
             Media2.Picture.SetBounds(650, 0, 600, 400)
             Media3.Picture.SetBounds(250, 480, 600, 400)
+            Media1.Player.SetBounds(0, 0, 600, 400)
+            Media2.Player.SetBounds(650, 0, 600, 400)
+            Media3.Player.SetBounds(250, 480, 600, 400)
+
         Else
             Media1.Picture.Dock = DockStyle.Fill
             Media2.Picture.Dock = DockStyle.Fill

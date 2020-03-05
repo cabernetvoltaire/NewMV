@@ -14,7 +14,7 @@ Public Class MediaHandler
 
     Private WithEvents ResetPosition As New Timer With {.Interval=10}
     Public WithEvents PositionUpdater As New Timer With {.Interval = 10}
-    Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 150000}
+    Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 15000}
 
     Private ReadOnly DefaultFile As String = "C:\exiftools.exe"
     Public WithEvents StartPoint As New StartPointHandler
@@ -205,7 +205,7 @@ Public Class MediaHandler
         Name = Nomen
         ' PositionUpdater.Interval = 500
         PositionUpdater.Enabled = False
-        ResetPosition.Interval = 1000
+        ResetPosition.Interval = 500
         'mSndH.SoundPlayer = Sound
         'mSndH.CurrentPlayer = Player
         '     StartPoint = Media.StartPoint
@@ -434,7 +434,7 @@ Public Class MediaHandler
                 Try
 
                     mPlayer.URL = URL
-
+                    '  mDuration = mPlayer.currentMedia.duration
                     '     Sound.URL = URL
                     'LastURL = URL 'Prevents reloading into a given player
                 Catch EX As Exception
@@ -519,6 +519,7 @@ Public Class MediaHandler
                 StartPoint.Duration = mDuration
                 MediaJumpToMarker()
                 RaiseEvent MediaPlaying(Me, Nothing)
+
                 ' MainForm.DrawScrubberMarks()
 
                 If FullScreen.Changing Or Speed.Paused Then 'Hold current position if switching to FS or back. 
@@ -561,10 +562,8 @@ Public Class MediaHandler
         End Try
 
     End Sub
-    Private Sub ResetPos() Handles ResetPosition.Tick
-        ' PositionUpdater.Enabled = False
+    Private Sub ResetPosition_Tick(sender As Object, e As EventArgs) Handles ResetPosition.Tick
         Try
-            'mPlayer.Ctlcontrols.currentPosition = StartPoint.StartPoint
             MediaJumpToMarker()
         Catch ex As Exception
 
@@ -574,8 +573,15 @@ Public Class MediaHandler
     Public Sub PlaceResetter(ResetOn As Boolean)
         ResetPosition.Enabled = ResetOn
     End Sub
-    Private Sub PositionUpdaterCanceller_Tick(sender As Object, e As EventArgs) Handles ResetPositionCanceller.Tick
+    Private Sub ResetPositionCanceller_Tick(sender As Object, e As EventArgs) Handles ResetPositionCanceller.Tick
         ResetPosition.Enabled = False
+        '  ResetPositionCanceller.Enabled = False
+    End Sub
+
+
+
+    Private Sub mPlayer_OpenStateChange(sender As Object, e As _WMPOCXEvents_OpenStateChangeEvent) Handles mPlayer.OpenStateChange
+        If mPlayer.currentMedia IsNot Nothing Then mDuration = mPlayer.currentMedia.duration
     End Sub
 
 
