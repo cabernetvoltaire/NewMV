@@ -16,7 +16,7 @@
             mFileList = value
         End Set
     End Property
-
+    Public Property SingleLinks As Boolean = False
 
     Public Event StateChanged(sender As Object, e As EventArgs)
     Private mColour = {Color.MintCream, Color.LemonChiffon, Color.LightSeaGreen, Color.LightPink, Color.LightBlue, Color.PaleTurquoise}
@@ -76,6 +76,7 @@
             For Each f In mFileList
                 lst.Add(f)
             Next
+            Dim filelist As New Dictionary(Of String, String)
             For Each m In mFileList
                 Dim f As New IO.FileInfo(m)
                 Select Case CurrentfilterState.State
@@ -87,6 +88,11 @@
                         End If
                     Case FilterHandler.FilterState.LinkOnly
                         If LCase(f.Extension) = ".lnk" Then
+                            If SingleLinks Then
+                                'For Each link In lst
+                                Dim x As String = LinkTarget(m)
+                                If Not filelist.ContainsKey(x) Then filelist.Add(x, m)
+                            End If
                         Else
                             lst.Remove(m)
                         End If
@@ -107,6 +113,13 @@
                         End If
                 End Select
             Next
+            If FilterHandler.FilterState.LinkOnly And SingleLinks Then
+                lst.Clear()
+
+                For Each v In filelist.Values
+                    lst.Add(v)
+                Next
+            End If
         Catch ex As Exception
             MsgBox("Error in file list" & ex.Message)
             Return Nothing

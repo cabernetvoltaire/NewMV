@@ -106,6 +106,7 @@
             RaiseEvent EndReached(ListBox, Nothing)
         End If
     End Sub
+    Public Property SingleLinks As Boolean
     Public Sub FillBox(Optional List As List(Of String) = Nothing)
         mListbox.Items.Clear()
         If List IsNot Nothing Then mItemList = List

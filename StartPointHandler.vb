@@ -66,7 +66,7 @@
             mDistance = value
         End Set
     End Property
-    Private mMarkers As List(Of Long)
+    Private mMarkers As New List(Of Long)
     Public Property Markers() As List(Of Long)
         Get
             Return mMarkers
@@ -159,6 +159,12 @@
     Private Function SetStartPoint() As Long
         Dim oldstartpoint As Long = mStartPoint
         Select Case mState
+            Case StartTypes.FirstMarker
+                If mMarkers.Count > 0 Then
+                    mStartPoint = mMarkers(0)
+                Else
+                    mStartPoint = mAbsolute
+                End If
             Case StartTypes.Beginning
                 mStartPoint = 0
             Case StartTypes.NearBeginning

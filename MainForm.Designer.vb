@@ -140,6 +140,7 @@ Partial Class MainForm
         Me.CHBAutoAdvance = New System.Windows.Forms.CheckBox()
         Me.lblNavigateState = New System.Windows.Forms.Label()
         Me.gpbAutoTrail = New System.Windows.Forms.GroupBox()
+        Me.tbAutoTrail = New System.Windows.Forms.TrackBar()
         Me.tbScanRate = New System.Windows.Forms.TrackBar()
         Me.chbScan = New System.Windows.Forms.CheckBox()
         Me.chbAutoTrail = New System.Windows.Forms.CheckBox()
@@ -271,7 +272,6 @@ Partial Class MainForm
         Me.Response = New System.Windows.Forms.Timer(Me.components)
         Me.tmrProgressBar = New System.Windows.Forms.Timer(Me.components)
         Me.tmrJumpRandom = New System.Windows.Forms.Timer(Me.components)
-        Me.tbAutoTrail = New System.Windows.Forms.TrackBar()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -318,10 +318,10 @@ Partial Class MainForm
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         Me.gpbAutoTrail.SuspendLayout()
+        CType(Me.tbAutoTrail, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbScanRate, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.FileSystemWatcher1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip2.SuspendLayout()
-        CType(Me.tbAutoTrail, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'FileToolStripMenuItem
@@ -1482,6 +1482,15 @@ Partial Class MainForm
         Me.gpbAutoTrail.TabStop = False
         Me.gpbAutoTrail.Text = "Autotrail"
         '
+        'tbAutoTrail
+        '
+        Me.tbAutoTrail.Location = New System.Drawing.Point(154, 114)
+        Me.tbAutoTrail.Minimum = 1
+        Me.tbAutoTrail.Name = "tbAutoTrail"
+        Me.tbAutoTrail.Size = New System.Drawing.Size(288, 69)
+        Me.tbAutoTrail.TabIndex = 5
+        Me.tbAutoTrail.Value = 1
+        '
         'tbScanRate
         '
         Me.tbScanRate.Location = New System.Drawing.Point(154, 63)
@@ -2304,15 +2313,6 @@ Partial Class MainForm
         '
         Me.tmrJumpRandom.Interval = 500
         '
-        'tbAutoTrail
-        '
-        Me.tbAutoTrail.Location = New System.Drawing.Point(154, 114)
-        Me.tbAutoTrail.Minimum = 1
-        Me.tbAutoTrail.Name = "tbAutoTrail"
-        Me.tbAutoTrail.Size = New System.Drawing.Size(288, 69)
-        Me.tbAutoTrail.TabIndex = 5
-        Me.tbAutoTrail.Value = 1
-        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
@@ -2391,11 +2391,11 @@ Partial Class MainForm
         Me.GroupBox3.PerformLayout()
         Me.gpbAutoTrail.ResumeLayout(False)
         Me.gpbAutoTrail.PerformLayout()
+        CType(Me.tbAutoTrail, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbScanRate, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.FileSystemWatcher1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.MenuStrip2.ResumeLayout(False)
         Me.MenuStrip2.PerformLayout()
-        CType(Me.tbAutoTrail, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

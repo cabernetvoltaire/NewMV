@@ -404,7 +404,7 @@ Public Class MediaHandler
 
     End Sub
     Private Sub LoadMedia()
-
+        Mysettings.LastTimeSuccessful = False
         Select Case mType
             Case Filetype.Doc
 
@@ -518,9 +518,11 @@ Public Class MediaHandler
                 mDuration = mPlayer.currentMedia.duration
                 StartPoint.Duration = mDuration
                 MediaJumpToMarker()
+                Mysettings.LastTimeSuccessful = True
+                PreferencesSave()
                 RaiseEvent MediaPlaying(Me, Nothing)
 
-                ' MainForm.DrawScrubberMarks()
+                MainForm.DrawScrubberMarks()
 
                 If FullScreen.Changing Or Speed.Paused Then 'Hold current position if switching to FS or back. 
                     mPlayPosition = Speed.PausedPosition
@@ -581,7 +583,9 @@ Public Class MediaHandler
 
 
     Private Sub mPlayer_OpenStateChange(sender As Object, e As _WMPOCXEvents_OpenStateChangeEvent) Handles mPlayer.OpenStateChange
-        If mPlayer.currentMedia IsNot Nothing Then mDuration = mPlayer.currentMedia.duration
+        If mPlayer.currentMedia IsNot Nothing Then
+
+        End If
     End Sub
 
 

@@ -228,7 +228,8 @@ Public Class MainForm
         If x.Count = 0 Then
             chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Regular)
             chbPreviewLinks.Text = "Preview links (None)"
-            Scrubber.BackColor = Me.BackColor
+            Scrubber.Visible = False
+            '            Scrubber.BackColor = Me.BackColor
             If chbPreviewLinks.Checked Then
                 lbxShowList.Items.Clear()
                 ControlSetFocus(lbxFiles)
@@ -236,6 +237,7 @@ Public Class MainForm
         Else
             chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Bold)
             chbPreviewLinks.Text = "Preview links (" & x.Count & ")"
+            Scrubber.Visible = True
             Scrubber.BackColor = Color.HotPink
             If chbPreviewLinks.Checked Then
                 FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
@@ -357,7 +359,7 @@ Public Class MainForm
 
 
     Public Sub CancelDisplay(SlideshowsOff As Boolean)
-        'MSFiles.CancelURL(Media.MediaPath)
+        MSFiles.CancelURL(Media.MediaPath)
         'MSFiles.ResettersOff()
 
         Try
@@ -980,6 +982,7 @@ Public Class MainForm
                     Media.StartPoint.IncrementState(7)
                 Else
                     Media.StartPoint.IncrementState(2)
+
                 End If
             Case KeyTrueSize
                 '   MSFiles.ClickAllPics()
@@ -2642,8 +2645,10 @@ Public Class MainForm
         AdvanceFile(True, False)
     End Sub
 
-    Private Sub cbxStartPoint_SelectedIndexChanged(sender As Object, e As EventArgs)
+    Private Sub cbxStartPoint_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbxStartPoint.SelectedIndexChanged
         Media.StartPoint.State = cbxStartPoint.SelectedIndex
+        'If cbxStartPoint.SelectedIndex <> Media.StartPoint.State Then cbxStartPoint.SelectedIndex = Media.StartPoint.State
+
     End Sub
 
     Private Sub btn8_DragEnter(sender As Object, e As DragEventArgs) Handles btn8.DragEnter, btn1.DragEnter

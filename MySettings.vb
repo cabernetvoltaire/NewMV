@@ -30,6 +30,9 @@ Friend Module Mysettings
     Public Rootpath As String = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
     Public GlobalFavesPath As String = Rootpath
     Public CurrentFavesPath As String = Rootpath
+    Public LastTimeSuccessful As Boolean
+    Private DriveString As String = "C"
+
 
 #End Region
 #Region "Stacks"
@@ -98,6 +101,7 @@ Friend Module Mysettings
         Dim PrefsList As New List(Of String)
         With PrefsList
 
+            .Add("LastTimeSuccessful" & "$" & LastTimeSuccessful)
             .Add("VertSplit" & "$" & MainForm.ctrFileBoxes.SplitterDistance)
             .Add("HorSplit" & "$" & MainForm.ctrMainFrame.SplitterDistance)
             .Add("File" & "$" & Media.MediaPath)
@@ -161,14 +165,19 @@ Friend Module Mysettings
                     Dim name As String = Split(s, "$")(0)
                     Dim value As String = Split(s, "$")(1)
                     Select Case name
+                        Case "LastTimeSuccessful"
+                            LastTimeSuccessful = value
                         Case "VertSplit"
                             MainForm.ctrFileBoxes.SplitterDistance = value
                         Case "HorSplit"
                             MainForm.ctrMainFrame.SplitterDistance = value
-                        Case "File"
-                            Dim st As String = value 'TODO: Don't load if last time unsuccessful
-                            If st = "" Then st = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
-                            Media.MediaPath = st
+                        Case "File" 'Drive
+                            If LastTimeSuccessful Then
+                                Dim st As String = value 'TODO: Don't load if last time unsuccessful
+                                If st = "" Then st = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
+                                Media.MediaPath = st
+                            End If
+                            DriveString = GetDriveString(Media.MediaPath)
                         Case "Filter"
                             If value = "" Then value = 0
                             MainForm.CurrentFilterState.State = value
@@ -182,22 +191,25 @@ Friend Module Mysettings
                         Case "State"
                             If value = "" Then value = 0
                             MainForm.NavigateMoveState.State = value
-                        Case "LastButtonFile"
-                            If value = "" Then value=LoadButtonFileName("")
+                        Case "LastButtonFile" 'Drive
+                            If value = "" Then value = LoadButtonFileName("")
                             ButtonFilePath = value
+                            DriveString = GetDriveString(value)
                         Case "LastAlpha"
                             If value = "" Then value = 0
                             iCurrentAlpha = value
-                        Case "Favourites"
+                        Case "Favourites" 'Drive
                             If value = "" Then value = BrowseToFolder("Choose favourites path", PrefsPath)
                             CurrentFavesPath = value
+                            DriveString = GetDriveString(value)
                         Case "PreviewLinks"
                             If value = "" Then value = False
                             MainForm.chbPreviewLinks.Checked = value
-                        Case "RootScanPath"
+                        Case "RootScanPath" 'Drive
                             If value = "" Then value = BrowseToFolder("Choose root scanning path", PrefsPath)
                             Rootpath = value
-                        Case "Directories List"
+                            DriveString = GetDriveString(value)
+                        Case "Directories List" 'Drive
                             If value = "" Then value = PrefsPath & "Directories.txt"
 
                             DirectoriesListFile = value
@@ -209,12 +221,14 @@ Friend Module Mysettings
 
 
                             End If
-                        Case "GlobalFaves"
+                            DriveString = GetDriveString(value)
+                        Case "GlobalFaves" 'Drive
                             Dim ff As New IO.DirectoryInfo(value)
                             If value = "" Or Not ff.Exists Then
                                 value = BrowseToFolder("Choose global favourites path", PrefsPath)
                             End If
                             GlobalFavesPath = value
+                            DriveString = GetDriveString(value)
                         Case "AutoLoadButtons"
                             If value = "" Then value = False
                             MainForm.chbLoadButtonFiles.Checked = value
@@ -244,12 +258,15 @@ Friend Module Mysettings
                         Case "OptionsAutoAdvance"
                             If value = "" Then value = False
                             MainForm.CHBAutoAdvance.Checked = value
-                        Case "ThumbnailDestination"
+                        Case "ThumbnailDestination" 'Drive
                             If value = "" Then value = BrowseToFolder("Choose Thumbnail Destination", PrefsPath)
                             ThumbDestination = value
-                        Case "ButtonFolder"
+                            DriveString = GetDriveString(value)
+
+                        Case "ButtonFolder" 'Drive
                             If value = "" Then value = BrowseToFolder("Choose Button folder", PrefsPath)
                             Buttonfolder = value
+                            DriveString = GetDriveString(value)
                     End Select
 
                 End If
@@ -258,7 +275,17 @@ Friend Module Mysettings
             PreferencesReset(False)
         End If
         MainForm.tssMoveCopy.Text = CurrentFolder
+        'MsgBox(DriveString)
     End Sub
+    Private Function GetDriveString(path As String) As String
+        'Adds drive of path if not already present
+
+        If InStr(DriveString, path(0)) <> 0 Then
+        Else
+            DriveString = DriveString & path(0)
+        End If
+        Return DriveString
+    End Function
     Public Sub PreferencesReset(Check As Boolean)
         If Check Then
             If MsgBox("Reset preferences?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then

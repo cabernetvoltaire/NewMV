@@ -92,10 +92,12 @@ Module ButtonHandling
         End If
 
         Dim d As New DirectoryInfo(sPath)
-        Dim i As Byte
+        Dim i As Integer
         Dim di() As DirectoryInfo
+
         di = d.GetDirectories
         Dim n = d.GetDirectories.Count - 1
+
         If n > 0 Then
             For i = 0 To n
                 Dim k As Byte
