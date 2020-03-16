@@ -51,7 +51,7 @@ Public Class BundleHandler
         'If Harvest Then DestinationFolder = CurrentFolder
         Dim folders As New List(Of IO.DirectoryInfo)
         For Each subfolder In CurrentFolder.GetDirectories("*", IO.SearchOption.AllDirectories)
-            If subfolder.GetFiles.Count > Maxfiles Then
+            If subfolder.GetFiles.Count < Maxfiles Then
                 folders.Add(subfolder)
             End If
         Next
@@ -68,6 +68,8 @@ Public Class BundleHandler
         For Each fol In folders
             Await Burst(fol, DestinationFolder, False)
         Next
+        FSTree.RefreshTree(Path)
+
         Await RemoveEmptyFolders(CurrentFolder.FullName, True)
     End Function
     Public Async Function Burst(Optional Harvest As Boolean = False) As Task

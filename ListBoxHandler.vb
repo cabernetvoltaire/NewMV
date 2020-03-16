@@ -65,10 +65,13 @@
 #End Region
 #Region "Methods"
     Public Sub FilterList()
-        With Filter
-            .FileList = mItemList
-            mItemList = .FileList
-        End With
+        If Filter.State <> Filter.OldState Then
+
+            With Filter
+                .FileList = mItemList
+                mItemList = .FileList
+            End With
+        End If
     End Sub
     Public Sub OrderList()
         mItemList = SetPlayOrder(SortOrder.State, ItemList)

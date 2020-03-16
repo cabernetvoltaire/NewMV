@@ -176,8 +176,8 @@ Friend Module Mysettings
                                 Dim st As String = value 'TODO: Don't load if last time unsuccessful
                                 If st = "" Then st = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
                                 Media.MediaPath = st
+                                DriveString = GetDriveString(st)
                             End If
-                            DriveString = GetDriveString(Media.MediaPath)
                         Case "Filter"
                             If value = "" Then value = 0
                             MainForm.CurrentFilterState.State = value
@@ -241,6 +241,7 @@ Friend Module Mysettings
                             If value = "" Then value = False
                             MainForm.chbOnDir.Checked = value
                         Case "RandomAutoTrail"
+                            value = False 'TODO causing load problems when omitted
                             If value = "" Then value = False
                             MainForm.chbAutoTrail.Checked = value
                         Case "RandomAutoLoadButtons"

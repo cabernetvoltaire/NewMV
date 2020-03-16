@@ -15,7 +15,7 @@ Public Class MediaHandler
     Private WithEvents ResetPosition As New Timer With {.Interval=10}
     Public WithEvents PositionUpdater As New Timer With {.Interval = 10}
     Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 15000}
-
+    Public WithEvents PicHandler As New PictureHandler
     Private ReadOnly DefaultFile As String = "C:\exiftools.exe"
     Public WithEvents StartPoint As New StartPointHandler
     Public WithEvents Speed As New SpeedHandler
@@ -133,8 +133,9 @@ Public Class MediaHandler
         Set(ByVal value As String)
             'If path changes, we need to check it exists, and if so, change stored directory as well, 
             'And raise a media changed event. 
-            Dim b As String = mMediaPath
-            If value = b Then
+
+
+            If value = mMediaPath Then
                 '    'Path hasn't changed, so nothing to do. 
             ElseIf value = "" Then
                 'Deals with absent file
@@ -203,9 +204,20 @@ Public Class MediaHandler
     Public Sub New(Nomen As String)
         '      Player = mPlayer
         Name = Nomen
-        ' PositionUpdater.Interval = 500
+        PositionUpdater.Interval = 500
         PositionUpdater.Enabled = False
-        ResetPosition.Interval = 500
+        ResetPosition.Interval = 1000
+        'mSndH.SoundPlayer = Sound
+        'mSndH.CurrentPlayer = Player
+        '     StartPoint = Media.StartPoint
+    End Sub
+    Public Sub New(Nomen As String, mplayer As AxWindowsMediaPlayer, pic As PictureBox)
+        Player = mplayer
+        Name = Nomen
+        PositionUpdater.Interval = 500
+        PositionUpdater.Enabled = True
+        ResetPosition.Interval = 1000
+
         'mSndH.SoundPlayer = Sound
         'mSndH.CurrentPlayer = Player
         '     StartPoint = Media.StartPoint
@@ -403,8 +415,10 @@ Public Class MediaHandler
         '        Report(Me.MediaPath & vbCrLf & Format(mMarkers.Count) & " markers" & vbCrLf & "Start point state is:" & StartPoint.Descriptions(StartPoint.State) & vbCrLf & " and has been set to " & StartPoint.StartPoint & "(" & mPlayPosition & ") " & vbCrLf & "with a duration of " & StartPoint.Duration, 1)
 
     End Sub
-    Private Sub LoadMedia()
+    Public Sub LoadMedia()
         Mysettings.LastTimeSuccessful = False
+        PreferencesSave()
+
         Select Case mType
             Case Filetype.Doc
 
@@ -424,6 +438,8 @@ Public Class MediaHandler
 
                 Exit Sub
         End Select
+        Mysettings.LastTimeSuccessful = True
+        PreferencesSave()
     End Sub
     Private Sub HandleMovie(URL As String)
         'TODO: Won't load if LastURL not persisting for some reason.
@@ -466,6 +482,9 @@ Public Class MediaHandler
         '    tmrSlideShow.Enabled = True
         '    blnRestartSlideShowFlag = False
         'End If
+        'PicHandler.PicBox = mPicBox
+        'PicHandler.GetImage(Media.MediaPath)
+        'PicHandler.PreparePic()
         currentPicBox = mPicBox
         General.MovietoPic(currentPicBox, img)
         DisplayerName = mPicBox.Name
@@ -492,6 +511,7 @@ Public Class MediaHandler
 
 #End Region
 #End Region
+
 #Region "Event Handlers"
     Private Sub Uhoh() Handles mPlayer.ErrorEvent
         ' MsgBox("Error in MediaPlayer")
@@ -506,11 +526,14 @@ Public Class MediaHandler
             Case WMPLib.WMPPlayState.wmppsMediaEnded
                 If MainForm.tmrAutoTrail.Enabled = False AndAlso mPlayer.Equals(Media.Player) AndAlso mType = Filetype.Movie AndAlso Not LoopMovie Then
                     MainForm.AdvanceFile(True, MainForm.Random.NextSelect)
+                    MainForm.blnPlaying = False
+
                 Else
                     MediaJumpToMarker()
                 End If
 
             Case WMPLib.WMPPlayState.wmppsPlaying
+                'MsgBox("playing " & Media.Player.URL & " on " & Me.Name)
                 mSndH.Slow = False
                 PositionUpdater.Enabled = True
                 ResetPositionCanceller.Enabled = True
@@ -518,11 +541,11 @@ Public Class MediaHandler
                 mDuration = mPlayer.currentMedia.duration
                 StartPoint.Duration = mDuration
                 MediaJumpToMarker()
-                Mysettings.LastTimeSuccessful = True
-                PreferencesSave()
+                MainForm.blnPlaying = True
+
                 RaiseEvent MediaPlaying(Me, Nothing)
 
-                MainForm.DrawScrubberMarks()
+
 
                 If FullScreen.Changing Or Speed.Paused Then 'Hold current position if switching to FS or back. 
                     mPlayPosition = Speed.PausedPosition
@@ -576,17 +599,13 @@ Public Class MediaHandler
         ResetPosition.Enabled = ResetOn
     End Sub
     Private Sub ResetPositionCanceller_Tick(sender As Object, e As EventArgs) Handles ResetPositionCanceller.Tick
-        ResetPosition.Enabled = False
+        'ResetPosition.Enabled = False
         '  ResetPositionCanceller.Enabled = False
     End Sub
 
 
 
-    Private Sub mPlayer_OpenStateChange(sender As Object, e As _WMPOCXEvents_OpenStateChangeEvent) Handles mPlayer.OpenStateChange
-        If mPlayer.currentMedia IsNot Nothing Then
 
-        End If
-    End Sub
 
 
 #End Region

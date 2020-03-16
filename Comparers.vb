@@ -106,17 +106,25 @@ Public Class MyComparer
                 If Instr("0123456789", x(m)) <> 0 Then
                     xnum = x(x.Length - i - 1) & xnum
                 Else
-                Exit For
+                If xnum = "" Then
+                Else
+                    Exit For
+
+                End If
             End If
-            Next
+        Next
             For i = 0 To y.Length - 1
                 Dim m = y.Length - 1 - i
-                If InStr("0123456789", y(m)) <> 0 Then
-                    ynum = y(y.Length - i - 1) & ynum
+            If InStr("0123456789", y(m)) <> 0 Then
+                ynum = y(y.Length - i - 1) & ynum
+            Else
+                If ynum = "" Then
                 Else
-                Exit For
+                    Exit For
+
+                End If
             End If
-            Next
+        Next
             'If same Then order in normal way
             If ynum.Length = xnum.Length Or ynum = "" Or xnum = "" Then
                 If y < x Then

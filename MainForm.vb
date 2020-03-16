@@ -8,7 +8,7 @@ Imports MasaSam.Forms.Controls
 
 Public Class MainForm
 
-
+    Public blnPlaying As Boolean = False
     Public Initialising As Boolean = True
     Public AutoLoadButtons As Boolean = False
     Public ButtonsHidden As Boolean = False
@@ -182,8 +182,14 @@ Public Class MainForm
     End Sub
 #End Region
     Private Sub AddMarker()
-        CreateFavourite(Media.MediaPath)
-        PopulateLinkList(Media.MediaPath, Media)
+        If Media.IsLink Then
+            CreateFavourite(Media.LinkPath)
+            PopulateLinkList(Media.LinkPath, Media)
+        Else
+            CreateFavourite(Media.MediaPath)
+            PopulateLinkList(Media.MediaPath, Media)
+
+        End If
         '       e.SuppressKeyPress = True
         DrawScrubberMarks()
     End Sub
@@ -240,6 +246,7 @@ Public Class MainForm
             Scrubber.Visible = True
             Scrubber.BackColor = Color.HotPink
             If chbPreviewLinks.Checked Then
+                x.Sort(New CompareByEndNumber)
                 FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
             End If
 
@@ -248,7 +255,7 @@ Public Class MainForm
             Marks.Markers = Media.Markers
             ' Scrubber.Update()
             DrawScrubberMarks()
-            DrawScrubberMarks()
+            '  DrawScrubberMarks()
         End If
 
 
@@ -466,7 +473,7 @@ Public Class MainForm
 
     Private Function SpeedChange(e As KeyEventArgs) As KeyEventArgs
 
-        Dim blnPlaying As Boolean = Media.MediaType = Filetype.Movie
+
         If Not blnPlaying Then
             tmrSlideShow.Enabled = True
             Media.Speed.Slideshow = tmrSlideShow.Enabled
@@ -561,24 +568,24 @@ Public Class MainForm
                 screen = Screen.AllScreens(1)
             Else
                 screen = Screen.AllScreens(0)
-                SplitterPlace(0.75)
+                'SplitterPlace(0.75)
             End If
             FullScreen.StartPosition = FormStartPosition.CenterScreen
             FullScreen.Location = screen.Bounds.Location + New Point(100, 100)
-            Media.Player.Size = screen.Bounds.Size
-            FullScreen.FirstMediaIndex = MSFiles.Listbox.SelectedIndex
-            MSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
-            FullScreen.Show()
             CancelDisplay(False)
+            'Media.Player.Size = screen.Bounds.Size
+            FullScreen.Show()
+
+            FullScreen.FSFiles = MSFiles
         Else
-            SplitterPlace(0.25)
+            '            SplitterPlace(0.25)
             MSFiles.AssignPlayers(MainWMP1, MainWMP2, MainWMP3)
             MSFiles.AssignPictures(PictureBox1, PictureBox2, PictureBox3)
             MSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
 
             FullScreen.Close()
-            FullScreen.Changing = False
         End If
+        FullScreen.Changing = False
         blnFullScreen = Not blnFullScreen
     End Sub
     Private Sub SplitterPlace(i As Decimal)
@@ -1430,7 +1437,13 @@ Public Class MainForm
             Else
                 ' Debug.Print(vbCrLf & vbCrLf & "NEXT SELECTION ---------------------------------------")
                 MSFiles.Listbox = lbx
-                MSFiles.ListIndex = i
+                If blnFullScreen Then
+                    FullScreen.FSFiles.ListIndex = i
+                Else
+                    MSFiles.ListIndex = i
+
+                End If
+
                 'Media.MediaPath = lbx.Items(i)
             End If
         End If
@@ -1782,17 +1795,7 @@ Public Class MainForm
     End Sub
 
 
-    'Private Sub HarvestCurrent()
-    '    Dim di As New DirectoryInfo(CurrentFolder)
-    '    HarvestFolder(di, True, False)
-    '    DeleteEmptyFolders(di, True)
-    '    FBH.DirectoryPath = di.FullName
-    '    '        FillFileBox(lbxFiles, di, False)
-    '    FBH.SetFirst()
-    '    SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
-    '    'SetControlColours(blnMoveMode)
 
-    'End Sub
     Public Sub AddCurrentType(Recurse As Boolean)
         Showlist = AddFilesToCollection(strFilterExtensions(CurrentFilterState.State), Recurse)
         FillShowbox(lbxShowList, CurrentFilterState.State, Showlist)
@@ -2032,7 +2035,7 @@ Public Class MainForm
 
 
     Private Sub tmrAutoTrail_Tick(sender As Object, e As EventArgs) Handles tmrAutoTrail.Tick
-        If Not CtrlDown Then AutoTrail(sender)
+        If Not CtrlDown And Not Initialising Then AutoTrail(sender)
 
     End Sub
 
@@ -2246,7 +2249,7 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub PictureBox1_MouseWheel(sender As Object, e As MouseEventArgs) Handles PictureBox1.MouseWheel, PictureBox2.MouseWheel, PictureBox2.MouseWheel, PictureBox3.MouseWheel
+    Private Sub PictureBox1_MouseWheel(sender As Object, e As MouseEventArgs) Handles PictureBox1.MouseWheel, PictureBox2.MouseWheel, PictureBox3.MouseWheel
         PictureFunctions.Mousewheel(sender, e)
     End Sub
 
@@ -2809,6 +2812,7 @@ Public Class MainForm
 
     Private Sub chbSeparate_CheckedChanged(sender As Object, e As EventArgs) Handles chbSeparate.CheckedChanged
         separate = chbSeparate.Checked
+
         MSFiles.DockMedias(separate)
 
     End Sub

@@ -625,71 +625,13 @@ Friend Module FileHandling
         Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
         Await x.RemoveEmptyFolders(x.Path, blnRecurse)
         Return True
-        Exit Function
-        'If blnRecurse Then
-        '    Try
-        '        For Each di In d.EnumerateDirectories
 
-        '            DeleteEmptyFolders(di, True)
-        '        Next
-        '    Catch
-        '    End Try
-        'End If
-        'If d.EnumerateDirectories.Count = 0 And d.EnumerateFiles.Count = 0 Then
-        '    Dim s As String = d.Parent.FullName
-        '    Try
-        '        MainForm.tvMain2.RemoveNode(d.FullName)
-        '        My.Computer.FileSystem.DeleteDirectory(d.FullName, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
-        '        DirectoriesList.Remove(d.FullName)
-
-        '    Catch ex As Exception
-        '        Return False
-        '        Exit Function
-        '    End Try
-        '    ' MainForm.tvMain2.RefreshTree(s)
-        'End If
-
-
-        'Return True
     End Function
-    'Public Function FolderCount(d As DirectoryInfo, count As Integer, blnRecurse As Boolean) As Long
-    '    Try
-    '        count = count + d.EnumerateDirectories.Count
 
-    '    Catch ex As UnauthorizedAccessException
-    '        Return 0
-    '        Exit Function
-    '    End Try
-    '    If blnRecurse Then
-    '        For Each di In d.EnumerateDirectories
-    '            count = FolderCount(di, count, True)
-    '        Next
-    '    End If
-    '    Return count
-    'End Function
-    'Public Function FileCount(d As DirectoryInfo, count As Integer, blnRecurse As Boolean) As Long
-    '    Try
-    '        count = count + d.EnumerateFiles.Count
-
-
-    '    Catch ex As Exception
-    '        Return 0
-    '        Exit Function
-    '    End Try
-    '    If blnRecurse Then
-    '        For Each di In d.EnumerateDirectories
-    '            count = FileCount(di, count, True)
-    '        Next
-    '    End If
-    '    Return count
-    'End Function
     Public Async Function HarvestBelow(d As DirectoryInfo) As Task
         Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
         Await x.Burst(d, d, True)
-        'For Each di In d.EnumerateDirectories
-        '    BurstFolder(di)
 
-        'Next
     End Function
     Public Async Function HarvestFolder(d As DirectoryInfo, Recurse As Boolean, Parent As Boolean) As Task
         If Recurse Then

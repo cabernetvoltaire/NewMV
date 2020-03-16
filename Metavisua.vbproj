@@ -211,6 +211,13 @@
     <Compile Include="My Project\Class1.vb" />
     <Compile Include="NextFile.vb" />
     <Compile Include="OrphanFinder.vb" />
+    <Compile Include="PicTest.Designer.vb">
+      <DependentUpon>PicTest.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PicTest.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PictureHandler.vb" />
     <Compile Include="PlayListHandler.vb" />
     <Compile Include="Preferences.Designer.vb">
       <DependentUpon>Preferences.vb</DependentUpon>
@@ -322,6 +329,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GroupingForm.resx">
       <DependentUpon>GroupingForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PicTest.resx">
+      <DependentUpon>PicTest.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Preferences.resx">
       <DependentUpon>Preferences.vb</DependentUpon>

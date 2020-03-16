@@ -4,44 +4,37 @@ Public Class FullScreen
     Public Shared Property Changing As Boolean
     Public Event FullScreenClosing()
     Public FirstMediaIndex As Integer
-    Public FSFiles As New MediaSwapper()
+    Private mFSFiles As New MediaSwapper
+    Public Property FSFiles() As MediaSwapper
+        Get
+            Return mFSFiles
+        End Get
+        Set(ByVal value As MediaSwapper)
+            mFSFiles = value
+            mFSFiles.Media1.Player = FSWMP
+            mFSFiles.Media1.Player.Name = "FSWMP"
+            mFSFiles.Media1.Player.uiMode = "none"
+            mFSFiles.Media2.Player.uiMode = "none"
+            mFSFiles.Media3.Player.uiMode = "none"
+            mFSFiles.Media2.Player = FSWMP2
+            mFSFiles.Media1.Player.Name = "FSWMP2"
+            mFSFiles.Media3.Player = FSWMP3
+            mFSFiles.Media1.Player.Name = "FSWMP3"
+            mFSFiles.Media1.Picture = FSPB1
+            mFSFiles.Media2.Picture = FSPB2
+            mFSFiles.Media3.Picture = FSPB3
+            mFSFiles.ListIndex = FileHandling.MSFiles.ListIndex
+
+        End Set
+    End Property
     Private Sub FullScreen_Shown(sender As Object, e As EventArgs) Handles Me.Shown
-        InitialisePlayer(FSWMP)
-        InitialisePlayer(FSWMP3)
-        InitialisePlayer(FSWMP2)
-        FSFiles = FileHandling.MSFiles
-        FSFiles.Media1.Player = FSWMP
-        FSFiles.Media2.Player = FSWMP2
-        FSFiles.Media3.Player = FSWMP3
-        FSFiles.Media1.Picture = FSPB1
-        FSFiles.Media2.Picture = FSPB2
-        FSFiles.Media3.Picture = FSPB3
-
-
-        FSFiles.ListIndex = FirstMediaIndex
-
-        'FSWMP.URL = MainForm.MainWMP1.URL
-        'FSWMP2.URL = MainForm.MainWMP2.URL
-        'FSWMP3.URL = MainForm.MainWMP3.URL
-        'MSFiles.AssignPlayers(FSWMP, FSWMP2, FSWMP3)
-
-        'fullScreenPicBox = MainForm.PictureBox1
-        'PictureBox1 = MainForm.PictureBox2
-        'PictureBox2 = MainForm.PictureBox3
-        'MSFiles.AssignPictures(fullScreenPicBox, PictureBox1, PictureBox2)
-        'MSFiles.ListIndex = FirstMediaIndex
-
+        mFSFiles.DockMedias(General.separate)
+        AddHandler FSPB1.MouseDown, AddressOf fullScreenPicBox_MouseDown
+        AddHandler FSPB2.MouseDown, AddressOf fullScreenPicBox_MouseDown
+        AddHandler FSPB3.MouseDown, AddressOf fullScreenPicBox_MouseDown
     End Sub
 
-    Private Sub InitialisePlayer(WMP As AxWindowsMediaPlayer)
-        WMP.uiMode = "None"
-        If separate Then
-        Else
-            WMP.Dock = DockStyle.Fill
-        End If
-        WMP.settings.mute = True
 
-    End Sub
 
     Private Sub FullScreen_Keydown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
         ShiftDown = e.Shift
@@ -66,11 +59,11 @@ Public Class FullScreen
 
 
 
-    Private Sub fullScreenPicBox_MouseWheel(sender As Object, e As MouseEventArgs) Handles FSPB1.MouseWheel, Me.MouseWheel, FSPB3.MouseWheel, FSPB2.MouseWheel
+    Private Sub fullScreenPicBox_MouseWheel(sender As Object, e As MouseEventArgs) Handles FSPB1.MouseWheel, FSPB3.MouseWheel, FSPB2.MouseWheel
         PictureFunctions.Mousewheel(sender, e)
     End Sub
 
-    Private Sub fullScreenPicBox_MouseMove(sender As Object, e As MouseEventArgs) Handles FSPB1.MouseMove, Me.MouseMove, FSPB2.MouseMove, FSPB3.MouseMove
+    Private Sub fullScreenPicBox_MouseMove(sender As Object, e As MouseEventArgs) Handles FSPB1.MouseMove, FSPB2.MouseMove, FSPB3.MouseMove
         picBlanker = FSBlanker
         PictureFunctions.MouseMove(sender, e)
     End Sub
@@ -86,7 +79,7 @@ Public Class FullScreen
 
     End Sub
 
-    Private Sub fullScreenPicBox_MouseDown(sender As Object, e As MouseEventArgs) Handles FSPB1.MouseDown
+    Private Sub fullScreenPicBox_MouseDown(sender As Object, e As MouseEventArgs)
         Select Case e.Button
             Case MouseButtons.XButton1, MouseButtons.XButton2
                 MainForm.AdvanceFile(e.Button = MouseButtons.XButton2)

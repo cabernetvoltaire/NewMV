@@ -66,6 +66,7 @@ Public Class MediaSwapper
 
             NextF.CurrentIndex = value
             SetIndex(value)
+
         End Set
     End Property
     Public Sub New(ByRef MP1 As AxWindowsMediaPlayer, ByRef MP2 As AxWindowsMediaPlayer, ByRef MP3 As AxWindowsMediaPlayer, ByRef PB1 As PictureBox, ByRef PB2 As PictureBox, ByRef PB3 As PictureBox)
@@ -126,30 +127,40 @@ Public Class MediaSwapper
         Else
             'Maybe use this later, to avoid multiple loadings which is inefficient.
             'For the moment - meh.
-            Select Case mListcount
-                Case 1
-                    Prepare(Media1, CurrentItem)
-                    ShowPlayer(Media1)
-                Case 2
+            'Select Case mListcount
+            '    Case 1
+            '        Prepare(Media1, CurrentItem)
+            '        ShowPlayer(Media1)
+            '    Case 2
 
-            End Select
+            'End Select
         End If
     End Sub
-
+    ''' <summary>
+    ''' Loads the files into the Media Handler and sets it going, but doesn't release the pause (reset). 
+    ''' </summary>
+    ''' <param name="MH"></param>
+    ''' <param name="path"></param>
+    ''' <returns></returns>
 
 
     Private Function Prepare(ByRef MH As MediaHandler, path As String) As Boolean
         Debug.Print("PREPARE: " & MH.Player.Name & " with " & path)
         If MH.MediaPath <> path Then
             MH.MediaPath = path
+        Else
+            'MH.LoadMedia()
         End If
         Select Case MH.MediaType
             Case Filetype.Movie
-                If separate Then
-                    MH.Player.uiMode = "mini"
+                If blnFullScreen Then
                 Else
+                    If separate Then
+                        MH.Player.uiMode = "mini"
+                    Else
 
-                    MH.Player.uiMode = "Full"
+                        MH.Player.uiMode = "Full"
+                    End If
                 End If
                 MH.Player.Visible = True
                 MH.PlaceResetter(True)
@@ -250,18 +261,9 @@ Public Class MediaSwapper
     End Sub
     Private Sub ShowPlayer(ByRef MHX As MediaHandler)
         MuteAll()
-        If Not separate Then
-            '   HideMedias(MHX)
-        End If
+
         MHX.PlaceResetter(False)
         With MHX.Player
-
-            If separate Then
-                .uiMode = "mini"
-            Else
-                .uiMode = "full"
-
-            End If
             .Visible = True
             .BringToFront()
             .settings.mute = Muted
@@ -301,7 +303,7 @@ Public Class MediaSwapper
     End Sub
     Private Sub ShowPicture(ByRef MHX As MediaHandler)
         MuteAll()
-        ' HideMedias(MHX)
+
         MHX.Picture.Visible = True
         MHX.Picture.BringToFront()
         RaiseEvent MediaShown(MHX)
