@@ -253,7 +253,7 @@ Public Class MainForm
             Media.Markers = Media.GetMarkersFromLinkList
             Media.Markers.Sort()
             Marks.Markers = Media.Markers
-            ' Scrubber.Update()
+            'Scrubber.Update()
             DrawScrubberMarks()
             '  DrawScrubberMarks()
         End If
@@ -997,8 +997,19 @@ Public Class MainForm
 
 #End Region
             Case KeyBackUndo
-                If LastFolder.Count > 0 Then
-                    tvMain2.SelectedFolder = LastFolder.Pop '= CurrentFolder
+                If e.Alt Then
+                    If CBXButtonFiles.Items.Count > 1 Then
+                        If CBXButtonFiles.SelectedIndex = 0 Then
+                            CBXButtonFiles.SelectedIndex = CBXButtonFiles.Items.Count - 1
+                        Else
+                            CBXButtonFiles.SelectedIndex = (CBXButtonFiles.SelectedIndex - 1)
+                        End If
+
+                    End If
+                Else
+                    If LastFolder.Count > 0 Then
+                        tvMain2.SelectedFolder = LastFolder.Pop '= CurrentFolder
+                    End If
                 End If
 
             Case KeyReStartSS
@@ -1788,9 +1799,10 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub HarvestFoldersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HarvestFoldersToolStripMenuItem.Click
-        'HarvestCurrent()
+    Private Async Sub HarvestFoldersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HarvestFoldersToolStripMenuItem.Click
+        Await HarvestBelow(New DirectoryInfo(CurrentFolder))
         'tvMain2.RefreshTree(CurrentFolder)
+        'Dim x As New BundleHandler(tvMain2, lbxFiles, CurrentFolder)
 
     End Sub
 
@@ -2445,10 +2457,12 @@ Public Class MainForm
     Private Async Sub RecursiveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RecursiveToolStripMenuItem.Click
         Dim x As New BundleHandler(tvMain2, lbxFiles, CurrentFolder)
         x.Maxfiles = Val(InputBox("Min no. of files to preserve folder? (Blank means all folders burst)",, ""))
-
-        Await x.Burst(New IO.DirectoryInfo(CurrentFolder), New IO.DirectoryInfo(CurrentFolder), True)
-        tvMain2.RefreshTree(CurrentFolder)
-        tmrUpdateFileList.Enabled = True
+        Dim d As New IO.DirectoryInfo(CurrentFolder)
+        If d.Exists Then
+            Await x.Burst(New IO.DirectoryInfo(CurrentFolder), True)
+            tvMain2.RefreshTree(CurrentFolder)
+            tmrUpdateFileList.Enabled = True
+        End If
 
     End Sub
 
@@ -2805,7 +2819,7 @@ Public Class MainForm
     End Sub
 
     Private Sub Scrubber_Paint(sender As Object, e As PaintEventArgs) Handles Scrubber.Paint
-        '  DrawScrubberMarks()
+        DrawScrubberMarks()
 
         'MsgBox("Uh-og")
     End Sub

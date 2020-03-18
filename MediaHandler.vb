@@ -215,7 +215,7 @@ Public Class MediaHandler
         Player = mplayer
         Name = Nomen
         PositionUpdater.Interval = 500
-        PositionUpdater.Enabled = True
+        PositionUpdater.Enabled = False
         ResetPosition.Interval = 1000
 
         'mSndH.SoundPlayer = Sound
@@ -558,7 +558,7 @@ Public Class MediaHandler
                 End If
 
             Case Else
-
+                PositionUpdater.Enabled = False
         End Select
     End Sub
     Private Sub OnSpeedChange(sender As Object, e As EventArgs) Handles Speed.SpeedChanged
@@ -584,6 +584,7 @@ Public Class MediaHandler
                 mDuration = mPlayer.currentMedia.duration
             End If
         Catch ex As Exception
+            '  MsgBox(ex.Message)
         End Try
 
     End Sub

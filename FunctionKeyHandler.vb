@@ -46,6 +46,7 @@
     Friend Sub FolderMove()
         Dim s As String = ButtonRow.Buttons(KeyNumber).Path
         MoveFolder(mCurrentPath, s)
+
     End Sub
 
 #End Region

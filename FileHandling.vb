@@ -630,40 +630,40 @@ Friend Module FileHandling
 
     Public Async Function HarvestBelow(d As DirectoryInfo) As Task
         Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
-        Await x.Burst(d, d, True)
+        Await x.Burst(d, True)
 
     End Function
-    Public Async Function HarvestFolder(d As DirectoryInfo, Recurse As Boolean, Parent As Boolean) As Task
-        If Recurse Then
-            Try
-                For Each di In d.EnumerateDirectories
-                    Await HarvestFolder(di, Recurse, Parent)
-                Next
-            Catch ex As Exception
-                MsgBox(ex.Message)
-            End Try
-        End If
-        blnSuppressCreate = True
-        Dim l As New List(Of String)
-        For Each f In d.EnumerateFiles
-            l.Add(f.FullName)
-        Next
-        If Parent Then
-            MoveFiles(l, d.Parent.FullName, MainForm.lbxFiles)
-        Else
-            MoveFiles(l, CurrentFolder, MainForm.lbxFiles)
+    'Public Async Function HarvestFolder(d As DirectoryInfo, Recurse As Boolean, Parent As Boolean) As Task
+    '    If Recurse Then
+    '        Try
+    '            For Each di In d.EnumerateDirectories
+    '                Await HarvestFolder(di, Recurse, Parent)
+    '            Next
+    '        Catch ex As Exception
+    '            MsgBox(ex.Message)
+    '        End Try
+    '    End If
+    '    blnSuppressCreate = True
+    '    Dim l As New List(Of String)
+    '    For Each f In d.EnumerateFiles
+    '        l.Add(f.FullName)
+    '    Next
+    '    If Parent Then
+    '        MoveFiles(l, d.Parent.FullName, MainForm.lbxFiles)
+    '    Else
+    '        MoveFiles(l, CurrentFolder, MainForm.lbxFiles)
 
-            blnSuppressCreate = False
-        End If
+    '        blnSuppressCreate = False
+    '    End If
 
-        Await DeleteEmptyFolders(d, True)
-        RaiseEvent FolderMoved(d.FullName)
-    End Function
+    '    Await DeleteEmptyFolders(d, True)
+    '    RaiseEvent FolderMoved(d.FullName)
+    'End Function
     Public Async Function BurstFolder(d As DirectoryInfo) As Task
         Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
 
 
-        Await x.Burst(d, d.Parent) 'Needs Attention
+        Await x.Burst(d) 'Needs Attention
         '        HarvestFolder(d, True, True)
 
     End Function

@@ -47,88 +47,29 @@ Public Class BundleHandler
         'Add a folder node representing it. 
     End Sub
     Public Property Maxfiles As Integer
-    Public Async Function Burst(CurrentFolder As IO.DirectoryInfo, DestinationFolder As IO.DirectoryInfo, Optional Harvest As Boolean = False) As Task
-        'If Harvest Then DestinationFolder = CurrentFolder
+    Public Async Function Burst(CurrentFolder As IO.DirectoryInfo, Optional Harvest As Boolean = False) As Task
+        Dim DestinationFolder As New IO.DirectoryInfo(CurrentFolder.FullName)
+        If Not Harvest Then DestinationFolder = CurrentFolder.Parent
         Dim folders As New List(Of IO.DirectoryInfo)
         For Each subfolder In CurrentFolder.GetDirectories("*", IO.SearchOption.AllDirectories)
-            If subfolder.GetFiles.Count < Maxfiles Then
+            If subfolder.GetFiles.Count <= Maxfiles Or Maxfiles = 0 Then
                 folders.Add(subfolder)
             End If
         Next
-        Dim list As New List(Of String)
-        If Harvest Then
-        Else
-
-            For Each f In CurrentFolder.GetFiles
-                list.Add(f.FullName)
-            Next
-            blnSuppressCreate = True
-            MoveFiles(list, DestinationFolder.FullName, ListBox)
-        End If
         For Each fol In folders
-            Await Burst(fol, DestinationFolder, False)
+            Await Burst(fol, False)
         Next
-        FSTree.RefreshTree(Path)
+        Dim list As New List(Of String)
+        For Each f In CurrentFolder.GetFiles
+            list.Add(f.FullName)
+        Next
+        blnSuppressCreate = True
+        MoveFiles(list, DestinationFolder.FullName, ListBox)
+        FSTree.RefreshTree(DestinationFolder.FullName)
 
         Await RemoveEmptyFolders(CurrentFolder.FullName, True)
     End Function
-    Public Async Function Burst(Optional Harvest As Boolean = False) As Task
-        Dim Maxfiles As Integer = Val(InputBox("Min no. of files to preserve folder? (Blank means all folders burst)",, ""))
-        'Get the parent folder
 
-        Dim folders As New List(Of IO.DirectoryInfo)
-        Dim Parentfolder As New IO.DirectoryInfo(Path)
-        If Harvest Then
-        Else
-            Parentfolder = Parentfolder.Parent
-        End If
-        'Get all the folders with more than maxfiles
-        For Each subfolder In mDirectory.GetDirectories("*", IO.SearchOption.TopDirectoryOnly)
-            Try
-
-                If subfolder.GetFiles.Count > Maxfiles Then
-                    folders.Add(subfolder)
-                Else
-                    Dim list As New List(Of String)
-                    For Each f In subfolder.GetFiles
-                        list.Add(f.FullName)
-                    Next
-                    Dim old As Boolean = blnSuppressCreate
-                    blnSuppressCreate = True
-                    MoveFiles(list, Path, ListBox)
-                    blnSuppressCreate = old
-                    Await RemoveEmptyFolders(subfolder.FullName, True)
-                End If
-            Catch ex As Exception
-
-            End Try
-        Next
-        'Promote them all to the parent folder(Retaining hierarchy)
-        If Not Harvest Then
-            For Each f In folders
-                MoveFolderNode(f.FullName, Parentfolder.FullName)
-                FSTree.RemoveNode(f.FullName)
-            Next
-            'Get all the remaining files
-            'Promote them all to the parent folder
-            Dim list As New List(Of String)
-            For Each f In mDirectory.EnumerateFiles("*", IO.SearchOption.AllDirectories)
-                list.Add(f.FullName)
-            Next
-            Report("Moving Files", 2)
-            blnSuppressCreate = True
-            MoveFiles(list, Parentfolder.FullName, ListBox)
-            Report("Deleting directory", 1)
-            Await RemoveEmptyFolders(Path, True)
-            'FSTree.RemoveNode(Path)
-        End If
-        'Remove all the nodes of the folders removed.
-
-    End Function
-    Public Async Function HarvestBelow(Maxfiles As Integer) As Task
-        Await Burst(True)
-
-    End Function
     Public Sub MoveFolderNode(Source As String, destination As String)
         FSTree.MoveNode(Source, destination)
         'Move the folder
@@ -144,18 +85,17 @@ Public Class BundleHandler
         Try
             Dim NoOfFiless = folder.EnumerateFiles.Count
             Dim NoOfFolders = folder.EnumerateDirectories.Count
+            If recurse Then
+
+                For Each s In folder.EnumerateDirectories("*", IO.SearchOption.AllDirectories)
+                    Await RemoveEmptyFolders(s.FullName, recurse)
+                    ' DirectoriesList.Remove(s.FullName)
+                Next
+            End If
             If NoOfFiless = 0 And NoOfFolders = 0 Then
                 FSTree.RemoveNode(folder.FullName)
                 folder.Delete()
                 DirectoriesList.Remove(folder.FullName)
-            Else
-                If recurse Then
-
-                    For Each s In folder.EnumerateDirectories("*", IO.SearchOption.AllDirectories)
-                        Await RemoveEmptyFolders(s.FullName, recurse)
-                        ' DirectoriesList.Remove(s.FullName)
-                    Next
-                End If
             End If
         Catch ex As Exception
 

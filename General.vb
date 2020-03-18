@@ -630,7 +630,7 @@ Public Module General
         If d.Parent Is Nothing Then
         Else
 
-            '     MainForm.WatchStart(d.Parent.FullName)
+            MainForm.WatchStart(d.Parent.FullName)
         End If
 
 

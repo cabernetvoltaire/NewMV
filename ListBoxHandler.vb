@@ -151,6 +151,7 @@
 
     End Sub
     Public Sub RemoveItems(List As List(Of String))
+        If List.Count = 0 Then Exit Sub
         Dim i = ListBox.FindString(List(0))
         For Each m In List
             ListBox.Items.Remove(m)
