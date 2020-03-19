@@ -79,7 +79,8 @@ Friend Module FileHandling
                     MainForm.UpdatePlayOrder(MainForm.FBH)
 
                 Case Else
-                    '            RefreshListbox(lbx1, files)
+                    MainForm.LBH.FillBox()
+                    MainForm.FBH.FillBox() '            RefreshListbox(lbx1, files)
             End Select
             MSFiles.ResettersOff()
         Next

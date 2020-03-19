@@ -234,8 +234,6 @@ Public Class MainForm
         If x.Count = 0 Then
             chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Regular)
             chbPreviewLinks.Text = "Preview links (None)"
-            Scrubber.Visible = False
-            '            Scrubber.BackColor = Me.BackColor
             If chbPreviewLinks.Checked Then
                 lbxShowList.Items.Clear()
                 ControlSetFocus(lbxFiles)
@@ -244,7 +242,7 @@ Public Class MainForm
             chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Bold)
             chbPreviewLinks.Text = "Preview links (" & x.Count & ")"
             Scrubber.Visible = True
-            Scrubber.BackColor = Color.HotPink
+            '  Scrubber.BackColor = Color.HotPink
             If chbPreviewLinks.Checked Then
                 x.Sort(New CompareByEndNumber)
                 FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
@@ -253,16 +251,15 @@ Public Class MainForm
             Media.Markers = Media.GetMarkersFromLinkList
             Media.Markers.Sort()
             Marks.Markers = Media.Markers
-            'Scrubber.Update()
-            DrawScrubberMarks()
-            '  DrawScrubberMarks()
         End If
+        DrawScrubberMarks()
 
 
 
     End Sub
 
     Public Sub DrawScrubberMarks()
+
         If Media.Duration <> 0 Then
 
 
@@ -275,7 +272,8 @@ Public Class MainForm
             'Scrubber.Visible = False
             If Marks.Markers.Count > 0 Then
                 Marks.Create()
-                'Scrubber.Visible = True
+            Else
+                'Marks.Bar.BackColor = Me.BackColor
             End If
         End If
 
@@ -2529,7 +2527,7 @@ Public Class MainForm
         tmrUpdateFileList.Enabled = False
     End Sub
 
-    Private Sub AddToButtonFilesList(path As String)
+    Public Sub AddToButtonFilesList(path As String)
         Dim folder As String = Autoload(FilenameFromPath(path, False))
         If CBXButtonFiles.Items.Contains(folder) Then
         ElseIf folder <> "" Then
@@ -2819,7 +2817,7 @@ Public Class MainForm
     End Sub
 
     Private Sub Scrubber_Paint(sender As Object, e As PaintEventArgs) Handles Scrubber.Paint
-        DrawScrubberMarks()
+        'DrawScrubberMarks()
 
         'MsgBox("Uh-og")
     End Sub

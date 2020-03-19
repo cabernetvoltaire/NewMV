@@ -1,5 +1,6 @@
 ﻿Imports System.IO
 Public Class MVButton
+    Inherits Button
     Public Event LabelChanged(ByVal label As String)
     Private mPath As String
     Public Sub New()
@@ -28,6 +29,9 @@ Public Class MVButton
             End If
         End Set
     End Property
+    ''' <summary>
+    ''' What is on the face of the button. Usually f(n)
+    ''' </summary>
     Private mFaceText As String
     Public Property FaceText() As String
         Get
@@ -38,6 +42,9 @@ Public Class MVButton
         End Set
     End Property
     Private mlblText As String
+    ''' <summary>
+    ''' The text shown in the button label
+    ''' </summary>
     Public Property Label() As String
         Get
             Return mlblText

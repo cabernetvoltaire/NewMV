@@ -41,6 +41,7 @@ Public Class FolderSelect
         If value = "" Then Exit Sub
         ''  Exit Sub
         Dim x As New IO.DirectoryInfo(value)
+        If x.Exists = False Then Exit Sub
         Dim count As Integer = x.GetFiles.Count
         If count = 0 Then
 

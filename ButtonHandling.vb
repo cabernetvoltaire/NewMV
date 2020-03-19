@@ -32,7 +32,7 @@ Module ButtonHandling
             With btnDest(i)
                 .Text = buttons.CurrentRow.Buttons(i).FaceText
                 'AddHandler .Click, AddressOf ButtonClick
-                AddHandler .Click, AddressOf ShowPreview
+                AddHandler .MouseDown, AddressOf ShowPreview
                 'AddHandler .MouseLeave, AddressOf hidePreview
                 '  AddHandler .MouseHover, AddressOf ChangePreviewMedia
 
@@ -43,39 +43,47 @@ Module ButtonHandling
     End Sub
 
 
-    Private Sub ShowPreview(Sender As Object, e As EventArgs)
-
-
-        ' Exit Sub
+    Private Sub ShowPreview(Sender As Object, e As MouseEventArgs)
         Dim index As Byte = Val(Sender.Name.ToString(3))
 
-        If FolderSelect.Visible Then
-            If index - 1 <> FolderSelect.ButtonNumber Then
-            Else
-                FolderSelect.Hide()
+        ' Exit Sub
+        Dim btn As MVButton
+        buttons.CurrentLetter = iCurrentAlpha
+        btn = buttons.CurrentRow.Buttons(index - 1)
+        Dim s As String
+        If e.Button = MouseButtons.Left Then
+            If FolderSelect.Visible Then
+                If index - 1 <> FolderSelect.ButtonNumber Then
+                Else
+                    FolderSelect.Hide()
 
-                Exit Sub
+                    Exit Sub
+                End If
+
             End If
-
+            FolderSelect.ButtonNumber = index - 1
+            FolderSelect.Alpha = iCurrentAlpha
+            FolderSelect.Show()
+            s = strButtonFilePath(FolderSelect.ButtonNumber, iCurrentAlpha, 1)
+            If s = "" Then s = CurrentFolder
+            FolderSelect.Folder = s
+            Debug.Print("New Folder" & s)
+            '        x.Show()
+            Dim control As Control = CType(Sender, Control)
+            Dim startpoint As Point
+            startpoint.X = control.Left
+            startpoint.Y = control.Top
+            startpoint = control.PointToScreen(startpoint)
+            FolderSelect.Left = startpoint.X - FolderSelect.Width / 2
+            FolderSelect.Top = startpoint.Y - FolderSelect.Height
+            FolderSelect.BringToFront()
+            'FolderSelect.UpdateFolder()
+        ElseIf e.Button = MouseButtons.Right Then
+            'Dim path As String() = Split(s, "\")
+            Autoload(btn.Label)
+            MainForm.AddToButtonFilesList(btn.Label)
         End If
-        FolderSelect.ButtonNumber = index - 1
-        FolderSelect.Alpha = iCurrentAlpha
-        FolderSelect.Show()
-        Dim s As String = buttons.CurrentRow.Buttons(index - 1).Path
-        s = strButtonFilePath(FolderSelect.ButtonNumber, iCurrentAlpha, 1)
-        If s = "" Then s = CurrentFolder
-        FolderSelect.Folder = s
-        Debug.Print("New Folder" & s)
-        '        x.Show()
-        Dim control As Control = CType(Sender, Control)
-        Dim startpoint As Point
-        startpoint.X = control.Left
-        startpoint.Y = control.Top
-        startpoint = control.PointToScreen(startpoint)
-        FolderSelect.Left = startpoint.X - FolderSelect.Width / 2
-        FolderSelect.Top = startpoint.Y - FolderSelect.Height
-        FolderSelect.BringToFront()
-        'FolderSelect.UpdateFolder()
+
     End Sub
 
 
@@ -418,7 +426,7 @@ Module ButtonHandling
         Dim f As New IO.DirectoryInfo(Buttonfolder)
         Dim file As New IO.FileInfo(f.FullName & "\" & Foldername & ".msb")
         Static lastasked As String
-        If file.Exists And file.FullName <> lastasked Then
+        If file.Exists Then ';And file.FullName <> lastasked Then
             '     If MsgBox("Do you want to load the buttons?", MsgBoxStyle.YesNoCancel) = MsgBoxResult.Yes Then
             KeyAssignmentsRestore(file.FullName)
             Foldername = file.Name
