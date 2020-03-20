@@ -288,12 +288,6 @@ Public Class MainForm
         'SndH.Slow = slow
     End Sub
 
-
-    ''' <summary>
-    ''' Switches between picbox and movie
-    ''' </summary>
-    ''' <param name="img"></param>
-
     Public Sub OrientPic(img As Image)
         tbZoom.Text = UCase("Orientation -" & Orientation(ImageOrientation(img)))
         Select Case ImageOrientation(img)

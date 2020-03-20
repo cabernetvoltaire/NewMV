@@ -28,27 +28,11 @@
     ''' <param name="path"></param>
     Public Sub DeleteFavourite(path As String)
         Dim templist As New List(Of String)
-        '  templist = Duplicatelist(mFavesList)
-        'For i = 0 To mFavesList.Count - 1
-        '    Dim m As String = mFavesList(i)
-        '    Dim x = LinkTarget(m)
-        '    Dim f As New IO.FileInfo(m)
-        '    f.Delete()
-        '    mFavesList.Remove(m)
-        'Next
-        'Exit Sub
-        templist = mFavesList.FindAll(Function(x) LinkTarget(x) = path)
 
-        'For Each m In mFavesList
-        '    Dim x = LinkTarget(m)
-        '    '      Debug.Print(x)
-        '    If x = path Then
-        '        templist.Add(m)
-        '    End If
-        'Next
+        templist = mFavesList.FindAll(Function(x) LinkTarget(x) = path)
         For Each m In templist
             Dim f As New IO.FileInfo(m)
-            f.Delete()
+            Deletefile(f.FullName)
             mFavesList.Remove(m)
         Next
     End Sub
@@ -104,7 +88,7 @@
     Public Sub Check(f As IO.FileInfo, destinationpath As String)
         OkToDelete = False
         Dim mf As New List(Of String)
-        mf = FavesList.FindAll(Function(x) FilenameFromLink(x) = f.Name)
+        mf = FavesList.FindAll(Function(x) x.Contains("\" & f.Name))
         If mf.Count = 0 Then
             OkToDelete = True
         ElseIf destinationpath = "" Then

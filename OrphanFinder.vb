@@ -293,34 +293,7 @@
         Next
         Return foundparent
     End Function
-    Private Function FindBracketedOld(foundparent As Boolean) As Boolean
-        For Each n In mOrphanList
-            Dim filename = FilenameFromLink(n) 'name of the file 
-            Dim aimfile As String = LinkTarget(n) 'non-existent file which is the linktarget
-            If aimfile <> "" Then
 
-                Dim finfo As New IO.FileInfo(aimfile)
-                filename = finfo.Name 'in case it was wrong?
-
-                For i = 0 To 3
-                    Dim newlink = finfo.Directory.FullName & "\" & finfo.Name.Replace(".", "(" & Right(Str(i), 1) & ").")
-                    If My.Computer.FileSystem.FileExists(newlink) Then
-                        foundparent = True
-                        If Not mFoundParents.Keys.Contains(n) Then
-                            mFoundParents.Add(n, newlink)
-
-                        End If
-                    Else
-                        foundparent = False
-
-                    End If
-                Next
-            End If
-
-        Next
-
-        Return foundparent
-    End Function
     Public Function FindOrphans(Optional Deep As Boolean = False) As Boolean
         FindOrphans2(Deep)
         Reunite()

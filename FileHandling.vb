@@ -356,12 +356,9 @@ Friend Module FileHandling
                                 Dim f As New IO.FileInfo(m.FullName)
                                 AllFaveMinder.DestinationPath = spath
                                 Try
-                                    m.MoveTo(spath)
-                                    'Dim fil2 As New IO.FileInfo(spath)
-                                    'If fil2.Exists Then m.Delete()
-                                    'AssignSpecialButton("0", strDest)
                                     AllFaveMinder.CheckFile(f)
-                                    'Catch ex As System.IO.IOException
+                                    m.MoveTo(spath)
+
                                 Catch ex As Exception
                                     MsgBox(ex.Message)
                                 End Try
@@ -392,7 +389,7 @@ Friend Module FileHandling
                                 f.MoveTo(CurrentFolder & "\" & f.Name)
 
                                 CreateLink(sh, f.FullName, New FileInfo(spath).Directory.FullName, m.Name, Media.Bookmark)
-                                m.Delete()
+                                Deletefile(m.FullName)
                             End If
 
                         Case StateHandler.StateOptions.MoveOriginal
