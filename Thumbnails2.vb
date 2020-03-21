@@ -25,7 +25,7 @@
         '        flp.SendToBack()
         flp.Visible = True
         flp.AutoScroll = True
-        AddHandler flp.MouseMove, AddressOf flp_Mouseover
+        AddHandler flp.MouseHover, AddressOf flp_Mouseover
 
         Dim pics(mList.Count) As PictureBox
         Dim i As Int16 = 0

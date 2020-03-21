@@ -1053,41 +1053,7 @@ Public Class MainForm
         tmrMovieSlideShow.Enabled = False
         Return e
     End Function
-    Private Function OldSelectNextFile(e As KeyEventArgs) As KeyEventArgs
-        If FocusControl Is lbxFiles Then
-            If e.Control Then
-                ControlSetFocus(lbxShowList)
-                LBH.IncrementIndex(e.KeyCode = KeyNextFile)
-            Else
-                FBH.IncrementIndex(e.KeyCode = KeyNextFile)
-            End If
-        ElseIf FocusControl Is lbxShowList Then
-            If e.Control Then
-                ControlSetFocus(lbxFiles)
-                FBH.IncrementIndex(e.KeyCode = KeyNextFile)
-            Else
-                LBH.IncrementIndex(e.KeyCode = KeyNextFile)
 
-            End If
-        Else
-            If FocusControl IsNot lbxFiles And FocusControl IsNot lbxShowList Then
-                ControlSetFocus(lbxFiles)
-                FBH.IncrementIndex(e.KeyCode = KeyNextFile)
-                '  FBH.IncrementIndex(e.KeyCode = KeyNextFile)
-            End If
-        End If
-        'If e.Alt Then
-        '    AdvanceFile(e.KeyCode = KeyNextFile, True)
-        'Else
-        '    AdvanceFile(e.KeyCode = KeyNextFile, Random.NextSelect)
-
-        'End If
-
-        e.SuppressKeyPress = True
-        tmrSlideShow.Enabled = False
-        tmrMovieSlideShow.Enabled = False
-        Return e
-    End Function
     Private Function JumpToMark(e As KeyEventArgs) As KeyEventArgs
         If Media.Markers.Count <> 0 Then
             If e.Alt Then
@@ -1097,7 +1063,7 @@ Public Class MainForm
                 Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
                 '     Media.LinkCounter = Media.FindNearestCounter(e.Modifiers = Keys.Control)
             End If
-            Media.Bookmark = -2
+            '  Media.Bookmark = -2
             Media.MediaJumpToMarker(ToMarker:=True)
 
         Else
@@ -1136,13 +1102,7 @@ Public Class MainForm
 
             End If
 
-            'If NavigateMoveState.State = StateHandler.StateOptions.Move Or NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
-            '    If lbx.Name = "lbxShowList" And NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
-            '        FBH.RemoveItems(m)
-            '    Else
-            '        MoveFiles(m, "", lbx)
-            '    End If
-            'End If
+
         End If
     End Sub
 
@@ -1509,12 +1469,7 @@ Public Class MainForm
 
 
 
-    'Public Sub UpdateBoxes(strold As String, strnew As String)
 
-    '    lbxFiles.Items.Remove(strold)
-    '    lbxShowList.Items.Remove(strold)
-    '    If strnew <> "" Then lbxShowList.Items.Add(strnew)
-    'End Sub
     Private Sub tmrLoadLastFolder_Tick(sender As Object, e As EventArgs) Handles tmrLoadLastFolder.Tick
         'Exit Sub
         tmrLoadLastFolder.Enabled = False

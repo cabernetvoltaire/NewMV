@@ -128,7 +128,7 @@
         Dim list As New List(Of String)
         If finfo.Exists Then
 
-            list = FavesList.FindAll(Function(x) x.Contains("\" & finfo.Name))
+            list = FavesList.FindAll(Function(x) InStr(x, "\" & finfo.Name) <> 0)
         End If
         Return List
     End Function

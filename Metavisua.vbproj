@@ -154,6 +154,7 @@
     <Compile Include="Dashboard.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Database.vb" />
     <Compile Include="DateMove.vb" />
     <Compile Include="Duplicates.vb" />
     <Compile Include="Encryption.vb" />
@@ -207,7 +208,9 @@
     <Compile Include="MediaHandler.vb" />
     <Compile Include="MediaInfo.vb" />
     <Compile Include="MovieSwapper.vb" />
-    <Compile Include="MVButton.vb" />
+    <Compile Include="MVButton.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="My Project\Class1.vb" />
     <Compile Include="NextFile.vb" />
     <Compile Include="OrphanFinder.vb" />

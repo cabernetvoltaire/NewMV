@@ -44,7 +44,7 @@ Partial Class Attributes
         Me.ClientSize = New System.Drawing.Size(667, 1042)
         Me.Controls.Add(Me.Label1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D
-        Me.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.Margin = New System.Windows.Forms.Padding(2)
         Me.Name = "Attributes"
         Me.Text = "Attributes"
         Me.ResumeLayout(False)

@@ -126,6 +126,10 @@ Friend Module Mysettings
             .Add("OptionsAutoAdvance" & "$" & MainForm.CHBAutoAdvance.Checked)
             .Add("ThumbnailDestination" & "$" & ThumbDestination)
             .Add("ButtonFolder" & "$" & Buttonfolder)
+            .Add("FractionalJump" & "$" & MainForm.SP.FractionalJump)
+            .Add("AbsoluteJump" & "$" & MainForm.SP.AbsoluteJump)
+            .Add("Speed" & "$" & MainForm.SP.Speed)
+
         End With
 
         Dim f As New IO.FileInfo(PrefsFilePath)
@@ -268,6 +272,12 @@ Friend Module Mysettings
                             If value = "" Then value = BrowseToFolder("Choose Button folder", PrefsPath)
                             Buttonfolder = value
                             DriveString = GetDriveString(value)
+                        Case "AbsoluteJump"
+                            MainForm.SP.AbsoluteJump = value
+                        Case "FractionalJump"
+                            MainForm.SP.FractionalJump = value
+                        Case "Speed"
+                            MainForm.SP.Speed = value
                     End Select
 
                 End If

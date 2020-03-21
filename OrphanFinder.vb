@@ -370,16 +370,21 @@
     Public Sub ReuniteWithFile(list As List(Of String), filename As String)
         'All the shortcuts in list are redirected to filename
         mFoundParents.Clear()
+        Try
 
-        For Each m In list
-            If LinkTargetExists(m) Then
-            Else
-                If mFoundParents.Keys.Contains(m) Then
+            For Each m In list
+                If LinkTargetExists(m) Then
                 Else
-                    mFoundParents.Add(m, filename)
+                    If mFoundParents.Keys.Contains(m) Then
+                    Else
+                        mFoundParents.Add(m, filename)
+                    End If
                 End If
-            End If
-        Next
+            Next
+        Catch ex As Exception
+
+        End Try
+
         Reunite()
     End Sub
 End Class
