@@ -17,7 +17,7 @@ Public Class MediaHandler
     Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 15000}
     Public WithEvents PicHandler As New PictureHandler
     Private ReadOnly DefaultFile As String = "C:\exiftools.exe"
-    Public WithEvents StartPoint As New StartPointHandler
+    Public WithEvents SPT As New StartPointHandler
     Public WithEvents Speed As New SpeedHandler
     Public DisplayerName As String
     Private mLoop As Boolean = False
@@ -103,7 +103,7 @@ Public Class MediaHandler
         End Get
         Set(value As Long)
             mDuration = value
-            StartPoint.Duration = value
+            SPT.Duration = value
         End Set
     End Property
     Private mFrameRate As Int32
@@ -122,7 +122,7 @@ Public Class MediaHandler
         End Get
         Set(ByVal value As List(Of Long))
             mMarkers = value
-            StartPoint.Markers = mMarkers
+            SPT.Markers = mMarkers
         End Set
     End Property
     Private mMediaPath As String
@@ -392,19 +392,19 @@ Public Class MediaHandler
             mPlayPosition = m.StartPoint
             'Or it's a link with a bookmark
         ElseIf mBookmark > -1 And Speed.PausedPosition = 0 Then 'And mMarkers.Count = 0 Then
-            If StartPoint.State = StartPointHandler.StartTypes.FirstMarker Then
+            If SPT.State = StartPointHandler.StartTypes.FirstMarker Then
                 mPlayPosition = mBookmark
             Else
-                mPlayPosition = StartPoint.StartPoint
+                mPlayPosition = SPT.StartPoint
             End If
         ElseIf Speed.PausedPosition <> 0 Then
             mPlayPosition = Speed.PausedPosition
             Speed.PausedPosition = 0
-        ElseIf mMarkers.Count <> 0 AndAlso (ToMarker Or StartPoint.State = StartPointHandler.StartTypes.FirstMarker) Then
-            StartPoint.Absolute = mMarkers.Item(LinkCounter)
-            mPlayPosition = StartPoint.StartPoint
+        ElseIf mMarkers.Count <> 0 AndAlso (ToMarker Or SPT.State = StartPointHandler.StartTypes.FirstMarker) Then
+            SPT.Absolute = mMarkers.Item(LinkCounter)
+            mPlayPosition = SPT.StartPoint
         Else
-            mPlayPosition = StartPoint.StartPoint
+            mPlayPosition = SPT.StartPoint
         End If
         If mPlayPosition > mDuration Then
             Report(mPlayPosition & "Over-reach" & mDuration, 0, False)
@@ -539,7 +539,7 @@ Public Class MediaHandler
                 ResetPositionCanceller.Enabled = True
                 ' mResetCounter = 0
                 mDuration = mPlayer.currentMedia.duration
-                StartPoint.Duration = mDuration
+                SPT.Duration = mDuration
                 MediaJumpToMarker()
                 MainForm.blnPlaying = True
 
@@ -566,7 +566,7 @@ Public Class MediaHandler
         RaiseEvent SpeedChanged(sender, e)
 
     End Sub
-    Private Sub OnStartChange(sender As Object, e As EventArgs) Handles StartPoint.StartPointChanged, StartPoint.StateChanged
+    Private Sub OnStartChange(sender As Object, e As EventArgs) Handles SPT.StartPointChanged, SPT.StateChanged
 
         RaiseEvent StartChanged(sender, e)
 

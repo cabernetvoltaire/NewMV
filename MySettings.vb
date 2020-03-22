@@ -107,7 +107,7 @@ Friend Module Mysettings
             .Add("File" & "$" & Media.MediaPath)
             .Add("Filter" & "$" & MainForm.CurrentFilterState.State)
             .Add("SortOrder" & "$" & MainForm.PlayOrder.State)
-            .Add("StartPoint" & "$" & Media.StartPoint.State)
+            .Add("StartPoint" & "$" & Media.SPT.State)
             .Add("State" & "$" & MainForm.NavigateMoveState.State)
             .Add("LastButtonFile" & "$" & ButtonFilePath)
             .Add("LastAlpha" & "$" & iCurrentAlpha)
@@ -191,7 +191,7 @@ Friend Module Mysettings
                             MainForm.PlayOrder.State = value
                         Case "StartPoint"
                             If value = "" Then value = 0
-                            Media.StartPoint.State = value
+                            Media.SPT.State = value
                         Case "State"
                             If value = "" Then value = 0
                             MainForm.NavigateMoveState.State = value
@@ -325,7 +325,7 @@ Friend Module Mysettings
             iCurrentAlpha = 0
             ButtonFilePath = ""
         End With
-        Media.StartPoint.State = 0
+        Media.SPT.State = 0
         PreferencesSave()
     End Sub
 

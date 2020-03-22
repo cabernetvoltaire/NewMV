@@ -56,7 +56,7 @@ Public Class FolderSelect
             PreMH.Player = PreviewWMP
             PreMH.Player.settings.mute = True
             PreMH.Picture = PictureBox1
-            PreMH.StartPoint.State = StartPointHandler.StartTypes.Random
+            PreMH.SPT.State = StartPointHandler.StartTypes.Random
             PreMH.MediaPath = f.FullName
             If PreMH.MediaType = Filetype.Movie Or PreMH.MediaType = Filetype.Pic Then
 

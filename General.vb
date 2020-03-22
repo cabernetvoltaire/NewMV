@@ -559,7 +559,7 @@ Public Module General
     Public Sub LabelStartPoint(ByRef MH As MediaHandler)
         If MH.MediaPath = "" Then Exit Sub
         Dim s As String = ""
-        Dim sh As StartPointHandler = MH.StartPoint
+        Dim sh As StartPointHandler = MH.SPT
         s = s & MH.Name & vbCrLf
         s = s & MH.MediaPath & vbCrLf
         s = s & "Duration: " & sh.Duration & vbCrLf & "Percentage:" & sh.Percentage & vbCrLf & " Absolute:" & sh.Absolute & vbCrLf & " Startpoint:" & sh.StartPoint & vbCrLf & " Player:" & Media.Player.Name

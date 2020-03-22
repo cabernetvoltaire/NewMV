@@ -212,20 +212,20 @@ Public Class MediaSwapper
 
     End Sub
     Public Sub SetStartStates(ByRef SH As StartPointHandler)
-        Media1.StartPoint.State = SH.State
-        Media2.StartPoint.State = SH.State
-        Media3.StartPoint.State = SH.State
+        Media1.SPT.State = SH.State
+        Media2.SPT.State = SH.State
+        Media3.SPT.State = SH.State
 
 
     End Sub
     Public Sub SetStartpoints(ByRef SH As StartPointHandler) 'Only called when bars changed
         SetStartStates(SH)
 
-        Media1.StartPoint = SH
+        Media1.SPT = SH
 
-        Media2.StartPoint = SH
+        Media2.SPT = SH
 
-        Media3.StartPoint = SH
+        Media3.SPT = SH
 
 
     End Sub

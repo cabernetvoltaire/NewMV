@@ -135,7 +135,7 @@
     Private mSavedState As Byte
     Public Property SavedState() As Byte
         Get
-            RaiseEvent StateChanged(Me, New EventArgs)
+
             Return mSavedState
             mSavedState = 0
         End Get

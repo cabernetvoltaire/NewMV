@@ -63,14 +63,14 @@ Public Class MainForm
         FBH.Random = Random
         If Random.All Then
             PlayOrder.State = SortHandler.Order.Random
-            Media.StartPoint.State = StartPointHandler.StartTypes.Random
+            Media.SPT.State = StartPointHandler.StartTypes.Random
         Else
             'PlayOrder.State = SortHandler.Order.DateTime
             '       StartPoint.State = StartPointHandler.StartTypes.NearBeginning
         End If
 
         If Random.StartPointFlag Then
-            Media.StartPoint.State = StartPointHandler.StartTypes.Random
+            Media.SPT.State = StartPointHandler.StartTypes.Random
         End If
         MSFiles.RandomNext = Random.NextSelect
 
@@ -84,13 +84,13 @@ Public Class MainForm
     End Sub
     Public Sub OnStartChanged(Sender As Object, e As EventArgs)
         'Media.Bookmark = -1
-        tbxAbsolute.Text = New TimeSpan(0, 0, Media.StartPoint.StartPoint).ToString("hh\:mm\:ss") 'TODO: DUbious
+        tbxAbsolute.Text = New TimeSpan(0, 0, Media.SPT.StartPoint).ToString("hh\:mm\:ss") 'TODO: DUbious
 
-        tbxPercentage.Text = Int(100 * Media.StartPoint.StartPoint / Media.StartPoint.Duration) & "%"
-        tbPercentage.Value = Media.StartPoint.Percentage
-        tbAbsolute.Maximum = Media.StartPoint.Duration
-        tbAbsolute.Value = Media.StartPoint.StartPoint
-        Select Case Media.StartPoint.State
+        tbxPercentage.Text = Int(100 * Media.SPT.StartPoint / Media.SPT.Duration) & "%"
+        tbPercentage.Value = Media.SPT.Percentage
+        tbAbsolute.Maximum = Media.SPT.Duration
+        tbAbsolute.Value = Media.SPT.StartPoint
+        Select Case Media.SPT.State
             Case StartPointHandler.StartTypes.ParticularAbsolute
                 tbxPercentage.Enabled = False
                 tbxAbsolute.Enabled = True
@@ -103,11 +103,11 @@ Public Class MainForm
         End Select
         ' MSFiles.ListIndex = lbxFiles.SelectedIndex
         'Set all MH to have the same StartPoint handler
-        MSFiles.SetStartStates(Media.StartPoint)
+        MSFiles.SetStartStates(Media.SPT)
 
         FullScreen.Changing = False
-        cbxStartPoint.SelectedIndex = Media.StartPoint.State
-        tbStartpoint.Text = "START:" & Media.StartPoint.Description
+        cbxStartPoint.SelectedIndex = Media.SPT.State
+        tbStartpoint.Text = "START:" & Media.SPT.Description
 
     End Sub
     Public Sub OnStateChanged(sender As Object, e As EventArgs) Handles NavigateMoveState.StateChanged, CurrentFilterState.StateChanged, PlayOrder.StateChanged
@@ -624,7 +624,7 @@ Public Class MainForm
         ButtonsHidden = Collapse
         MasterContainer.Panel2Collapsed = Collapse
         lbxFiles.SelectionMode = SelectionMode.One
-       ' ControlSetFocus(lbxFiles)
+        ' ControlSetFocus(lbxFiles)
         MasterContainer.SplitterDistance = MasterContainer.Height / 3
         UpdateFileInfo()
     End Sub
@@ -684,16 +684,16 @@ Public Class MainForm
 
     End Sub
     Public Sub ToggleAutoTrail()
-        Static m As New StartPointHandler
+        Static m As Byte
         tmrAutoTrail.Enabled = Not tmrAutoTrail.Enabled
         chbAutoTrail.Checked = tmrAutoTrail.Enabled
         TrailerModeToolStripMenuItem.Checked = tmrAutoTrail.Enabled
         If tmrAutoTrail.Enabled Then
-            m = Media.StartPoint
-            Media.StartPoint.State = StartPointHandler.StartTypes.Random
+            m = Media.SPT.State
+            Media.SPT.State = StartPointHandler.StartTypes.Random
             SwitchSound(True)
         Else
-            Media.StartPoint = m
+            Media.SPT.State = m
             SwitchSound(False)
             Debug.Print("Normal")
             tmrSlowMo.Enabled = False
@@ -978,9 +978,9 @@ Public Class MainForm
             Case KeyCycleStartPoint
                 If e.Control Then Exit Sub
                 If e.Shift Then
-                    Media.StartPoint.IncrementState(7)
+                    Media.SPT.IncrementState(7)
                 Else
-                    Media.StartPoint.IncrementState(2)
+                    Media.SPT.IncrementState(2)
 
                 End If
             Case KeyTrueSize
@@ -2363,24 +2363,24 @@ Public Class MainForm
     End Sub
 
     Private Sub tbAbsolute_MouseUp(sender As Object, e As MouseEventArgs) Handles tbAbsolute.MouseUp
-        Media.StartPoint.State = StartPointHandler.StartTypes.ParticularAbsolute
-        Media.StartPoint.Absolute = tbAbsolute.Value
+        Media.SPT.State = StartPointHandler.StartTypes.ParticularAbsolute
+        Media.SPT.Absolute = tbAbsolute.Value
         tbxAbsolute.Text = New TimeSpan(0, 0, tbAbsolute.Value).ToString("hh\:mm\:ss")
-        tbxPercentage.Text = Str(Media.StartPoint.Percentage) & "%"
-        tbPercentage.Value = Media.StartPoint.Percentage
+        tbxPercentage.Text = Str(Media.SPT.Percentage) & "%"
+        tbPercentage.Value = Media.SPT.Percentage
         Media.MediaJumpToMarker()
-        MSFiles.SetStartpoints(Media.StartPoint)
+        MSFiles.SetStartpoints(Media.SPT)
     End Sub
 
     Private Sub tbPercentage_MouseUp(sender As Object, e As MouseEventArgs) Handles tbPercentage.MouseUp
-        Media.StartPoint.State = StartPointHandler.StartTypes.ParticularPercentage
-        Media.StartPoint.Percentage = tbPercentage.Value
+        Media.SPT.State = StartPointHandler.StartTypes.ParticularPercentage
+        Media.SPT.Percentage = tbPercentage.Value
         tbxAbsolute.Text = New TimeSpan(0, 0, tbAbsolute.Value).ToString("hh\:mm\:ss")
-        tbxPercentage.Text = Str(Media.StartPoint.Percentage) & "%"
-        tbPercentage.Value = Media.StartPoint.Percentage
+        tbxPercentage.Text = Str(Media.SPT.Percentage) & "%"
+        tbPercentage.Value = Media.SPT.Percentage
 
         Media.MediaJumpToMarker()
-        MSFiles.SetStartpoints(Media.StartPoint)
+        MSFiles.SetStartpoints(Media.SPT)
 
     End Sub
 
@@ -2610,7 +2610,7 @@ Public Class MainForm
     End Sub
 
     Private Sub cbxStartPoint_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbxStartPoint.SelectedIndexChanged
-        Media.StartPoint.State = cbxStartPoint.SelectedIndex
+        Media.SPT.State = cbxStartPoint.SelectedIndex
         'If cbxStartPoint.SelectedIndex <> Media.StartPoint.State Then cbxStartPoint.SelectedIndex = Media.StartPoint.State
 
     End Sub
@@ -2768,7 +2768,7 @@ Public Class MainForm
     Private Sub Scrubber_Paint(sender As Object, e As PaintEventArgs) Handles Scrubber.Paint
         'DrawScrubberMarks()
 
-        'MsgBox("Uh-og")
+        MsgBox("Uh-oh")
     End Sub
 
     Private Sub chbSeparate_CheckedChanged(sender As Object, e As EventArgs) Handles chbSeparate.CheckedChanged

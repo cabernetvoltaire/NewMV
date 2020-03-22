@@ -59,9 +59,9 @@ Friend Module FileHandling
     End Sub
     Private Sub DebugStartpoint(M As MediaHandler)
         Debug.Print(M.MediaPath & " loaded into " & M.Player.Name)
-        Debug.Print(M.StartPoint.StartPoint & " startpoint")
-        Debug.Print(M.StartPoint.State & " State")
-        Debug.Print(M.StartPoint.Duration & " Duration")
+        Debug.Print(M.SPT.StartPoint & " startpoint")
+        Debug.Print(M.SPT.State & " State")
+        Debug.Print(M.SPT.Duration & " Duration")
         Debug.Print("")
     End Sub
     Public Sub OnFilesMoved(files As List(Of String), lbx1 As ListBox)

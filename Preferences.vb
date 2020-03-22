@@ -97,7 +97,7 @@
             ButtonFilePath = ""
             '.SetValue("LastButtonFolder", strButtonfile)
         End With
-        Media.StartPoint.State = 0
+        Media.SPT.State = 0
         PreferencesSave()
     End Sub
 
