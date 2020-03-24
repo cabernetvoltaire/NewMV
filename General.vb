@@ -673,7 +673,7 @@ Public Module General
                 Case SortHandler.Order.PathName
                     List.Sort()
                 Case SortHandler.Order.Random
-                    List = Randomize(Of String)(List)
+                    List = Randomise(Of String)(List)
 
                 Case SortHandler.Order.Type
                     Dim cpr As New CompareByType
@@ -692,102 +692,6 @@ Public Module General
 
 
 
-    Private Sub SortbyRandom(List As List(Of String), NewListS As SortedList(Of String, String))
-        For Each f In List
-            If Len(f) > 247 Then Continue For
-            Dim file As New FileInfo(f)
-
-            Dim l As Long
-            l = Int(Rnd() * (100 * List.Count))
-            While NewListS.ContainsKey(Str(l))
-                l = Int(Rnd() * (100 * List.Count))
-                '                       frmMain.ListBox1.Items.Add(l)
-
-            End While
-            NewListS.Add(Str(l), file.FullName)
-        Next
-    End Sub
-
-    Private Sub SortbyType(List As List(Of String), NewListS As SortedList(Of String, String))
-        For Each f In List
-            If Len(f) > 247 Then Continue For
-            Dim file As New FileInfo(f)
-            NewListS.Add(file.Extension & file.Name & Str(Rnd() * (100)), file.FullName)
-        Next
-    End Sub
-
-    Private Sub SortbyPathName(List As List(Of String), NewListS As SortedList(Of String, String))
-        For Each f In List
-            If Len(f) > 247 Then Continue For
-            Dim file As New FileInfo(f)
-            Dim l As Long = 0
-            Dim s As String
-            s = file.FullName & Str(l)
-            While NewListS.ContainsKey(s)
-                l += 1
-                s = file.FullName & Str(l)
-                '               frmMain.ListBox1.Items.Add(s)
-
-            End While
-            '                        MsgBox(file.FullName)
-            NewListS.Add(s, file.FullName)
-        Next
-    End Sub
-
-    Private Sub SortByDate(List As List(Of String), NewListD As SortedList(Of Date, String))
-        For Each f In List
-            If Len(f) > 247 Then Continue For
-            Dim file As New FileInfo(f)
-            'MsgBox(time)
-            Dim time = GetDate(file)
-            While NewListD.ContainsKey(time)
-                time = time.AddSeconds(1)
-            End While
-            NewListD.Add(time, file.FullName)
-        Next
-    End Sub
-
-    Private Sub SortBySize(List As List(Of String), NewListL As SortedList(Of Long, String))
-        For Each f In List
-            If Len(f) > 247 Then Continue For
-            Dim file As New FileInfo(f)
-            Try
-                Dim l As Long
-                l = file.Length
-                While NewListL.ContainsKey(l)
-                    l += 1
-                    'MsgBox(l)
-                End While
-                NewListL.Add(l, file.FullName)
-
-            Catch ex As FileNotFoundException
-            Catch ex As Exception
-                MsgBox("Unhandled Error in SetPlayOrder" & vbCrLf & ex.Message)
-
-
-            End Try
-        Next
-    End Sub
-
-    Private Sub SortByName(List As List(Of String), NewListS As SortedList(Of String, String))
-
-        For Each f In List
-
-            If Len(f) > 247 Then Continue For
-            Dim file As New FileInfo(f)
-
-            Dim l As Long = 0
-            Dim s As String
-            s = file.Name & Str(l)
-            While NewListS.ContainsKey(s)
-                l += 1
-                s = file.Name & Str(l)
-                '               frmMain.ListBox1.Items.Add(s)
-
-            End While
-            NewListS.Add(s, file.FullName)
-        Next
-    End Sub
 
     Function GetDate(f As FileInfo) As DateTime
         Dim time As DateTime = f.CreationTime
@@ -902,7 +806,8 @@ Public Module General
                     MsgBox(ex.Message)
                 End Try
             Else
-                If InStr(UCase(FilenameFromPath(lbx.Items(i), False)), UCase(s)) <> 0 Then
+                If InStr(UCase(lbx.Items(i)), UCase(s)) <> 0 Then
+
                     lbx.SetSelected(i, True)
                     ls.Add(lbx.Items(i))
                 End If
@@ -961,7 +866,7 @@ Public Module General
     ''' <returns>Randomized result</returns>
     ''' <remarks></remarks>
 
-    Function Randomize(Of T)(ByVal list As List(Of T)) As List(Of T)
+    Function Randomise(Of T)(ByVal list As List(Of T)) As List(Of T)
         Dim rand As New Random()
         Dim temp As T
         Dim indexRand As Integer

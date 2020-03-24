@@ -16,6 +16,7 @@ Public Class MarkPlacement
     Property Bitmap As Bitmap
     Property Markers As List(Of Long)
     Public Sub Create()
+
         Clear()
         For Each m In Markers
             Dim start As Point
@@ -28,7 +29,7 @@ Public Class MarkPlacement
             Graphics.DrawLine(pen, start, endpt)
         Next
 
-        ' Bitmap = mBar.Image
+
     End Sub
 
     Public Sub Clear()

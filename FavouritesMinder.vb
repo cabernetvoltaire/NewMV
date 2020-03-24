@@ -127,7 +127,12 @@
         Dim finfo As New IO.FileInfo(Path)
         Dim list As New List(Of String)
         If finfo.Exists Then
-
+            'FavesList.Sort()
+            'For Each s In FavesList
+            '    If InStr(s, "\" & Left(finfo.Name, 20)) <> 0 Then
+            '        list.Add(s)
+            '    End If
+            'Next
             list = FavesList.FindAll(Function(x) InStr(x, "\" & finfo.Name) <> 0)
         End If
         Return List

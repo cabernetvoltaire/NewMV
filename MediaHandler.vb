@@ -401,10 +401,16 @@ Public Class MediaHandler
             mPlayPosition = Speed.PausedPosition
             Speed.PausedPosition = 0
         ElseIf mMarkers.Count <> 0 AndAlso (ToMarker Or SPT.State = StartPointHandler.StartTypes.FirstMarker) Then
-            SPT.Absolute = mMarkers.Item(LinkCounter)
+            SPT.Marker = mMarkers.Item(Math.Min(LinkCounter, mMarkers.Count))
             mPlayPosition = SPT.StartPoint
         Else
-            mPlayPosition = SPT.StartPoint
+            Dim m As New StartPointHandler With {
+                        .Duration = mDuration,
+                        .Percentage = 10,
+            .State = StartPointHandler.StartTypes.ParticularPercentage
+                                                }
+
+            mPlayPosition = m.StartPoint
         End If
         If mPlayPosition > mDuration Then
             Report(mPlayPosition & "Over-reach" & mDuration, 0, False)

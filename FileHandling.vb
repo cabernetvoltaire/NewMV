@@ -358,9 +358,11 @@ Friend Module FileHandling
                                 Try
                                     AllFaveMinder.CheckFile(f)
                                     m.MoveTo(spath)
+                                Catch ex As IO.IOException
 
                                 Catch ex As Exception
                                     MsgBox(ex.Message)
+
                                 End Try
                             End If
                         Case StateHandler.StateOptions.MoveLeavingLink

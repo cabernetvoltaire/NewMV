@@ -629,6 +629,7 @@ Partial Class MainForm
         '
         'tvMain2
         '
+        Me.tvMain2.AllowDrop = True
         Me.tvMain2.AutoExpandNodes = False
         Me.tvMain2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tvMain2.FileExtensions = "*"
@@ -714,6 +715,7 @@ Partial Class MainForm
         '
         'lbxShowList
         '
+        Me.lbxShowList.AllowDrop = True
         Me.lbxShowList.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lbxShowList.FormattingEnabled = True
         Me.lbxShowList.ItemHeight = 20
@@ -758,7 +760,7 @@ Partial Class MainForm
         Me.ctrPicAndButtons.Size = New System.Drawing.Size(2463, 1427)
         Me.ctrPicAndButtons.SplitterDistance = 1181
         Me.ctrPicAndButtons.SplitterWidth = 6
-        Me.ctrPicAndButtons.TabIndex = 6
+        Me.ctrPicAndButtons.TabIndex = 0
         Me.ctrPicAndButtons.TabStop = False
         '
         'PictureBox2
@@ -916,6 +918,7 @@ Partial Class MainForm
         '
         'btn8
         '
+        Me.btn8.AllowDrop = True
         Me.btn8.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btn8.Location = New System.Drawing.Point(39, 15)
         Me.btn8.Name = "btn8"
@@ -946,6 +949,7 @@ Partial Class MainForm
         '
         'btn7
         '
+        Me.btn7.AllowDrop = True
         Me.btn7.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btn7.Location = New System.Drawing.Point(39, 15)
         Me.btn7.Name = "btn7"
@@ -976,6 +980,7 @@ Partial Class MainForm
         '
         'btn6
         '
+        Me.btn6.AllowDrop = True
         Me.btn6.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btn6.Location = New System.Drawing.Point(39, 15)
         Me.btn6.Name = "btn6"
@@ -1006,6 +1011,7 @@ Partial Class MainForm
         '
         'btn5
         '
+        Me.btn5.AllowDrop = True
         Me.btn5.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btn5.Location = New System.Drawing.Point(39, 15)
         Me.btn5.Name = "btn5"
@@ -1036,6 +1042,7 @@ Partial Class MainForm
         '
         'btn4
         '
+        Me.btn4.AllowDrop = True
         Me.btn4.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btn4.Location = New System.Drawing.Point(39, 15)
         Me.btn4.Name = "btn4"
@@ -1066,6 +1073,7 @@ Partial Class MainForm
         '
         'btn3
         '
+        Me.btn3.AllowDrop = True
         Me.btn3.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btn3.Location = New System.Drawing.Point(39, 15)
         Me.btn3.Name = "btn3"
@@ -1096,6 +1104,7 @@ Partial Class MainForm
         '
         'btn2
         '
+        Me.btn2.AllowDrop = True
         Me.btn2.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.btn2.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btn2.Location = New System.Drawing.Point(39, 15)

@@ -145,6 +145,17 @@
 
         End Set
     End Property
+
+    Private mMarker As Long
+    Public Property Marker() As Long
+        Get
+            Return mMarker
+        End Get
+        Set(ByVal value As Long)
+            mMarker = value
+            mStartPoint = mMarker
+        End Set
+    End Property
 #End Region
 #Region "Methods"
     Public Sub IncrementState(max As Byte)

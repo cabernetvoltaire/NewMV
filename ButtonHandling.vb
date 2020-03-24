@@ -44,6 +44,7 @@ Module ButtonHandling
 
 
     Private Sub ShowPreview(Sender As Object, e As MouseEventArgs)
+        ' Exit Sub
         Dim index As Byte = Val(Sender.Name.ToString(3))
 
         ' Exit Sub

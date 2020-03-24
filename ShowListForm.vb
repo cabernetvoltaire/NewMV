@@ -15,6 +15,11 @@
         ' Add any initialization after the InitializeComponent() call.
 
     End Sub
+
+    Private Sub ListBox1_DragDrop(sender As Object, e As DragEventArgs) Handles ListBox1.DragDrop
+        ListBox1.Text = e.Data.GetData(DataFormats.Text).ToString()
+    End Sub
+
     Public Property ListofFiles() As List(Of String)
         Get
             Return mListofFiles

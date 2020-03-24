@@ -45,6 +45,7 @@ Public Class MainForm
     Public WithEvents FBH As New FileboxHandler(lbxFiles)
     Public WithEvents LBH As New ListBoxHandler(lbxShowList)
 
+
 #Region "Event Responders"
     Sub OnThumbnailed(file As String) Handles VT.Thumbnailed
         emblem.ImageLocation = file
@@ -265,16 +266,13 @@ Public Class MainForm
 
             Marks.Duration = Media.Duration
             Marks.Bar = Scrubber
-            Marks.Clear()
+            '  Marks.Clear()
             Marks.Markers = Media.Markers
             Scrubber.Width = ctrPicAndButtons.Width * ScrubberProportion
             Scrubber.Left = Scrubber.Width * ((1 - ScrubberProportion) / 2)
             'Scrubber.Visible = False
-            If Marks.Markers.Count > 0 Then
-                Marks.Create()
-            Else
-                'Marks.Bar.BackColor = Me.BackColor
-            End If
+            Marks.Create()
+            'Marks.Bar.BackColor = Me.BackColor
         End If
 
         'Scrubber.Image = Marks.Bitmap NEVER add this back.
@@ -684,16 +682,16 @@ Public Class MainForm
 
     End Sub
     Public Sub ToggleAutoTrail()
-        Static m As Byte
+
         tmrAutoTrail.Enabled = Not tmrAutoTrail.Enabled
         chbAutoTrail.Checked = tmrAutoTrail.Enabled
         TrailerModeToolStripMenuItem.Checked = tmrAutoTrail.Enabled
         If tmrAutoTrail.Enabled Then
-            m = Media.SPT.State
+            Media.SPT.SavedState = Media.SPT.State
             Media.SPT.State = StartPointHandler.StartTypes.Random
             SwitchSound(True)
         Else
-            Media.SPT.State = m
+            Media.SPT.State = Media.SPT.SavedState
             SwitchSound(False)
             Debug.Print("Normal")
             tmrSlowMo.Enabled = False
@@ -1210,7 +1208,7 @@ Public Class MainForm
     End Sub
     Private Sub GlobalInitialise()
         Initialising = True
-        'Randomize()
+        Randomize()
         PopulateLists()
         CollapseShowlist(True)
         SetupPlayers()
@@ -1382,9 +1380,16 @@ Public Class MainForm
 
     Sub EscapeMultiSelect(sender As Object, e As KeyEventArgs) Handles lbxFiles.KeyDown, lbxShowList.KeyDown
         If e.KeyCode = Keys.Escape Then
+
             Dim m As New ListBox
             m = sender
-            Dim i = m.SelectedIndices(0)
+
+            Dim i As Integer
+            If m.SelectedIndices.Count > 0 Then
+                i = m.SelectedIndices(0)
+            Else
+                i = 0
+            End If
             m.SelectionMode = SelectionMode.One
             m.SelectedIndex = i
             sender = m
@@ -2617,10 +2622,12 @@ Public Class MainForm
 
     Private Sub btn8_DragEnter(sender As Object, e As DragEventArgs) Handles btn8.DragEnter, btn1.DragEnter
         e.Effect = DragDropEffects.Copy
+        MsgBox(e.Data.GetData(DataFormats.Text))
     End Sub
 
     Private Sub btn8_DragDrop(sender As Object, e As DragEventArgs) Handles btn8.DragDrop, btn1.DragDrop
         Dim i As Integer = Val(sender.name(3))
+        MsgBox(i)
         '  AssignButton(i - 1, e.Data.GetData(DataFormats.Text).ToString)
     End Sub
 
@@ -2768,7 +2775,7 @@ Public Class MainForm
     Private Sub Scrubber_Paint(sender As Object, e As PaintEventArgs) Handles Scrubber.Paint
         'DrawScrubberMarks()
 
-        MsgBox("Uh-oh")
+        'MsgBox("Uh-oh")
     End Sub
 
     Private Sub chbSeparate_CheckedChanged(sender As Object, e As EventArgs) Handles chbSeparate.CheckedChanged
@@ -2919,6 +2926,10 @@ Public Class MainForm
 
     Private Sub tbScanRate_ValueChanged(sender As Object, e As EventArgs) Handles tbScanRate.ValueChanged
         tmrJumpRandom.Interval = tbScanRate.Value
+    End Sub
+
+    Private Sub btn1_Click(sender As Object, e As EventArgs) Handles btn1.Click
+
     End Sub
 
 
