@@ -4,11 +4,17 @@
     Public Property Filter As New FilterHandler
     Public Property Random As New RandomHandler
     Public Property FolderAdvance As Boolean = True
+    Public NewItem As String = ""
+    Public OldItem As String = ""
+
+    Private mEditing As Boolean = False
+    Private WithEvents mText As New TextBox
 
     Private mItemList As New List(Of String)
     Public Event ListBoxFilled(sender As Object, e As EventArgs)
     Public Event ListboxChanged(sender As Object, e As EventArgs)
     Public Event ListIndexChanged(sender As Object, e As EventArgs)
+    Public Event ListItemChanged(sender As Object, e As EventArgs)
     Public Event EndReached(sender As Object, e As EventArgs)
 
     Public Property ItemList() As List(Of String)
@@ -195,11 +201,54 @@
 #End Region
 
 #Region "Events"
-    'Private Sub Keydown(sender As Object, e As KeyEventArgs) Handles mListbox.KeyDown
-    '    If e.KeyCode = Keys.Escape Then
-    '        mListbox.SelectionMode = SelectionMode.One
-    '    End If
-    'End Sub
+    Private Sub Keydown(sender As Object, e As KeyEventArgs) Handles mListbox.KeyDown
+        'Exit Sub
+        If mEditing Then
+        Else
+
+            Select Case e.KeyCode
+
+                Case Keys.F2
+                    EditItem()
+                Case Else
+                    MainForm.Main_KeyDown(sender, e)
+            End Select
+        End If
+
+        '        mListbox.SelectionMode = SelectionMode.One
+        '    End If
+    End Sub
+    Private Sub FinishEdit(sender As Object, e As EventArgs) Handles mText.LostFocus
+        MainForm.KeyPreview = True
+        mText.Hide()
+        mEditing = False
+        If mText.Text <> mListbox.SelectedItem Then
+            OldItem = mListbox.SelectedItem
+            NewItem = mText.Text
+            mListbox.Items(mListbox.SelectedIndex) = NewItem
+            RaiseEvent ListItemChanged(mListbox.SelectedItem, e)
+        End If
+    End Sub
+    Private Sub EscapeField(sender As Object, e As KeyEventArgs) Handles mText.KeyDown
+        If e.KeyCode = Keys.Return Or e.KeyCode = Keys.Tab Then
+            FinishEdit(sender, e)
+        End If
+
+    End Sub
+    Private Sub EditItem()
+        MainForm.KeyPreview = False
+        mEditing = True
+        Dim rect As Rectangle = mListbox.GetItemRectangle(mListbox.SelectedIndex)
+        mText.Parent = mListbox
+        mText.Top = rect.Top
+        mText.Height = rect.Height
+        mText.Width = rect.Width
+        mText.Text = mListbox.SelectedItem
+        mText.Show()
+        mText.BringToFront()
+        mText.Focus()
+
+    End Sub
     Private Sub IndexChanged(sender As Object, e As EventArgs) Handles mListbox.SelectedIndexChanged
         RaiseEvent ListIndexChanged(sender, e)
     End Sub
@@ -246,5 +295,6 @@ Public Class FileboxHandler
         MyBase.New(Lbx)
         ListBox = Lbx
     End Sub
+
 
 End Class

@@ -51,7 +51,10 @@ Public Class MainForm
         emblem.ImageLocation = file
         emblem.Load()
     End Sub
-
+    Public Sub OnItemChanged(sender As Object, e As EventArgs) Handles FBH.ListItemChanged
+        Dim m = New IO.FileInfo(FBH.OldItem)
+        m.MoveTo(FBH.NewItem)
+    End Sub
 
     Public Sub OnEndReached(sender As Object, e As EventArgs) Handles FBH.EndReached, LBH.EndReached
         If AutoTraverse Then tvMain2.Traverse(False)
@@ -109,6 +112,7 @@ Public Class MainForm
         FullScreen.Changing = False
         cbxStartPoint.SelectedIndex = Media.SPT.State
         tbStartpoint.Text = "START:" & Media.SPT.Description
+        Media.MediaJumpToMarker()
 
     End Sub
     Public Sub OnStateChanged(sender As Object, e As EventArgs) Handles NavigateMoveState.StateChanged, CurrentFilterState.StateChanged, PlayOrder.StateChanged

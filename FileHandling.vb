@@ -298,6 +298,7 @@ Friend Module FileHandling
         If strDest <> "" Then
             Dim dinfo As New IO.DirectoryInfo(strDest)
             If dinfo.Exists = False Then dinfo.Create()
+
         End If
         Dim file As String = ""
 
@@ -308,7 +309,7 @@ Friend Module FileHandling
 
                 Dim m As New IO.FileInfo(file)
                 With My.Computer.FileSystem
-                    Dim i As Long = 0
+                    'Dim i As Long = 0
                     Dim spath As String
                     If s.EndsWith("\") Or s = "" Then
                         spath = s & m.Name
@@ -317,22 +318,12 @@ Friend Module FileHandling
                         spath = s & "\" & m.Name
 
                     End If
-                    While .FileExists(spath) AndAlso m.Name = FilenameFromPath(spath, True) 'Existing path - rename
-                        Dim x = m.Extension
-                        Dim b = InStr(spath, "(")
-                        If b = 0 Then
-                            spath = Replace(spath, x, "(" & i & ")" & x)
-                        Else
-                            spath = Left(spath, b - 1) & "(" & i & ")" & x
-                        End If
 
-                        i += 1
-                    End While
                     Select Case NavigateMoveState.State
                         Case StateHandler.StateOptions.Copy
                             If strDest = "" Then
                                 Dim f As New IO.FileInfo(m.FullName)
-                                AllFaveMinder.DestinationPath = strDest
+                                AllFaveMinder.DestinationPath = ""
                                 AllFaveMinder.CheckFile(f)
                                 If AllFaveMinder.OkToDelete Then
                                     AllFaveMinder.DeleteFavourite(m.FullName)
@@ -349,21 +340,30 @@ Friend Module FileHandling
                                 AllFaveMinder.DestinationPath = strDest
                                 AllFaveMinder.CheckFile(f)
                                 If AllFaveMinder.OkToDelete Then
-                                    '    AllFaveMinder.DeleteFavourite(m.FullName)
+                                        AllFaveMinder.DeleteFavourite(m.FullName)
                                     Deletefile(m.FullName)
                                 End If
                             Else
                                 Dim f As New IO.FileInfo(m.FullName)
-                                AllFaveMinder.DestinationPath = spath
-                                Try
-                                    AllFaveMinder.CheckFile(f)
-                                    m.MoveTo(spath)
-                                Catch ex As IO.IOException
+                                Dim destfile As New IO.FileInfo(spath)
+                                'Check if destination same as origin
+                                If f.FullName = destfile.FullName Then
+                                Else
+                                    spath = AppendExistingFilename(spath, m)
 
-                                Catch ex As Exception
-                                    MsgBox(ex.Message)
+                                    If m.FullName <> spath Then
+                                        Try
+                                            AllFaveMinder.DestinationPath = spath
+                                            AllFaveMinder.CheckFile(f)
+                                            m.MoveTo(spath)
+                                        Catch ex As IO.IOException
 
-                                End Try
+                                        Catch ex As Exception
+                                            MsgBox(ex.Message)
+
+                                        End Try
+                                    End If
+                                End If
                             End If
                         Case StateHandler.StateOptions.MoveLeavingLink
                             'Move, and place link here

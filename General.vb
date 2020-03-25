@@ -841,9 +841,11 @@ Public Module General
             Dim file As New IO.FileInfo(f)
             If file.Exists Then
                 Dim n As String = file.Name
+                'Need to use regex here.
                 n = n.Replace("(0)", "")
                 n = n.Replace("(1)", "")
                 n = n.Replace("(2)", "")
+                n = AppendExistingFilename(n, file)
                 If file.Name <> n Then
 
                     Try
@@ -977,4 +979,21 @@ Public Module General
         WriteListToFile(list, Dest, Encrypted)
 
     End Sub
+    Public Function AppendExistingFilename(spath As String, m As IO.FileInfo) As String
+        Dim i = 0
+        If m.Name = FilenameFromPath(spath, True) Then 'Existing path - rename
+            While My.Computer.FileSystem.FileExists(spath)
+                Dim x = m.Extension
+                Dim b = InStr(spath, "(")
+            If b = 0 Then
+                spath = Replace(spath, x, "(" & i & ")" & x)
+            Else
+                spath = Left(spath, b - 1) & "(" & i & ")" & x
+            End If
+
+            i += 1
+            End While
+        End If
+        Return spath
+    End Function
 End Module
