@@ -457,14 +457,6 @@ Public Class MainForm
 
     End Sub
 
-
-    Public Sub FillFileBox(lbx As ListBox, Dir As DirectoryInfo, blnRandom As Boolean)
-        FBH.Random = Random
-        FBH.ListBox = lbx
-        FBH.DirectoryPath = Dir.FullName
-    End Sub
-
-
     Private Function SpeedChange(e As KeyEventArgs) As KeyEventArgs
 
 
@@ -521,37 +513,9 @@ Public Class MainForm
         Return e
     End Function
 
-    'Private Shared Sub TweakSpeed(e As KeyEventArgs)
-    '    If e.KeyCode = KeySpeed1 Then 'TODO does this work?
-    '        If e.Control Then 'increase the extremes if Control held TODO Don't know if this works. 
-    '            If e.Shift Then 'decrease if Shift
-    '                iSSpeeds(0) = iSSpeeds(0) * 0.9
-    '            Else
-    '                iSSpeeds(0) = iSSpeeds(0) / 0.9
-    '            End If
-    '            e.SuppressKeyPress = True
-
-    '        End If
-
-    '    End If
-    '    If e.KeyCode = KeySpeed3 Then
-    '        If e.Control Then 'increase the extremes if Control held
-    '            If e.Shift Then 'decrease if Shift
-    '                iSSpeeds(2) = iSSpeeds(2) * 0.9
-    '            Else
-    '                iSSpeeds(2) = iSSpeeds(2) / 0.9
-    '            End If
-    '            e.SuppressKeyPress = True
-    '        End If
-
-    '    End If
-
-    'End Sub
 
     Private Sub ToggleRandomStartPoint()
         Random.StartPointFlag = Not Random.StartPointFlag
-        'StartAlways is when the random start has been selected for all files
-        'StartPoint is just a flag telling the video to jump to 
     End Sub
     Public Sub GoFullScreen(blnGo As Boolean)
         FullScreen.Changing = True
@@ -591,9 +555,6 @@ Public Class MainForm
         ctrPicAndButtons.Panel2Collapsed = Not blnButtonsLoaded
         UpdateButtonAppearance()
     End Sub
-
-
-
     Public Sub AdvanceFile(blnForward As Boolean, Optional Random As Boolean = False)
         Dim LBHH As New ListBoxHandler(LBH.ListBox)
         If FocusControl Is lbxShowList Or CtrlDown Then
@@ -619,8 +580,6 @@ Public Class MainForm
         GC.Collect()
 
     End Sub
-
-
 
     Public Sub CollapseShowlist(Collapse As Boolean)
         ButtonsHidden = Collapse
@@ -1539,18 +1498,23 @@ Public Class MainForm
         If Initialising Then Exit Sub
         If Media.MediaPath = "" Then Exit Sub
         ' If Not FileLengthCheck(Media.MediaPath) Then Exit Sub
-        Dim f As New FileInfo(Media.MediaPath)
+        Dim filepath As String
+        If Media.IsLink Then
+            filepath = Media.LinkPath
+        Else
+            filepath = Media.MediaPath
+        End If
+        Dim f As New FileInfo(filepath)
         If Not f.Exists Then Exit Sub
         Dim listcount = lbxFiles.Items.Count
         Dim showcount = lbxShowList.Items.Count
         Dim dt As Date
         dt = f.LastAccessTime
-
+        Text = "Metavisua - " & filepath
         If f.LastWriteTime < dt Then dt = f.LastWriteTime
         If f.CreationTime < dt Then dt = f.CreationTime
         Select Case Math.Log10(f.Length)
             Case < 5
-
                 tbDate.ForeColor = Color.Red
                 tbDate.BackColor = Me.BackColor
             Case < 6
@@ -1564,7 +1528,6 @@ Public Class MainForm
             Case < 8
                 tbDate.ForeColor = Color.DarkGreen
                 tbDate.BackColor = Me.BackColor
-
             Case < 9
                 tbDate.ForeColor = Color.Blue
                 tbDate.BackColor = Me.BackColor
@@ -1578,6 +1541,7 @@ Public Class MainForm
                 tbDate.BackColor = Me.BackColor
 
         End Select
+        If Media.IsLink Then f = New IO.FileInfo(Media.LinkPath)
         tbDate.Text = dt.ToShortDateString & " " & dt.ToShortTimeString + " (" + Format(f.Length / 1024, "#,0.") + " Kb) " + Str(Int(f.Length / (128 * Media.Duration))) + " Kps"
         Dim c As Integer = lbxFiles.SelectedItems.Count
         Dim sl As Integer = lbxShowList.SelectedItems.Count
@@ -1605,13 +1569,7 @@ Public Class MainForm
         Else
             tbStartpoint.Text = "START:NORMAL"
         End If
-        If Media.IsLink Then
-            Text = "Metavisua - " & Media.LinkPath
 
-        Else
-            Text = "Metavisua - " & Media.MediaPath
-
-        End If
         Text = Text & " - " & Media.DisplayerName 'TODO remove displayer name for release. 
     End Sub
     ''' <summary>
@@ -2930,10 +2888,6 @@ Public Class MainForm
 
     Private Sub tbScanRate_ValueChanged(sender As Object, e As EventArgs) Handles tbScanRate.ValueChanged
         tmrJumpRandom.Interval = tbScanRate.Value
-    End Sub
-
-    Private Sub btn1_Click(sender As Object, e As EventArgs) Handles btn1.Click
-
     End Sub
 
 

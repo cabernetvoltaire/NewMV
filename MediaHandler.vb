@@ -390,8 +390,9 @@ Public Class MediaHandler
                         .State = StartPointHandler.StartTypes.NearEnd
                                     }
             mPlayPosition = m.StartPoint
+            m = Nothing
             'Or it's a link with a bookmark
-        ElseIf mBookmark > -1 And Speed.PausedPosition = 0 Then 'And mMarkers.Count = 0 Then
+        ElseIf mBookmark > -1 And Speed.PausedPosition = 0 AndAlso Not ToMarker Then 'And mMarkers.Count = 0 Then
             If SPT.State = StartPointHandler.StartTypes.FirstMarker Then
                 mPlayPosition = mBookmark
             Else
@@ -417,6 +418,8 @@ Public Class MediaHandler
             Else
                 mPlayPosition = m.StartPoint
             End If
+            m = Nothing
+
         End If
         If mPlayPosition > mDuration Then
             Report(mPlayPosition & "Over-reach" & mDuration, 0, False)
