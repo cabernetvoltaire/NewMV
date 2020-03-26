@@ -163,8 +163,10 @@
     End Sub
     Private Property mMarkCounter
     Public Sub IncrementMarker()
-        mMarkCounter = (mMarkCounter + 1) Mod mMarkers.Count
-        mStartPoint = mMarkers(mMarkCounter)
+        If mMarkers.Count <> 0 Then
+            mMarkCounter = (mMarkCounter + 1) Mod mMarkers.Count
+            mStartPoint = mMarkers(mMarkCounter)
+        End If
     End Sub
 
     Private Function SetStartPoint() As Long

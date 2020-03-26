@@ -401,7 +401,9 @@ Public Class MediaHandler
             mPlayPosition = Speed.PausedPosition
             Speed.PausedPosition = 0
         ElseIf mMarkers.Count <> 0 AndAlso (ToMarker Or SPT.State = StartPointHandler.StartTypes.FirstMarker) Then
-            SPT.Marker = mMarkers.Item(Math.Min(LinkCounter, mMarkers.Count))
+            'SPT.Marker = mMarkers.Item(Math.Min(LinkCounter, mMarkers.Count - 1))
+
+            SPT.Marker = mMarkers.Item(LinkCounter)
             mPlayPosition = SPT.StartPoint
         Else
 

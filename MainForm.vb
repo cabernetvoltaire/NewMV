@@ -112,7 +112,7 @@ Public Class MainForm
         FullScreen.Changing = False
         cbxStartPoint.SelectedIndex = Media.SPT.State
         tbStartpoint.Text = "START:" & Media.SPT.Description
-        Media.MediaJumpToMarker()
+        If Not Initialising Then Media.MediaJumpToMarker()
 
     End Sub
     Public Sub OnStateChanged(sender As Object, e As EventArgs) Handles NavigateMoveState.StateChanged, CurrentFilterState.StateChanged, PlayOrder.StateChanged
