@@ -15,6 +15,18 @@ Public Class MediaSwapper
     <CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")>
     Public Event LoadedMedia(MH As MediaHandler)
     Public Event MediaNotFound(MH As MediaHandler)
+    Private Property mForceLoad As Boolean
+    Public Property ForceLoad As Boolean
+        Set(value As Boolean)
+            Media1.Forceload = value
+            Media2.Forceload = value
+            Media3.Forceload = value
+            mForceLoad = value
+        End Set
+        Get
+            Return mForceload
+        End Get
+    End Property
 
     Public Property NextItem As String
     Public Property CurrentItem As String
@@ -146,9 +158,9 @@ Public Class MediaSwapper
 
     Private Function Prepare(ByRef MH As MediaHandler, path As String) As Boolean
         Debug.Print("PREPARE: " & MH.Player.Name & " with " & path)
-        If MH.MediaPath <> path Then
+        If MH.MediaPath <> path Or ForceLoad Then
             MH.MediaPath = path
-        Else
+            '       Else
             'MH.LoadMedia()
         End If
         Select Case MH.MediaType

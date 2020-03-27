@@ -136,16 +136,15 @@ Public Class MediaHandler
             'And raise a media changed event. 
 
 
-            'If value = mMediaPath And Not Forceload Then
-            '    'Path hasn't changed, so nothing to do. 
-            'Else
-            If value = "" Then
-                    'Deals with absent file
-                    mMediaPath = DefaultFile
-                    mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
-                    RaiseEvent MediaChanged(Me, New EventArgs)
-                Else
-                    mMediaPath = value
+            If value = mMediaPath And Not Forceload Then
+                '    'Path hasn't changed, so nothing to do. 
+            ElseIf value = "" Then
+                'Deals with absent file
+                mMediaPath = DefaultFile
+                mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
+                RaiseEvent MediaChanged(Me, New EventArgs)
+            Else
+                mMediaPath = value
                 mType = FindType(value)
                 Try
                     Dim f As New IO.FileInfo(value)
@@ -479,16 +478,14 @@ Public Class MediaHandler
     End Sub
     Private Sub HandleMovie(URL As String)
         'TODO: Won't load if LastURL not persisting for some reason.
-        Static LastURL As String
-        If URL <> mPlayer.URL And Not Forceload Then
+        If URL <> mPlayer.URL Or Forceload Then
             If mPlayer Is Nothing Then
             Else
                 Try
 
                     mPlayer.URL = URL
-                    '  mDuration = mPlayer.currentMedia.duration
                     '     Sound.URL = URL
-                    'LastURL = URL 'Prevents reloading into a given player
+
                 Catch EX As Exception
                     Debug.Print(EX.Message)
                 End Try

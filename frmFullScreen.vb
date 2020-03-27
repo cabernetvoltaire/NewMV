@@ -51,7 +51,7 @@ Public Class FullScreen
     End Sub
 
 
-    Private Sub FSWMP_KeyDownEvent(sender As Object, e As _WMPOCXEvents_KeyDownEvent) Handles FSWMP.KeyDownEvent
+    Private Sub FSWMP_KeyDownEvent(sender As Object, e As _WMPOCXEvents_KeyDownEvent) Handles FSWMP.KeyDownEvent, FSWMP2.KeyDownEvent, FSWMP3.KeyDownEvent
         If e.nKeyCode = Keys.Escape Then
             MainForm.GoFullScreen(False)
         End If

@@ -522,7 +522,8 @@ Public Class MainForm
     End Sub
     Public Sub GoFullScreen(blnGo As Boolean)
         FullScreen.Changing = True
-        Media.Forceload = blnGo
+        MSFiles.ForceLoad = True
+
         If blnGo Then
             Dim s As String = Media.MediaPath
             Dim screen As Screen
@@ -549,6 +550,7 @@ Public Class MainForm
         End If
         FullScreen.Changing = False
         blnFullScreen = Not blnFullScreen
+        MSFiles.ForceLoad = False
     End Sub
     Private Sub SplitterPlace(i As Decimal)
         ctrMainFrame.SplitterDistance = Me.Width * i
