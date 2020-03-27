@@ -103,7 +103,7 @@
 #End Region
 #Region "Events"
     Public Sub New(p As PictureBox)
-        PicBox = p
+        mPicBox = p
 
     End Sub
     Public Sub New()
@@ -269,7 +269,7 @@
                 mPicBox.Height = mPicBox.Height * Reduction
             End If
         End If
-        PicTest.Label1.Text = "Picture State:" & ScreenStateDescriptions(State) & " Zoom factor: " & ZoomFactor
+        ' PicTest.Label1.Text = "Picture State:" & ScreenStateDescriptions(State) & " Zoom factor: " & ZoomFactor
     End Sub
 
 #End Region

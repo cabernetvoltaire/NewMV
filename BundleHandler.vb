@@ -41,7 +41,7 @@ Public Class BundleHandler
         mList = ListfromSelectedInListbox(ListBox)
         blnSuppressCreate = False
 
-        MoveFiles(mList, Path, ListBox)
+        MoveFiles(mList, Path)
         FSTree.RefreshTree(Path)
 
         'Add a folder node representing it. 
@@ -64,7 +64,7 @@ Public Class BundleHandler
             list.Add(f.FullName)
         Next
         blnSuppressCreate = True
-        MoveFiles(list, DestinationFolder.FullName, ListBox)
+        MoveFiles(list, DestinationFolder.FullName)
         FSTree.RefreshTree(DestinationFolder.FullName)
 
         Await RemoveEmptyFolders(CurrentFolder.FullName, True)

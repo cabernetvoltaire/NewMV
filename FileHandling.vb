@@ -65,9 +65,6 @@ Friend Module FileHandling
         Debug.Print("")
     End Sub
     Public Sub OnFilesMoved(files As List(Of String), lbx1 As ListBox)
-        'MainForm.FBH.DirectoryPath = CurrentFolder
-        'MainForm.FBH.Refresh()
-        'Exit Sub
         lbx1.SelectionMode = SelectionMode.One
         Dim ind As Long = lbx1.SelectedIndex
         For Each f In files
@@ -84,37 +81,14 @@ Friend Module FileHandling
             End Select
             MSFiles.ResettersOff()
         Next
-        'RefreshListbox(lbx1, files)
+        RefreshListbox(lbx1, files)
 
         If lbx1.Items.Count <> 0 Then lbx1.SetSelected(Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0), True)
 
 
     End Sub
     Public strFilterExtensions(6) As String
-    'Public Sub AssignExtensionFilters()
-    '    'strFilterExtensions(FilterHandler.FilterState.All) = ""
-    '    'strFilterExtensions(FilterHandler.FilterState.Piconly) = PICEXTENSIONS
-    '    'strFilterExtensions(FilterHandler.FilterState.PicVid) = PICEXTENSIONS & VIDEOEXTENSIONS
-    '    'strFilterExtensions(FilterHandler.FilterState.LinkOnly) = ".lnk"
-    '    'strFilterExtensions(FilterHandler.FilterState.Vidonly) = VIDEOEXTENSIONS
-    '    'strFilterExtensions(FilterHandler.FilterState.NoPicVid) = PICEXTENSIONS & VIDEOEXTENSIONS & "NOT"
-    'End Sub
-    ''' <summary>
-    ''' Create a list from e and filter it
-    ''' </summary>
-    ''' <param name="e"></param>
-    ''' <param name="lst"></param>
-    ''' <returns></returns>
-    'Public Function FilterLBList(e As DirectoryInfo, ByRef lst As List(Of String)) As List(Of String)
-    '    lst.Clear()
-    '    For Each f In e.EnumerateFiles
-    '        lst.Add(f.FullName)
-    '    Next
-    '    MainForm.CurrentFilterState.FileList = lst
-    '    Return MainForm.CurrentFilterState.FileList
-    '    Exit Function
 
-    'End Function
 
     ''' <summary>
     ''' Loads Dest into List, and adds all to lbx. Any files not found are put in notlist, which can then be removed from the lbx
@@ -212,7 +186,7 @@ Friend Module FileHandling
             flist.Add(f.FullName)
         Next
         blnSuppressCreate = True
-        MoveFiles(flist, newpath, Listbox, True)
+        MoveFiles(flist, newpath, True)
 
     End Sub
 
@@ -222,7 +196,7 @@ Friend Module FileHandling
             flist.Add(f.FullName)
         Next
         blnSuppressCreate = True
-        MoveFiles(flist, "", Listbox, True)
+        MoveFiles(flist, "", True)
 
     End Sub
     'Private Sub GetFiles(dir As DirectoryInfo, flist As List(Of String))
@@ -245,15 +219,15 @@ Friend Module FileHandling
     ''' <param name="files"></param>
     ''' <param name="strDest"></param>
     ''' <param name="lbx1"></param>
-    Public Sub MoveFiles(files As List(Of String), strDest As String, lbx1 As ListBox, Optional Folder As Boolean = False)
-        Dim Fileundo As New Undo
-        With Fileundo
-            .FileList = files
-            .Action = Undo.Functions.MoveFiles
-            .Destination = strDest
+    Public Sub MoveFiles(files As List(Of String), strDest As String, Optional Folder As Boolean = False)
+        'Dim Fileundo As New Undo
+        'With Fileundo
+        '    .FileList = files
+        '    .Action = Undo.Functions.MoveFiles
+        '    .Destination = strDest
 
-        End With
-        UndoOperations.Push(Fileundo)
+        'End With
+        'UndoOperations.Push(Fileundo)
 
 
         Dim s As String = strDest 'if strDest is empty then delete
@@ -287,12 +261,12 @@ Friend Module FileHandling
 
         End If
     End Sub
-    Public Sub MoveFiles(file As String, strDest As String, lbx1 As ListBox, Optional Folder As Boolean = False)
-        Dim files As New List(Of String)
-        files.Add(file)
-        MoveFiles(files, strDest, lbx1, Folder)
+    'Public Sub MoveFiles(file As String, strDest As String, lbx1 As ListBox, Optional Folder As Boolean = False)
+    '    Dim files As New List(Of String)
+    '    files.Add(file)
+    '    MoveFiles(files, strDest, Folder)
 
-    End Sub
+    'End Sub
 
     Private Sub MovingFiles(files As List(Of String), strDest As String, s As String)
         If strDest <> "" Then
@@ -326,7 +300,7 @@ Friend Module FileHandling
                                 AllFaveMinder.DestinationPath = ""
                                 AllFaveMinder.CheckFile(f)
                                 If AllFaveMinder.OkToDelete Then
-                                    AllFaveMinder.DeleteFavourite(m.FullName)
+
                                     Deletefile(m.FullName)
                                 End If
                             Else
@@ -340,7 +314,7 @@ Friend Module FileHandling
                                 AllFaveMinder.DestinationPath = strDest
                                 AllFaveMinder.CheckFile(f)
                                 If AllFaveMinder.OkToDelete Then
-                                        AllFaveMinder.DeleteFavourite(m.FullName)
+
                                     Deletefile(m.FullName)
                                 End If
                             Else

@@ -41,7 +41,7 @@
 
     Friend Sub FilesMove()
         Dim s As String = ButtonRow.Buttons(KeyNumber).Path
-        MoveFiles(FileList, s, ListBoxHandler.ListBox)
+        MoveFiles(FileList, s)
     End Sub
     Friend Sub FolderMove()
         Dim s As String = ButtonRow.Buttons(KeyNumber).Path

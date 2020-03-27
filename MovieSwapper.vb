@@ -168,8 +168,8 @@ Public Class MediaSwapper
                 RaiseEvent LoadedMedia(MH) 'Currently does nothing.
             Case Filetype.Pic
                 MH.PlaceResetter(False)
-                'MH.MediaPath = path
-                ' MH.Picture.Visible = True
+                MH.MediaPath = path
+                MH.Picture.Visible = True
                 MH.Picture.Tag = path
                 Return True
 

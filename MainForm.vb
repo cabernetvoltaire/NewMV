@@ -57,7 +57,10 @@ Public Class MainForm
     End Sub
 
     Public Sub OnEndReached(sender As Object, e As EventArgs) Handles FBH.EndReached, LBH.EndReached
-        If AutoTraverse Then tvMain2.Traverse(False)
+        If AutoTraverse Then
+
+            tvMain2.Traverse(False)
+        End If
     End Sub
 
     Public Sub OnParentNotFound(sender As Object, e As EventArgs) Handles X.ParentNotFound, Op.ParentNotFound
@@ -519,6 +522,7 @@ Public Class MainForm
     End Sub
     Public Sub GoFullScreen(blnGo As Boolean)
         FullScreen.Changing = True
+        Media.Forceload = blnGo
         If blnGo Then
             Dim s As String = Media.MediaPath
             Dim screen As Screen
@@ -834,7 +838,7 @@ Public Class MainForm
                     If m < 0 Then Exit Select
                     Dim l As Long = Media.Markers(m)
                     If Media.IsLink Then
-                        '  RemoveMarker(Media.LinkPath, l)
+                        RemoveMarker(Media.LinkPath, l)
                     Else
                         RemoveMarker(Media.MediaPath, l)
 
@@ -842,6 +846,7 @@ Public Class MainForm
                     DrawScrubberMarks()
                 Else
                     AddMarker()
+                    DrawScrubberMarks()
                 End If
 
             Case KeyJumpToPoint
@@ -1016,7 +1021,7 @@ Public Class MainForm
     End Function
 
     Private Function JumpToMark(e As KeyEventArgs) As KeyEventArgs
-        If Media.Markers.Count <> 0 Then
+        If Media.Markers.Count > 0 Then
             If e.Alt Then
                 Media.LinkCounter = Media.RandomCounter
             Else
@@ -1059,7 +1064,7 @@ Public Class MainForm
             Else
                 FBH.RemoveItems(m)
                 blnSuppressCreate = True
-                MoveFiles(m, "", lbx)
+                MoveFiles(m, "")
 
             End If
 
@@ -1651,12 +1656,12 @@ Public Class MainForm
                 If lbxShowList.Visible Then
                     Dim m = LBH.SelectedItemsList
                     LBH.RemoveItems(m)
-                    MoveFiles(m, strVisibleButtons(i), lbxShowList)
+                    MoveFiles(m, strVisibleButtons(i))
 
                 Else
                     Dim m = FBH.SelectedItemsList
                     FBH.RemoveItems(m)
-                    MoveFiles(m, strVisibleButtons(i), lbxFiles)
+                    MoveFiles(m, strVisibleButtons(i))
                 End If
                 blnSuppressCreate = flag
             End If
@@ -1668,7 +1673,7 @@ Public Class MainForm
 
             ElseIf e.Shift Then
                 'Move files
-                MoveFiles(ListfromSelectedInListbox(lbxFiles), strVisibleButtons(i), lbxFiles)
+                MoveFiles(ListfromSelectedInListbox(lbxFiles), strVisibleButtons(i))
             Else
                 'SWITCH folder
                 If strVisibleButtons(i) <> CurrentFolder Then
@@ -1924,7 +1929,7 @@ Public Class MainForm
         blnSuppressCreate = True
         For i As Integer = 0 To m.Groups.Count - 1
             If lbxGroups.SelectedIndices.Contains(i) Then
-                MoveFiles(m.Groups.Item(i), CurrentFolder & "\" & m.GroupNames.Item(i), lbxFiles)
+                MoveFiles(m.Groups.Item(i), CurrentFolder & "\" & m.GroupNames.Item(i))
             End If
         Next
         blnSuppressCreate = False
@@ -2432,14 +2437,6 @@ Public Class MainForm
         FBH.DirectoryPath = CurrentFolder
         FBH.Random = Random
         FBH.SetFirst()
-
-
-        '        FillFileBox(lbxFiles, New DirectoryInfo(CurrentFolder), Random.OnDirChange)
-        '       If Not Random.OnDirChange Then
-        '      FBH.SetFirst()
-        '     Else
-        '    FBH.SetNamed(Media.MediaPath)
-        '   End If
         tmrUpdateFileList.Enabled = False
     End Sub
 
@@ -2753,7 +2750,7 @@ Public Class MainForm
 
     Private Sub PromoteFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PromoteFileToolStripMenuItem.Click
         Dim folder As New IO.DirectoryInfo(FBH.DirectoryPath)
-        MoveFiles(FBH.SelectedItemsList, folder.Parent.FullName, FBH.ListBox)
+        MoveFiles(FBH.SelectedItemsList, folder.Parent.FullName)
     End Sub
 
     Private Sub FilesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FilesToolStripMenuItem.Click

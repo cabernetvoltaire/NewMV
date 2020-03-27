@@ -157,15 +157,18 @@ Class DateMove
 
             Dim destfile As String = f.DirectoryName & "\" & f.Extension
             blnSuppressCreate = True
-            MoveFiles(f.FullName, destfile, MainForm.lbxFiles)
+            Dim l As New List(Of String)
+            l.Add(f.FullName)
+            MoveFiles(l, destfile)
         Next
+
         RaiseEvent FilesMoved(Nothing, Nothing)
     End Sub
     Public Sub FilterByAlpha(FolderName As String, Optional Files As Boolean = False, Optional Folders As Boolean = False, Optional Letters As Boolean = False)
         Dim s As New IO.DirectoryInfo(FolderName)
         If Letters Then
             Dim letter As Char
-            Dim dest As String
+            Dim dest As String = ""
             Dim list As New List(Of String)
             For Each f In s.GetFiles
                 letter = UCase(f.Name(0))
@@ -177,7 +180,7 @@ Class DateMove
                 'Move each file into it. 
 
             Next
-            MoveFiles(list, dest, MainForm.lbxFiles)
+            MoveFiles(list, dest)
         Else
 
             If Files Then
@@ -199,7 +202,7 @@ Class DateMove
                             list.Add(f.FullName)
                         End If
                     Next
-                    MoveFiles(list, dest, MainForm.lbxFiles)
+                    MoveFiles(list, dest)
                 Next
             End If
             If Folders Then

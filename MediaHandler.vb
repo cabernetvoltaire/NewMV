@@ -20,6 +20,7 @@ Public Class MediaHandler
     Public WithEvents SPT As New StartPointHandler
     Public WithEvents Speed As New SpeedHandler
     Public DisplayerName As String
+    Public Forceload As Boolean
     Private mLoop As Boolean = False
     Private mType As Filetype
     Public Name As String = Me.Name
@@ -135,15 +136,16 @@ Public Class MediaHandler
             'And raise a media changed event. 
 
 
-            If value = mMediaPath Then
-                '    'Path hasn't changed, so nothing to do. 
-            ElseIf value = "" Then
-                'Deals with absent file
-                mMediaPath = DefaultFile
-                mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
-                RaiseEvent MediaChanged(Me, New EventArgs)
-            Else
-                mMediaPath = value
+            'If value = mMediaPath And Not Forceload Then
+            '    'Path hasn't changed, so nothing to do. 
+            'Else
+            If value = "" Then
+                    'Deals with absent file
+                    mMediaPath = DefaultFile
+                    mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
+                    RaiseEvent MediaChanged(Me, New EventArgs)
+                Else
+                    mMediaPath = value
                 mType = FindType(value)
                 Try
                     Dim f As New IO.FileInfo(value)
@@ -355,6 +357,25 @@ Public Class MediaHandler
         Dim ret As Integer
         Dim i As Integer = 0
         For i = 0 To mMarkers.Count - 1
+            If mMarkers(i) > Position Then
+                If Last Then
+                    ret = i - 1
+                Else
+                    ret = i
+                End If
+            End If
+        Next
+        Return ret
+
+    End Function
+    Public Function FindNextCounter(Last As Boolean) As Integer
+        If mMarkers.Count = 0 Then
+            Return -1
+            Exit Function
+        End If
+        Dim ret As Integer
+        Dim i As Integer = 0
+        For i = 0 To mMarkers.Count - 1
             If Last Then
                 If mMarkers(i) > Position Then
                     ret = i - 1
@@ -401,7 +422,7 @@ Public Class MediaHandler
         ElseIf Speed.PausedPosition <> 0 Then
             mPlayPosition = Speed.PausedPosition
             Speed.PausedPosition = 0
-        ElseIf mMarkers.Count <> 0 AndAlso (ToMarker Or SPT.State = StartPointHandler.StartTypes.FirstMarker) Then
+        ElseIf mMarkers.Count > 1 AndAlso (ToMarker Or SPT.State = StartPointHandler.StartTypes.FirstMarker) Then
             'SPT.Marker = mMarkers.Item(Math.Min(LinkCounter, mMarkers.Count - 1))
 
             SPT.Marker = mMarkers.Item(LinkCounter)
@@ -459,7 +480,7 @@ Public Class MediaHandler
     Private Sub HandleMovie(URL As String)
         'TODO: Won't load if LastURL not persisting for some reason.
         Static LastURL As String
-        If URL <> mPlayer.URL Then
+        If URL <> mPlayer.URL And Not Forceload Then
             If mPlayer Is Nothing Then
             Else
                 Try
@@ -492,14 +513,6 @@ Public Class MediaHandler
             Exit Sub
         End If
         MainForm.OrientPic(img)
-        'Resume if in middle of slideshow
-        'If blnRestartSlideShowFlag Then
-        '    tmrSlideShow.Enabled = True
-        '    blnRestartSlideShowFlag = False
-        'End If
-        'PicHandler.PicBox = mPicBox
-        'PicHandler.GetImage(Media.MediaPath)
-        'PicHandler.PreparePic()
         currentPicBox = mPicBox
         General.MovietoPic(currentPicBox, img)
         DisplayerName = mPicBox.Name

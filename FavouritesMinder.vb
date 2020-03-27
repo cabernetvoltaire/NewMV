@@ -29,13 +29,15 @@
     Public Sub DeleteFavourite(path As String)
         Dim templist As New List(Of String)
 
-        templist = mFavesList.FindAll(Function(x) LinkTarget(x) = path)
-        For Each m In templist
+
+        For Each m In Linklist
             Dim f As New IO.FileInfo(m)
             Deletefile(f.FullName)
             mFavesList.Remove(m)
         Next
     End Sub
+    Public Linklist As New List(Of String)
+
     Public Sub New(path As String)
         NewPath(path)
     End Sub
@@ -60,12 +62,12 @@
     ''' Runs through all files in f, and redirects their targets
     ''' </summary>
     ''' <param name="f"></param>
-    Public Sub CheckFiles(f As List(Of String))
-        For Each m In f
-            Dim k As New IO.FileInfo(m)
-            Check(k, mDestPath)
-        Next
-    End Sub
+    'Public Sub CheckFiles(f As List(Of String))
+    '    For Each m In f
+    '        Dim k As New IO.FileInfo(m)
+    '        Check(k, mDestPath)
+    '    Next
+    'End Sub
 
     Public Sub RedirectShortCutList(f As IO.FileInfo, shortcuts As List(Of String))
         ReallocateShortCuts(f, shortcuts)
@@ -94,7 +96,8 @@
         ElseIf destinationpath = "" Then
             If MsgBox(f.Name & " - There are links to this file. Delete?", MsgBoxStyle.YesNoCancel, "Delete file?") = MsgBoxResult.Yes Then
                 OkToDelete = True
-                ' FavesList.RemoveAll(Function(e) mf.Exists(Function(x) x = e))
+                Me.GetLinksOf(f.FullName)
+                'FavesList.RemoveAll(Function(e) mf.Exists(Function(x) x = e))
             Else
                 OkToDelete = False
             End If
@@ -127,14 +130,9 @@
         Dim finfo As New IO.FileInfo(Path)
         Dim list As New List(Of String)
         If finfo.Exists Then
-            'FavesList.Sort()
-            'For Each s In FavesList
-            '    If InStr(s, "\" & Left(finfo.Name, 20)) <> 0 Then
-            '        list.Add(s)
-            '    End If
-            'Next
             list = FavesList.FindAll(Function(x) InStr(x, "\" & finfo.Name) <> 0)
         End If
+        Linklist = list
         Return List
     End Function
     Public Property OkToDelete As Boolean = True
