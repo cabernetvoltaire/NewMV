@@ -205,7 +205,7 @@ Public Class MediaHandler
     Public Sub New(Nomen As String)
         '      Player = mPlayer
         Name = Nomen
-        PositionUpdater.Interval = 500
+        PositionUpdater.Interval = 100
         PositionUpdater.Enabled = False
         ResetPosition.Interval = 1000
         'mSndH.SoundPlayer = Sound
@@ -215,10 +215,10 @@ Public Class MediaHandler
     Public Sub New(Nomen As String, mplayer As AxWindowsMediaPlayer, pic As PictureBox)
         Player = mplayer
         Name = Nomen
-        PositionUpdater.Interval = 500
+        PositionUpdater.Interval = 100
         PositionUpdater.Enabled = False
         ResetPosition.Interval = 1000
-
+        mPicBox = pic
         'mSndH.SoundPlayer = Sound
         'mSndH.CurrentPlayer = Player
         '     StartPoint = Media.StartPoint
@@ -299,7 +299,7 @@ Public Class MediaHandler
 
     Public Property LinkCounter As Integer
         Get
-            If mlinkcounter > mMarkers.Count Or mMarkers.Count = 1 Then
+            If mlinkcounter > mMarkers.Count - 1 Or mMarkers.Count = 1 Then
                 mlinkcounter = 0
             End If
             Return mlinkcounter
@@ -310,23 +310,32 @@ Public Class MediaHandler
     End Property
 
     Public Function IncrementLinkCounter(Forward As Boolean) As Integer
-        If mMarkers.Count = 0 Or mMarkers.Count < mlinkcounter Then
-            Return 0
-            Exit Function
+
+        'Get current position
+        mMarkers.Sort()
+
+        For i = 0 To mMarkers.Count - 1 'Find preceding marker to position
+            If Forward Then
+                If mMarkers(i) < mPlayPosition + 0.5 Then
+                    mlinkcounter = i
+                End If
+            Else
+                If mMarkers(i) < mPlayPosition - 1.5 Then
+                    mlinkcounter = i
+                End If
+            End If
+        Next
+        If mlinkcounter = 0 And Not Forward Then 'Loop to last
+            mlinkcounter = mMarkers.Count - 1
         End If
         If Forward Then
             mlinkcounter += 1
-        Else
-            mlinkcounter -= 1
         End If
-        If mlinkcounter < 0 Then
-            mlinkcounter = mlinkcounter + mMarkers.Count
-        End If
-        mlinkcounter = mlinkcounter Mod (mMarkers.Count)
-        If mlinkcounter > mMarkers.Count Then
-            mlinkcounter = 0
-        End If
+        If mlinkcounter > mMarkers.Count - 1 Then mlinkcounter = 0
+
         Return mlinkcounter
+
+
     End Function
     Public Function RandomCounter() As Integer
         Static done As New List(Of Integer)
@@ -421,7 +430,7 @@ Public Class MediaHandler
         ElseIf Speed.PausedPosition <> 0 Then
             mPlayPosition = Speed.PausedPosition
             Speed.PausedPosition = 0
-        ElseIf mMarkers.Count > 1 AndAlso (ToMarker Or SPT.State = StartPointHandler.StartTypes.FirstMarker) Then
+        ElseIf mMarkers.Count > 0 AndAlso (ToMarker Or SPT.State = StartPointHandler.StartTypes.FirstMarker) Then
             'SPT.Marker = mMarkers.Item(Math.Min(LinkCounter, mMarkers.Count - 1))
 
             SPT.Marker = mMarkers.Item(LinkCounter)
@@ -623,10 +632,17 @@ Public Class MediaHandler
     End Sub
     Public Sub PlaceResetter(ResetOn As Boolean)
         ResetPosition.Enabled = ResetOn
+        If Not ResetOn Then
+            'If mIsLink Then
+            '    MainForm.PopulateLinkList(mLinkPath, Me)
+            'Else
+            '    MainForm.PopulateLinkList(mMediaPath, Me)
+            'End If
+        End If
     End Sub
     Private Sub ResetPositionCanceller_Tick(sender As Object, e As EventArgs) Handles ResetPositionCanceller.Tick
-        'ResetPosition.Enabled = False
-        '  ResetPositionCanceller.Enabled = False
+        ResetPosition.Enabled = False
+        ResetPositionCanceller.Enabled = False
     End Sub
 
 

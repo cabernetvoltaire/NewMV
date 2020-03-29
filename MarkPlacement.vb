@@ -1,24 +1,37 @@
 ﻿
 Public Class MarkPlacement
     Private Property mBar As New PictureBox()
-    Property Bar As PictureBox
+    Public WriteOnly Property Bar As PictureBox
         Set(value As PictureBox)
             mBar = value
             Graphics = mBar.CreateGraphics
+            Barcolor = mBar.BackColor
         End Set
-        Get
-            Return mBar
-        End Get
     End Property
-
+    Private Property Barcolor
     Property Duration As Long
     Property Graphics As Graphics
     Property Bitmap As Bitmap
+    Private Property mMarkers As List(Of Long)
     Property Markers As List(Of Long)
+        Get
+            Markers = mMarkers
+        End Get
+        Set(value As List(Of Long))
+            mMarkers = value
+            If mMarkers.Count = 0 Then
+                '      mBar.BackColor = mBar.Parent.BackColor
+            Else
+                '     mBar.BackColor = BarColor
+            End If
+        End Set
+
+    End Property
+
     Public Sub Create()
 
         Clear()
-        For Each m In Markers
+        For Each m In mMarkers
             Dim start As Point
             start.Y = 0
             start.X = mBar.Width * m / Duration
@@ -34,6 +47,6 @@ Public Class MarkPlacement
 
     Public Sub Clear()
         'Dim g As Graphics = Bar.CreateGraphics
-        Graphics.Clear(mBar.BackColor)
+        Graphics.Clear(Barcolor)
     End Sub
 End Class

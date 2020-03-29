@@ -13,8 +13,8 @@ Public Class MediaSwapper
     Private mListcount As Integer
     Public CurrentURLS As New List(Of String)
     <CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")>
-    Public Event LoadedMedia(MH As MediaHandler)
-    Public Event MediaNotFound(MH As MediaHandler)
+    Public Event MediaPlaying(sender As Object, e As EventArgs)
+    Public Event MediaNotFound(sender As Object, e As EventArgs)
     Private Property mForceLoad As Boolean
     Public Property ForceLoad As Boolean
         Set(value As Boolean)
@@ -31,7 +31,7 @@ Public Class MediaSwapper
     Public Property NextItem As String
     Public Property CurrentItem As String
     Public Property PreviousItem As String
-    Public Event MediaShown(MH As MediaHandler)
+    Public Event MediaShown(sender As Object, e As EventArgs)
 #Region "Properties"
 
     ''' <summary>
@@ -92,6 +92,11 @@ Public Class MediaSwapper
     End Sub
 #End Region
 #Region "Methods"
+    Public Sub AssignMedias(Med1 As MediaHandler, Med2 As MediaHandler, Med3 As MediaHandler)
+        Media1 = Med1
+        Media2 = Med2
+        Media3 = Med3
+    End Sub
     Public Sub AssignPictures(ByRef PB1 As PictureBox, ByRef PB2 As PictureBox, ByRef PB3 As PictureBox)
         Media1.Picture = PB1
         Media2.Picture = PB2
@@ -159,7 +164,7 @@ Public Class MediaSwapper
     Private Function Prepare(ByRef MH As MediaHandler, path As String) As Boolean
         Debug.Print("PREPARE: " & MH.Player.Name & " with " & path)
         If MH.MediaPath <> path Or ForceLoad Then
-            MH.MediaPath = path
+            MH.MediaPath = path 'Still not right for pics
             '       Else
             'MH.LoadMedia()
         End If
@@ -177,7 +182,7 @@ Public Class MediaSwapper
                 MH.Player.Visible = True
                 MH.PlaceResetter(True)
                 Return True
-                RaiseEvent LoadedMedia(MH) 'Currently does nothing.
+              '  RaiseEvent LoadedMedia(MH) 'Currently does nothing.
             Case Filetype.Pic
                 MH.PlaceResetter(False)
                 MH.MediaPath = path
@@ -279,13 +284,13 @@ Public Class MediaSwapper
             .Visible = True
             .BringToFront()
             .settings.mute = Muted
-            RaiseEvent MediaShown(MHX)
+            RaiseEvent MediaShown(MHX, Nothing)
         End With
 
 
     End Sub
     Private Sub OnMediaPlaying(sender As Object, e As EventArgs) Handles Media1.MediaPlaying, Media2.MediaPlaying, Media3.MediaPlaying
-        'RaiseEvent MediaShown(sender)
+        ' RaiseEvent MediaPlaying(sender, e)
     End Sub
     Private Sub OnRandomChanged(sender As Object, e As EventArgs) Handles NextF.RandomChanged
         NextItem = NextF.NextItem
@@ -318,7 +323,7 @@ Public Class MediaSwapper
 
         MHX.Picture.Visible = True
         MHX.Picture.BringToFront()
-        RaiseEvent MediaShown(MHX)
+        RaiseEvent MediaShown(MHX, Nothing)
 
     End Sub
     Public Sub DockMedias(separated As Boolean)

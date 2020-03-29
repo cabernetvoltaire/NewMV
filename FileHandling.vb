@@ -34,26 +34,26 @@ Friend Module FileHandling
     Public Sub OnMediaSpeedChanged(sender As Object, e As EventArgs) Handles Media.SpeedChanged
         MainForm.OnSpeedChange(sender, e)
     End Sub
-    Public Sub OnMediaShown(M As MediaHandler) Handles MSFiles.MediaShown
-        Media = M
-        MainForm.UpdateFileInfo()
-        If M.MediaType <> Filetype.Movie Then
-            currentPicBox = M.Picture
-        ElseIf M.MediaType = Filetype.Movie Then
-            ' MainForm.emblem.ImageLocation = MainForm.VT.GetThumbnail(M.MediaPath, M.Position)
-            'Deletefile(MainForm.emblem.ImageLocation)
+    Public Sub OnMediaShown(sender As Object, e As EventArgs) Handles MSFiles.MediaShown
 
+        Media = sender
+
+
+        MainForm.UpdateFileInfo()
+        If sender.MediaType <> Filetype.Movie Then
+            currentPicBox = sender.Picture
         End If
-        If M.IsLink Then
-            MainForm.PopulateLinkList(M.LinkPath, M)
+        If sender.IsLink Then
+            MainForm.PopulateLinkList(sender.LinkPath, sender)
         Else
-            MainForm.PopulateLinkList(M.MediaPath, M)
+            MainForm.PopulateLinkList(sender.MediaPath, sender)
         End If
-        ' MainForm.AT.AdvanceChance = M.Markers.Count + 1
+
+        ' MainForsender.AT.AdvanceChance = sender.Markers.Count + 1
         'Media.IsCurrent = True
         Media.SetLink(0)
         MainForm.AT.Counter = Media.Markers.Count
-        If M.MediaPath <> "" Then Mysettings.PreferencesSave()
+        If sender.MediaPath <> "" Then Mysettings.PreferencesSave()
         If ShiftDown Then MainForm.HighlightCurrent(Media.LinkPath) 'Used for links only, to go to original file
         ' If MainForm.FocusControl Is MainForm.lbxShowList Then MainForm.HighlightCurrent(Media.MediaPath)
     End Sub
@@ -76,7 +76,9 @@ Friend Module FileHandling
                     MainForm.UpdatePlayOrder(MainForm.FBH)
 
                 Case Else
-                    MainForm.LBH.FillBox()
+                    If MainForm.LBH.ListBox IsNot Nothing Then
+                        MainForm.LBH.FillBox()
+                    End If
                     MainForm.FBH.FillBox() '            RefreshListbox(lbx1, files)
             End Select
             MSFiles.ResettersOff()
@@ -243,6 +245,8 @@ Friend Module FileHandling
         End Select
 
         t = New Thread(New ThreadStart(Sub() MovingFiles(files, strDest, s)))
+
+
         Static i As Byte
         With buttons
             .CurrentSet.Last.Buttons(i).Path = strDest
@@ -251,6 +255,7 @@ Friend Module FileHandling
         t.IsBackground = True
         t.SetApartmentState(ApartmentState.STA)
         t.Start()
+
         GC.Collect()
 
         If Folder Then
@@ -260,6 +265,9 @@ Friend Module FileHandling
             ' RaiseEvent FileMoved(files, lbx1)
 
         End If
+    End Sub
+    Private Sub Finishedmoving()
+
     End Sub
     'Public Sub MoveFiles(file As String, strDest As String, lbx1 As ListBox, Optional Folder As Boolean = False)
     '    Dim files As New List(Of String)

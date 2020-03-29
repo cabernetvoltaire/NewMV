@@ -11,18 +11,11 @@ Public Class FullScreen
         End Get
         Set(ByVal value As MediaSwapper)
             mFSFiles = value
-            mFSFiles.Media1.Player = FSWMP
-            mFSFiles.Media1.Player.Name = "FSWMP"
+            mFSFiles.AssignPictures(FSPB1, FSPB2, FSPB3)
+            mFSFiles.AssignPlayers(FSWMP, FSWMP2, FSWMP3)
             mFSFiles.Media1.Player.uiMode = "none"
             mFSFiles.Media2.Player.uiMode = "none"
             mFSFiles.Media3.Player.uiMode = "none"
-            mFSFiles.Media2.Player = FSWMP2
-            mFSFiles.Media1.Player.Name = "FSWMP2"
-            mFSFiles.Media3.Player = FSWMP3
-            mFSFiles.Media1.Player.Name = "FSWMP3"
-            mFSFiles.Media1.Picture = FSPB1
-            mFSFiles.Media2.Picture = FSPB2
-            mFSFiles.Media3.Picture = FSPB3
             mFSFiles.ListIndex = FileHandling.MSFiles.ListIndex
 
         End Set

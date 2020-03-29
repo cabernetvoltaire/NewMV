@@ -249,15 +249,12 @@ Public Class MainForm
         Else
             chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Bold)
             chbPreviewLinks.Text = "Preview links (" & x.Count & ")"
-            Scrubber.Visible = True
-            '  Scrubber.BackColor = Color.HotPink
+            'Scrubber.Visible = True
+            'Scrubber.BackColor = Color.HotPink
             If chbPreviewLinks.Checked Then
                 x.Sort(New CompareByEndNumber)
                 FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
             End If
-
-            Media.Markers = Media.GetMarkersFromLinkList
-            Media.Markers.Sort()
             Marks.Markers = Media.Markers
         End If
         DrawScrubberMarks()
@@ -268,19 +265,17 @@ Public Class MainForm
 
     Public Sub DrawScrubberMarks()
 
-        If Media.Duration <> 0 Then
+        If Media.Duration = 0 Then Exit Sub
 
-
-            Marks.Duration = Media.Duration
-            Marks.Bar = Scrubber
-            '  Marks.Clear()
-            Marks.Markers = Media.Markers
+        Marks.Duration = Media.Duration
+        'Marks.Bar = Scrubber
+        '  Marks.Clear()
+        Marks.Markers = Media.Markers
             Scrubber.Width = ctrPicAndButtons.Width * ScrubberProportion
             Scrubber.Left = Scrubber.Width * ((1 - ScrubberProportion) / 2)
             'Scrubber.Visible = False
             Marks.Create()
-            'Marks.Bar.BackColor = Me.BackColor
-        End If
+        'Marks.Bar.BackColor = Me.BackColor
 
         'Scrubber.Image = Marks.Bitmap NEVER add this back.
 
@@ -483,17 +478,7 @@ Public Class MainForm
         If e.KeyCode = KeyToggleSpeed Then
             If blnPlaying Then
                 'If Media.Player.playState = WMPLib.WMPPlayState.wmppsPaused And Media.Speed.Fullspeed = False Then
-                If Media.Speed.Paused Then
-                    Media.Position = Media.Player.Ctlcontrols.currentPosition
-
-                    Media.Speed.Paused = False
-                    tmrSlowMo.Enabled = False
-                    Media.Speed.Fullspeed = True
-                Else
-                    Media.Player.Ctlcontrols.pause()
-                    'Media.Speed.Fullspeed = False
-                    Media.Speed.Paused = True
-                End If
+                TogglePause()
             Else
                 tmrSlideShow.Enabled = Not tmrSlideShow.Enabled
             End If
@@ -516,6 +501,19 @@ Public Class MainForm
         Return e
     End Function
 
+    Private Sub TogglePause()
+        If Media.Speed.Paused Then
+            Media.Position = Media.Player.Ctlcontrols.currentPosition
+
+            Media.Speed.Paused = False
+            tmrSlowMo.Enabled = False
+            Media.Speed.Fullspeed = True
+        Else
+            Media.Player.Ctlcontrols.pause()
+            'Media.Speed.Fullspeed = False
+            Media.Speed.Paused = True
+        End If
+    End Sub
 
     Private Sub ToggleRandomStartPoint()
         Random.StartPointFlag = Not Random.StartPointFlag
@@ -523,7 +521,8 @@ Public Class MainForm
     Public Sub GoFullScreen(blnGo As Boolean)
         FullScreen.Changing = True
         MSFiles.ForceLoad = True
-
+        'TogglePause()
+        'Media.Speed.Paused = True
         If blnGo Then
             Dim s As String = Media.MediaPath
             Dim screen As Screen
@@ -540,6 +539,7 @@ Public Class MainForm
             FullScreen.Show()
 
             FullScreen.FSFiles = MSFiles
+            ' TogglePause()
         Else
             '            SplitterPlace(0.25)
             MSFiles.AssignPlayers(MainWMP1, MainWMP2, MainWMP3)
@@ -547,6 +547,7 @@ Public Class MainForm
             MSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
 
             FullScreen.Close()
+            'TogglePause()
         End If
         FullScreen.Changing = False
         blnFullScreen = Not blnFullScreen
@@ -848,7 +849,7 @@ Public Class MainForm
                     DrawScrubberMarks()
                 Else
                     AddMarker()
-                    DrawScrubberMarks()
+                    '    DrawScrubberMarks()
                 End If
 
             Case KeyJumpToPoint
@@ -1067,7 +1068,7 @@ Public Class MainForm
                 FBH.RemoveItems(m)
                 blnSuppressCreate = True
                 MoveFiles(m, "")
-
+                'FBH.Refresh()
             End If
 
 
@@ -1188,7 +1189,7 @@ Public Class MainForm
         currentPicBox = PictureBox1
         Media.Picture = currentPicBox
         tbPercentage.Enabled = True
-
+        Marks.Bar = Scrubber
 
         AddHandler FileHandling.FolderMoved, AddressOf OnFolderMoved
         AddHandler FileHandling.FileMoved, AddressOf OnFilesMoved
@@ -1863,17 +1864,12 @@ Public Class MainForm
 
         End If
 
-        't.LayoutPanel = Thumbnails.FlowLayoutPanel1
         t.Text = CurrentFolder
-
-        't.SetBounds(-1920, 0, 750, 900)
         t.Show()
 
     End Sub
 
-    Private Sub toggleMove_Click(sender As Object, e As EventArgs)
-        ToggleMove()
-    End Sub
+
 
     Private Sub RandomStartToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ToggleRandomStartToolStripMenuItem.Click
         ToggleRandomStartPoint()
@@ -2204,13 +2200,13 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub cbxFilter_SelectedIndexChanged(sender As Object, e As EventArgs)
+    Private Sub cbxFilter_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbxFilter.SelectedIndexChanged
         If CurrentFilterState.State <> cbxFilter.SelectedIndex Then
             CurrentFilterState.State = cbxFilter.SelectedIndex
         End If
     End Sub
 
-    Private Sub cbxOrder_SelectedIndexChanged(sender As Object, e As EventArgs)
+    Private Sub cbxOrder_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbxOrder.SelectedIndexChanged
         If PlayOrder.State <> cbxOrder.SelectedIndex Then
             PlayOrder.State = cbxOrder.SelectedIndex
         End If
@@ -2471,13 +2467,9 @@ Public Class MainForm
 
 
 
-    Private Sub cbxFilter_SelectedIndexChanged_1(sender As Object, e As EventArgs)
-        CurrentFilterState.State = cbxFilter.SelectedIndex
-    End Sub
 
-    Private Sub cbxOrder_SelectedIndexChanged_1(sender As Object, e As EventArgs) Handles cbxOrder.SelectedIndexChanged
-        PlayOrder.State = cbxOrder.SelectedIndex
-    End Sub
+
+
 
     Private Sub Groupfiles(sender As Object, e As EventArgs) Handles ByNameToolStripMenuItem.Click
         Groupfiles(FNG)
@@ -2734,11 +2726,15 @@ Public Class MainForm
     End Sub
 
     Private Sub Scrubber_Paint(sender As Object, e As PaintEventArgs) Handles Scrubber.Paint
-        'DrawScrubberMarks()
+        DrawScrubberMarks()
 
         'MsgBox("Uh-oh")
     End Sub
-
+    Private Sub ToggleRandomJump()
+        tmrJumpRandom.Interval = tbScanRate.Value
+        tmrJumpRandom.Enabled = Not tmrJumpRandom.Enabled
+        chbScan.Checked = tmrJumpRandom.Enabled
+    End Sub
     Private Sub chbSeparate_CheckedChanged(sender As Object, e As EventArgs) Handles chbSeparate.CheckedChanged
         separate = chbSeparate.Checked
 
@@ -2853,11 +2849,6 @@ Public Class MainForm
         ToggleRandomJump()
     End Sub
 
-    Private Sub ToggleRandomJump()
-        tmrJumpRandom.Interval = tbScanRate.Value
-        tmrJumpRandom.Enabled = Not tmrJumpRandom.Enabled
-        chbScan.Checked = tmrJumpRandom.Enabled
-    End Sub
 
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles tmrJumpRandom.Tick
         tmrJumpRandom.Interval = tbScanRate.Value
