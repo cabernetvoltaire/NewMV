@@ -5,6 +5,11 @@ Public Class MediaSwapper
     Public WithEvents Media1 As New MediaHandler("mMedia1")
     Public WithEvents Media2 As New MediaHandler("mMedia2")
     Public WithEvents Media3 As New MediaHandler("mMedia3")
+    Public WithEvents Pic1 As New PictureHandler(Media1.Picture)
+    Public WithEvents Pic2 As New PictureHandler(Media2.Picture)
+    Public WithEvents Pic3 As New PictureHandler(Media3.Picture)
+
+    Private WithEvents PauseAll As New Timer With {.Interval = 3000, .Enabled = False}
 
     Public RandomNext As Boolean = False
     Private mFileList As New List(Of String) '
@@ -98,9 +103,13 @@ Public Class MediaSwapper
         Media3 = Med3
     End Sub
     Public Sub AssignPictures(ByRef PB1 As PictureBox, ByRef PB2 As PictureBox, ByRef PB3 As PictureBox)
-        Media1.Picture = PB1
-        Media2.Picture = PB2
+        Media1.PicHandler.PicBox = PB1
+        Media2.PicHandler.PicBox = PB2
+        Media3.PicHandler.PicBox = PB3
         Media3.Picture = PB3
+        Media2.Picture = PB2
+        Media1.Picture = PB1
+
 
     End Sub
     Public Sub AssignPlayers(ByVal MP1 As AxWindowsMediaPlayer, ByVal MP2 As AxWindowsMediaPlayer, ByVal MP3 As AxWindowsMediaPlayer)
@@ -279,11 +288,13 @@ Public Class MediaSwapper
     Private Sub ShowPlayer(ByRef MHX As MediaHandler)
         MuteAll()
 
-        MHX.PlaceResetter(False)
+        MHX.PlaceResetter(False) 'Starts the video playing
+
         With MHX.Player
             .Visible = True
             .BringToFront()
             .settings.mute = Muted
+            'MHX.Speed.Paused = False
             RaiseEvent MediaShown(MHX, Nothing)
         End With
 
@@ -297,10 +308,6 @@ Public Class MediaSwapper
     End Sub
 
     Public Sub ClickAllPics()
-        PicClick(Media1.Picture)
-        PicClick(Media2.Picture)
-        PicClick(Media3.Picture)
-
     End Sub
     Private Sub HideMedias(CurrentMH As MediaHandler)
         ' Exit Sub
@@ -324,6 +331,12 @@ Public Class MediaSwapper
         MHX.Picture.Visible = True
         MHX.Picture.BringToFront()
         RaiseEvent MediaShown(MHX, Nothing)
+
+    End Sub
+    Public Sub PauseMovies() Handles PauseAll.Tick
+        Media1.Speed.Paused = True
+        Media2.Speed.Paused = True
+        Media3.Speed.Paused = True
 
     End Sub
     Public Sub DockMedias(separated As Boolean)

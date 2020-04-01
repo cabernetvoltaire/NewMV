@@ -105,6 +105,7 @@
     Public Sub New(p As PictureBox)
         mPicBox = p
 
+
     End Sub
     Public Sub New()
 
@@ -188,13 +189,7 @@
         End Select
 
     End Sub
-    Public Sub DisposePic(box As PictureBox)
-        If box.Image IsNot Nothing Then
-            box.Image.Dispose()
-            GC.SuppressFinalize(box)
-            box.Image = Nothing
-        End If
-    End Sub
+
     Public Sub PreparePic()
         mPicBox.Width = mPicBox.Image.Width
         mPicBox.Height = mPicBox.Image.Height
@@ -253,15 +248,17 @@
         Dim Reduction As Decimal = 1 - Percentage / 100
 
         If blnEnlarge Then
-            mZoomfactor = mZoomfactor * Enlargement
-            mPicBox.Width = mPicBox.Width * Enlargement
-            mPicBox.Left = mPicBox.Left - (ePicMousePoint.X - mPicBox.Left) * Percentage / 100
+            If mZoomfactor < 300 Then
+                mZoomfactor = mZoomfactor * Enlargement
+                mPicBox.Width = mPicBox.Width * Enlargement
+                mPicBox.Left = mPicBox.Left - (ePicMousePoint.X - mPicBox.Left) * Percentage / 100
 
-            mPicBox.Top = mPicBox.Top - (ePicMousePoint.Y - mPicBox.Top) * Percentage / 100
-            mPicBox.Height = mPicBox.Height * Enlargement
-            '        If mPicBox.Top < -mPicBox.Height Then MsgBox("Stop")
+                mPicBox.Top = mPicBox.Top - (ePicMousePoint.Y - mPicBox.Top) * Percentage / 100
+                mPicBox.Height = mPicBox.Height * Enlargement
+                '        If mPicBox.Top < -mPicBox.Height Then MsgBox("Stop")
+            End If
         Else
-            mZoomfactor = mZoomfactor * Reduction
+                mZoomfactor = mZoomfactor * Reduction
             If mPicBox.Width * Reduction >= PicBoxContainer.Width Or mPicBox.Height * Reduction >= PicBoxContainer.Height Then
                 mPicBox.Width = mPicBox.Width * Reduction
                 mPicBox.Left = Math.Min(0, mPicBox.Left + (ePicMousePoint.X - mPicBox.Left) * Percentage / 100)
@@ -270,6 +267,10 @@
             End If
         End If
         ' PicTest.Label1.Text = "Picture State:" & ScreenStateDescriptions(State) & " Zoom factor: " & ZoomFactor
+    End Sub
+
+    Private Sub mPicBox_MouseDown(sender As Object, e As MouseEventArgs) Handles mPicBox.MouseDown
+
     End Sub
 
 #End Region

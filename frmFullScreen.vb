@@ -53,12 +53,12 @@ Public Class FullScreen
 
 
     Private Sub fullScreenPicBox_MouseWheel(sender As Object, e As MouseEventArgs) Handles FSPB1.MouseWheel, FSPB3.MouseWheel, FSPB2.MouseWheel
-        PictureFunctions.Mousewheel(sender, e)
+        '   PictureFunctions.Mousewheel(sender, e)
     End Sub
 
     Private Sub fullScreenPicBox_MouseMove(sender As Object, e As MouseEventArgs) Handles FSPB1.MouseMove, FSPB2.MouseMove, FSPB3.MouseMove
-        picBlanker = FSBlanker
-        PictureFunctions.MouseMove(sender, e)
+        'picBlanker = FSBlanker
+        '  PictureFunctions.MouseMove(sender, e)
     End Sub
 
     Private Sub fullScreenPicBox_KeyDown(sender As Object, e As KeyEventArgs) Handles FSPB1.KeyDown, Me.KeyUp
@@ -79,7 +79,7 @@ Public Class FullScreen
                 e = Nothing
 
             Case Else
-                PicClick(FSPB1)
+                'PicClick(FSPB1)
         End Select
     End Sub
 

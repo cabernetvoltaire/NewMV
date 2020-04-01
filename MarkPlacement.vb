@@ -5,7 +5,7 @@ Public Class MarkPlacement
         Set(value As PictureBox)
             mBar = value
             Graphics = mBar.CreateGraphics
-            Barcolor = mBar.BackColor
+            'Barcolor = mBar.BackColor
         End Set
     End Property
     Private Property Barcolor
@@ -19,11 +19,7 @@ Public Class MarkPlacement
         End Get
         Set(value As List(Of Long))
             mMarkers = value
-            If mMarkers.Count = 0 Then
-                '      mBar.BackColor = mBar.Parent.BackColor
-            Else
-                '     mBar.BackColor = BarColor
-            End If
+
         End Set
 
     End Property
@@ -47,6 +43,6 @@ Public Class MarkPlacement
 
     Public Sub Clear()
         'Dim g As Graphics = Bar.CreateGraphics
-        Graphics.Clear(Barcolor)
+        Graphics.Clear(mBar.BackColor)
     End Sub
 End Class

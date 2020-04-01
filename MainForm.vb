@@ -136,7 +136,7 @@ Public Class MainForm
         tbState.Text = UCase(NavigateMoveState.Description)
         SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
 
-        If lbxFiles.Items.Count = 0 And CurrentFilterState.State <> FilterHandler.FilterState.All Then lbxFiles.Items.Add("If there is nothing showing here, check the filters")
+        'If lbxFiles.Items.Count = 0 And CurrentFilterState.State <> FilterHandler.FilterState.All Then lbxFiles.Items.Add("If there is nothing showing here, check the filters")
 
         If sender IsNot NavigateMoveState Then
             If Not Initialising Then
@@ -192,12 +192,10 @@ Public Class MainForm
     Private Sub AddMarker()
         If Media.IsLink Then
             CreateFavourite(Media.LinkPath)
-            PopulateLinkList(Media.LinkPath, Media)
         Else
             CreateFavourite(Media.MediaPath)
-            PopulateLinkList(Media.MediaPath, Media)
-
         End If
+        PopulateLinkList(Media)
         '       e.SuppressKeyPress = True
         DrawScrubberMarks()
     End Sub
@@ -216,10 +214,16 @@ Public Class MainForm
             End If
         Next
         AllFaveMinder.NewPath(GlobalFavesPath)
-        PopulateLinkList(filepath, Media)
+        PopulateLinkList(Media)
 
     End Sub
-    Public Sub PopulateLinkList(filepath As String, Media As MediaHandler)
+    Public Sub PopulateLinkList(Media As MediaHandler)
+        Dim filepath As String
+        If Media.IsLink Then
+            filepath = Media.LinkPath
+        Else
+            filepath = Media.MediaPath
+        End If
         If filepath = "" Then Exit Sub
         Media.Markers.Clear()
         Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
@@ -250,12 +254,14 @@ Public Class MainForm
             chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Bold)
             chbPreviewLinks.Text = "Preview links (" & x.Count & ")"
             'Scrubber.Visible = True
-            'Scrubber.BackColor = Color.HotPink
+            Scrubber.BackColor = Color.HotPink
             If chbPreviewLinks.Checked Then
                 x.Sort(New CompareByEndNumber)
                 FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
             End If
-            Marks.Markers = Media.Markers
+            Media.Markers = Media.GetMarkersFromLinkList
+            Media.Markers.Sort()
+            ' Marks.Markers = Media.Markers
         End If
         DrawScrubberMarks()
 
@@ -288,18 +294,7 @@ Public Class MainForm
         'SndH.Slow = slow
     End Sub
 
-    Public Sub OrientPic(img As Image)
-        tbZoom.Text = UCase("Orientation -" & Orientation(ImageOrientation(img)))
-        Select Case ImageOrientation(img)
-            Case ExifOrientations.BottomRight
-                img.RotateFlip(RotateFlipType.Rotate180FlipNone)
-            Case ExifOrientations.RightTop
-                img.RotateFlip(RotateFlipType.Rotate90FlipNone)
-            Case ExifOrientations.LeftBottom
-                img.RotateFlip(RotateFlipType.Rotate270FlipNone)
 
-        End Select
-    End Sub
     Private Sub SaveShowlist()
         Dim path As String
         With SaveFileDialog1
@@ -954,7 +949,7 @@ Public Class MainForm
                 End If
             Case KeyTrueSize
                 '   MSFiles.ClickAllPics()
-                PicClick(currentPicBox)
+               ' PicClick(currentPicBox)
 
 #End Region
             Case KeyBackUndo
@@ -1571,7 +1566,7 @@ Public Class MainForm
         tbButton.Text = "BUTTONFILE: " & ButtonFilePath
         TBFractionAbsolute.Text = "Fraction: " & Str(SP.FractionalJump) & "ths Absolute:" & Str(SP.AbsoluteJump) & "s"
 
-        tbZoom.Text = iZoomFactor
+        '  tbZoom.Text = iZoomFactor
         If Random.StartPointFlag Then
             tbStartpoint.Text = "START:RANDOM"
         Else
@@ -2178,24 +2173,28 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub PictureBox1_MouseWheel(sender As Object, e As MouseEventArgs) Handles PictureBox1.MouseWheel, PictureBox2.MouseWheel, PictureBox3.MouseWheel
-        PictureFunctions.Mousewheel(sender, e)
+    Private Sub Pictures_MouseWheel(sender As Object, e As MouseEventArgs) Handles PictureBox1.MouseWheel, PictureBox2.MouseWheel, PictureBox3.MouseWheel
+        'PictureFunctions.Mousewheel(sender, e)
+        Media.PicHandler.Mousewheel(sender, e)
     End Sub
 
 
-    Private Sub PictureBox1_MouseMove(sender As Object, e As MouseEventArgs) Handles PictureBox1.MouseMove, PictureBox2.MouseMove, PictureBox3.MouseMove
-        picBlanker = pbxBlanker
-        PictureFunctions.MouseMove(sender, e)
+    Private Sub Pictures_MouseMove(sender As Object, e As MouseEventArgs) Handles PictureBox1.MouseMove, PictureBox2.MouseMove, PictureBox3.MouseMove
+
+        Media.PicHandler.MouseMove(sender, e)
+        'picBlanker = pbxBlanker
+        'PictureFunctions.MouseMove(sender, e)
     End Sub
 
 
-    Private Sub frmMain_MouseDown(sender As Object, e As MouseEventArgs) Handles PictureBox1.MouseDown, PictureBox2.MouseDown, PictureBox3.MouseDown
+    Private Sub Pictures_MouseDown(sender As Object, e As MouseEventArgs) Handles PictureBox1.MouseDown, PictureBox2.MouseDown, PictureBox3.MouseDown
+        Exit Sub
         Select Case e.Button
             Case MouseButtons.XButton1, MouseButtons.XButton2
                 AdvanceFile(e.Button = MouseButtons.XButton2)
                 e = Nothing
             Case Else
-                PicClick(sender)
+                'PicClick(sender)
         End Select
 
     End Sub
@@ -2251,9 +2250,7 @@ Public Class MainForm
         CollapseShowlist(False)
     End Sub
 
-    Private Sub PictureBox1_Click(sender As Object, e As EventArgs) Handles PictureBox1.Click
-        '   ExtractMetaData(PictureBox1.Image)
-    End Sub
+
 
 
 
@@ -2878,6 +2875,10 @@ Public Class MainForm
 
     Private Sub tbScanRate_ValueChanged(sender As Object, e As EventArgs) Handles tbScanRate.ValueChanged
         tmrJumpRandom.Interval = tbScanRate.Value
+    End Sub
+
+    Private Sub PictureBox3_Click(sender As Object, e As EventArgs) Handles PictureBox3.Click, PictureBox2.Click, PictureBox3.Click
+        Media.PicHandler.PicClick(sender, e)
     End Sub
 
 

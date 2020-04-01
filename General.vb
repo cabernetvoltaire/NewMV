@@ -18,6 +18,11 @@ Public Module General
     End Enum
     Private Declare Function SearchTreeForFile Lib "imagehlp" (ByVal RootPath As String, ByVal InputPathName As String, ByVal OutputPathBuffer As String) As Long
 
+    Public Property bImageDimensionState As Byte
+    Public Property ShiftDown As Boolean
+    Public Property CtrlDown As Boolean
+    Public Property AltDown As Boolean
+    Public Property KeyDownFlag As Boolean
 
 
     Public VIDEOEXTENSIONS = ".divx.vob.webm.avi.flv.mov.m4p.mpeg.f4v.mpg.m4a.m4v.mkv.mp4.rm.ram.wmv.wav.mp3.3gp"
@@ -155,6 +160,13 @@ Public Module General
             Return filename
         End If
     End Function
+    Public Sub DisposePic(box As PictureBox)
+        If box.Image IsNot Nothing Then
+            box.Image.Dispose()
+            GC.SuppressFinalize(box)
+            box.Image = Nothing
+        End If
+    End Sub
     Public Function FilenameFromPath(n As String, WithExtension As Boolean, Optional WithoutBrackets As Boolean = False) As String
         Dim currentpath = n
         Dim parts() = currentpath.Split("\")
@@ -969,11 +981,41 @@ Public Module General
     End Function
 
     Public Sub MovietoPic(pic As PictureBox, img As Image)
-        PreparePic(pic, img)
+        pic.Image = img
+        'PreparePic(pic, img)
         'SndH.Muted = True
 
 
     End Sub
+    Public Sub OrientPic(img As Image)
+
+        Select Case ImageOrientation(img)
+            Case ExifOrientations.BottomRight
+                img.RotateFlip(RotateFlipType.Rotate180FlipNone)
+            Case ExifOrientations.RightTop
+                img.RotateFlip(RotateFlipType.Rotate90FlipNone)
+            Case ExifOrientations.LeftBottom
+                img.RotateFlip(RotateFlipType.Rotate270FlipNone)
+
+        End Select
+    End Sub
+    Public Function GetImage(strPath As String) As Image
+        If strPath = "" Then Return Nothing
+        If strPath.EndsWith(".gif") = 0 Then
+            Return LoadImage(strPath)
+
+            ' Exit Function 'This Causes problems if extension is .gif
+        Else
+            Try
+                Dim img As Image = Image.FromFile(strPath)
+                Return img
+            Catch ex As Exception
+                'Reportfault("",ex.message)
+                Return Nothing
+
+            End Try
+        End If
+    End Function
     Public Sub StoreList(list As List(Of String), Dest As String)
         If Dest = "" Then Exit Sub
         WriteListToFile(list, Dest, Encrypted)

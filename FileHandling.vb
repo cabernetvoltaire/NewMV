@@ -43,11 +43,8 @@ Friend Module FileHandling
         If sender.MediaType <> Filetype.Movie Then
             currentPicBox = sender.Picture
         End If
-        If sender.IsLink Then
-            MainForm.PopulateLinkList(sender.LinkPath, sender)
-        Else
-            MainForm.PopulateLinkList(sender.MediaPath, sender)
-        End If
+
+        MainForm.PopulateLinkList(sender)
 
         ' MainForsender.AT.AdvanceChance = sender.Markers.Count + 1
         'Media.IsCurrent = True

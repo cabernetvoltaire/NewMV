@@ -12,7 +12,8 @@ Public Class MediaHandler
     Private Property mSndH As New SoundController 'With {.SoundPlayer = Sound, .CurrentPlayer = Player}
     Public IsCurrent As Boolean = False
 
-    Private WithEvents ResetPosition As New Timer With {.Interval=10}
+
+    Private WithEvents ResetPosition As New Timer With {.Interval = 1000}
     Public WithEvents PositionUpdater As New Timer With {.Interval = 10}
     Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 15000}
     Public WithEvents PicHandler As New PictureHandler
@@ -54,6 +55,7 @@ Public Class MediaHandler
         End Get
         Set(ByVal value As PictureBox)
             mPicBox = value
+            PicHandler.PicBox = value
         End Set
     End Property
     Public Property LoopMovie As Boolean
@@ -205,9 +207,8 @@ Public Class MediaHandler
     Public Sub New(Nomen As String)
         '      Player = mPlayer
         Name = Nomen
-        PositionUpdater.Interval = 100
+        PicHandler.PicBox = mPicBox
         PositionUpdater.Enabled = False
-        ResetPosition.Interval = 1000
         'mSndH.SoundPlayer = Sound
         'mSndH.CurrentPlayer = Player
         '     StartPoint = Media.StartPoint
@@ -215,10 +216,9 @@ Public Class MediaHandler
     Public Sub New(Nomen As String, mplayer As AxWindowsMediaPlayer, pic As PictureBox)
         Player = mplayer
         Name = Nomen
-        PositionUpdater.Interval = 100
         PositionUpdater.Enabled = False
-        ResetPosition.Interval = 1000
         mPicBox = pic
+        PicHandler.PicBox = mPicBox
         'mSndH.SoundPlayer = Sound
         'mSndH.CurrentPlayer = Player
         '     StartPoint = Media.StartPoint
@@ -312,33 +312,33 @@ Public Class MediaHandler
     Public Function IncrementLinkCounter(Forward As Boolean) As Integer
 
         'Get current position
-        mMarkers.Sort()
+        Dim p = mPlayPosition
+        'mMarkers.Sort()
+        Dim count = mMarkers.Count
+        For i = 0 To count - 1 'Find preceding marker to position
 
-        For i = 0 To mMarkers.Count - 1 'Find preceding marker to position
-            If Forward Then
-                If mMarkers(i) < mPlayPosition + 0.5 Then
+            If mMarkers(i) < p + 1 Then
                     mlinkcounter = i
                 End If
-            Else
-                If mMarkers(i) < mPlayPosition - 1.5 Then
-                    mlinkcounter = i
-                End If
-            End If
+
         Next
-        If mlinkcounter = 0 And Not Forward Then 'Loop to last
-            mlinkcounter = mMarkers.Count - 1
-        End If
         If Forward Then
             mlinkcounter += 1
+            If mlinkcounter = count Then
+                mlinkcounter = 0
+            End If
+        Else
+            mlinkcounter -= 1
+            If mlinkcounter = -1 Then mlinkcounter = count - 1
         End If
-        If mlinkcounter > mMarkers.Count - 1 Then mlinkcounter = 0
+        If mlinkcounter > count - 1 Then mlinkcounter = 0
 
         Return mlinkcounter
 
 
     End Function
     Public Function RandomCounter() As Integer
-        Static done As New List(Of Integer)
+        Static done As New List(Of Integer) 'Choose random counter, but don't repeat it. 
 
         If mMarkers.Count = 0 Then
             Return -1
@@ -508,6 +508,10 @@ Public Class MediaHandler
         End If
         DisplayerName = mPlayer.Name
     End Sub
+    Public Sub PlaceResetter(ResetOn As Boolean)
+        ResetPosition.Enabled = ResetOn
+
+    End Sub
     Public Sub HandlePic(path As String)
 
         Dim img As Image
@@ -518,18 +522,12 @@ Public Class MediaHandler
         If img Is Nothing Then
             Exit Sub
         End If
-        MainForm.OrientPic(img)
+        OrientPic(img)
         currentPicBox = mPicBox
         General.MovietoPic(currentPicBox, img)
         DisplayerName = mPicBox.Name
     End Sub
-    Public Sub MovietoPic(img As Image)
 
-        PreparePic(currentPicBox, img)
-
-        'SndH.Muted = True
-
-    End Sub
 
     Public Sub OrientPic(img As Image)
         Select Case ImageOrientation(img)
@@ -609,46 +607,23 @@ Public Class MediaHandler
     ''' Ensures mPlayPosition is always up to date (to within interval)
     ''' </summary>
     Private Sub UpdatePosition() Handles PositionUpdater.Tick
-        'Exit Sub 'TODO Reinstate
-        Try
-            If Speed.Paused Then
-
-            Else
-                mPlayPosition = mPlayer.Ctlcontrols.currentPosition 'TODO Buggering up startpoint?
-                mDuration = mPlayer.currentMedia.duration
-            End If
-        Catch ex As Exception
-            '  MsgBox(ex.Message)
-        End Try
+        If Speed.Paused Then
+            'Don't want to change if media paused.
+        Else
+            mPlayPosition = mPlayer.Ctlcontrols.currentPosition 'TODO Buggering up startpoint?
+            mDuration = mPlayer.currentMedia.duration
+        End If
 
     End Sub
     Private Sub ResetPosition_Tick(sender As Object, e As EventArgs) Handles ResetPosition.Tick
-        Try
-            MediaJumpToMarker()
-        Catch ex As Exception
-
-        End Try
-
+        'Keeps resetting the position until ready to play.
+        MediaJumpToMarker()
     End Sub
-    Public Sub PlaceResetter(ResetOn As Boolean)
-        ResetPosition.Enabled = ResetOn
-        If Not ResetOn Then
-            'If mIsLink Then
-            '    MainForm.PopulateLinkList(mLinkPath, Me)
-            'Else
-            '    MainForm.PopulateLinkList(mMediaPath, Me)
-            'End If
-        End If
-    End Sub
+
     Private Sub ResetPositionCanceller_Tick(sender As Object, e As EventArgs) Handles ResetPositionCanceller.Tick
         ResetPosition.Enabled = False
         ResetPositionCanceller.Enabled = False
     End Sub
-
-
-
-
-
 
 #End Region
 
