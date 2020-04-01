@@ -8,7 +8,6 @@ Imports MasaSam.Forms.Controls
 
 Public Class MainForm
 
-    Public blnPlaying As Boolean = False
     Public Initialising As Boolean = True
     Public AutoLoadButtons As Boolean = False
     Public ButtonsHidden As Boolean = False
@@ -115,7 +114,7 @@ Public Class MainForm
         FullScreen.Changing = False
         cbxStartPoint.SelectedIndex = Media.SPT.State
         tbStartpoint.Text = "START:" & Media.SPT.Description
-        If Not Initialising Then Media.MediaJumpToMarker()
+        If Not Media.DontLoad Then Media.MediaJumpToMarker()
 
     End Sub
     Public Sub OnStateChanged(sender As Object, e As EventArgs) Handles NavigateMoveState.StateChanged, CurrentFilterState.StateChanged, PlayOrder.StateChanged
@@ -139,7 +138,7 @@ Public Class MainForm
         'If lbxFiles.Items.Count = 0 And CurrentFilterState.State <> FilterHandler.FilterState.All Then lbxFiles.Items.Add("If there is nothing showing here, check the filters")
 
         If sender IsNot NavigateMoveState Then
-            If Not Initialising Then
+            If Not Media.DontLoad Then
                 If FocusControl Is lbxShowList Then
                     UpdatePlayOrder(LBH)
                 Else
@@ -153,7 +152,7 @@ Public Class MainForm
             End If
 
         End If
-        If Not Initialising Then PreferencesSave()
+        If Not Media.DontLoad Then PreferencesSave()
     End Sub
     Private Sub SetControlColours(MainColor As Color, FilterColor As Color)
         tvMain2.BackColor = FilterColor
@@ -356,18 +355,7 @@ Public Class MainForm
         MSFiles.CancelURL(Media.MediaPath)
         'MSFiles.ResettersOff()
 
-        Try
 
-            If Media.Player.URL <> "" Then
-                Media.Player.URL = ""
-            End If
-        Catch ex As Exception
-
-        End Try
-        If currentPicBox.Visible Then
-            currentPicBox.Image = Nothing
-            GC.Collect()
-        End If
         If SlideshowsOff Then
             tmrMovieSlideShow.Enabled = False
             tmrSlideShow.Enabled = False
@@ -453,7 +441,7 @@ Public Class MainForm
     Private Function SpeedChange(e As KeyEventArgs) As KeyEventArgs
 
 
-        If Not blnPlaying Then
+        If Not Media.Playing Then
             tmrSlideShow.Enabled = True
             Media.Speed.Slideshow = tmrSlideShow.Enabled
             tmrSlideShow.Interval = Media.Speed.Interval
@@ -471,7 +459,7 @@ Public Class MainForm
             Media.Speed.Fullspeed = False
         End If
         If e.KeyCode = KeyToggleSpeed Then
-            If blnPlaying Then
+            If Media.Playing Then
                 'If Media.Player.playState = WMPLib.WMPPlayState.wmppsPaused And Media.Speed.Fullspeed = False Then
                 TogglePause()
             Else
@@ -479,7 +467,7 @@ Public Class MainForm
             End If
 
         Else
-            If blnPlaying Then
+            If Media.Playing Then
 
                 tmrSlowMo.Interval = 1000 / Media.Speed.FrameRate
                 tmrSlowMo.Enabled = True
@@ -894,12 +882,12 @@ Public Class MainForm
 
 #Region "Picture Functions"
             Case KeyRotateBack
-                RotatePic(currentPicBox, False)
+                RotatePic(Media.Picture, False)
             Case KeyRotate
                 If e.Alt Then
                     If Media.MediaType = Filetype.Movie Then Media.LoopMovie = Not Media.LoopMovie
                 Else
-                    RotatePic(currentPicBox, True)
+                    RotatePic(Media.Picture, True)
                     Media.HandlePic(Media.MediaPath)
                 End If
 #End Region
@@ -1173,16 +1161,16 @@ Public Class MainForm
 
     End Sub
     Private Sub GlobalInitialise()
-        Initialising = True
         Randomize()
         PopulateLists()
         CollapseShowlist(True)
         SetupPlayers()
         PositionUpdater.Enabled = False
+        Media.DontLoad = True
         PreferencesGet()
 
-        currentPicBox = PictureBox1
-        Media.Picture = currentPicBox
+
+        Media.Picture = PictureBox1
         tbPercentage.Enabled = True
         Marks.Bar = Scrubber
 
@@ -1193,7 +1181,7 @@ Public Class MainForm
         NavigateMoveState.State = StateHandler.StateOptions.Navigate
         OnRandomChanged()
         ControlSetFocus(lbxFiles)
-        Initialising = False
+        Media.DontLoad = False
         FBH.ListBox = lbxFiles
         LBH.ListBox = lbxShowList
     End Sub
@@ -1498,7 +1486,7 @@ Public Class MainForm
     End Sub
 
     Public Sub UpdateFileInfo()
-        If Initialising Then Exit Sub
+        If Media.DontLoad Then Exit Sub
         If Media.MediaPath = "" Then Exit Sub
         ' If Not FileLengthCheck(Media.MediaPath) Then Exit Sub
         Dim filepath As String
@@ -1959,7 +1947,7 @@ Public Class MainForm
 
 
     Private Sub tmrAutoTrail_Tick(sender As Object, e As EventArgs) Handles tmrAutoTrail.Tick
-        If Not CtrlDown And Not Initialising Then AutoTrail(sender)
+        If Not CtrlDown And Not Media.DontLoad Then AutoTrail(sender)
 
     End Sub
 
@@ -2159,12 +2147,6 @@ Public Class MainForm
 
     End Sub
 
-    Public Sub MediaAdvance(ByRef wmp As AxWMPLib.AxWindowsMediaPlayer, stp As Long)
-        wmp.Ctlcontrols.step(stp)
-        ' Media.Position = wmp.Ctlcontrols.currentPosition
-        '  wmp.Refresh()
-        ' Console.WriteLine(Media.Position)
-    End Sub
 
 
 
@@ -2173,31 +2155,7 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub Pictures_MouseWheel(sender As Object, e As MouseEventArgs) Handles PictureBox1.MouseWheel, PictureBox2.MouseWheel, PictureBox3.MouseWheel
-        'PictureFunctions.Mousewheel(sender, e)
-        Media.PicHandler.Mousewheel(sender, e)
-    End Sub
 
-
-    Private Sub Pictures_MouseMove(sender As Object, e As MouseEventArgs) Handles PictureBox1.MouseMove, PictureBox2.MouseMove, PictureBox3.MouseMove
-
-        Media.PicHandler.MouseMove(sender, e)
-        'picBlanker = pbxBlanker
-        'PictureFunctions.MouseMove(sender, e)
-    End Sub
-
-
-    Private Sub Pictures_MouseDown(sender As Object, e As MouseEventArgs) Handles PictureBox1.MouseDown, PictureBox2.MouseDown, PictureBox3.MouseDown
-        Exit Sub
-        Select Case e.Button
-            Case MouseButtons.XButton1, MouseButtons.XButton2
-                AdvanceFile(e.Button = MouseButtons.XButton2)
-                e = Nothing
-            Case Else
-                'PicClick(sender)
-        End Select
-
-    End Sub
 
     Private Sub cbxFilter_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbxFilter.SelectedIndexChanged
         If CurrentFilterState.State <> cbxFilter.SelectedIndex Then
@@ -2877,8 +2835,12 @@ Public Class MainForm
         tmrJumpRandom.Interval = tbScanRate.Value
     End Sub
 
-    Private Sub PictureBox3_Click(sender As Object, e As EventArgs) Handles PictureBox3.Click, PictureBox2.Click, PictureBox3.Click
-        Media.PicHandler.PicClick(sender, e)
+
+
+    Private Sub MainForm_MouseClick(sender As Object, e As MouseEventArgs) Handles Me.MouseClick, PictureBox1.MouseClick, PictureBox2.MouseClick, PictureBox3.MouseClick
+        If e.Button = MouseButtons.XButton1 Then AdvanceFile(True, Random.NextSelect)
+        If e.Button = MouseButtons.XButton2 Then AdvanceFile(False, Random.NextSelect)
+
     End Sub
 
 

@@ -213,12 +213,10 @@ Public Class MediaSwapper
         Return 0
     End Function
     Public Sub CancelURL(filepath As String)
-        If Media1.Player.URL = filepath Then DisposeMedia(Media1.Player)
-        If Media2.Player.URL = filepath Then DisposeMedia(Media2.Player)
-        If Media3.Player.URL = filepath Then DisposeMedia(Media3.Player)
-        If Media1.Picture.Tag = filepath Then DisposePic(Media1.Picture)
-        If Media2.Picture.Tag = filepath Then DisposePic(Media2.Picture)
-        If Media3.Picture.Tag = filepath Then DisposePic(Media3.Picture)
+        Media1.CancelMedia()
+        Media2.CancelMedia()
+        Media3.CancelMedia()
+
 
     End Sub
     Private Sub RotateMedia(ByRef ThisMH As MediaHandler, ByRef NextMH As MediaHandler, ByRef PrevMH As MediaHandler)

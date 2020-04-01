@@ -79,6 +79,7 @@
                     mPicImage = Nothing
                 End Try
             End If
+            OrientPic(mPicImage)
             PicBox.Image = mPicImage
 
         End If
@@ -104,13 +105,13 @@
 #Region "Events"
     Public Sub New(p As PictureBox)
         mPicBox = p
-
-
     End Sub
     Public Sub New()
 
     End Sub
     Public Sub PicClick(sender As Object, e As MouseEventArgs) Handles mPicBox.Click
+
+        Exit Sub
         If e.Button = MouseButtons.Left Then
             mState = (mState + 1) Mod 3
         Else
@@ -190,7 +191,7 @@
 
     End Sub
 
-    Public Sub PreparePic()
+    Public Sub PreparePic() 'Not actually implemented at the moment
         mPicBox.Width = mPicBox.Image.Width
         mPicBox.Height = mPicBox.Image.Height
         'How does it exceeed the container, if at all?
@@ -248,7 +249,7 @@
         Dim Reduction As Decimal = 1 - Percentage / 100
 
         If blnEnlarge Then
-            If mZoomfactor < 300 Then
+            If mPicBox.Width < 15 * PicBoxContainer.Width Then
                 mZoomfactor = mZoomfactor * Enlargement
                 mPicBox.Width = mPicBox.Width * Enlargement
                 mPicBox.Left = mPicBox.Left - (ePicMousePoint.X - mPicBox.Left) * Percentage / 100
@@ -259,11 +260,13 @@
             End If
         Else
                 mZoomfactor = mZoomfactor * Reduction
-            If mPicBox.Width * Reduction >= PicBoxContainer.Width Or mPicBox.Height * Reduction >= PicBoxContainer.Height Then
+            If mPicBox.Width * Reduction > PicBoxContainer.Width Or mPicBox.Height * Reduction > PicBoxContainer.Height Then
                 mPicBox.Width = mPicBox.Width * Reduction
                 mPicBox.Left = Math.Min(0, mPicBox.Left + (ePicMousePoint.X - mPicBox.Left) * Percentage / 100)
                 mPicBox.Top = Math.Min(0, mPicBox.Top + (ePicMousePoint.Y - mPicBox.Top) * Percentage / 100)
                 mPicBox.Height = mPicBox.Height * Reduction
+            Else
+                mState = SetState(PictureHandler.Screenstate.Fitted)
             End If
         End If
         ' PicTest.Label1.Text = "Picture State:" & ScreenStateDescriptions(State) & " Zoom factor: " & ZoomFactor

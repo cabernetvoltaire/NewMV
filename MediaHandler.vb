@@ -12,16 +12,18 @@ Public Class MediaHandler
     Private Property mSndH As New SoundController 'With {.SoundPlayer = Sound, .CurrentPlayer = Player}
     Public IsCurrent As Boolean = False
 
-
     Private WithEvents ResetPosition As New Timer With {.Interval = 1000}
     Public WithEvents PositionUpdater As New Timer With {.Interval = 10}
     Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 15000}
-    Public WithEvents PicHandler As New PictureHandler
+    Public WithEvents PicHandler As New PictureHandler(Picture)
     Private ReadOnly DefaultFile As String = "C:\exiftools.exe"
     Public WithEvents SPT As New StartPointHandler
     Public WithEvents Speed As New SpeedHandler
     Public DisplayerName As String
     Public Forceload As Boolean
+    Public DontLoad As Boolean
+    Public Autotrail As Boolean
+    Public Playing As Boolean
     Private mLoop As Boolean = False
     Private mType As Filetype
     Public Name As String = Me.Name
@@ -34,7 +36,7 @@ Public Class MediaHandler
             End If
             If mType = Filetype.Link Then
                 mIsLink = True
-                IsLink = True
+                '  IsLink = True
                 mLinkPath = LinkTarget(mMediaPath)
                 mType = FindType(mLinkPath)
 
@@ -159,13 +161,13 @@ Public Class MediaHandler
                             mIsLink = False
                             mLinkPath = ""
                         End If
-                        If Not MainForm.Initialising Then LoadMedia()
+                        If Not DontLoad Then LoadMedia()
 
                         mMediaDirectory = f.Directory.FullName
                     Else
                         mMediaPath = DefaultFile
                         mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
-                        If Not MainForm.Initialising Then LoadMedia()
+                        If Not DontLoad Then LoadMedia()
                     End If
                 Catch ex As Exception
 
@@ -513,18 +515,11 @@ Public Class MediaHandler
 
     End Sub
     Public Sub HandlePic(path As String)
-
-        Dim img As Image
         If Not Picture.Image Is Nothing Then
             DisposePic(Picture)
         End If
-        img = GetImage(path)
-        If img Is Nothing Then
-            Exit Sub
-        End If
-        OrientPic(img)
-        currentPicBox = mPicBox
-        General.MovietoPic(currentPicBox, img)
+        PicHandler.GetImage(path)
+        '    currentPicBox = mPicBox
         DisplayerName = mPicBox.Name
     End Sub
 
@@ -540,7 +535,20 @@ Public Class MediaHandler
 
         End Select
     End Sub
+    Public Sub CancelMedia()
+        Try
 
+            If mPlayer.URL <> "" Then
+                mPlayer.URL = ""
+            End If
+        Catch ex As Exception
+
+        End Try
+        If mPicBox.Visible Then
+            DisposePic(mPicBox)
+            'GC.Collect()
+        End If
+    End Sub
 #End Region
 #End Region
 
@@ -556,14 +564,12 @@ Public Class MediaHandler
             Case WMPLib.WMPPlayState.wmppsStopped
                 mPlayer.Ctlcontrols.play()
             Case WMPLib.WMPPlayState.wmppsMediaEnded
-                If MainForm.tmrAutoTrail.Enabled = False AndAlso mPlayer.Equals(Media.Player) AndAlso mType = Filetype.Movie AndAlso Not LoopMovie Then
-                    MainForm.AdvanceFile(True, MainForm.Random.NextSelect)
-                    MainForm.blnPlaying = False
-
+                If Autotrail = False AndAlso mPlayer.Equals(Media.Player) AndAlso mType = Filetype.Movie AndAlso Not LoopMovie Then
+                    Playing = False
+                    RaiseEvent MediaFinished(sender, Nothing)
                 Else
                     MediaJumpToMarker()
                 End If
-
             Case WMPLib.WMPPlayState.wmppsPlaying
                 'MsgBox("playing " & Media.Player.URL & " on " & Me.Name)
                 mSndH.Slow = False
@@ -573,7 +579,7 @@ Public Class MediaHandler
                 mDuration = mPlayer.currentMedia.duration
                 SPT.Duration = mDuration
                 MediaJumpToMarker()
-                MainForm.blnPlaying = True
+                Playing = True
 
                 RaiseEvent MediaPlaying(Me, Nothing)
 

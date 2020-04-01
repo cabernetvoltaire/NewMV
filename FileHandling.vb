@@ -20,7 +20,11 @@ Friend Module FileHandling
     ' Public FaveMinder As New FavouritesMinder(CurrentFavesPath)
     Public AllFaveMinder As New FavouritesMinder("Q:\Favourites")
     Public FaveMinder As New FavouritesMinder("Q:\Favourites")
-    '
+
+    Public Sub OnMediaFinished(sender As Object, e As EventArgs) Handles Media.MediaFinished
+        MainForm.AdvanceFile(True, MainForm.Random.NextSelect)
+        'Media.Playing= False
+    End Sub
     '  Public WithEvents SndH As New SoundController
     Public Sub OnMediaPlaying(sender As Object, e As EventArgs) Handles Media.MediaPlaying
 
@@ -40,9 +44,9 @@ Friend Module FileHandling
 
 
         MainForm.UpdateFileInfo()
-        If sender.MediaType <> Filetype.Movie Then
-            currentPicBox = sender.Picture
-        End If
+        'If sender.MediaType <> Filetype.Movie Then
+        '    currentPicBox = sender.Picture
+        'End If
 
         MainForm.PopulateLinkList(sender)
 

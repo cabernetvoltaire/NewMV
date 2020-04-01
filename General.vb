@@ -351,6 +351,8 @@ Public Module General
             .Title = Title
             If .ShowDialog() = DialogResult.OK Then
                 path = .FileName
+            Else
+                path = ""
             End If
         End With
         Return path
