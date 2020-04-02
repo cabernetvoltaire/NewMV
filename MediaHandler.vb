@@ -8,6 +8,8 @@ Public Class MediaHandler
     Public Event SpeedChanged(ByVal sender As Object, ByVal e As EventArgs)
     Public Event MediaNotFound(ByVal sender As Object, ByVal e As EventArgs)
     Public Event MediaPlaying(ByVal sender As Object, ByVal e As EventArgs)
+    Public Event Zoomchanged(ByVal sender As Object, ByVal e As EventArgs)
+
     Private WithEvents Sound As New AxWindowsMediaPlayer
     Private Property mSndH As New SoundController 'With {.SoundPlayer = Sound, .CurrentPlayer = Player}
     Public IsCurrent As Boolean = False
@@ -553,6 +555,9 @@ Public Class MediaHandler
 #End Region
 
 #Region "Event Handlers"
+    Public Sub OnPicZoomed(sender As Object, e As EventArgs) Handles PicHandler.ZoomChange
+        RaiseEvent Zoomchanged(sender, e)
+    End Sub
     Private Sub Uhoh() Handles mPlayer.ErrorEvent
         ' MsgBox("Error in MediaPlayer")
     End Sub

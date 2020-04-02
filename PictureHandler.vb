@@ -1,5 +1,7 @@
 ﻿Public Class PictureHandler
 #Region "Properties"
+    Public Event StateChanged(sender As Object, e As EventArgs)
+    Public Event ZoomChange(sender As Object, e As EventArgs)
     Private WithEvents mPicBox As New PictureBox
     Public Property PicBox() As PictureBox
         Get
@@ -13,9 +15,18 @@
     Private mPicImage As Image
     Public Property TextOutput As String
     Public Property PicBoxContainer As New Control
-    Private Property mZoomfactor As Integer
+    Private Property mZoomfactor As Integer = 100
     Public Property ZoomFactor As Integer
         Set(value As Integer)
+            'If mZoomfactor < value Then
+            '    While mZoomfactor < value
+            '        ZoomPicture(True, 1)
+            '    End While
+            'Else
+            '    While mZoomfactor > value
+            '        ZoomPicture(False, 1)
+            '    End While
+            'End If
             mZoomfactor = value
 
         End Set
@@ -46,7 +57,6 @@
     Public Property AltDown As Boolean
     Public Property KeyDownFlag As Boolean
 
-    Public Event AdvanceFile(sender As Object, e As EventArgs)
 
 #End Region
 
@@ -136,7 +146,7 @@
         ePicMousePoint.Y = ePicMousePoint.Y + mPicBox.Top
 
         If False Then 'State = Screenstate.Fitted Then
-            RaiseEvent AdvanceFile(sender, e)
+            ' RaiseEvent AdvanceFile(sender, e)
             'MainForm.AdvanceFile(e.Delta < 0, False)
             'MainForm.tmrSlideShow.Enabled = False 'Break slideshow if scrolled
             'Dim img As Image = Me.GetImage(Media.MediaPath)
@@ -239,11 +249,43 @@
                 mPicBox.SizeMode = PictureBoxSizeMode.Zoom
                 'PlacePic(mPicBox)
         End Select
-        PicTest.Label1.Text = "Picture State:" & ScreenStateDescriptions(State) & " Zoom factor: " & ZoomFactor
+        ' PicTest.Label1.Text = "Picture State:" & ScreenStateDescriptions(State) & " Zoom factor: " & ZoomFactor
         Return Sstate
     End Function
 
     Public Sub ZoomPicture(blnEnlarge As Boolean, Percentage As Decimal)
+        mState = SetState(Screenstate.Zoomed)
+        Dim Enlargement As Decimal = 1 + Percentage / 100
+        Dim Reduction As Decimal = 1 - Percentage / 100
+
+        If blnEnlarge Then
+            If mPicBox.Width < 12 * PicBoxContainer.Width Then
+                mZoomfactor = mZoomfactor * Enlargement
+                mPicBox.Width = mPicBox.Width * Enlargement
+                mPicBox.Left = mPicBox.Left - (ePicMousePoint.X - mPicBox.Left) * Percentage / 100
+
+                mPicBox.Top = mPicBox.Top - (ePicMousePoint.Y - mPicBox.Top) * Percentage / 100
+                mPicBox.Height = mPicBox.Height * Enlargement
+                '        If mPicBox.Top < -mPicBox.Height Then MsgBox("Stop")
+
+                RaiseEvent ZoomChange(Me, Nothing)
+            End If
+        Else
+            mZoomfactor = mZoomfactor * Reduction
+            If mPicBox.Width * Reduction > PicBoxContainer.Width Or mPicBox.Height * Reduction > PicBoxContainer.Height Then
+                mPicBox.Width = mPicBox.Width * Reduction
+                mPicBox.Left = Math.Min(0, mPicBox.Left + (ePicMousePoint.X - mPicBox.Left) * Percentage / 100)
+                mPicBox.Top = Math.Min(0, mPicBox.Top + (ePicMousePoint.Y - mPicBox.Top) * Percentage / 100)
+                mPicBox.Height = mPicBox.Height * Reduction
+                RaiseEvent ZoomChange(Me, Nothing)
+            Else
+                mState = SetState(PictureHandler.Screenstate.Fitted)
+                RaiseEvent StateChanged(Me, Nothing)
+            End If
+        End If
+        ' PicTest.Label1.Text = "Picture State:" & ScreenStateDescriptions(State) & " Zoom factor: " & ZoomFactor
+    End Sub
+    Public Sub NewZoomPicture(blnEnlarge As Boolean, Percentage As Decimal)
         mState = SetState(Screenstate.Zoomed)
         Dim Enlargement As Decimal = 1 + Percentage / 100
         Dim Reduction As Decimal = 1 - Percentage / 100
@@ -257,21 +299,23 @@
                 mPicBox.Top = mPicBox.Top - (ePicMousePoint.Y - mPicBox.Top) * Percentage / 100
                 mPicBox.Height = mPicBox.Height * Enlargement
                 '        If mPicBox.Top < -mPicBox.Height Then MsgBox("Stop")
+
+                RaiseEvent ZoomChange(Me, Nothing)
             End If
         Else
-                mZoomfactor = mZoomfactor * Reduction
+            mZoomfactor = mZoomfactor * Reduction
             If mPicBox.Width * Reduction > PicBoxContainer.Width Or mPicBox.Height * Reduction > PicBoxContainer.Height Then
                 mPicBox.Width = mPicBox.Width * Reduction
                 mPicBox.Left = Math.Min(0, mPicBox.Left + (ePicMousePoint.X - mPicBox.Left) * Percentage / 100)
                 mPicBox.Top = Math.Min(0, mPicBox.Top + (ePicMousePoint.Y - mPicBox.Top) * Percentage / 100)
                 mPicBox.Height = mPicBox.Height * Reduction
+                RaiseEvent ZoomChange(Me, Nothing)
             Else
                 mState = SetState(PictureHandler.Screenstate.Fitted)
             End If
         End If
         ' PicTest.Label1.Text = "Picture State:" & ScreenStateDescriptions(State) & " Zoom factor: " & ZoomFactor
     End Sub
-
     Private Sub mPicBox_MouseDown(sender As Object, e As MouseEventArgs) Handles mPicBox.MouseDown
 
     End Sub
