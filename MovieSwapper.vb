@@ -195,8 +195,8 @@ Public Class MediaSwapper
             Case Filetype.Pic
                 MH.PlaceResetter(False)
                 MH.MediaPath = path
-                MH.Picture.Visible = True
-                MH.Picture.Tag = path
+                ' MH.Picture.Visible = True
+                MH.Picture.Tag = path 'Important for thumbnail mouseover events. 
                 Return True
 
             Case Else
@@ -221,7 +221,7 @@ Public Class MediaSwapper
     End Sub
     Private Sub RotateMedia(ByRef ThisMH As MediaHandler, ByRef NextMH As MediaHandler, ByRef PrevMH As MediaHandler)
         CurrentURLS.Clear()
-
+        ' HideMedias(ThisMH)
         Prepare(PrevMH, PreviousItem)
         Prepare(NextMH, NextItem)
         Prepare(ThisMH, CurrentItem)
@@ -337,6 +337,19 @@ Public Class MediaSwapper
         Media3.Speed.Paused = True
 
     End Sub
+    Public Sub SetPicState(state As Byte)
+        Media1.PicHandler.SetState(state)
+        Media2.PicHandler.SetState(state)
+        Media3.PicHandler.SetState(state)
+
+    End Sub
+    Public Sub ZoomPics(zoomfactor As Integer)
+
+        Media1.PicHandler.ZoomFactor = zoomfactor
+        Media2.PicHandler.ZoomFactor = zoomfactor
+        Media3.PicHandler.ZoomFactor = zoomfactor
+    End Sub
+
     Public Sub DockMedias(separated As Boolean)
         If separated Then
             Media1.Picture.Dock = DockStyle.None

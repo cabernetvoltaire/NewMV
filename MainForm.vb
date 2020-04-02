@@ -29,6 +29,7 @@ Public Class MainForm
     Public WithEvents X As New OrphanFinder
     Public WithEvents VT As New VideoThumbnailer
     Public WithEvents FKH As FunctionKeyHandler
+    Public Splash As New SplashScreen1
 
     ' Public WithEvents Response As New Timer
     Public FocusControl As New Control
@@ -52,9 +53,14 @@ Public Class MainForm
     End Sub
     Public Sub OnItemChanged(sender As Object, e As EventArgs) Handles FBH.ListItemChanged
         Dim m = New IO.FileInfo(FBH.OldItem)
-        m.MoveTo(FBH.NewItem)
-    End Sub
+        Try
+            m.MoveTo(FBH.NewItem)
 
+        Catch ex As IOException
+            FBH.NewItem = AppendExistingFilename(FBH.NewItem, m)
+            m.MoveTo(FBH.NewItem)
+        End Try
+    End Sub
     Public Sub OnEndReached(sender As Object, e As EventArgs) Handles FBH.EndReached, LBH.EndReached
         If AutoTraverse Then
 
@@ -519,9 +525,9 @@ Public Class MainForm
             FullScreen.Location = screen.Bounds.Location + New Point(100, 100)
             CancelDisplay(False)
             'Media.Player.Size = screen.Bounds.Size
-            FullScreen.Show()
 
             FullScreen.FSFiles = MSFiles
+            FullScreen.Show()
             ' TogglePause()
         Else
             '            SplitterPlace(0.25)
@@ -1170,7 +1176,7 @@ Public Class MainForm
         PreferencesGet()
 
 
-        Media.Picture = PictureBox1
+        'Media.Picture = PictureBox1
         tbPercentage.Enabled = True
         Marks.Bar = Scrubber
 
@@ -1242,11 +1248,11 @@ Public Class MainForm
 #Region "Control Handlers"
 
     Private Sub Form1_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        SplashScreen1.Hide()
+        Splash.Hide()
         GlobalInitialise()
 
         Me.Visible = True
-        'HighlightCurrent(Media.MediaPath)
+
 
     End Sub
     Public Sub ControlSetFocus(control As Control)
@@ -1326,7 +1332,7 @@ Public Class MainForm
         '  IndexHandler(FocusControl, e)
         NewIndex.Enabled = False
 
-        NewIndex.Interval = 100
+        NewIndex.Interval = 50
 
         NewIndex.Enabled = True
 
@@ -1379,6 +1385,7 @@ Public Class MainForm
     Private Sub RotatePic(currentPicBox As PictureBox, blnLeft As Boolean)
         If currentPicBox.Image Is Nothing Then Exit Sub
         If Media.MediaType <> Filetype.Pic Then Exit Sub
+        Media.PicHandler.GetImage(Media.MediaPath)
         With currentPicBox.Image
             If blnLeft Then
                 .RotateFlip(RotateFlipType.Rotate90FlipNone)
@@ -2671,6 +2678,7 @@ Public Class MainForm
 
 
     Private Sub MainForm_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
+
     End Sub
 
     Private Sub AlphabeticGroupsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlphabeticGroupsToolStripMenuItem.Click
@@ -2793,7 +2801,7 @@ Public Class MainForm
     End Sub
 
     Private Sub chbShowAttr_CheckedChanged(sender As Object, e As EventArgs) Handles chbShowAttr.CheckedChanged
-        MsgBox("Attribute Changed")
+        'MsgBox("Attribute Changed")
     End Sub
 
     Private Sub chbAutoTrail_CheckedChanged(sender As Object, e As EventArgs) Handles chbAutoTrail.CheckedChanged

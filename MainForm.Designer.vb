@@ -765,6 +765,7 @@ Partial Class MainForm
         '
         'PictureBox2
         '
+        Me.PictureBox2.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.PictureBox2.BackColor = System.Drawing.Color.Black
         Me.PictureBox2.Location = New System.Drawing.Point(1236, 117)
         Me.PictureBox2.Name = "PictureBox2"
@@ -775,6 +776,7 @@ Partial Class MainForm
         '
         'PictureBox3
         '
+        Me.PictureBox3.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.PictureBox3.BackColor = System.Drawing.Color.Black
         Me.PictureBox3.Location = New System.Drawing.Point(291, 376)
         Me.PictureBox3.Name = "PictureBox3"
@@ -828,6 +830,7 @@ Partial Class MainForm
         '
         'PictureBox1
         '
+        Me.PictureBox1.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.PictureBox1.BackColor = System.Drawing.Color.Black
         Me.PictureBox1.Location = New System.Drawing.Point(0, 0)
         Me.PictureBox1.Name = "PictureBox1"

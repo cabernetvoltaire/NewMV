@@ -21,6 +21,11 @@ Friend Module FileHandling
     Public AllFaveMinder As New FavouritesMinder("Q:\Favourites")
     Public FaveMinder As New FavouritesMinder("Q:\Favourites")
 
+    Public Sub Onzoomchanged(sender As Object, e As EventArgs) Handles Media.Zoomchanged
+        MainForm.tbZoom.Text = "Zoom:" & Str(Media.PicHandler.ZoomFactor) & "%"
+        ' MSFiles.ZoomPics(Media.PicHandler.ZoomFactor)
+
+    End Sub
     Public Sub OnMediaFinished(sender As Object, e As EventArgs) Handles Media.MediaFinished
         MainForm.AdvanceFile(True, MainForm.Random.NextSelect)
         'Media.Playing= False
@@ -68,6 +73,8 @@ Friend Module FileHandling
     Public Sub OnFilesMoved(files As List(Of String), lbx1 As ListBox)
         lbx1.SelectionMode = SelectionMode.One
         Dim ind As Long = lbx1.SelectedIndex
+        'MainForm.FBH.DirectoryPath = CurrentFolder
+        'MainForm.FBH.Refresh()
         For Each f In files
             Select Case NavigateMoveState.State
                 Case StateHandler.StateOptions.Copy, StateHandler.StateOptions.CopyLink
@@ -80,11 +87,10 @@ Friend Module FileHandling
                     If MainForm.LBH.ListBox IsNot Nothing Then
                         MainForm.LBH.FillBox()
                     End If
-                    MainForm.FBH.FillBox() '            RefreshListbox(lbx1, files)
             End Select
             MSFiles.ResettersOff()
         Next
-        RefreshListbox(lbx1, files)
+        '  RefreshListbox(lbx1, files)
 
         If lbx1.Items.Count <> 0 Then lbx1.SetSelected(Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0), True)
 
@@ -403,7 +409,7 @@ Friend Module FileHandling
             MsgBox(ex.Message)
         End Try
 
-        '  RaiseEvent FileMoved(files, MainForm.lbxFiles)
+        RaiseEvent FileMoved(files, MainForm.lbxFiles)
     End Sub
     ''' <summary>
     ''' Checks to see if f is in the favourite links, and if so, updates the link. 

@@ -117,19 +117,22 @@
     End Sub
     Public Property SingleLinks As Boolean
     Public Sub FillBox(Optional List As List(Of String) = Nothing)
-        mListbox.DataSource = Nothing
-        If List IsNot Nothing Then mItemList = List
+        'mListbox.DataSource = Nothing
+        If List IsNot Nothing Then
+            mItemList = List
+        Else
+
+        End If
         FilterList()
         OrderList()
 
-        If mItemList.Count > 200 Then
-            mListbox.SuspendLayout()
-        End If
+        'If mItemList.Count > 200 Then
+        '    mListbox.SuspendLayout()
+        'End If
         mListbox.DataSource = ItemList
         If ItemList.Count = 0 And Filter.State <> FilterHandler.FilterState.All Then
             mListbox.DataSource = {"(If nothing is shown here, check filter)"}
         End If
-
         RaiseEvent ListBoxFilled(mListbox, Nothing)
         'SetFirst()
     End Sub
@@ -224,8 +227,11 @@
         mEditing = False
         If mText.Text <> mListbox.SelectedItem Then
             OldItem = mListbox.SelectedItem
+            Dim x = mListbox.SelectedIndex
+            mListbox.DataSource = Nothing
             NewItem = mText.Text
-            mListbox.Items(mListbox.SelectedIndex) = NewItem
+            ItemList(x) = NewItem
+            FillBox()
             RaiseEvent ListItemChanged(mListbox.SelectedItem, e)
         End If
     End Sub
