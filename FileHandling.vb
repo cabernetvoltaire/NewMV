@@ -90,7 +90,7 @@ Friend Module FileHandling
             End Select
             MSFiles.ResettersOff()
         Next
-        '  RefreshListbox(lbx1, files)
+        RefreshListbox(lbx1, files)
 
         If lbx1.Items.Count <> 0 Then lbx1.SetSelected(Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0), True)
 

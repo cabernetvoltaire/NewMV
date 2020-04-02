@@ -282,10 +282,10 @@ Public Class MainForm
         'Marks.Bar = Scrubber
         '  Marks.Clear()
         Marks.Markers = Media.Markers
-            Scrubber.Width = ctrPicAndButtons.Width * ScrubberProportion
-            Scrubber.Left = Scrubber.Width * ((1 - ScrubberProportion) / 2)
-            'Scrubber.Visible = False
-            Marks.Create()
+        Scrubber.Width = ctrPicAndButtons.Width * ScrubberProportion
+        Scrubber.Left = Scrubber.Width * ((1 - ScrubberProportion) / 2)
+        'Scrubber.Visible = False
+        Marks.Create()
         'Marks.Bar.BackColor = Me.BackColor
 
         'Scrubber.Image = Marks.Bitmap NEVER add this back.
