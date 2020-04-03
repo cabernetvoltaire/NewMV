@@ -1225,7 +1225,7 @@ Public Class MainForm
     'End Sub
 
     Public Sub WatchStart(path As String)
-        'Exit Sub
+        Exit Sub
         ' watchfolder = New System.IO.FileSystemWatcher()
         FileSystemWatcher1.Path = path
         FileSystemWatcher1.NotifyFilter = IO.NotifyFilters.LastWrite
@@ -1653,6 +1653,7 @@ Public Class MainForm
 
                 Else
                     Dim m = FBH.SelectedItemsList
+                    Media.Forceload = True
                     FBH.RemoveItems(m)
                     MoveFiles(m, strVisibleButtons(i))
                 End If

@@ -20,7 +20,10 @@ Friend Module FileHandling
     ' Public FaveMinder As New FavouritesMinder(CurrentFavesPath)
     Public AllFaveMinder As New FavouritesMinder("Q:\Favourites")
     Public FaveMinder As New FavouritesMinder("Q:\Favourites")
+    Public Sub OnZoomChanged(sender As Object, e As EventArgs) Handles Media.Zoomchanged
+        MSFiles.ZoomPics(Media.PicHandler.ZoomFactor)
 
+    End Sub
     Public Sub OnMediaFinished(sender As Object, e As EventArgs) Handles Media.MediaFinished
         MainForm.AdvanceFile(True, MainForm.Random.NextSelect)
         'Media.Playing= False
@@ -80,11 +83,11 @@ Friend Module FileHandling
                     If MainForm.LBH.ListBox IsNot Nothing Then
                         MainForm.LBH.FillBox()
                     End If
-                    MainForm.FBH.FillBox() '            RefreshListbox(lbx1, files)
+                    RefreshListbox(lbx1, files)
             End Select
             MSFiles.ResettersOff()
         Next
-        RefreshListbox(lbx1, files)
+        '        RefreshListbox(lbx1, files)
 
         If lbx1.Items.Count <> 0 Then lbx1.SetSelected(Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0), True)
 
@@ -403,7 +406,7 @@ Friend Module FileHandling
             MsgBox(ex.Message)
         End Try
 
-        '  RaiseEvent FileMoved(files, MainForm.lbxFiles)
+        RaiseEvent FileMoved(files, MainForm.lbxFiles)
     End Sub
     ''' <summary>
     ''' Checks to see if f is in the favourite links, and if so, updates the link. 

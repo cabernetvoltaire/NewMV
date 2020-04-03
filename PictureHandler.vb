@@ -18,15 +18,7 @@
     Private Property mZoomfactor As Integer = 100
     Public Property ZoomFactor As Integer
         Set(value As Integer)
-            'If mZoomfactor < value Then
-            '    While mZoomfactor < value
-            '        ZoomPicture(True, 1)
-            '    End While
-            'Else
-            '    While mZoomfactor > value
-            '        ZoomPicture(False, 1)
-            '    End While
-            'End If
+
             mZoomfactor = value
 
         End Set

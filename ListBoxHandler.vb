@@ -117,7 +117,7 @@
     End Sub
     Public Property SingleLinks As Boolean
     Public Sub FillBox(Optional List As List(Of String) = Nothing)
-        mListbox.DataSource = Nothing
+        'mListbox.DataSource = Nothing
         If List IsNot Nothing Then mItemList = List
         FilterList()
         OrderList()
@@ -161,8 +161,13 @@
     Public Sub RemoveItems(List As List(Of String))
         If List.Count = 0 Then Exit Sub
         Dim i = ListBox.FindString(List(0))
+        'ListBox.DataSource = Nothing
+        For Each m In List
+            mItemList.Remove(m)
+            RaiseEvent ListboxChanged(ListBox, Nothing)
+        Next
         FillBox()
-        RaiseEvent ListboxChanged(ListBox, Nothing)
+
         If i > ListBox.Items.Count - 1 Then
             SetIndex(ListBox.Items.Count - 1)
         Else

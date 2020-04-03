@@ -195,7 +195,7 @@ Public Class MediaSwapper
             Case Filetype.Pic
                 MH.PlaceResetter(False)
                 MH.MediaPath = path
-                ' MH.Picture.Visible = True
+                MH.Picture.Visible = True
                 MH.Picture.Tag = path 'Important for thumbnail mouseover events. 
                 Return True
 
