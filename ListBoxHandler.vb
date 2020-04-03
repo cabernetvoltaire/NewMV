@@ -117,7 +117,7 @@
     End Sub
     Public Property SingleLinks As Boolean
     Public Sub FillBox(Optional List As List(Of String) = Nothing)
-        'mListbox.DataSource = Nothing
+        mListbox.DataSource = Nothing
         If List IsNot Nothing Then mItemList = List
         FilterList()
         OrderList()
@@ -125,12 +125,12 @@
         If mItemList.Count > 200 Then
             mListbox.SuspendLayout()
         End If
-        mListbox.DataSource = ItemList
-        If ItemList.Count = 0 And Filter.State <> FilterHandler.FilterState.All Then
+        mListbox.DataSource = mItemList
+
+        If mItemList.Count = 0 And Filter.State <> FilterHandler.FilterState.All Then
             mListbox.DataSource = {"(If nothing is shown here, check filter)"}
         End If
 
-        RaiseEvent ListBoxFilled(mListbox, Nothing)
         'SetFirst()
     End Sub
     Private Function InvertListBoxSelections(ByRef tempListBox As ListBox) As Integer
