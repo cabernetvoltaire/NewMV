@@ -129,6 +129,7 @@ Friend Module Mysettings
             .Add("FractionalJump" & "$" & MainForm.SP.FractionalJump)
             .Add("AbsoluteJump" & "$" & MainForm.SP.AbsoluteJump)
             .Add("Speed" & "$" & MainForm.SP.Speed)
+            .Add("Navmode" & "$" & MainForm.NavigateMoveState.State)
 
         End With
 
@@ -245,6 +246,7 @@ Friend Module Mysettings
                             If value = "" Then value = False
                             MainForm.chbOnDir.Checked = value
                         Case "RandomAutoTrail"
+                            Exit Select
                             value = False 'TODO causing load problems when omitted
                             If value = "" Then value = False
                             MainForm.chbAutoTrail.Checked = value
@@ -278,6 +280,8 @@ Friend Module Mysettings
                             MainForm.SP.FractionalJump = value
                         Case "Speed"
                             MainForm.SP.Speed = value
+                        Case "Navstate"
+                            MainForm.NavigateMoveState.State = value
                     End Select
 
                 End If

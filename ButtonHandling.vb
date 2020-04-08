@@ -70,14 +70,7 @@ Module ButtonHandling
             FolderSelect.Folder = s
             Debug.Print("New Folder" & s)
             '        x.Show()
-            Dim control As Control = CType(Sender, Control)
-            Dim startpoint As Point
-            startpoint.X = control.Left
-            startpoint.Y = control.Top
-            startpoint = control.PointToScreen(startpoint)
-            FolderSelect.Left = startpoint.X - FolderSelect.Width / 2
-            FolderSelect.Top = startpoint.Y - FolderSelect.Height
-            FolderSelect.BringToFront()
+            PlaceFolderSelectSubForm(Sender)
             'FolderSelect.UpdateFolder()
         ElseIf e.Button = MouseButtons.Right Then
             'Dim path As String() = Split(s, "\")
@@ -87,6 +80,16 @@ Module ButtonHandling
 
     End Sub
 
+    Private Sub PlaceFolderSelectSubForm(Sender As Object)
+        Dim control As Control = CType(Sender, Control)
+        Dim startpoint As Point
+        startpoint.X = control.Left
+        startpoint.Y = control.Top
+        startpoint = control.PointToScreen(startpoint)
+        FolderSelect.Left = startpoint.X - FolderSelect.Width / 2
+        FolderSelect.Top = startpoint.Y - FolderSelect.Height
+        FolderSelect.BringToFront()
+    End Sub
 
 
 
@@ -219,56 +222,56 @@ Module ButtonHandling
 
         KeyAssignmentsStore(ButtonFilePath)
     End Sub
-    Public Sub AssignTreeNew(StartingFolder As String, SizeMagnitude As Byte)
-        If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
+    'Public Sub AssignTreeNew(StartingFolder As String, SizeMagnitude As Byte)
+    '    If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
 
-        Dim exclude As String = ""
-        exclude = InputBox("String to exclude from folders?", "")
-        ClearCurrentButtons()
-        Dim d As New DirectoryInfo(StartingFolder)
+    '    Dim exclude As String = ""
+    '    exclude = InputBox("String to exclude from folders?", "")
+    '    ClearCurrentButtons()
+    '    Dim d As New DirectoryInfo(StartingFolder)
 
-        Dim icomp As New MyComparer
-        Dim dlist As New SortedList(Of Long, DirectoryInfo)(icomp)
-        Dim subfolders As Boolean = (MsgBox("Include subfolders in count?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes)
+    '    Dim icomp As New MyComparer
+    '    Dim dlist As New SortedList(Of Long, DirectoryInfo)(icomp)
+    '    Dim subfolders As Boolean = (MsgBox("Include subfolders in count?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes)
 
-        For Each di In d.EnumerateDirectories("*", searchOption:=IO.SearchOption.AllDirectories)
+    '    For Each di In d.EnumerateDirectories("*", searchOption:=IO.SearchOption.AllDirectories)
 
-            Dim disize = GetDirSize(di.FullName, 0, Not subfolders)
-            If (exclude = "" Or Not di.Name.Contains(exclude)) And disize > 10 ^ SizeMagnitude Then
-                'MsgBox(di.Name & " is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###.#"))
-                While dlist.Keys.Contains(disize)
-                    disize += 1
-                End While
-                dlist.Add(disize, di)
-            End If
+    '        Dim disize = GetDirSize(di.FullName, 0, Not subfolders)
+    '        If (exclude = "" Or Not di.Name.Contains(exclude)) And disize > 10 ^ SizeMagnitude Then
+    '            'MsgBox(di.Name & " is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###.#"))
+    '            While dlist.Keys.Contains(disize)
+    '                disize += 1
+    '            End While
+    '            dlist.Add(disize, di)
+    '        End If
 
-        Next
-        Dim i As Int16 = 0
-        'dlist.Reverse
-        '   dlist.Reverse
+    '    Next
+    '    Dim i As Int16 = 0
+    '    'dlist.Reverse
+    '    '   dlist.Reverse
 
-        Dim n(nletts) As Integer
+    '    Dim n(nletts) As Integer
 
-        For Each dx In dlist
-            Dim di As IO.DirectoryInfo
-            di = dx.Value
-            Dim l As String = UCase(di.Name(0))
-            Dim ButtonNumber As Integer = LetterNumberFromAscii(Asc(l))
-            buttons.CurrentLetter = ButtonNumber
-            Dim firstbtn As New MVButton()
-            firstbtn.Letter = ButtonNumber
-            firstbtn.Position = buttons.CurrentRow.GetFirstFree()
-            firstbtn.Path = di.FullName
-            If firstbtn.Position < 8 Then AssignButton(firstbtn.Position, firstbtn.Letter, 1, di.FullName)
+    '    For Each dx In dlist
+    '        Dim di As IO.DirectoryInfo
+    '        di = dx.Value
+    '        Dim l As String = UCase(di.Name(0))
+    '        Dim ButtonNumber As Integer = LetterNumberFromAscii(Asc(l))
+    '        buttons.CurrentLetter = ButtonNumber
+    '        Dim firstbtn As New MVButton()
+    '        firstbtn.Letter = ButtonNumber
+    '        firstbtn.Position = buttons.CurrentRow.GetFirstFree()
+    '        firstbtn.Path = di.FullName
+    '        If firstbtn.Position < 8 Then AssignButton(firstbtn.Position, firstbtn.Letter, 1, di.FullName)
 
 
-        Next
+    '    Next
 
-        ButtonFilePath = Buttonfolder & "\" & d.Name & ".msb"
+    '    ButtonFilePath = Buttonfolder & "\" & d.Name & ".msb"
 
-        KeyAssignmentsStore(ButtonFilePath)
+    '    KeyAssignmentsStore(ButtonFilePath)
 
-    End Sub
+    'End Sub
     Public Function FindNextTier(tier As SortedList(Of String, DirectoryInfo)) As SortedList(Of String, DirectoryInfo)
         Dim i As Int16 = 0
         Dim nexttier As New SortedList(Of String, DirectoryInfo)
@@ -440,20 +443,20 @@ Module ButtonHandling
         'Load it (optionally)
     End Function
     Public Sub NewButtonList()
-        ClearCurrentButtons()
+        ClearCurrentButtons(buttons)
         SaveButtonlist()
 
     End Sub
-    Public Sub ClearCurrentButtons()
-        Array.Clear(strButtonFilePath, 0, strButtonFilePath.Length)
-        Array.Clear(strButtonCaptions, 0, strButtonCaptions.Length)
-        Array.Clear(strVisibleButtons, 0, strVisibleButtons.Length)
-        For i = 0 To 7
-            lblDest(i).Text = ""
+    'Public Sub ClearCurrentButtons()
+    '    Array.Clear(strButtonFilePath, 0, strButtonFilePath.Length)
+    '    Array.Clear(strButtonCaptions, 0, strButtonCaptions.Length)
+    '    Array.Clear(strVisibleButtons, 0, strVisibleButtons.Length)
+    '    For i = 0 To 7
+    '        lblDest(i).Text = ""
 
-        Next
-        ClearCurrentButtons(buttons)
-    End Sub
+    '    Next
+    '    ClearCurrentButtons(buttons)
+    'End Sub
     Public Sub ClearCurrentButtons(b As ButtonSet)
         b.Clear()
     End Sub
@@ -467,7 +470,7 @@ Module ButtonHandling
             path = filename
         End If
         If path = "" Then Exit Sub
-        ClearCurrentButtons()
+        ClearCurrentButtons(buttons)
         'Get the file path
         Dim fs As New List(Of String)
         ReadListfromFile(fs, path, Encrypted)

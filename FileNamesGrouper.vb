@@ -184,7 +184,7 @@
         For Each m In mWordlist
             For i = mFilenames.Count - 1 To Count Step -1
 
-                If m.Value = mFilenames.Count Or m.Value < i Or InStr(PICEXTENSIONS & VIDEOEXTENSIONS & ".lnk", m.Key) <> 0 Then
+                If m.Value = mFilenames.Count Or m.Value < i Or InStr(PICEXTENSIONS & VIDEOEXTENSIONS & LinkExt, m.Key) <> 0 Then
                 Else
                     If x.Keys.Contains(m.Key) Then
                     Else

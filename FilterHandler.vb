@@ -87,7 +87,7 @@
                             lst.Remove(m)
                         End If
                     Case FilterHandler.FilterState.LinkOnly
-                        If LCase(f.Extension) = ".lnk" Then
+                        If LCase(f.Extension) = LinkExt Then
                             If SingleLinks Then
                                 'For Each link In lst
                                 Dim x As String = LinkTarget(m)

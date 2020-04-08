@@ -17,7 +17,7 @@ Public Module General
         LeftBottom = 8
     End Enum
     Private Declare Function SearchTreeForFile Lib "imagehlp" (ByVal RootPath As String, ByVal InputPathName As String, ByVal OutputPathBuffer As String) As Long
-
+    Public Const LinkExt As String = ".mvl"
     Public Property bImageDimensionState As Byte
     Public Property ShiftDown As Boolean
     Public Property CtrlDown As Boolean
@@ -105,7 +105,7 @@ Public Module General
         Dim deadlinks As New List(Of String)
 
         For Each f In ls
-            If f.EndsWith(".lnk") Then
+            If f.EndsWith(LinkExt) Then
                 If Not LinkTargetExists(f) Then
                     deadlinks.Add(f)
                 End If
@@ -144,9 +144,17 @@ Public Module General
         Else
             Handler.ShortcutName = Name
         End If
-        Handler.Create_ShortCut(Bookmark)
+        Handler.New_Create_ShortCut(Bookmark)
 
         If DestinationDirectory = CurrentFolder And Update Then MainForm.UpdatePlayOrder(MainForm.FBH)
+    End Sub
+    Public Sub ConvertLink(OldLinkPath As String)
+        Dim bk As Long
+        Dim target As String
+        target = LinkTarget(OldLinkPath)
+        bk = BookmarkFromLinkName(OldLinkPath)
+        Dim file As New List(Of String) From {target, bk}
+        WriteListToFile(file, Replace(OldLinkPath, ".lnk", LinkExt), False)
     End Sub
     Public Function FilenameFromLink(n As String) As String
         If n = "" Then
@@ -194,11 +202,44 @@ Public Module General
     ''' <param name="str"></param>
     ''' <returns></returns>
     Public Function LinkTarget(str As String) As String
-
+        Dim xl As New IO.FileInfo(str)
+        If xl.Extension = LinkExt Then
+            Return NewLinkTarget(str)
+            Exit Function
+        End If
         Try
             str = CreateObject("WScript.Shell").CreateShortcut(str).TargetPath
             Dim f As New IO.FileInfo(str)
             If f.Exists Then
+            Else
+                Dim x = str
+                str = TryOtherDriveLetters(str)
+                If str = x Then
+                    'Report(str & "target not found", 1, False)
+                End If
+                'TODO TrywithoutBrackets
+            End If
+            Return str
+        Catch ex As Exception
+            Return str
+        End Try
+
+    End Function
+
+    ''' <summary>
+    ''' Returns the path of the link defined in str
+    ''' </summary>
+    ''' <param name="str"></param>
+    ''' <returns></returns>
+    Public Function NewLinkTarget(str As String) As String
+
+        Try
+            Dim items As New List(Of String)
+            ReadListfromFile(items, str, False)
+            str = items(0)
+            Dim f As New IO.FileInfo(items(0))
+            If f.Exists Then
+
             Else
                 Dim x = str
                 str = TryOtherDriveLetters(str)
@@ -556,7 +597,7 @@ Public Module General
 
         End If
     End Sub
-    Public Sub Report(str As String, gaps As Integer, Optional Sound As Boolean = False)
+    Public Sub Report(str As String, Optional gaps As Integer = 0, Optional Sound As Boolean = False)
         If DebugOn Then
             If Sound Then SystemSounds.Asterisk.Play()
 
@@ -592,7 +633,7 @@ Public Module General
             Select Case LCase(info.Extension)
                 Case ""
                     Return Filetype.Unknown
-                Case ".lnk"
+                Case ".lnk", LinkExt
                     Return Filetype.Link
             End Select
 

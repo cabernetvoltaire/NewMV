@@ -67,7 +67,12 @@ Public Class MainForm
             tvMain2.Traverse(False)
         End If
     End Sub
+    Public Sub OnFolderRename(sender As Object, e As NodeLabelEditEventArgs) Handles tvMain2.LabelEdited
+        If Not e.CancelEdit Then
+            CurrentFolder = CurrentFolder.Replace(e.Node.Text, e.Label)
 
+        End If
+    End Sub
     Public Sub OnParentNotFound(sender As Object, e As EventArgs) Handles X.ParentNotFound, Op.ParentNotFound
         '  lbxReport.Items.Add("Not found")
     End Sub
@@ -252,7 +257,7 @@ Public Class MainForm
             chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Regular)
             chbPreviewLinks.Text = "Preview links (None)"
             If chbPreviewLinks.Checked Then
-                lbxShowList.Items.Clear()
+                LBH.ItemList.Clear()
                 ControlSetFocus(lbxFiles)
             End If
         Else
@@ -326,16 +331,19 @@ Public Class MainForm
         AddToButtonFilesList(path)
         Return path
     End Function
-    Private Sub LoadShowList()
+    Private Sub LoadShowList(Optional DesiredFile As String = "")
         Dim path As String = ""
-
-        With OpenFileDialog1
-            .DefaultExt = "msl"
-            .Filter = "Metavisua list files|*.msl|All files|*.*"
-            If .ShowDialog() = System.Windows.Forms.DialogResult.OK Then
-                path = .FileName
-            End If
-        End With
+        If DesiredFile <> "" Then
+            path = DesiredFile
+        Else
+            With OpenFileDialog1
+                .DefaultExt = "msl"
+                .Filter = "Metavisua list files|*.msl|All files|*.*"
+                If .ShowDialog() = System.Windows.Forms.DialogResult.OK Then
+                    path = .FileName
+                End If
+            End With
+        End If
         LastShowList = path
         If path = "" Then Exit Sub
 
@@ -518,7 +526,7 @@ Public Class MainForm
             If blnSecondScreen Then
                 screen = Screen.AllScreens(1)
             Else
-                screen = Screen.AllScreens(0)
+                screen = Screen.PrimaryScreen
                 'SplitterPlace(0.75)
             End If
             FullScreen.StartPosition = FormStartPosition.CenterScreen
@@ -531,6 +539,7 @@ Public Class MainForm
             ' TogglePause()
         Else
             '            SplitterPlace(0.25)
+            MSFiles = FullScreen.FSFiles
             MSFiles.AssignPlayers(MainWMP1, MainWMP2, MainWMP3)
             MSFiles.AssignPictures(PictureBox1, PictureBox2, PictureBox3)
             MSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
@@ -1187,6 +1196,7 @@ Public Class MainForm
         NavigateMoveState.State = StateHandler.StateOptions.Navigate
         OnRandomChanged()
         ControlSetFocus(lbxFiles)
+        LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\ITC.msl")
         Media.DontLoad = False
         FBH.ListBox = lbxFiles
         LBH.ListBox = lbxShowList
@@ -1317,7 +1327,7 @@ Public Class MainForm
 
     Private Sub ClearShowList()
         Showlist.Clear()
-        lbxShowList.Items.Clear()
+        LBH.ItemList.Clear()
         CollapseShowlist(True)
     End Sub
 
@@ -1791,8 +1801,8 @@ Public Class MainForm
         CurrentFolder = e.Directory.FullName
 
         tmrUpdateFileList.Enabled = True
-        tmrUpdateFileList.Interval = 200
-        CancelDisplay(False)
+        tmrUpdateFileList.Interval = 500
+        'CancelDisplay(False)
         ' FillListbox(lbxFiles, New DirectoryInfo(CurrentFolder), Random.OnDirChange)
 
 
@@ -1927,14 +1937,7 @@ Public Class MainForm
         tmrUpdateFileList.Enabled = True
     End Sub
 
-    Private Sub ToolStripButton1_Click_1(sender As Object, e As EventArgs) Handles TreeToolStripMenuItem.Click
-        Dim size As Byte = Val(InputBox("Enter min size to create [0 - 12]",, "0"))
-        'If size < 6 Then size = 11
-        AssignTreeNew(CurrentFolder, size)
-        UpdateFileInfo()
-        'SaveButtonlist()
 
-    End Sub
 
 
 
@@ -2273,9 +2276,6 @@ Public Class MainForm
         Console.WriteLine(Msg)
     End Sub
 
-    Private Sub ToolStripTextBox1_Click(sender As Object, e As EventArgs)
-
-    End Sub
     Private Sub Filter(index As DateMove.DMY)
         CancelDisplay(False)
         DM.FilterByDate(CurrentFolder, False, index)
@@ -2820,7 +2820,7 @@ Public Class MainForm
     End Sub
 
     Private Sub ResetButtonsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetButtonsToolStripMenuItem.Click
-        CBXButtonFiles.SelectedItem = "Watch.msb" 'TODO Make general
+        CBXButtonFiles.SelectedIndex = 0 '"Watch.msb" 'TODO Make general
 
     End Sub
 
@@ -2843,15 +2843,38 @@ Public Class MainForm
     Private Sub tbScanRate_ValueChanged(sender As Object, e As EventArgs) Handles tbScanRate.ValueChanged
         tmrJumpRandom.Interval = tbScanRate.Value
     End Sub
-
-
-
-    Private Sub MainForm_MouseClick(sender As Object, e As MouseEventArgs) Handles Me.MouseClick, PictureBox1.MouseClick, PictureBox2.MouseClick, PictureBox3.MouseClick
-        If e.Button = MouseButtons.XButton1 Then AdvanceFile(True, Random.NextSelect)
-        If e.Button = MouseButtons.XButton2 Then AdvanceFile(False, Random.NextSelect)
+    Private Sub MainForm_Mousewheel(sender As Object, e As MouseEventArgs) Handles Me.MouseWheel
+        If Media.PicHandler.WheelScroll And Media.MediaType = Filetype.Movie Then
+            AdvanceFile(e.Delta < 0, Random.NextSelect)
+        End If
 
     End Sub
 
+
+    Private Sub MainForm_MouseClick(sender As Object, e As MouseEventArgs) Handles Me.MouseClick, PictureBox1.MouseClick, PictureBox2.MouseClick, PictureBox3.MouseClick
+
+        If e.Button = MouseButtons.XButton1 Then AdvanceFile(True, Random.NextSelect)
+        If e.Button = MouseButtons.XButton2 Then AdvanceFile(False, Random.NextSelect)
+        If e.Button = MouseButtons.Right Then AddMarker()
+        '  If e.Button = MouseButtons.Left Then MSFiles.ClickAllPics(sender, e)
+    End Sub
+
+    Private Sub tmrUpdateFolderSelection_Tick(sender As Object, e As EventArgs) Handles tmrUpdateFolderSelection.Tick
+
+    End Sub
+
+    Private Sub ReplaceOldLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ReplaceOldLinksToolStripMenuItem.Click
+        Dim x As New List(Of String)
+        x = FBH.SelectedItemsList
+        For Each m In x
+            ConvertLink(m)
+        Next
+
+    End Sub
+
+    Private Sub FBH_ListIndexChanged(sender As Object, e As EventArgs) Handles FBH.ListIndexChanged
+
+    End Sub
 
 
 #End Region

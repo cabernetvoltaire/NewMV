@@ -93,7 +93,7 @@
                 ' End If
                 Return mPreviousItem
             Catch ex As Exception
-                MsgBox("Exception in nextfile - previous item")
+                ' MsgBox("Exception in nextfile - previous item")
                 Return 0
             End Try
         End Get

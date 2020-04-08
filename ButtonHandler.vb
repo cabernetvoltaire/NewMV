@@ -1,6 +1,9 @@
 ﻿Imports System.IO
 Public Class ButtonHandler
     Public WithEvents buttons As New ButtonSet
+    Public ActualButtons(8) As Button
+    Public Labels(8) As Label
+    Public Tooltip As ToolTip
     Public Sub LoadButtonSet(Optional filename As String = "")
 
         Dim path As String
@@ -54,7 +57,7 @@ Public Class ButtonHandler
         WriteListToFile(output, path, True)
 
     End Sub
-    Public Sub AddLoadedButtonToSet(btn As MVButton)
+    Private Sub AddLoadedButtonToSet(btn As MVButton)
         With buttons
             buttons.CurrentLetter = btn.Letter
             buttons.CurrentSet(btn.Letter).Current = True
@@ -163,15 +166,15 @@ Public Class ButtonHandler
 
             End Try
         End With
-        'strVisibleButtons(ButtonNumber) = Path
-        'strButtonFilePath(ButtonNumber, ButtonLetter, Layer) = Path
 
-        'lblDest(ButtonNumber).Text = f.Name
-        'strButtonCaptions(ButtonNumber, ButtonLetter, Layer) = f.Name
-        'UpdateButtonAppearance()
-        'If Store Then
-        '    KeyAssignmentsStore(ButtonFilePath)
-        'End If
     End Sub
+    Public Sub TranscribeButtons(m As ButtonRow)
+        For i = 0 To 7
+            ActualButtons(i).Text = m.Buttons(i).FaceText
+            Labels(i).Text = m.Buttons(i).Label
+            Labels(i).ForeColor = m.Buttons(i).Colour
+            Tooltip.SetToolTip(ActualButtons(i), buttons.CurrentRow.Buttons(i).Path)
+        Next
 
+    End Sub
 End Class

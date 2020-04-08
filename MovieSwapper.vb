@@ -5,9 +5,10 @@ Public Class MediaSwapper
     Public WithEvents Media1 As New MediaHandler("mMedia1")
     Public WithEvents Media2 As New MediaHandler("mMedia2")
     Public WithEvents Media3 As New MediaHandler("mMedia3")
-    Public WithEvents Pic1 As New PictureHandler(Media1.Picture)
-    Public WithEvents Pic2 As New PictureHandler(Media2.Picture)
-    Public WithEvents Pic3 As New PictureHandler(Media3.Picture)
+    Public MediaHandlers As New List(Of MediaHandler) From {Media1, Media2, Media3}
+    'Public WithEvents Pic1 As New PictureHandler(Media1.Picture)
+    'Public WithEvents Pic2 As New PictureHandler(Media2.Picture)
+    'Public WithEvents Pic3 As New PictureHandler(Media3.Picture)
 
     Private WithEvents PauseAll As New Timer With {.Interval = 3000, .Enabled = False}
 
@@ -17,15 +18,15 @@ Public Class MediaSwapper
     Private mListbox As New ListBox
     Private mListcount As Integer
     Public CurrentURLS As New List(Of String)
-    <CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")>
+
     Public Event MediaPlaying(sender As Object, e As EventArgs)
     Public Event MediaNotFound(sender As Object, e As EventArgs)
     Private Property mForceLoad As Boolean
     Public Property ForceLoad As Boolean
         Set(value As Boolean)
-            Media1.Forceload = value
-            Media2.Forceload = value
-            Media3.Forceload = value
+            For Each m In MediaHandlers
+                m.Forceload = value
+            Next
             mForceLoad = value
         End Set
         Get
@@ -135,9 +136,9 @@ Public Class MediaSwapper
             CurrentItem = NextF.CurrentItem
             GetNext()
             PreviousItem = NextF.PreviousItem
-            Report("Current:" & CurrentItem, 0)
-            Report("Next:" & NextItem, 0)
-            Report("Previous:" & PreviousItem, 0)
+            'Report("Current:" & CurrentItem, 0)
+            'Report("Next:" & NextItem, 0)
+            'Report("Previous:" & PreviousItem, 0)
             Select Case CurrentItem
 
                 Case Media2.MediaPath
@@ -172,11 +173,9 @@ Public Class MediaSwapper
 
     Private Function Prepare(ByRef MH As MediaHandler, path As String) As Boolean
         Debug.Print("PREPARE: " & MH.Player.Name & " with " & path)
-        If MH.MediaPath <> path Or ForceLoad Then
-            MH.MediaPath = path 'Still not right for pics
-            '       Else
-            'MH.LoadMedia()
-        End If
+        ' MH.Forceload = True
+        'If MH.MediaPath <> path Or ForceLoad Then
+        MH.MediaPath = path 'Still not right for pics
         Select Case MH.MediaType
             Case Filetype.Movie
                 If blnFullScreen Then
@@ -194,7 +193,6 @@ Public Class MediaSwapper
               '  RaiseEvent LoadedMedia(MH) 'Currently does nothing.
             Case Filetype.Pic
                 MH.PlaceResetter(False)
-                MH.MediaPath = path
                 MH.Picture.Visible = True
                 MH.Picture.Tag = path 'Important for thumbnail mouseover events. 
                 Return True
@@ -213,14 +211,13 @@ Public Class MediaSwapper
         Return 0
     End Function
     Public Sub CancelURL(filepath As String)
-        Media1.CancelMedia()
-        Media2.CancelMedia()
-        Media3.CancelMedia()
-
+        For Each m In MediaHandlers
+            m.CancelMedia()
+        Next
 
     End Sub
     Private Sub RotateMedia(ByRef ThisMH As MediaHandler, ByRef NextMH As MediaHandler, ByRef PrevMH As MediaHandler)
-        CurrentURLS.Clear()
+        'CurrentURLS.Clear()
         ' HideMedias(ThisMH)
         Prepare(PrevMH, PreviousItem)
         Prepare(NextMH, NextItem)
@@ -236,51 +233,37 @@ Public Class MediaSwapper
 
     End Sub
     Public Sub SetStartStates(ByRef SH As StartPointHandler)
-        Media1.SPT.State = SH.State
-        Media2.SPT.State = SH.State
-        Media3.SPT.State = SH.State
-
-
+        For Each m In MediaHandlers
+            m.SPT.State = SH.State
+        Next
     End Sub
     Public Sub SetStartpoints(ByRef SH As StartPointHandler) 'Only called when bars changed
         SetStartStates(SH)
-
-        Media1.SPT = SH
-
-        Media2.SPT = SH
-
-        Media3.SPT = SH
-
-
+        For Each m In MediaHandlers
+            m.SPT = SH
+        Next
     End Sub
     Public Sub URLSZero()
         Try
-
-            Media1.Player.URL = ""
-            Media2.Player.URL = ""
-            Media3.Player.URL = ""
-            DisposePic(Media1.Picture)
-            DisposePic(Media2.Picture)
-            DisposePic(Media3.Picture)
-            ''Media1.Picture.Image = Nothing
-            'Media2.Picture.Image = Nothing
-            'Media3.Picture.Image = Nothing
-            GC.Collect()
+            For Each m In MediaHandlers
+                m.Player.URL = ""
+                DisposePic(m.Picture)
+            Next
         Catch ex As Exception
             MsgBox(ex.Message)
         End Try
 
     End Sub
     Public Sub ResettersOff()
-        Media1.PlaceResetter(False)
-        Media2.PlaceResetter(False)
-        Media3.PlaceResetter(False)
+        For Each m In MediaHandlers
+            m.PlaceResetter(False)
+        Next
     End Sub
 
     Public Sub MuteAll()
-        Media1.Player.settings.mute = True
-        Media2.Player.settings.mute = True
-        Media3.Player.settings.mute = True
+        For Each m In MediaHandlers
+            If m.Playing Then m.Player.settings.mute = True
+        Next
 
     End Sub
     Private Sub ShowPlayer(ByRef MHX As MediaHandler)
@@ -305,22 +288,18 @@ Public Class MediaSwapper
         NextItem = NextF.NextItem
     End Sub
 
-    Public Sub ClickAllPics()
+    Public Sub ClickAllPics(sender As Object, e As MouseEventArgs)
+        For Each m In MediaHandlers
+            m.PicHandler.PicClick(m, e)
+        Next
     End Sub
     Private Sub HideMedias(CurrentMH As MediaHandler)
-        ' Exit Sub
-        If Media1 IsNot CurrentMH Then
-            Media1.Picture.Visible = False
-            Media1.Player.Visible = False
-        End If
-        If Media2 IsNot CurrentMH Then
-            Media2.Picture.Visible = False
-            Media2.Player.Visible = False
-        End If
-        If Media3 IsNot CurrentMH Then
-            Media3.Picture.Visible = False
-            Media3.Player.Visible = False
-        End If
+        For Each m In MediaHandlers
+            If m IsNot CurrentMH Then
+                m.Picture.Visible = False
+                m.Player.Visible = False
+            End If
+        Next
 
     End Sub
     Private Sub ShowPicture(ByRef MHX As MediaHandler)
@@ -332,32 +311,35 @@ Public Class MediaSwapper
 
     End Sub
     Public Sub PauseMovies() Handles PauseAll.Tick
+
         Media1.Speed.Paused = True
         Media2.Speed.Paused = True
         Media3.Speed.Paused = True
 
     End Sub
     Public Sub SetPicState(state As Byte)
-        Media1.PicHandler.SetState(state)
-        Media2.PicHandler.SetState(state)
-        Media3.PicHandler.SetState(state)
+        For Each m In MediaHandlers
+            If m.PicHandler.State <> state Then
+                m.PicHandler.SetState(state)
+
+            End If
+        Next
 
     End Sub
     Public Sub ZoomPics(zoomfactor As Integer)
-
-        Media1.PicHandler.ZoomFactor = zoomfactor
-        Media2.PicHandler.ZoomFactor = zoomfactor
-        Media3.PicHandler.ZoomFactor = zoomfactor
+        For Each m In MediaHandlers
+            m.PicHandler.ZoomFactor = zoomfactor
+        Next
     End Sub
 
     Public Sub DockMedias(separated As Boolean)
         If separated Then
-            Media1.Picture.Dock = DockStyle.None
-            Media2.Picture.Dock = DockStyle.None
-            Media3.Picture.Dock = DockStyle.None
-            Media1.Player.Dock = DockStyle.None
-            Media2.Player.Dock = DockStyle.None
-            Media3.Player.Dock = DockStyle.None
+            For Each m In MediaHandlers
+                m.Picture.Dock = DockStyle.None
+                m.Player.Dock = DockStyle.None
+
+            Next
+
             Media1.Picture.SetBounds(0, 0, 600, 400)
             Media2.Picture.SetBounds(650, 0, 600, 400)
             Media3.Picture.SetBounds(250, 480, 600, 400)
@@ -366,12 +348,10 @@ Public Class MediaSwapper
             Media3.Player.SetBounds(250, 480, 600, 400)
 
         Else
-            Media1.Picture.Dock = DockStyle.Fill
-            Media2.Picture.Dock = DockStyle.Fill
-            Media3.Picture.Dock = DockStyle.Fill
-            Media1.Player.Dock = DockStyle.Fill
-            Media2.Player.Dock = DockStyle.Fill
-            Media3.Player.Dock = DockStyle.Fill
+            For Each m In MediaHandlers
+                m.Picture.Dock = DockStyle.Fill
+                m.Player.Dock = DockStyle.Fill
+            Next
 
         End If
     End Sub

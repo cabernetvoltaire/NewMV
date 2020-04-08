@@ -26,20 +26,20 @@ Partial Class ButtonForm
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel10 = New System.Windows.Forms.Panel()
         Me.Label9 = New System.Windows.Forms.Label()
-        Me.Button9 = New System.Windows.Forms.Button()
+        Me.Button5 = New System.Windows.Forms.Button()
         Me.Panel9 = New System.Windows.Forms.Panel()
         Me.lblAlpha = New System.Windows.Forms.Label()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.Button8 = New System.Windows.Forms.Button()
         Me.Panel8 = New System.Windows.Forms.Panel()
         Me.Label7 = New System.Windows.Forms.Label()
-        Me.Button7 = New System.Windows.Forms.Button()
+        Me.Button6 = New System.Windows.Forms.Button()
         Me.Panel7 = New System.Windows.Forms.Panel()
         Me.Label6 = New System.Windows.Forms.Label()
-        Me.Button6 = New System.Windows.Forms.Button()
+        Me.Button8a = New System.Windows.Forms.Button()
         Me.Panel6 = New System.Windows.Forms.Panel()
         Me.Label5 = New System.Windows.Forms.Label()
-        Me.Button5 = New System.Windows.Forms.Button()
+        Me.Button7 = New System.Windows.Forms.Button()
         Me.Panel5 = New System.Windows.Forms.Panel()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.Button4 = New System.Windows.Forms.Button()
@@ -55,7 +55,7 @@ Partial Class ButtonForm
         Me.Button1 = New System.Windows.Forms.Button()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.lbl1 = New System.Windows.Forms.Label()
-        Me.btn1 = New System.Windows.Forms.Button()
+        Me.Button3a = New System.Windows.Forms.Button()
         Me.pbrButtons = New System.Windows.Forms.ProgressBar()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.TableLayoutPanel1.SuspendLayout()
@@ -109,7 +109,7 @@ Partial Class ButtonForm
         'Panel10
         '
         Me.Panel10.Controls.Add(Me.Label9)
-        Me.Panel10.Controls.Add(Me.Button9)
+        Me.Panel10.Controls.Add(Me.Button5)
         Me.Panel10.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel10.Location = New System.Drawing.Point(1173, 3)
         Me.Panel10.Name = "Panel10"
@@ -126,16 +126,16 @@ Partial Class ButtonForm
         Me.Label9.TabIndex = 2
         Me.Label9.Text = "Label1"
         '
-        'Button9
+        'Button5
         '
-        Me.Button9.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button9.Location = New System.Drawing.Point(39, 15)
-        Me.Button9.Name = "Button9"
-        Me.Button9.Size = New System.Drawing.Size(87, 77)
-        Me.Button9.TabIndex = 1
-        Me.Button9.TabStop = False
-        Me.Button9.Text = "f1"
-        Me.Button9.UseVisualStyleBackColor = True
+        Me.Button5.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Button5.Location = New System.Drawing.Point(39, 15)
+        Me.Button5.Name = "Button5"
+        Me.Button5.Size = New System.Drawing.Size(87, 77)
+        Me.Button5.TabIndex = 1
+        Me.Button5.TabStop = False
+        Me.Button5.Text = "f1"
+        Me.Button5.UseVisualStyleBackColor = True
         '
         'Panel9
         '
@@ -183,7 +183,7 @@ Partial Class ButtonForm
         'Panel8
         '
         Me.Panel8.Controls.Add(Me.Label7)
-        Me.Panel8.Controls.Add(Me.Button7)
+        Me.Panel8.Controls.Add(Me.Button6)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel8.Location = New System.Drawing.Point(1368, 3)
         Me.Panel8.Name = "Panel8"
@@ -200,21 +200,21 @@ Partial Class ButtonForm
         Me.Label7.TabIndex = 2
         Me.Label7.Text = "Label1"
         '
-        'Button7
+        'Button6
         '
-        Me.Button7.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button7.Location = New System.Drawing.Point(39, 15)
-        Me.Button7.Name = "Button7"
-        Me.Button7.Size = New System.Drawing.Size(87, 77)
-        Me.Button7.TabIndex = 1
-        Me.Button7.TabStop = False
-        Me.Button7.Text = "f1"
-        Me.Button7.UseVisualStyleBackColor = True
+        Me.Button6.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Button6.Location = New System.Drawing.Point(39, 15)
+        Me.Button6.Name = "Button6"
+        Me.Button6.Size = New System.Drawing.Size(87, 77)
+        Me.Button6.TabIndex = 1
+        Me.Button6.TabStop = False
+        Me.Button6.Text = "f1"
+        Me.Button6.UseVisualStyleBackColor = True
         '
         'Panel7
         '
         Me.Panel7.Controls.Add(Me.Label6)
-        Me.Panel7.Controls.Add(Me.Button6)
+        Me.Panel7.Controls.Add(Me.Button8a)
         Me.Panel7.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel7.Location = New System.Drawing.Point(1758, 3)
         Me.Panel7.Name = "Panel7"
@@ -231,21 +231,21 @@ Partial Class ButtonForm
         Me.Label6.TabIndex = 2
         Me.Label6.Text = "Label1"
         '
-        'Button6
+        'Button8a
         '
-        Me.Button6.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button6.Location = New System.Drawing.Point(39, 15)
-        Me.Button6.Name = "Button6"
-        Me.Button6.Size = New System.Drawing.Size(87, 77)
-        Me.Button6.TabIndex = 1
-        Me.Button6.TabStop = False
-        Me.Button6.Text = "f1"
-        Me.Button6.UseVisualStyleBackColor = True
+        Me.Button8a.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Button8a.Location = New System.Drawing.Point(39, 15)
+        Me.Button8a.Name = "Button8a"
+        Me.Button8a.Size = New System.Drawing.Size(87, 77)
+        Me.Button8a.TabIndex = 1
+        Me.Button8a.TabStop = False
+        Me.Button8a.Text = "f1"
+        Me.Button8a.UseVisualStyleBackColor = True
         '
         'Panel6
         '
         Me.Panel6.Controls.Add(Me.Label5)
-        Me.Panel6.Controls.Add(Me.Button5)
+        Me.Panel6.Controls.Add(Me.Button7)
         Me.Panel6.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel6.Location = New System.Drawing.Point(1563, 3)
         Me.Panel6.Name = "Panel6"
@@ -262,21 +262,21 @@ Partial Class ButtonForm
         Me.Label5.TabIndex = 2
         Me.Label5.Text = "Label1"
         '
-        'Button5
+        'Button7
         '
-        Me.Button5.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button5.Location = New System.Drawing.Point(39, 15)
-        Me.Button5.Name = "Button5"
-        Me.Button5.Size = New System.Drawing.Size(87, 77)
-        Me.Button5.TabIndex = 1
-        Me.Button5.TabStop = False
-        Me.Button5.Text = "f1"
-        Me.Button5.UseVisualStyleBackColor = True
+        Me.Button7.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Button7.Location = New System.Drawing.Point(39, 15)
+        Me.Button7.Name = "Button7"
+        Me.Button7.Size = New System.Drawing.Size(87, 77)
+        Me.Button7.TabIndex = 1
+        Me.Button7.TabStop = False
+        Me.Button7.Text = "f1"
+        Me.Button7.UseVisualStyleBackColor = True
         '
         'Panel5
         '
         Me.Panel5.Controls.Add(Me.Label4)
-        Me.Panel5.Controls.Add(Me.Button4)
+        Me.Panel5.Controls.Add(Me.Button1)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel5.Location = New System.Drawing.Point(198, 3)
         Me.Panel5.Name = "Panel5"
@@ -296,7 +296,7 @@ Partial Class ButtonForm
         'Button4
         '
         Me.Button4.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button4.Location = New System.Drawing.Point(39, 15)
+        Me.Button4.Location = New System.Drawing.Point(56, 15)
         Me.Button4.Name = "Button4"
         Me.Button4.Size = New System.Drawing.Size(87, 77)
         Me.Button4.TabIndex = 1
@@ -381,7 +381,7 @@ Partial Class ButtonForm
         'Panel2
         '
         Me.Panel2.Controls.Add(Me.Label1)
-        Me.Panel2.Controls.Add(Me.Button1)
+        Me.Panel2.Controls.Add(Me.Button4)
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel2.Location = New System.Drawing.Point(783, 3)
         Me.Panel2.Name = "Panel2"
@@ -392,7 +392,7 @@ Partial Class ButtonForm
         '
         Me.Label1.AutoSize = True
         Me.Label1.FlatStyle = System.Windows.Forms.FlatStyle.Popup
-        Me.Label1.Location = New System.Drawing.Point(52, 120)
+        Me.Label1.Location = New System.Drawing.Point(65, 120)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(57, 20)
         Me.Label1.TabIndex = 2
@@ -401,7 +401,7 @@ Partial Class ButtonForm
         'Button1
         '
         Me.Button1.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button1.Location = New System.Drawing.Point(39, 15)
+        Me.Button1.Location = New System.Drawing.Point(56, 15)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(87, 77)
         Me.Button1.TabIndex = 1
@@ -412,7 +412,7 @@ Partial Class ButtonForm
         'Panel1
         '
         Me.Panel1.Controls.Add(Me.lbl1)
-        Me.Panel1.Controls.Add(Me.btn1)
+        Me.Panel1.Controls.Add(Me.Button3a)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel1.Location = New System.Drawing.Point(588, 3)
         Me.Panel1.Name = "Panel1"
@@ -429,16 +429,16 @@ Partial Class ButtonForm
         Me.lbl1.TabIndex = 2
         Me.lbl1.Text = "Label1"
         '
-        'btn1
+        'Button3a
         '
-        Me.btn1.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btn1.Location = New System.Drawing.Point(39, 15)
-        Me.btn1.Name = "btn1"
-        Me.btn1.Size = New System.Drawing.Size(87, 77)
-        Me.btn1.TabIndex = 1
-        Me.btn1.TabStop = False
-        Me.btn1.Text = "f1"
-        Me.btn1.UseVisualStyleBackColor = True
+        Me.Button3a.Font = New System.Drawing.Font("Rockwell", 14.14286!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Button3a.Location = New System.Drawing.Point(39, 15)
+        Me.Button3a.Name = "Button3a"
+        Me.Button3a.Size = New System.Drawing.Size(87, 77)
+        Me.Button3a.TabIndex = 1
+        Me.Button3a.TabStop = False
+        Me.Button3a.Text = "f1"
+        Me.Button3a.UseVisualStyleBackColor = True
         '
         'pbrButtons
         '
@@ -490,10 +490,10 @@ Partial Class ButtonForm
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents Panel7 As Panel
     Friend WithEvents Label6 As Label
-    Friend WithEvents Button6 As Button
+    Friend WithEvents Button8a As Button
     Friend WithEvents Panel6 As Panel
     Friend WithEvents Label5 As Label
-    Friend WithEvents Button5 As Button
+    Friend WithEvents Button7 As Button
     Friend WithEvents Panel5 As Panel
     Friend WithEvents Label4 As Label
     Friend WithEvents Button4 As Button
@@ -508,17 +508,17 @@ Partial Class ButtonForm
     Friend WithEvents Button1 As Button
     Friend WithEvents Panel1 As Panel
     Friend WithEvents lbl1 As Label
-    Friend WithEvents btn1 As Button
+    Friend WithEvents Button3a As Button
     Friend WithEvents Panel10 As Panel
     Friend WithEvents Label9 As Label
-    Friend WithEvents Button9 As Button
+    Friend WithEvents Button5 As Button
     Friend WithEvents Panel9 As Panel
     Friend WithEvents lblAlpha As Label
     Friend WithEvents Label8 As Label
     Friend WithEvents Button8 As Button
     Friend WithEvents Panel8 As Panel
     Friend WithEvents Label7 As Label
-    Friend WithEvents Button7 As Button
+    Friend WithEvents Button6 As Button
     Friend WithEvents PictureBox2 As PictureBox
     Friend WithEvents ToolTip1 As ToolTip
     Friend WithEvents pbrButtons As ProgressBar

@@ -261,6 +261,7 @@ Partial Class MainForm
         Me.SelectNonFavouritsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HideDeadLinksToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MovieScanToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ReplaceOldLinksToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ButtonFormToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ShowlistToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DashboardToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -1594,6 +1595,9 @@ Partial Class MainForm
         'tmrSlowMo
         '
         '
+        'tmrUpdateFolderSelection
+        '
+        '
         'tmrPumpFiles
         '
         Me.tmrPumpFiles.Interval = 2500
@@ -2174,7 +2178,7 @@ Partial Class MainForm
         '
         'DuplicatesToolStripMenuItem
         '
-        Me.DuplicatesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DuplicatesToolStripMenuItem1, Me.ThumbnailsToolStripMenuItem, Me.SelectDeadLinksToolStripMenuItem, Me.RefreshSelectedLinksToolStripMenuItem, Me.ToolStripSeparator11, Me.SelectNonFavouritsToolStripMenuItem, Me.HideDeadLinksToolStripMenuItem, Me.MovieScanToolStripMenuItem})
+        Me.DuplicatesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DuplicatesToolStripMenuItem1, Me.ThumbnailsToolStripMenuItem, Me.SelectDeadLinksToolStripMenuItem, Me.RefreshSelectedLinksToolStripMenuItem, Me.ToolStripSeparator11, Me.SelectNonFavouritsToolStripMenuItem, Me.HideDeadLinksToolStripMenuItem, Me.MovieScanToolStripMenuItem, Me.ReplaceOldLinksToolStripMenuItem})
         Me.DuplicatesToolStripMenuItem.Name = "DuplicatesToolStripMenuItem"
         Me.DuplicatesToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.D), System.Windows.Forms.Keys)
@@ -2278,6 +2282,12 @@ Partial Class MainForm
         Me.MovieScanToolStripMenuItem.Name = "MovieScanToolStripMenuItem"
         Me.MovieScanToolStripMenuItem.Size = New System.Drawing.Size(340, 30)
         Me.MovieScanToolStripMenuItem.Text = "Movie Scan"
+        '
+        'ReplaceOldLinksToolStripMenuItem
+        '
+        Me.ReplaceOldLinksToolStripMenuItem.Name = "ReplaceOldLinksToolStripMenuItem"
+        Me.ReplaceOldLinksToolStripMenuItem.Size = New System.Drawing.Size(340, 30)
+        Me.ReplaceOldLinksToolStripMenuItem.Text = "Replace Old Links"
         '
         'ButtonFormToolStripMenuItem
         '
@@ -2665,4 +2675,5 @@ Partial Class MainForm
     Friend WithEvents chbScan As CheckBox
     Friend WithEvents chbSlideShow As CheckBox
     Friend WithEvents tbAutoTrail As TrackBar
+    Friend WithEvents ReplaceOldLinksToolStripMenuItem As ToolStripMenuItem
 End Class

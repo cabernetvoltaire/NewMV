@@ -27,11 +27,11 @@ Public Class ShortcutHandler
                 Return sTargetPath
             End Get
             Set(ByVal value As String)
-                If InStr(value, ".lnk") <> 0 Then
-                    value = LinkTarget(value)
+            If value.EndsWith(".lnk") Or value.EndsWith(LinkExt) Then
+                value = LinkTarget(value)
 
-                End If
-                sTargetPath = value
+            End If
+            sTargetPath = value
             End Set
         End Property
         Public Property ShortcutPath() As String
@@ -47,11 +47,11 @@ Public Class ShortcutHandler
                 Return sShortcutName
             End Get
             Set(ByVal value As String)
-                Dim m() As String = value.Split("%")
-                If m.Length > 1 Then
-                    mBookmark = m(1)
+            Dim m() As String = value.Split("%")
+            If m.Length > 1 Then
+                mBookmark = m(m.Length - 2)
 
-                End If
+            End If
                 sShortcutName = value
             End Set
         End Property
@@ -65,20 +65,51 @@ Public Class ShortcutHandler
                 mBookmark = value
             End Set
         End Property
+    Public Function New_Create_ShortCut(Optional bkmk As Long = -1) As String
 
+        Dim sName As String
+        Dim f As IO.FileInfo
+        f = New IO.FileInfo(sShortcutPath & "\" & sShortcutName)
+        If f.Extension <> LinkExt Then
+            sName = sShortcutPath & "\" & sShortcutName & LinkExt
+        Else
+            sName = f.FullName
 
-        Public Function Create_ShortCut(Optional bkmk As Long = -1) As String
+        End If
+        Dim dt As Date
+        Dim exf As New IO.FileInfo(sName)
+        If exf.Exists Then
+            dt = exf.LastWriteTime
+            exf.Delete()
+        End If
 
-            Dim sName As String
-            oShell = New WshShell
-            Dim f As IO.FileInfo
-            f = New IO.FileInfo(sShortcutPath & "\" & sShortcutName)
-            If f.Extension <> ".lnk" Then
-                sName = sShortcutPath & "\" & sShortcutName & ".lnk"
+        Dim d As New IO.DirectoryInfo(sShortcutPath)
+        If d.Exists Then
             Else
-                sName = f.FullName
-
+                d.Create()
             End If
+            Try
+            sName = ShortCutToText(bkmk)
+            Dim newshtcut As New IO.FileInfo(sName)
+            newshtcut.LastWriteTime = dt
+            Catch ex As Exception
+            End Try
+
+        Return sName
+    End Function
+
+    Public Function Create_ShortCut(Optional bkmk As Long = -1) As String
+
+        Dim sName As String
+        oShell = New WshShell
+        Dim f As IO.FileInfo
+        f = New IO.FileInfo(sShortcutPath & "\" & sShortcutName)
+        If f.Extension <> ".lnk" Then
+            sName = sShortcutPath & "\" & sShortcutName & ".lnk"
+        Else
+            sName = f.FullName
+
+        End If
         Dim dt As Date
         Dim exf As New IO.FileInfo(sName)
         If exf.Exists Then
@@ -87,22 +118,22 @@ Public Class ShortcutHandler
         End If
 
         If bkmk <> -1 Then
-                If InStr(sName, "%") <> 0 Then
-                    Dim m() As String = sName.Split("%")
-                    sName = m(0) & "%" & Str(bkmk - MarkOffset) & "%" & m(m.Length - 1)
-                Else
-                    sName = sName.Replace(".lnk", "%" & Str(bkmk - MarkOffset) & "%.lnk")
-                End If
+            If InStr(sName, "%") <> 0 Then
+                Dim m() As String = sName.Split("%")
+                sName = m(0) & "%" & Str(bkmk - MarkOffset) & "%" & m(m.Length - 1)
+            Else
+                sName = sName.Replace(".lnk", "%" & Str(bkmk - MarkOffset) & "%.lnk")
             End If
+        End If
 
-            oShortcut = oShell.CreateShortcut(sName)
+        oShortcut = oShell.CreateShortcut(sName)
 
-            With oShortcut
+        With oShortcut
             Dim d As New IO.DirectoryInfo(sShortcutPath)
             If d.Exists Then
             Else
                 d.Create()
-                End If
+            End If
             Try
 
                 .TargetPath = sTargetPath
@@ -120,12 +151,25 @@ Public Class ShortcutHandler
 
         oShortcut = Nothing
         oShell = Nothing
-            Return sName
-        End Function
+        Return sName
+    End Function
 
 
-
-
+    Public Function ShortCutToText(Optional bkmk As Long = -1) As String
+        If bkmk <> -1 Then
+            If InStr(sShortcutName, "%") <> 0 Then
+                Dim m() As String = sShortcutName.Split("%")
+                sShortcutName = m(0) & "%" & str(bkmk - MarkOffset) & "%" & m(m.Length - 1)
+            Else
+                Dim x As New IO.FileInfo(sShortcutName)
+                sShortcutName = sShortcutName.Replace(x.Extension, x.Extension & "%" & Str(bkmk - MarkOffset) & "%" & LinkExt)
+            End If
+        End If
+        Dim file As New List(Of String) From {sTargetPath, bkmk - MarkOffset}
+        Dim name = sShortcutPath & "\" & sShortcutName
+        WriteListToFile(file, name, False)
+        Return name
+    End Function
 
 
     Public Sub ReAssign_ShortCutPath(ByVal sTargetPath As String, sShortCutPath As String)

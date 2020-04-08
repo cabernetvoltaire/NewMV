@@ -10,7 +10,7 @@
     Private mEditing As Boolean = False
     Private WithEvents mText As New TextBox
 
-    Private mItemList As New List(Of String)
+    Friend mItemList As New List(Of String)
     Public Event ListBoxFilled(sender As Object, e As EventArgs)
     Public Event ListboxChanged(sender As Object, e As EventArgs)
     Public Event ListIndexChanged(sender As Object, e As EventArgs)
@@ -23,6 +23,7 @@
         End Get
         Set(ByVal value As List(Of String))
             mItemList = value
+
         End Set
     End Property
     Private Property mSelectedItems As New List(Of String)
@@ -47,7 +48,7 @@
     End Property
 
 
-    Private WithEvents mListbox As New ListBox
+    Friend WithEvents mListbox As New ListBox
 
     Public Property ListBox() As ListBox
         Get
@@ -121,11 +122,11 @@
         If List IsNot Nothing Then mItemList = List
         FilterList()
         OrderList()
-
         If mItemList.Count > 200 Then
             mListbox.SuspendLayout()
         End If
         mListbox.DataSource = mItemList
+
 
         If mItemList.Count = 0 And Filter.State <> FilterHandler.FilterState.All Then
             mListbox.DataSource = {"(If nothing is shown here, check filter)"}
@@ -161,7 +162,7 @@
     Public Sub RemoveItems(List As List(Of String))
         If List.Count = 0 Then Exit Sub
         Dim i = ListBox.FindString(List(0))
-        'ListBox.DataSource = Nothing
+        ListBox.DataSource = Nothing
         For Each m In List
             mItemList.Remove(m)
             RaiseEvent ListboxChanged(ListBox, Nothing)
@@ -279,16 +280,17 @@ Public Class FileboxHandler
         Set
             _DirectoryPath = Value
             GetFiles()
-            FillBox(ItemList)
+            FillBox(mItemList)
         End Set
     End Property
 
     Private Sub GetFiles()
-        ItemList.Clear()
+        mItemList.Clear()
         Dim dir As New IO.DirectoryInfo(DirectoryPath)
         If dir.Exists Then
+            '            mListbox.DataSource = dir.GetFiles
             For Each f In dir.GetFiles
-                ItemList.Add(f.FullName)
+                mItemList.Add(f.FullName)
             Next
         End If
     End Sub

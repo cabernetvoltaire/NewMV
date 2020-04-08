@@ -45,14 +45,18 @@
         mFavesList.Clear()
         Dim faves As New IO.DirectoryInfo(path)
         If Not faves.Exists Then faves = IO.Directory.CreateDirectory(Environment.SpecialFolder.MyPictures & "\Favourites")
-        For Each f In faves.GetFiles("*.lnk", IO.SearchOption.AllDirectories)
+        'For Each f In faves.GetFiles("*.lnk", IO.SearchOption.AllDirectories)
+
+        '    mFavesList.Add(f.FullName)
+        'Next
+        For Each f In faves.GetFiles("*" & LinkExt, IO.SearchOption.AllDirectories)
 
             mFavesList.Add(f.FullName)
         Next
     End Sub
 
     Public Sub CheckFile(f As IO.FileInfo)
-        If f.Extension = ".lnk" Then
+        If f.Extension = LinkExt Then
         Else
             Check(f, mDestPath)
 
@@ -76,7 +80,7 @@
     Private Sub ReallocateShortCut(f As IO.FileInfo, m As String, bk As Long, minfo As IO.FileInfo)
         Dim sch As New ShortcutHandler(f.FullName, minfo.DirectoryName, minfo.Name)
         sch.MarkOffset = 0
-        Dim fn As String = sch.Create_ShortCut(bk)
+        Dim fn As String = sch.New_Create_ShortCut(bk)
         'Remove the old shortcut
         FavesList.Remove(m)
         FavesList.Add(fn)

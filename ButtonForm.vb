@@ -5,8 +5,7 @@ Public Class ButtonForm
     Public WithEvents handler As New ButtonHandler
     Private ofd As New OpenFileDialog
     Private sfd As New SaveFileDialog
-    Public sbtns As Button()
-    Public lbls As Label()
+
 
     Public Function SaveButtonFileName() As String
         Dim path As String = ""
@@ -28,38 +27,33 @@ Public Class ButtonForm
         ' This call is required by the designer.
         InitializeComponent()
         ' Add any initialization after the InitializeComponent() call.
-
+        handler.Tooltip = Me.ToolTip1
+        handler.ActualButtons = {Button1, Button2, Button3a, Button4, Button5, Button6, Button7, Button8a}
     End Sub
     Private Sub ButtonForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        sbtns = {Me.Button4, Me.Button2, Me.btn1, Me.Button1, Me.Button9, Me.Button7, Me.Button5, Me.Button6}
-        lbls = {Me.Label4, Me.Label2, Me.lbl1, Me.Label1, Me.Label9, Me.Label7, Me.Label5, Me.Label6}
+
         ' FocusOnMain()
         handler.LoadButtonSet(LoadButtonFileName(ButtonFilePath))
         ' buttons = handler.buttons
         handler.buttons.CurrentLetter = LetterNumberFromAscii(Asc("A"))
-        TranscribeButtons(buttons.CurrentRow)
-        For i = 0 To sbtns.Length - 1
-            AddHandler sbtns(i).KeyDown, AddressOf MainForm.HandleFunctionKeyDown
+        handler.TranscribeButtons(buttons.CurrentRow)
+        AddHandler Me.KeyDown, AddressOf MainForm.HandleKeys
+        For Each m In handler.ActualButtons
+            '            AddHandler m.Click, AddressOf MainForm.HandleFunctionKeyDown
+
+
         Next
     End Sub
     Private Sub FocusOnMain()
         With MainForm
-            sbtns = { .btn1, .btn2, .btn3, .btn4, .btn5, .btn6, .btn7, .btn8}
-            lbls = { .lbl1, .lbl2, .lbl3, .lbl4, .lbl5, .lbl6, .lbl7, .lbl8}
+            'sbtns = { .btn1, .btn2, .btn3, .btn4, .btn5, .btn6, .btn7, .btn8}
+            'lbls = { .lbl1, .lbl2, .lbl3, .lbl4, .lbl5, .lbl6, .lbl7, .lbl8}
         End With
 
     End Sub
 
 
-    Public Sub TranscribeButtons(m As ButtonRow)
-        For i = 0 To 7
-            sbtns(i).Text = m.Buttons(i).FaceText
-            lbls(i).Text = m.Buttons(i).Label
-            lbls(i).ForeColor = m.Buttons(i).Colour
-            ToolTip1.SetToolTip(sbtns(i), buttons.CurrentRow.Buttons(i).Path)
-        Next
 
-    End Sub
 
     Private Sub RespondToKey(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
         Select Case e.KeyCode
@@ -67,7 +61,7 @@ Public Class ButtonForm
                 Debug.Print(e.KeyCode.ToString)
                 If e.Shift AndAlso e.Alt AndAlso e.Control Then
                     buttons.CurrentRow.Buttons(e.KeyCode - Keys.F5).Path = CurrentFolder
-                    TranscribeButtons(buttons.CurrentRow)
+                    handler.TranscribeButtons(buttons.CurrentRow)
 
                 ElseIf e.Shift Then
                     MainForm.HandleFunctionKeyDown(sender, e)
@@ -112,7 +106,7 @@ Public Class ButtonForm
                         buttons.CurrentLetter = LetterNumberFromAscii(e.KeyCode)
                     End If
                     lblAlpha.Text = Chr(AsciifromLetterNumber(handler.buttons.CurrentLetter))
-                    TranscribeButtons(buttons.CurrentRow)
+                    handler.TranscribeButtons(buttons.CurrentRow)
                     pbrButtons.Maximum = buttons.RowIndexCount
                     pbrButtons.Value = buttons.RowIndex + 1
                     'OnLetterChanged(buttons.CurrentLetter, buttons.RowIndex)

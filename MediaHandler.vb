@@ -18,6 +18,8 @@ Public Class MediaHandler
     Public WithEvents PositionUpdater As New Timer With {.Interval = 10}
     Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 15000}
     Public WithEvents PicHandler As New PictureHandler(Picture)
+
+
     Private ReadOnly DefaultFile As String = "C:\exiftools.exe"
     Public WithEvents SPT As New StartPointHandler
     Public WithEvents Speed As New SpeedHandler
@@ -105,7 +107,10 @@ Public Class MediaHandler
     Private mDuration As Long
     Public Property Duration() As Long
         Get
-            ' mDuration = mPlayer.currentMedia.duration
+            If mDuration = 0 Then
+                Report("Duration not set yet", 0)
+            End If
+            '   mDuration = mPlayer.currentMedia.duration
             Return mDuration
         End Get
         Set(value As Long)
@@ -133,6 +138,10 @@ Public Class MediaHandler
         End Set
     End Property
     Private mMediaPath As String
+    ''' <summary>
+    ''' Load the medium into the appropriate control unless it's already in it.
+    ''' </summary>
+    ''' <returns></returns>
     Public Property MediaPath() As String
         Get
             Return mMediaPath
@@ -141,9 +150,10 @@ Public Class MediaHandler
             'If path changes, we need to check it exists, and if so, change stored directory as well, 
             'And raise a media changed event. 
 
-
+            'TODO Fix this
             If value = mMediaPath And Not Forceload Then
-                '    'Path hasn't changed, so nothing to do. 
+                Report("Nothing to do")
+                'Path hasn't changed, so nothing to do. 
             ElseIf value = "" Then
                 'Deals with absent file
                 mMediaPath = DefaultFile
@@ -164,7 +174,6 @@ Public Class MediaHandler
                             mLinkPath = ""
                         End If
                         If Not DontLoad Then LoadMedia()
-
                         mMediaDirectory = f.Directory.FullName
                     Else
                         mMediaPath = DefaultFile
@@ -179,7 +188,6 @@ Public Class MediaHandler
                 RaiseEvent MediaChanged(Me, New EventArgs)
 
             End If
-
 
         End Set
     End Property
@@ -209,7 +217,6 @@ Public Class MediaHandler
     End Function
 
     Public Sub New(Nomen As String)
-        '      Player = mPlayer
         Name = Nomen
         PicHandler.PicBox = mPicBox
         PositionUpdater.Enabled = False
@@ -277,14 +284,14 @@ Public Class MediaHandler
 
             Dim s As String()
             s = mMediaPath.Split("%")
-            mBookmark = Val(s(1))
+            mBookmark = Val(s(s.Length - 2))
         Else
             mBookmark = -1
         End If
 
     End Sub
     Public Function UpdateBookmark(path As String, time As Long) As String
-        If Right(path, 4) <> ".lnk" Then
+        If Right(path, 4) <> LinkExt Then
             Return path
             Exit Function
         End If
@@ -292,7 +299,7 @@ Public Class MediaHandler
             Dim m() As String = path.Split("%")
             path = m(0) & "%" & time & "%" & m(m.Length - 1)
         Else
-            path = path.Replace(".lnk", "%" & Str(time) & "%.lnk")
+            path = path.Replace(LinkExt, "%" & Str(time) & "%." & LinkExt)
         End If
         mMediaPath = path
         Return path
@@ -490,7 +497,7 @@ Public Class MediaHandler
         PreferencesSave()
     End Sub
     Private Sub HandleMovie(URL As String)
-        'TODO: Won't load if LastURL not persisting for some reason.
+
         If URL <> mPlayer.URL Or Forceload Then
             If mPlayer Is Nothing Then
             Else
@@ -517,11 +524,10 @@ Public Class MediaHandler
 
     End Sub
     Public Sub HandlePic(path As String)
-        If Not Picture.Image Is Nothing Then
-            DisposePic(Picture)
-        End If
+        '    If PicHandler.PicBox.Tag = path Then
+        '    Else
         PicHandler.GetImage(path)
-        '    currentPicBox = mPicBox
+        '    End If
         DisplayerName = mPicBox.Name
     End Sub
 

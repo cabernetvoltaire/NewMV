@@ -2,7 +2,10 @@
 #Region "Properties"
     Public Event StateChanged(sender As Object, e As EventArgs)
     Public Event ZoomChange(sender As Object, e As EventArgs)
+    Public Event AdvanceFile(sender As Object, e As EventArgs)
     Private WithEvents mPicBox As New PictureBox
+    Private tb As New ToolTip
+    Public MouseZone As New PictureBox
     Public Property PicBox() As PictureBox
         Get
             Return mPicBox
@@ -13,6 +16,7 @@
         End Set
     End Property
     Private mPicImage As Image
+    Public Property WheelScroll As Boolean = True
     Public Property TextOutput As String
     Public Property PicBoxContainer As New Control
     Private Property mZoomfactor As Integer = 100
@@ -38,7 +42,6 @@
     End Property
 
 
-    Public picBlanker As PictureBox
     Dim ScreenStateDescriptions = {"Fitted", "True Size", "Zoomed"}
 
     Public ePicMousePoint As Point
@@ -83,7 +86,14 @@
             End If
             OrientPic(mPicImage)
             PicBox.Image = mPicImage
-
+            PicBox.Tag = strPath
+            tb.SetToolTip(PicBox, strPath)
+            tb.AutoPopDelay = 1
+            'PicBoxContainer.Controls.Add(MouseZone)
+            'MouseZone.Width = PicBoxContainer.Width / 2
+            'MouseZone.Height = PicBoxContainer.Height / 2
+            'MouseZone.Left = MouseZone.Width / 4
+            'MouseZone.Top = MouseZone.Top / 4
         End If
     End Sub
     Private Function ClassifyImage(ViewPortWidth As Long, ViewPortHeight As Long, ImageWidth As Long, ImageHeight As Long) As Byte
@@ -107,12 +117,21 @@
 #Region "Events"
     Public Sub New(p As PictureBox)
         mPicBox = p
+
+
     End Sub
     Public Sub New()
 
     End Sub
     Public Sub PicClick(sender As Object, e As MouseEventArgs) Handles mPicBox.Click
-
+        If e.Button = MouseButtons.Left Then
+            WheelScroll = Not WheelScroll
+            If WheelScroll Then
+                mPicBox.Cursor = Cursors.Arrow
+            Else
+                mPicBox.Cursor = Cursors.Cross
+            End If
+        End If
         Exit Sub
         If e.Button = MouseButtons.Left Then
             mState = (mState + 1) Mod 3
@@ -123,12 +142,17 @@
                 mState = 2
             End If
         End If
-        If mState = Screenstate.Zoomed Then
-            mPicBox.Cursor = Cursors.Cross
-        Else
-            mPicBox.Cursor = Cursors.Arrow
-        End If
+
         PreparePic()
+    End Sub
+    Private Sub PicFullScreen() Handles mPicBox.DoubleClick
+        If ShiftDown Then
+            blnSecondScreen = True
+        Else
+            blnSecondScreen = False
+        End If
+        MainForm.GoFullScreen(blnFullScreen)
+
     End Sub
     Public Sub Mousewheel(sender As Object, e As MouseEventArgs) Handles mPicBox.MouseWheel
 
@@ -137,9 +161,9 @@
         ePicMousePoint.X = ePicMousePoint.X + mPicBox.Left
         ePicMousePoint.Y = ePicMousePoint.Y + mPicBox.Top
 
-        If False Then 'State = Screenstate.Fitted Then
-            ' RaiseEvent AdvanceFile(sender, e)
-            'MainForm.AdvanceFile(e.Delta < 0, False)
+        If WheelScroll Then 'State = Screenstate.Fitted Then
+            'RaiseEvent AdvanceFile(sender, e)
+            MainForm.AdvanceFile(e.Delta < 0, False)
             'MainForm.tmrSlideShow.Enabled = False 'Break slideshow if scrolled
             'Dim img As Image = Me.GetImage(Media.MediaPath)
         Else
@@ -217,6 +241,7 @@
                 mPicBox.Dock = DockStyle.Fill
                 mPicBox.SizeMode = PictureBoxSizeMode.Zoom
 
+               ' mWheelScroll = True
             Case Screenstate.TrueSize
 
                 mPicBox.Dock = DockStyle.None
@@ -239,6 +264,7 @@
                     mPicBox.Top = PicBoxContainer.Top
                 End If
                 mPicBox.SizeMode = PictureBoxSizeMode.Zoom
+                '  mWheelScroll = False
                 'PlacePic(mPicBox)
         End Select
         ' PicTest.Label1.Text = "Picture State:" & ScreenStateDescriptions(State) & " Zoom factor: " & ZoomFactor
@@ -272,6 +298,7 @@
                 RaiseEvent ZoomChange(Me, Nothing)
             Else
                 mState = SetState(PictureHandler.Screenstate.Fitted)
+                WheelScroll = True
                 RaiseEvent StateChanged(Me, Nothing)
             End If
         End If
@@ -312,8 +339,13 @@
 
     End Sub
 
+    Private Sub mPicBox_Disposed(sender As Object, e As EventArgs) Handles mPicBox.Disposed
+        MsgBox("Disposed")
+    End Sub
+
 #End Region
 
 
 
 End Class
+

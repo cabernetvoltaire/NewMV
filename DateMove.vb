@@ -126,7 +126,7 @@ Class DateMove
     Public Sub FilterByLinkFolder(FolderName As String)
         Dim s As New IO.DirectoryInfo(FolderName)
         For Each f In s.GetFiles
-            If f.Extension = ".lnk" Then
+            If f.Extension = LinkExt Then
                 Try
 
                     Dim tgt As New IO.FileInfo(LinkTarget(f.FullName))
@@ -157,8 +157,7 @@ Class DateMove
 
             Dim destfile As String = f.DirectoryName & "\" & f.Extension
             blnSuppressCreate = True
-            Dim l As New List(Of String)
-            l.Add(f.FullName)
+            Dim l As New List(Of String) From {f.FullName}
             MoveFiles(l, destfile)
         Next
 

@@ -371,7 +371,7 @@ Friend Module FileHandling
                             'Only works on links
                             Dim sh As New ShortcutHandler
 
-                            If m.Extension = ".lnk" Then
+                            If m.Extension = LinkExt Then
                                 Dim f As New IO.FileInfo(LinkTarget(m.FullName))
                                 spath = f.FullName
                                 f.MoveTo(CurrentFolder & "\" & f.Name)
@@ -384,7 +384,7 @@ Friend Module FileHandling
                             'Only works on links
                             Dim sh As New ShortcutHandler
 
-                            If m.Extension = ".lnk" Then
+                            If m.Extension = LinkExt Then
                                 Dim f As New IO.FileInfo(LinkTarget(m.FullName))
                                 ' spath = f.FullName
                                 strDest = strDest & "\" & f.Name
