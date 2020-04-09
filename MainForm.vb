@@ -130,23 +130,25 @@ Public Class MainForm
     End Sub
     Public Sub OnStateChanged(sender As Object, e As EventArgs) Handles NavigateMoveState.StateChanged, CurrentFilterState.StateChanged, PlayOrder.StateChanged
         'If StartingUpFlag Then Exit Sub
+        Dim s() As String = Split(sender.ToString, ".")
 
-        FBH.Filter = CurrentFilterState
-        FBH.SortOrder = PlayOrder
-        ReportAction(NavigateMoveState.Instructions)
 
-        lblNavigateState.Text = NavigateMoveState.Instructions
-        cbxOrder.SelectedIndex = PlayOrder.State
-        cbxOrder.BackColor = PlayOrder.Colour
-        tbRandom.Text = "ORDER:" & UCase(PlayOrder.Description)
-        cbxFilter.BackColor = CurrentFilterState.Colour
-        cbxFilter.SelectedIndex = CurrentFilterState.State
-        tbFilter.Text = "FILTER:" & UCase(CurrentFilterState.Description)
-
-        tbState.Text = UCase(NavigateMoveState.Description)
+        Select Case s(s.Length - 1)
+            Case "StateHandler"
+                lblNavigateState.Text = NavigateMoveState.Instructions
+                tbState.Text = UCase(NavigateMoveState.Description)
+            Case "FilterHandler"
+                FBH.Filter = CurrentFilterState
+                cbxFilter.BackColor = CurrentFilterState.Colour
+                cbxFilter.SelectedIndex = CurrentFilterState.State
+                tbFilter.Text = "FILTER:" & UCase(CurrentFilterState.Description)
+            Case "SortHandler"
+                FBH.SortOrder = PlayOrder
+                cbxOrder.SelectedIndex = PlayOrder.State
+                cbxOrder.BackColor = PlayOrder.Colour
+                tbRandom.Text = "ORDER:" & UCase(PlayOrder.Description)
+        End Select
         SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
-
-        'If lbxFiles.Items.Count = 0 And CurrentFilterState.State <> FilterHandler.FilterState.All Then lbxFiles.Items.Add("If there is nothing showing here, check the filters")
 
         If sender IsNot NavigateMoveState Then
             If Not Media.DontLoad Then
@@ -154,14 +156,12 @@ Public Class MainForm
                     UpdatePlayOrder(LBH)
                 Else
                     UpdatePlayOrder(FBH)
-
                 End If
             End If
         Else
             If NavigateMoveState.State = StateHandler.StateOptions.ExchangeLink Then
                 CurrentFilterState.State = FilterHandler.FilterState.LinkOnly
             End If
-
         End If
         If Not Media.DontLoad Then PreferencesSave()
     End Sub
@@ -286,7 +286,7 @@ Public Class MainForm
         Marks.Duration = Media.Duration
         'Marks.Bar = Scrubber
         '  Marks.Clear()
-        Marks.Markers = Media.Markers
+        Marks.Markers = Media.GetMarkersFromLinkList
         Scrubber.Width = ctrPicAndButtons.Width * ScrubberProportion
         Scrubber.Left = Scrubber.Width * ((1 - ScrubberProportion) / 2)
         'Scrubber.Visible = False
@@ -356,7 +356,8 @@ Public Class MainForm
             CollapseShowlist(False)
             tbLastFile.Text = TimeOperation(True).TotalMilliseconds
             ProgressBarOn(lngListSizeBytes)
-            Getlist(Showlist, path, lbxShowList)
+            LBH.ItemList = Showlist
+            '            Getlist(Showlist, path, lbxShowList)
             time = TimeOperation(False)
             loadrate = size / time.TotalMilliseconds
         End If
@@ -766,13 +767,13 @@ Public Class MainForm
 
             Case Keys.Left, Keys.Right, Keys.Up, Keys.Down
                 If FocusControl IsNot lbxShowList Then
-                    ControlSetFocus(tvMain2)
+                       ControlSetFocus(tvMain2)
                     tvMain2.tvFiles_KeyDown(sender, e)
                 End If
 
             Case Keys.Escape
-                CancelDisplay(True)                'currentPicBox.Image.Dispose()
-                'PlayOrder.Toggle()
+                CancelDisplay(True)
+
             Case KeyToggleButtons
                 ToggleButtons()
             Case KeyNextFile, KeyPreviousFile, LKeyNextFile, LKeyPreviousFile
@@ -1107,6 +1108,7 @@ Public Class MainForm
         If strPath = "" Then Exit Sub 'Empty
         Dim finfo As New FileInfo(strPath)
         'Change the tree if it needs changing
+
         Dim s As String = Path.GetDirectoryName(strPath)
 
         If tvMain2.SelectedFolder <> s Then
@@ -2820,7 +2822,7 @@ Public Class MainForm
     End Sub
 
     Private Sub ResetButtonsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetButtonsToolStripMenuItem.Click
-        CBXButtonFiles.SelectedIndex = 0 '"Watch.msb" 'TODO Make general
+        CBXButtonFiles.SelectedItem = "Watch.msb" 'TODO Make general
 
     End Sub
 

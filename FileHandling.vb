@@ -458,7 +458,7 @@ Friend Module FileHandling
         If s = "" Then s = "*"
         MainForm.Cursor = Cursors.WaitCursor
         ProgressBarOn(1000)
-        list = GetFileFromEachFolder(d, s)
+        list = GetFileFromEachFolder(d, s, Random.OnDirChange)
         MainForm.Cursor = Cursors.Default
 
     End Sub

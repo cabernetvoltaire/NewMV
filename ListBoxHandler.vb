@@ -207,6 +207,7 @@
 #End Region
 
 #Region "Events"
+#Region "Editing Functions"
     Private Sub Keydown(sender As Object, e As KeyEventArgs) Handles mListbox.KeyDown
         'Exit Sub
         If mEditing Then
@@ -217,7 +218,7 @@
                 Case Keys.F2
                     EditItem()
                 Case Else
-                    MainForm.Main_KeyDown(sender, e)
+                    'MainForm.Main_KeyDown(sender, e)
             End Select
         End If
 
@@ -255,6 +256,7 @@
         mText.Focus()
 
     End Sub
+#End Region
     Private Sub IndexChanged(sender As Object, e As EventArgs) Handles mListbox.SelectedIndexChanged
         RaiseEvent ListIndexChanged(sender, e)
     End Sub
@@ -279,8 +281,11 @@ Public Class FileboxHandler
         End Get
         Set
             _DirectoryPath = Value
-            GetFiles()
-            FillBox(mItemList)
+            If Value <> "" Then
+                GetFiles()
+                FillBox(mItemList)
+            End If
+
         End Set
     End Property
 

@@ -1,4 +1,5 @@
 ﻿Public Class StateHandler
+
     Public Enum StateOptions As Byte
         Navigate
         Move
