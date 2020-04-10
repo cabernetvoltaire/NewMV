@@ -5,7 +5,7 @@
     Private mProb As Decimal
     Public Property Counter As Byte
     ''' <summary>
-    ''' Seeds of the relative durations of different selections
+    ''' Seeds of the base durations of different selections (varied by randomiser)
     ''' </summary>
     ''' <returns></returns>
     Public Property RandomTimes As Byte()

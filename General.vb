@@ -1070,15 +1070,20 @@ Public Module General
             While My.Computer.FileSystem.FileExists(spath)
                 Dim x = m.Extension
                 Dim b = InStr(spath, "(")
-            If b = 0 Then
-                spath = Replace(spath, x, "(" & i & ")" & x)
-            Else
-                spath = Left(spath, b - 1) & "(" & i & ")" & x
-            End If
+                If b = 0 Then
+                    spath = Replace(spath, x, "(" & i & ")" & x)
+                Else
+                    spath = Left(spath, b - 1) & "(" & i & ")" & x
+                End If
 
-            i += 1
+                i += 1
             End While
         End If
         Return spath
     End Function
+    Friend Sub AddToolTip(ctl As Control, tp As ToolTip, text As String)
+        tp.SetToolTip(ctl, text)
+    End Sub
+
+
 End Module
