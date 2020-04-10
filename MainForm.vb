@@ -1803,9 +1803,8 @@ Public Class MainForm
         CurrentFolder = e.Directory.FullName
 
         tmrUpdateFileList.Enabled = True
-        tmrUpdateFileList.Interval = 500
-        'CancelDisplay(False)
-        ' FillListbox(lbxFiles, New DirectoryInfo(CurrentFolder), Random.OnDirChange)
+        tmrUpdateFileList.Interval = 200
+
 
 
     End Sub

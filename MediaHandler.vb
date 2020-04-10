@@ -14,8 +14,8 @@ Public Class MediaHandler
     Private Property mSndH As New SoundController 'With {.SoundPlayer = Sound, .CurrentPlayer = Player}
     Public IsCurrent As Boolean = False
 
-    Private WithEvents ResetPosition As New Timer With {.Interval = 300}
-    Public WithEvents PositionUpdater As New Timer With {.Interval = 10}
+    Private WithEvents ResetPosition As New Timer With {.Interval = 1000} 'Changing can affect loading
+    Public WithEvents PositionUpdater As New Timer With {.Interval = 100}
     Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 15000}
     Public WithEvents PicHandler As New PictureHandler(Picture)
 
@@ -585,7 +585,8 @@ Public Class MediaHandler
                 'MsgBox("playing " & Media.Player.URL & " on " & Me.Name)
                 mSndH.Slow = False
                 PositionUpdater.Enabled = True
-                'ResetPositionCanceller.Enabled = True
+                ResetPositionCanceller.Enabled = True 'Changing can affect loading
+
                 ' mResetCounter = 0
                 mDuration = mPlayer.currentMedia.duration
                 SPT.Duration = mDuration
