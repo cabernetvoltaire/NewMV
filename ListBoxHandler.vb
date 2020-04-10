@@ -290,12 +290,12 @@ Public Class FileboxHandler
     End Property
 
     Private Sub GetFiles()
-        mItemList.Clear()
+        ItemList.Clear()
         Dim dir As New IO.DirectoryInfo(DirectoryPath)
         If dir.Exists Then
             '            mListbox.DataSource = dir.GetFiles
             For Each f In dir.GetFiles
-                mItemList.Add(f.FullName)
+                ItemList.Add(f.FullName)
             Next
         End If
     End Sub

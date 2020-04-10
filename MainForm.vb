@@ -242,13 +242,13 @@ Public Class MainForm
             If x.Count = 0 Then
             Else
 
-                T = New Thread(New ThreadStart(Sub() Op.ReuniteWithFile(x, filepath))) With {
-            .IsBackground = True
-        }
-                T.SetApartmentState(ApartmentState.STA)
+                '        T = New Thread(New ThreadStart(Sub() Op.ReuniteWithFile(x, filepath))) With {
+                '    .IsBackground = True
+                '}
+                '        T.SetApartmentState(ApartmentState.STA)
 
-                T.Start() 'Causing memory leak?
-                ' Op.ReuniteWithFile(x, filepath)
+                '        T.Start() 'Causing memory leak?
+                '        ' Op.ReuniteWithFile(x, filepath)
             End If
         End If
 
@@ -356,8 +356,8 @@ Public Class MainForm
             CollapseShowlist(False)
             tbLastFile.Text = TimeOperation(True).TotalMilliseconds
             ProgressBarOn(lngListSizeBytes)
-            LBH.ItemList = Showlist
-            '            Getlist(Showlist, path, lbxShowList)
+            'LBH.ItemList = Showlist
+            Getlist(Showlist, path, lbxShowList)
             time = TimeOperation(False)
             loadrate = size / time.TotalMilliseconds
         End If
@@ -766,10 +766,10 @@ Public Class MainForm
               '  End If
 
             Case Keys.Left, Keys.Right, Keys.Up, Keys.Down
-                If FocusControl IsNot lbxShowList Then
-                       ControlSetFocus(tvMain2)
+                'If FocusControl IsNot lbxShowList Then
+                ControlSetFocus(tvMain2)
                     tvMain2.tvFiles_KeyDown(sender, e)
-                End If
+                'End If
 
             Case Keys.Escape
                 CancelDisplay(True)
@@ -1198,8 +1198,8 @@ Public Class MainForm
         NavigateMoveState.State = StateHandler.StateOptions.Navigate
         OnRandomChanged()
         ControlSetFocus(lbxFiles)
-        LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\ITC.msl")
         Media.DontLoad = False
+        ' LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\ITC.msl")
         FBH.ListBox = lbxFiles
         LBH.ListBox = lbxShowList
     End Sub
@@ -1964,7 +1964,7 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub AutoTrail(sender As Object)
+    Private Sub AutoTrail(sender As Object) 'Called on each autotrail tick, using tbAutotrail value for Time unit
         'Exit Sub
         Dim trail As New TrailMode
 
@@ -1990,9 +1990,8 @@ Public Class MainForm
         'If we are holding Alt, change the file
         If AltDown Or Int(Rnd() * AT.AdvanceChance) + 1 = 1 Then
             If CtrlDown Then
+                'Ctrl means dont change
             Else
-
-
                 '    To change the file.
                 Debug.Print("Change file")
 
@@ -2878,7 +2877,33 @@ Public Class MainForm
 
     End Sub
 
+    Private Sub CreateToolTips()
+        For Each ctl In Me.Controls
+            Select Case ctl.name
+                Case "cbxFilter"
+                Case "cbxOrder"
+                Case "cbxStartPoint"
+                Case "cbxStartPoint"
+                Case "chbNextFile"
+                Case "lbxFiles"
+                Case "lbxShowList"
+                Case "lbxGroups"
 
+            End Select
+        Next
+    End Sub
+
+    Private Sub chbSlideShow_CheckedChanged(sender As Object, e As EventArgs) Handles chbSlideShow.CheckedChanged
+        tmrMovieSlideShow.Enabled = chbSlideShow.Checked
+    End Sub
+
+    Private Sub tbMovieSlideShowSpeed_Scroll(sender As Object, e As EventArgs) Handles tbMovieSlideShowSpeed.Scroll
+        tmrMovieSlideShow.Interval = tbMovieSlideShowSpeed.Value
+    End Sub
+
+    Private Sub tbAutoTrail_Scroll(sender As Object, e As EventArgs) Handles tbAutoTrail.Scroll
+
+    End Sub
 #End Region
 
 End Class
