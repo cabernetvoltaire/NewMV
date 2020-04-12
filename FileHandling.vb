@@ -87,11 +87,11 @@ Friend Module FileHandling
                     If MainForm.LBH.ListBox IsNot Nothing Then
                         MainForm.LBH.FillBox()
                     End If
-                    RefreshListbox(lbx1, files)
+                    MainForm.FBH.Refresh()
+                    ' RefreshListbox(lbx1, files)
             End Select
             MSFiles.ResettersOff()
         Next
-        RefreshListbox(lbx1, files)
 
         If lbx1.Items.Count <> 0 Then lbx1.SetSelected(Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0), True)
 

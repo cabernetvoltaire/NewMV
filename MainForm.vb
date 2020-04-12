@@ -1093,6 +1093,32 @@ Public Class MainForm
 
         tvMain2.SelectedFolder = CurrentFolder
     End Sub
+    Public Sub ChangeFolder(strPath As String)
+        'If strPath <> FavesFolderPath Then
+        '    CurrentfilterState.State = CurrentfilterState.OldState
+        'End If
+        If strPath = CurrentFolder Then
+        Else
+            If Not LastFolder.Contains(CurrentFolder) Then
+                LastFolder.Push(CurrentFolder)
+
+            End If
+            FNG.Clear()
+            ' MainForm.tvMain2.SelectedFolder = strPath
+            ChangeWatcherPath(strPath)
+            CurrentFolder = strPath
+            ' FBH.DirectoryPath = strPath
+            ReDim FBCShown(0)
+            NofShown = 0
+
+            If AutoButtons Then
+                AssignLinear(CurrentFolder, LetterNumberFromAscii(Asc("0")), True)
+                ChangeButtonLetter(New KeyEventArgs(Keys.D0))
+            End If
+            '   My.Computer.Registry.CurrentUser.SetValue("File", Media.MediaPath)
+        End If
+
+    End Sub
 
     Private Sub LoopToggle()
         blnLoopPlay = Not blnLoopPlay
@@ -1687,7 +1713,7 @@ Public Class MainForm
                     ChangeFolder(strVisibleButtons(i))
                     'CancelDisplay()
                     tvMain2.SelectedFolder = strVisibleButtons(i)
-
+                    ' FBH.DirectoryPath = strVisibleButtons(i)
                 ElseIf Random.OnDirChange Then
                     'Change file if same folder
                     AdvanceFile(True, True)
@@ -1802,7 +1828,7 @@ Public Class MainForm
         'PreferencesSave()
         lbxGroups.Items.Clear()
         CurrentFolder = e.Directory.FullName
-
+        ' FBH.DirectoryPath = CurrentFolder
         tmrUpdateFileList.Enabled = True
         tmrUpdateFileList.Interval = 200
 

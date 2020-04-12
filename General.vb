@@ -655,31 +655,7 @@ Public Module General
         End Try
 
     End Function
-    Public Sub ChangeFolder(strPath As String)
-        'If strPath <> FavesFolderPath Then
-        '    CurrentfilterState.State = CurrentfilterState.OldState
-        'End If
-        If strPath = CurrentFolder Then
-        Else
-            If Not LastFolder.Contains(CurrentFolder) Then
-                LastFolder.Push(CurrentFolder)
 
-            End If
-            MainForm.FNG.Clear()
-            ' MainForm.tvMain2.SelectedFolder = strPath
-            ChangeWatcherPath(strPath)
-            CurrentFolder = strPath
-            ReDim FBCShown(0)
-            NofShown = 0
-
-            If AutoButtons Then
-                AssignLinear(CurrentFolder, LetterNumberFromAscii(Asc("0")), True)
-                ChangeButtonLetter(New KeyEventArgs(Keys.D0))
-            End If
-            '   My.Computer.Registry.CurrentUser.SetValue("File", Media.MediaPath)
-        End If
-
-    End Sub
     Public Sub ChangeWatcherPath(path As String)
         Dim d As New DirectoryInfo(path)
         If d.Parent Is Nothing Then

@@ -280,8 +280,9 @@ Public Class FileboxHandler
             Return _DirectoryPath
         End Get
         Set
-            _DirectoryPath = Value
+
             If Value <> "" Then
+                _DirectoryPath = Value
                 GetFiles()
                 FillBox(mItemList)
             End If
@@ -291,7 +292,7 @@ Public Class FileboxHandler
 
     Private Sub GetFiles()
         ItemList.Clear()
-        Dim dir As New IO.DirectoryInfo(DirectoryPath)
+        Dim dir As New IO.DirectoryInfo(_DirectoryPath)
         If dir.Exists Then
             '            mListbox.DataSource = dir.GetFiles
             For Each f In dir.GetFiles
