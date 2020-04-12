@@ -87,8 +87,8 @@
             OrientPic(mPicImage)
             PicBox.Image = mPicImage
             PicBox.Tag = strPath
-            tb.SetToolTip(PicBox, strPath)
-            tb.AutoPopDelay = 1
+            'tb.SetToolTip(PicBox, strPath)
+            'tb.AutoPopDelay = 1
             'PicBoxContainer.Controls.Add(MouseZone)
             'MouseZone.Width = PicBoxContainer.Width / 2
             'MouseZone.Height = PicBoxContainer.Height / 2

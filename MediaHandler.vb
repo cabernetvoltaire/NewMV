@@ -15,7 +15,7 @@ Public Class MediaHandler
     Public IsCurrent As Boolean = False
 
     Private WithEvents ResetPosition As New Timer With {.Interval = 1000} 'Changing can affect loading
-    Public WithEvents PositionUpdater As New Timer With {.Interval = 100}
+    Public WithEvents PositionUpdater As New Timer With {.Interval = 100} 'Too short causes a crash on exiting.
     Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 15000}
     Public WithEvents PicHandler As New PictureHandler(Picture)
 
@@ -43,9 +43,11 @@ Public Class MediaHandler
                 '  IsLink = True
                 mLinkPath = LinkTarget(mMediaPath)
                 mType = FindType(mLinkPath)
-
+                GetBookmark()
             Else
                 mIsLink = False
+                mLinkPath = ""
+                mBookmark = -1
             End If
             Return mType
         End Get
@@ -248,12 +250,7 @@ Public Class MediaHandler
         End Get
         Set(ByVal value As Boolean)
             mIsLink = value
-            If mIsLink Then
-                GetBookmark()
-            Else
-                mBookmark = -1
-                mLinkPath = ""
-            End If
+
         End Set
     End Property
     Private mBookmark As Long = -1
@@ -432,7 +429,7 @@ Public Class MediaHandler
             mPlayPosition = m.StartPoint
             m = Nothing
             'Or it's a link with a bookmark
-        ElseIf mBookmark > -1 And Speed.PausedPosition = 0 AndAlso Not ToMarker Then 'And mMarkers.Count = 0 Then
+        ElseIf mIslink And mBookmark > -1 AndAlso Speed.PausedPosition = 0 AndAlso Not ToMarker Then 'And mMarkers.Count = 0 Then
             If SPT.State = StartPointHandler.StartTypes.FirstMarker Then
                 mPlayPosition = mBookmark
             Else
@@ -443,7 +440,7 @@ Public Class MediaHandler
             Speed.PausedPosition = 0
         ElseIf mMarkers.Count > 0 AndAlso (ToMarker Or SPT.State = StartPointHandler.StartTypes.FirstMarker) Then
             'SPT.Marker = mMarkers.Item(Math.Min(LinkCounter, mMarkers.Count - 1))
-
+            'If Not ToMarker Then mlinkcounter = 0 'Reset when it's a new file
             SPT.Marker = mMarkers.Item(LinkCounter)
             mPlayPosition = SPT.StartPoint
         Else
@@ -493,8 +490,7 @@ Public Class MediaHandler
 
                 Exit Sub
         End Select
-        Mysettings.LastTimeSuccessful = True
-        PreferencesSave()
+
     End Sub
     Private Sub HandleMovie(URL As String)
 
@@ -565,7 +561,8 @@ Public Class MediaHandler
         RaiseEvent Zoomchanged(sender, e)
     End Sub
     Private Sub Uhoh() Handles mPlayer.ErrorEvent
-        ' MsgBox("Error in MediaPlayer")
+
+        MsgBox("Error in MediaPlayer")
     End Sub
 
     Private ReadOnly mResetCounter As Integer
@@ -635,7 +632,9 @@ Public Class MediaHandler
     End Sub
     Private Sub ResetPosition_Tick(sender As Object, e As EventArgs) Handles ResetPosition.Tick
         'Keeps resetting the position until ready to play.
+        'mPlayer.Ctlcontrols.currentPosition = mPlayPosition
         MediaJumpToMarker()
+        MainForm.DrawScrubberMarks()
     End Sub
 
     Private Sub ResetPositionCanceller_Tick(sender As Object, e As EventArgs) Handles ResetPositionCanceller.Tick

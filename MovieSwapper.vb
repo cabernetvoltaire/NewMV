@@ -262,7 +262,7 @@ Public Class MediaSwapper
 
     Public Sub MuteAll()
         For Each m In MediaHandlers
-            If m.Playing Then m.Player.settings.mute = True
+            m.Player.settings.mute = True
         Next
 
     End Sub

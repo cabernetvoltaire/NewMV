@@ -862,13 +862,13 @@ Public Module General
                 End Try
             Else
                 If InStr(UCase(lbx.Items(i)), UCase(s)) <> 0 Then
-
+                    lbx.SuspendLayout()
                     lbx.SetSelected(i, True)
                     ls.Add(lbx.Items(i))
                 End If
             End If
         Next
-
+        lbx.ResumeLayout()
         Return ls
 
     End Function

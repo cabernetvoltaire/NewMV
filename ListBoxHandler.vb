@@ -232,7 +232,7 @@
         If mText.Text <> mListbox.SelectedItem Then
             OldItem = mListbox.SelectedItem
             NewItem = mText.Text
-            mListbox.Items(mListbox.SelectedIndex) = NewItem
+            mListbox.Items(mListbox.SelectedIndex) = NewItem 'TODO Uncouple datasource
             RaiseEvent ListItemChanged(mListbox.SelectedItem, e)
         End If
     End Sub

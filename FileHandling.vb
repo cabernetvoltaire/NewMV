@@ -57,9 +57,13 @@ Friend Module FileHandling
         'Media.IsCurrent = True
         Media.SetLink(0)
         MainForm.AT.Counter = Media.Markers.Count
-        If sender.MediaPath <> "" Then Mysettings.PreferencesSave()
+        If sender.MediaPath <> "" Then
+            LastTimeSuccessful = True
+            PreferencesSave()
+        End If
         If ShiftDown Then MainForm.HighlightCurrent(Media.LinkPath) 'Used for links only, to go to original file
-        ' If MainForm.FocusControl Is MainForm.lbxShowList Then MainForm.HighlightCurrent(Media.MediaPath)
+
+
     End Sub
     Private Sub DebugStartpoint(M As MediaHandler)
         Debug.Print(M.MediaPath & " loaded into " & M.Player.Name)

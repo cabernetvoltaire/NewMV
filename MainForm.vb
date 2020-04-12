@@ -256,6 +256,7 @@ Public Class MainForm
         If x.Count = 0 Then
             chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Regular)
             chbPreviewLinks.Text = "Preview links (None)"
+            Scrubber.BackColor = Me.BackColor
             If chbPreviewLinks.Checked Then
                 LBH.ItemList.Clear()
                 ControlSetFocus(lbxFiles)
@@ -1321,7 +1322,7 @@ Public Class MainForm
 
     End Sub
     Private Sub Main_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
-
+        Media.PlaceResetter(False)
         ' DeleteThumbs()
         PreferencesSave()
         Application.Exit()
