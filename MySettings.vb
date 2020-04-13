@@ -124,6 +124,7 @@ Friend Module Mysettings
             .Add("OptionsPreviewLinks" & "$" & MainForm.chbPreviewLinks.Checked)
             .Add("OptionsEncrypt" & "$" & MainForm.chbEncrypt.Checked)
             .Add("OptionsAutoAdvance" & "$" & MainForm.CHBAutoAdvance.Checked)
+            .Add("OptionsSeparate" & "$" & MainForm.chbSeparate.Checked)
             .Add("ThumbnailDestination" & "$" & ThumbDestination)
             .Add("ButtonFolder" & "$" & Buttonfolder)
             .Add("FractionalJump" & "$" & MainForm.SP.FractionalJump)
@@ -265,6 +266,10 @@ Friend Module Mysettings
                         Case "OptionsAutoAdvance"
                             If value = "" Then value = False
                             MainForm.CHBAutoAdvance.Checked = value
+                        Case "OptionsSeparate"
+                            If value = "" Then value = False
+                            MainForm.chbSeparate.Checked = value
+
                         Case "ThumbnailDestination" 'Drive
                             If value = "" Then value = BrowseToFolder("Choose Thumbnail Destination", PrefsPath)
                             ThumbDestination = value

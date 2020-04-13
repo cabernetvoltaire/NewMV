@@ -242,13 +242,13 @@ Public Class MainForm
             If x.Count = 0 Then
             Else
 
-                '        T = New Thread(New ThreadStart(Sub() Op.ReuniteWithFile(x, filepath))) With {
-                '    .IsBackground = True
-                '}
-                '        T.SetApartmentState(ApartmentState.STA)
+                T = New Thread(New ThreadStart(Sub() Op.ReuniteWithFile(x, filepath))) With {
+            .IsBackground = True
+        }
+                T.SetApartmentState(ApartmentState.STA)
 
-                '        T.Start() 'Causing memory leak?
-                '        ' Op.ReuniteWithFile(x, filepath)
+                T.Start() 'Causing memory leak?
+                ' Op.ReuniteWithFile(x, filepath)
             End If
         End If
 
@@ -535,7 +535,7 @@ Public Class MainForm
             FullScreen.Location = screen.Bounds.Location + New Point(100, 100)
             CancelDisplay(False)
             'Media.Player.Size = screen.Bounds.Size
-
+            TogglePause()
             FullScreen.FSFiles = MSFiles
             FullScreen.Show()
             ' TogglePause()
@@ -1367,15 +1367,7 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub Listbox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged
-        '  IndexHandler(FocusControl, e)
-        NewIndex.Enabled = False
 
-        NewIndex.Interval = 50
-
-        NewIndex.Enabled = True
-
-    End Sub
 
     Sub EscapeMultiSelect(sender As Object, e As KeyEventArgs) Handles lbxFiles.KeyDown, lbxShowList.KeyDown
         If e.KeyCode = Keys.Escape Then
@@ -1395,7 +1387,15 @@ Public Class MainForm
         End If
 
     End Sub
+    Private Sub Listbox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles LBH.ListIndexChanged, FBH.ListIndexChanged
+        '  IndexHandler(FocusControl, e)
+        NewIndex.Enabled = False
 
+        NewIndex.Interval = 50
+
+        NewIndex.Enabled = True
+
+    End Sub
     Public Sub IndexHandler(sender As Object, e As EventArgs) ' Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged
         Dim lbx As ListBox = sender
         If lbx.SelectionMode = SelectionMode.One Then

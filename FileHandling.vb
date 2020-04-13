@@ -87,7 +87,7 @@ Friend Module FileHandling
                     If MainForm.LBH.ListBox IsNot Nothing Then
                         MainForm.LBH.FillBox()
                     End If
-                    MainForm.FBH.Refresh()
+                    ' MainForm.FBH.Refresh()
                     ' RefreshListbox(lbx1, files)
             End Select
             MSFiles.ResettersOff()

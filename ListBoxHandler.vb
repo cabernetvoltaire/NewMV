@@ -301,8 +301,10 @@ Public Class FileboxHandler
         End If
     End Sub
     Public Sub Refresh()
+        Dim ind As Integer = mListbox.SelectedIndex
         GetFiles()
         FillBox(ItemList)
+        SetIndex(ind)
     End Sub
     Public Sub New(Lbx As ListBox)
         MyBase.New(Lbx)

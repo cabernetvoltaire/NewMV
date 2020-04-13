@@ -139,7 +139,7 @@ Public Class MediaSwapper
             'Report("Current:" & CurrentItem, 0)
             'Report("Next:" & NextItem, 0)
             'Report("Previous:" & PreviousItem, 0)
-            Select Case CurrentItem
+            Select Case CurrentItem 'TODO: First time round, should load all items. This is the flaw that's been bugging us.
 
                 Case Media2.MediaPath
                     RotateMedia(Media2, Media3, Media1)
