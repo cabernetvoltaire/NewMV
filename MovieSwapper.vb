@@ -9,7 +9,7 @@ Public Class MediaSwapper
     'Public WithEvents Pic1 As New PictureHandler(Media1.Picture)
     'Public WithEvents Pic2 As New PictureHandler(Media2.Picture)
     'Public WithEvents Pic3 As New PictureHandler(Media3.Picture)
-
+    Private Outliner As New PictureBox With {.BackColor = Color.HotPink}
     Private WithEvents PauseAll As New Timer With {.Interval = 3000, .Enabled = False}
 
     Public RandomNext As Boolean = False
@@ -192,7 +192,7 @@ Public Class MediaSwapper
                 Return True
               '  RaiseEvent LoadedMedia(MH) 'Currently does nothing.
             Case Filetype.Pic
-                MH.PlaceResetter(False)
+                'MH.PlaceResetter(False)
                 MH.Picture.Visible = True
                 MH.Picture.Tag = path 'Important for thumbnail mouseover events. 
                 Return True
@@ -226,8 +226,11 @@ Public Class MediaSwapper
 
         Select Case ThisMH.MediaType
             Case Filetype.Movie
+
+                OutlineControl(ThisMH.Player, Outliner)
                 ShowPlayer(ThisMH)
             Case Filetype.Pic
+                OutlineControl(ThisMH.Picture, Outliner)
                 ShowPicture(ThisMH)
         End Select
 

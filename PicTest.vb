@@ -4,7 +4,7 @@
     Private Sub PicTest_Load(sender As Object, e As EventArgs) Handles Me.Load
         PH.PicBox = PictureBox1
         PH.GetImage("E:\Pictures\Pictures\1522253386990.jpg")
-        PH.PreparePic()
+        '  PH.PreparePic()
     End Sub
 
     Private Sub PicTest_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown, Me.KeyUp

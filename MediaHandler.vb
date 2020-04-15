@@ -187,7 +187,7 @@ Public Class MediaHandler
                 End Try
                 mMarkers = GetMarkersFromLinkList()
                 mMarkers.Sort()
-                RaiseEvent MediaChanged(Me, New EventArgs)
+                'RaiseEvent MediaChanged(Me, New EventArgs)
 
             End If
 
@@ -487,7 +487,8 @@ Public Class MediaHandler
             Case Filetype.Pic
                 HandlePic(mMediaPath)
             Case Filetype.Unknown
-
+                mPlayer.URL = ""
+                mPicBox.Dispose()
                 Exit Sub
         End Select
 

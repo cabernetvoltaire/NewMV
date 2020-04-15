@@ -16,7 +16,7 @@ Public Module General
         RightBottom = 7
         LeftBottom = 8
     End Enum
-    Private Declare Function SearchTreeForFile Lib "imagehlp" (ByVal RootPath As String, ByVal InputPathName As String, ByVal OutputPathBuffer As String) As Long
+    Public Declare Function SearchTreeForFile Lib "imagehlp" (ByVal RootPath As String, ByVal InputPathName As String, ByVal OutputPathBuffer As String) As Long
     Public Const LinkExt As String = ".mvl"
     Public Property bImageDimensionState As Byte
     Public Property ShiftDown As Boolean
@@ -1078,6 +1078,10 @@ Public Module General
         End If
 
     End Sub
-
+    Friend Sub OutlineControl(ctl As Control, ByRef outliner As PictureBox)
+        ctl.Parent.Controls.Add(outliner)
+        Dim r As Rectangle = ctl.Bounds
+        outliner.SetBounds(r.Left - 5, r.Top - 5, r.Width + 10, r.Height + 10)
+    End Sub
 
 End Module

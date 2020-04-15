@@ -43,17 +43,8 @@ Friend Module FileHandling
     Public Sub OnMediaShown(sender As Object, e As EventArgs) Handles MSFiles.MediaShown
 
         Media = sender
-
-
         MainForm.UpdateFileInfo()
-        'If sender.MediaType <> Filetype.Movie Then
-        '    currentPicBox = sender.Picture
-        'End If
-
         MainForm.PopulateLinkList(sender)
-
-        ' MainForsender.AT.AdvanceChance = sender.Markers.Count + 1
-        'Media.IsCurrent = True
         Media.SetLink(0)
         MainForm.AT.Counter = Media.Markers.Count
         If sender.MediaPath <> "" Then
@@ -547,7 +538,7 @@ Friend Module FileHandling
         Dim x As New List(Of String)
         If strSearch = "" Then strSearch = "*"
         For Each f In d.EnumerateFiles()
-            If f.FullName.Contains(strSearch) Or strSearch = "*" Then
+            If UCase(f.FullName).Contains(UCase(strSearch)) Or strSearch = "*" Then
                 x.Add(f.FullName)
             End If
         Next
@@ -556,7 +547,7 @@ Friend Module FileHandling
             For Each f In d.EnumerateDirectories("*", SearchOption.AllDirectories)
                 Try
                     For Each fil In f.EnumerateFiles()
-                        If fil.FullName.Contains(strSearch) Or strSearch = "*" Then
+                        If UCase(fil.FullName).Contains(UCase(strSearch)) Or strSearch = "*" Then
                             x.Add(fil.FullName)
                         End If
                     Next

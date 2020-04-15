@@ -1189,6 +1189,11 @@ Public Class MainForm
         x = Showlist
 
         Showlist = AddFilesToCollection("", blnRecurse)
+        If Showlist.Count = 0 Then
+            MsgBox("No files found matching your search")
+            Exit Sub
+
+        End If
         Showlist = x.Concat(Showlist)
         LBH.FillBox(Showlist)
         '        FillShowbox(lbxShowList, CurrentFilterState.State, Showlist)
@@ -1255,7 +1260,7 @@ Public Class MainForm
         OnRandomChanged()
         ControlSetFocus(lbxFiles)
         Media.DontLoad = False
-        LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\ITC.msl")
+        '        LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\ITC.msl")
         FBH.ListBox = lbxFiles
         LBH.ListBox = lbxShowList
     End Sub
@@ -1570,13 +1575,13 @@ Public Class MainForm
         Else
             filepath = Media.MediaPath
         End If
+        Text = "Metavisua - " & filepath
         Dim f As New FileInfo(filepath)
         If Not f.Exists Then Exit Sub
         Dim listcount = lbxFiles.Items.Count
         Dim showcount = lbxShowList.Items.Count
         Dim dt As Date
         dt = f.LastAccessTime
-        Text = "Metavisua - " & filepath
         If f.LastWriteTime < dt Then dt = f.LastWriteTime
         If f.CreationTime < dt Then dt = f.CreationTime
         Select Case Math.Log10(f.Length)
@@ -1791,7 +1796,11 @@ Public Class MainForm
 
     Public Sub AddCurrentType(Recurse As Boolean)
         Showlist = AddFilesToCollection(strFilterExtensions(CurrentFilterState.State), Recurse)
-        FillShowbox(lbxShowList, CurrentFilterState.State, Showlist)
+        If Showlist.Count = 0 Then
+            MsgBox("No files found matching your search")
+        Else
+            FillShowbox(lbxShowList, CurrentFilterState.State, Showlist)
+        End If
 
     End Sub
     Public Sub FillShowbox(lbx As ListBox, Filter As Byte, ByVal lst As List(Of String))

@@ -132,18 +132,7 @@
                 mPicBox.Cursor = Cursors.Cross
             End If
         End If
-        Exit Sub
-        If e.Button = MouseButtons.Left Then
-            mState = (mState + 1) Mod 3
-        Else
-            If mState > 0 Then
-                mState = mState - 1
-            Else
-                mState = 2
-            End If
-        End If
 
-        PreparePic()
     End Sub
     Private Sub PicFullScreen() Handles mPicBox.DoubleClick
         If ShiftDown Then
@@ -172,12 +161,12 @@
 
     End Sub
 
-    Public Sub PlacePic()
-        'Dim outside As Control = PicBoxContainer
-        mPicBox.Left = PicBoxContainer.Width / 2 - mPicBox.Width / 2
-        mPicBox.Top = PicBoxContainer.Height / 2 - mPicBox.Height / 2
+    'Public Sub PlacePic()
+    '    'Dim outside As Control = PicBoxContainer
+    '    mPicBox.Left = PicBoxContainer.Width / 2 - mPicBox.Width / 2
+    '    mPicBox.Top = PicBoxContainer.Height / 2 - mPicBox.Height / 2
 
-    End Sub
+    'End Sub
 
 #End Region
 #Region "Methods"
@@ -217,19 +206,19 @@
 
     End Sub
 
-    Public Sub PreparePic() 'Not actually implemented at the moment
-        mPicBox.Width = mPicBox.Image.Width
-        mPicBox.Height = mPicBox.Image.Height
-        'How does it exceeed the container, if at all?
-        If PicBoxContainer IsNot Nothing Then
-            ImageDimensionState = ClassifyImage(PicBoxContainer.Width, PicBoxContainer.Height, mPicBox.Width, mPicBox.Height)
-        End If
+    'Public Sub PreparePic() 'Not actually implemented at the moment
+    '    mPicBox.Width = mPicBox.Image.Width
+    '    mPicBox.Height = mPicBox.Image.Height
+    '    'How does it exceeed the container, if at all?
+    '    If PicBoxContainer IsNot Nothing Then
+    '        ImageDimensionState = ClassifyImage(PicBoxContainer.Width, PicBoxContainer.Height, mPicBox.Width, mPicBox.Height)
+    '    End If
 
-        SetState(mState)
+    '    SetState(mState)
 
-        PlacePic()
+    '    PlacePic()
 
-    End Sub
+    'End Sub
 
     Public Function SetState(Sstate As Byte) As Byte
         ' Exit Sub
@@ -304,44 +293,7 @@
         End If
         ' PicTest.Label1.Text = "Picture State:" & ScreenStateDescriptions(State) & " Zoom factor: " & ZoomFactor
     End Sub
-    Public Sub NewZoomPicture(blnEnlarge As Boolean, Percentage As Decimal)
-        mState = SetState(Screenstate.Zoomed)
-        Dim Enlargement As Decimal = 1 + Percentage / 100
-        Dim Reduction As Decimal = 1 - Percentage / 100
 
-        If blnEnlarge Then
-            If mPicBox.Width < 15 * PicBoxContainer.Width Then
-                mZoomfactor = mZoomfactor * Enlargement
-                mPicBox.Width = mPicBox.Width * Enlargement
-                mPicBox.Left = mPicBox.Left - (ePicMousePoint.X - mPicBox.Left) * Percentage / 100
-
-                mPicBox.Top = mPicBox.Top - (ePicMousePoint.Y - mPicBox.Top) * Percentage / 100
-                mPicBox.Height = mPicBox.Height * Enlargement
-                '        If mPicBox.Top < -mPicBox.Height Then MsgBox("Stop")
-
-                RaiseEvent ZoomChange(Me, Nothing)
-            End If
-        Else
-            mZoomfactor = mZoomfactor * Reduction
-            If mPicBox.Width * Reduction > PicBoxContainer.Width Or mPicBox.Height * Reduction > PicBoxContainer.Height Then
-                mPicBox.Width = mPicBox.Width * Reduction
-                mPicBox.Left = Math.Min(0, mPicBox.Left + (ePicMousePoint.X - mPicBox.Left) * Percentage / 100)
-                mPicBox.Top = Math.Min(0, mPicBox.Top + (ePicMousePoint.Y - mPicBox.Top) * Percentage / 100)
-                mPicBox.Height = mPicBox.Height * Reduction
-                RaiseEvent ZoomChange(Me, Nothing)
-            Else
-                mState = SetState(PictureHandler.Screenstate.Fitted)
-            End If
-        End If
-        ' PicTest.Label1.Text = "Picture State:" & ScreenStateDescriptions(State) & " Zoom factor: " & ZoomFactor
-    End Sub
-    Private Sub mPicBox_MouseDown(sender As Object, e As MouseEventArgs) Handles mPicBox.MouseDown
-
-    End Sub
-
-    Private Sub mPicBox_Disposed(sender As Object, e As EventArgs) Handles mPicBox.Disposed
-        MsgBox("Disposed")
-    End Sub
 
 #End Region
 
