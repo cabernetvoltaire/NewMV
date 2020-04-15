@@ -13,7 +13,7 @@ Class Duplicates
         End Get
         Set(ByVal value As List(Of String))
             mInputList = value
-            mInputList = SetPlayOrder(SortHandler.Order.Size, value)
+            mInputList = SetPlayOrder(SortHandler.Order.Size, value, False)
         End Set
     End Property
 

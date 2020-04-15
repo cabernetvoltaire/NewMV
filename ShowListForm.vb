@@ -1,5 +1,5 @@
 ﻿Public Class ShowListForm
-    Dim LBH As New ListBoxHandler(ListBox1)
+    Dim LBH As New ListBoxHandler()
 
     Public Sub ShowListForm_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
         MainForm.Main_KeyDown(sender, e)

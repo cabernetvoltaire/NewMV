@@ -140,11 +140,13 @@ Partial Class MainForm
         Me.CHBAutoAdvance = New System.Windows.Forms.CheckBox()
         Me.lblNavigateState = New System.Windows.Forms.Label()
         Me.gpbAutoTrail = New System.Windows.Forms.GroupBox()
+        Me.tbMovieSlideShowSpeed = New System.Windows.Forms.TrackBar()
         Me.tbAutoTrail = New System.Windows.Forms.TrackBar()
         Me.tbScanRate = New System.Windows.Forms.TrackBar()
         Me.chbScan = New System.Windows.Forms.CheckBox()
         Me.chbAutoTrail = New System.Windows.Forms.CheckBox()
         Me.chbSlideShow = New System.Windows.Forms.CheckBox()
+        Me.InstructionLabel2 = New System.Windows.Forms.Label()
         Me.tmrUpdateFileList = New System.Windows.Forms.Timer(Me.components)
         Me.tmrPicLoad = New System.Windows.Forms.Timer(Me.components)
         Me.tmrJumpVideo = New System.Windows.Forms.Timer(Me.components)
@@ -273,8 +275,6 @@ Partial Class MainForm
         Me.Response = New System.Windows.Forms.Timer(Me.components)
         Me.tmrProgressBar = New System.Windows.Forms.Timer(Me.components)
         Me.tmrJumpRandom = New System.Windows.Forms.Timer(Me.components)
-        Me.InstructionLabel2 = New System.Windows.Forms.Label()
-        Me.tbMovieSlideShowSpeed = New System.Windows.Forms.TrackBar()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -321,11 +321,11 @@ Partial Class MainForm
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         Me.gpbAutoTrail.SuspendLayout()
+        CType(Me.tbMovieSlideShowSpeed, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbAutoTrail, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbScanRate, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.FileSystemWatcher1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip2.SuspendLayout()
-        CType(Me.tbMovieSlideShowSpeed, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'FileToolStripMenuItem
@@ -1391,9 +1391,8 @@ Partial Class MainForm
         Me.lblAttributes.Location = New System.Drawing.Point(1426, 146)
         Me.lblAttributes.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblAttributes.Name = "lblAttributes"
-        Me.lblAttributes.Size = New System.Drawing.Size(57, 20)
+        Me.lblAttributes.Size = New System.Drawing.Size(0, 20)
         Me.lblAttributes.TabIndex = 47
-        Me.lblAttributes.Text = "Label4"
         '
         'GroupBox3
         '
@@ -1403,7 +1402,7 @@ Partial Class MainForm
         Me.GroupBox3.Controls.Add(Me.chbShowAttr)
         Me.GroupBox3.Controls.Add(Me.CHBAutoAdvance)
         Me.GroupBox3.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupBox3.Location = New System.Drawing.Point(1488, 3)
+        Me.GroupBox3.Location = New System.Drawing.Point(1431, 3)
         Me.GroupBox3.Name = "GroupBox3"
         Me.GroupBox3.Size = New System.Drawing.Size(197, 160)
         Me.GroupBox3.TabIndex = 49
@@ -1478,7 +1477,7 @@ Partial Class MainForm
         'lblNavigateState
         '
         Me.lblNavigateState.AutoSize = True
-        Me.lblNavigateState.Location = New System.Drawing.Point(1690, 0)
+        Me.lblNavigateState.Location = New System.Drawing.Point(1633, 0)
         Me.lblNavigateState.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblNavigateState.Name = "lblNavigateState"
         Me.lblNavigateState.Size = New System.Drawing.Size(57, 20)
@@ -1493,12 +1492,24 @@ Partial Class MainForm
         Me.gpbAutoTrail.Controls.Add(Me.chbScan)
         Me.gpbAutoTrail.Controls.Add(Me.chbAutoTrail)
         Me.gpbAutoTrail.Controls.Add(Me.chbSlideShow)
-        Me.gpbAutoTrail.Location = New System.Drawing.Point(1752, 3)
+        Me.gpbAutoTrail.Location = New System.Drawing.Point(1695, 3)
         Me.gpbAutoTrail.Name = "gpbAutoTrail"
         Me.gpbAutoTrail.Size = New System.Drawing.Size(586, 151)
         Me.gpbAutoTrail.TabIndex = 55
         Me.gpbAutoTrail.TabStop = False
         Me.gpbAutoTrail.Text = "Autotrail"
+        '
+        'tbMovieSlideShowSpeed
+        '
+        Me.tbMovieSlideShowSpeed.Location = New System.Drawing.Point(154, 13)
+        Me.tbMovieSlideShowSpeed.Maximum = 20000
+        Me.tbMovieSlideShowSpeed.Minimum = 1000
+        Me.tbMovieSlideShowSpeed.Name = "tbMovieSlideShowSpeed"
+        Me.tbMovieSlideShowSpeed.Size = New System.Drawing.Size(288, 69)
+        Me.tbMovieSlideShowSpeed.SmallChange = 10
+        Me.tbMovieSlideShowSpeed.TabIndex = 6
+        Me.tbMovieSlideShowSpeed.TickFrequency = 1000
+        Me.tbMovieSlideShowSpeed.Value = 4000
         '
         'tbAutoTrail
         '
@@ -1554,6 +1565,17 @@ Partial Class MainForm
         Me.chbSlideShow.TabIndex = 0
         Me.chbSlideShow.Text = "Movie Slide Show"
         Me.chbSlideShow.UseVisualStyleBackColor = True
+        '
+        'InstructionLabel2
+        '
+        Me.InstructionLabel2.AutoSize = True
+        Me.InstructionLabel2.Dock = System.Windows.Forms.DockStyle.Top
+        Me.InstructionLabel2.Location = New System.Drawing.Point(2286, 0)
+        Me.InstructionLabel2.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.InstructionLabel2.Name = "InstructionLabel2"
+        Me.InstructionLabel2.Size = New System.Drawing.Size(132, 20)
+        Me.InstructionLabel2.TabIndex = 56
+        Me.InstructionLabel2.Text = "InstructionLabel2"
         '
         'tmrUpdateFileList
         '
@@ -2344,29 +2366,6 @@ Partial Class MainForm
         '
         Me.tmrJumpRandom.Interval = 500
         '
-        'InstructionLabel2
-        '
-        Me.InstructionLabel2.AutoSize = True
-        Me.InstructionLabel2.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.InstructionLabel2.Location = New System.Drawing.Point(2343, 146)
-        Me.InstructionLabel2.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
-        Me.InstructionLabel2.Name = "InstructionLabel2"
-        Me.InstructionLabel2.Size = New System.Drawing.Size(57, 20)
-        Me.InstructionLabel2.TabIndex = 56
-        Me.InstructionLabel2.Text = "Label4"
-        '
-        'tbMovieSlideShowSpeed
-        '
-        Me.tbMovieSlideShowSpeed.Location = New System.Drawing.Point(154, 13)
-        Me.tbMovieSlideShowSpeed.Maximum = 20000
-        Me.tbMovieSlideShowSpeed.Minimum = 1000
-        Me.tbMovieSlideShowSpeed.Name = "tbMovieSlideShowSpeed"
-        Me.tbMovieSlideShowSpeed.Size = New System.Drawing.Size(288, 69)
-        Me.tbMovieSlideShowSpeed.SmallChange = 10
-        Me.tbMovieSlideShowSpeed.TabIndex = 6
-        Me.tbMovieSlideShowSpeed.TickFrequency = 1000
-        Me.tbMovieSlideShowSpeed.Value = 4000
-        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
@@ -2445,12 +2444,12 @@ Partial Class MainForm
         Me.GroupBox3.PerformLayout()
         Me.gpbAutoTrail.ResumeLayout(False)
         Me.gpbAutoTrail.PerformLayout()
+        CType(Me.tbMovieSlideShowSpeed, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbAutoTrail, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbScanRate, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.FileSystemWatcher1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.MenuStrip2.ResumeLayout(False)
         Me.MenuStrip2.PerformLayout()
-        CType(Me.tbMovieSlideShowSpeed, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

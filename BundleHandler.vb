@@ -65,7 +65,7 @@ Public Class BundleHandler
         Next
         blnSuppressCreate = True
         MoveFiles(list, DestinationFolder.FullName)
-        FSTree.RefreshTree(DestinationFolder.FullName)
+
 
         Await RemoveEmptyFolders(CurrentFolder.FullName, True)
     End Function

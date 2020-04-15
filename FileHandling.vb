@@ -92,7 +92,7 @@ Friend Module FileHandling
             End Select
             MSFiles.ResettersOff()
         Next
-
+        'MainForm.FBH.SetIndex(Math.Max(Math.Min(ind, MainForm.FBH.ListBox.Items.Count - 1), 0))
         If lbx1.Items.Count <> 0 Then lbx1.SetSelected(Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0), True)
 
 
@@ -111,22 +111,23 @@ Friend Module FileHandling
 
         Dim notlist As New List(Of String)
         ReadListfromFile(list, Dest, Encrypted)
-        For Each s In list
-            Try
-                Dim f As New FileInfo(s)
-                If f.Exists Then
-                    lbx.Items.Add(s)
-                Else
-                    notlist.Add(s)
-                End If
-            Catch ex As System.IO.PathTooLongException
-                Continue For
-            Catch ex As System.ArgumentException
-                ReportFault("Filehandling.Getlist", ex.Message)
-                Exit Sub
-            End Try
-            ProgressIncrement(40)
-        Next
+        lbx.DataSource = list
+        'For Each s In list
+        '    Try
+        '        Dim f As New FileInfo(s)
+        '        If f.Exists Then
+        '            lbx.Items.Add(s)
+        '        Else
+        '            notlist.Add(s)
+        '        End If
+        '    Catch ex As System.IO.PathTooLongException
+        '        Continue For
+        '    Catch ex As System.ArgumentException
+        '        ReportFault("Filehandling.Getlist", ex.Message)
+        '        Exit Sub
+        '    End Try
+        '    ProgressIncrement(40)
+        'Next
 
 
 

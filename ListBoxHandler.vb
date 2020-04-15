@@ -1,6 +1,7 @@
 ﻿Public Class ListBoxHandler
 #Region "Properties"
     Public Property SortOrder As New SortHandler
+    Public Property Reverse As Boolean = False
     Public Property Filter As New FilterHandler
     Public Property Random As New RandomHandler
     Public Property FolderAdvance As Boolean = True
@@ -81,7 +82,16 @@
         End If
     End Sub
     Public Sub OrderList()
-        mItemList = SetPlayOrder(SortOrder.State, ItemList)
+        mItemList = SetPlayOrder(SortOrder.State, ItemList, SortOrder.ReverseOrder)
+
+    End Sub
+    Public Sub HighlightList(ls As List(Of String))
+        mListbox.DataSource = Nothing
+        mListbox.SelectionMode = SelectionMode.MultiExtended
+        For Each f In ls
+            Dim i = mListbox.FindString(f)
+            If i >= 0 Then mListbox.SetSelected(i, True)
+        Next
 
     End Sub
     Public Sub AddList(list As List(Of String))
@@ -201,9 +211,7 @@
 
 
 
-    Public Sub New(Lbx As ListBox)
-        mListbox = Lbx
-    End Sub
+
 #End Region
 
 #Region "Events"
@@ -305,10 +313,6 @@ Public Class FileboxHandler
         GetFiles()
         FillBox(ItemList)
         SetIndex(ind)
-    End Sub
-    Public Sub New(Lbx As ListBox)
-        MyBase.New(Lbx)
-        ListBox = Lbx
     End Sub
 
 

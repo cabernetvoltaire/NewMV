@@ -42,9 +42,11 @@ Public Class MainForm
 
     Public Marks As New MarkPlacement
     Public speedkeys = {KeySpeed1, KeySpeed2, KeySpeed3}
-    Public WithEvents FBH As New FileboxHandler(lbxFiles)
-    Public WithEvents LBH As New ListBoxHandler(lbxShowList)
-
+    Public WithEvents FBH As New FileboxHandler()
+    Public WithEvents LBH As New ListBoxHandler()
+    Private ScanInstructions = {"Movie slide Show in progress" & vbCrLf & "Selects next movie automatically.",
+        "Movie Scan in progress" & vbCrLf & "Change speed with slider.",
+        "Auto Trail in progress" & vbCrLf & "Change core speed change with slider"}
 
 #Region "Event Responders"
     Sub OnThumbnailed(file As String) Handles VT.Thumbnailed
@@ -143,6 +145,16 @@ Public Class MainForm
                 cbxFilter.SelectedIndex = CurrentFilterState.State
                 tbFilter.Text = "FILTER:" & UCase(CurrentFilterState.Description)
             Case "SortHandler"
+                If Not Media.DontLoad Then
+
+                    If FocusControl Is lbxShowList Then
+                        LBH.SortOrder = PlayOrder
+                        UpdatePlayOrder(LBH)
+                    Else
+                        FBH.SortOrder = PlayOrder
+                        UpdatePlayOrder(FBH)
+                    End If
+                End If
                 FBH.SortOrder = PlayOrder
                 cbxOrder.SelectedIndex = PlayOrder.State
                 cbxOrder.BackColor = PlayOrder.Colour
@@ -151,13 +163,14 @@ Public Class MainForm
         SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
 
         If sender IsNot NavigateMoveState Then
-            If Not Media.DontLoad Then
-                If FocusControl Is lbxShowList Then
-                    UpdatePlayOrder(LBH)
-                Else
-                    UpdatePlayOrder(FBH)
-                End If
-            End If
+            'If Not Media.DontLoad Then
+            '    If FocusControl Is lbxShowList Then
+
+            '        UpdatePlayOrder(LBH)
+            '    Else
+            '        UpdatePlayOrder(FBH)
+            '    End If
+            'End If
         Else
             If NavigateMoveState.State = StateHandler.StateOptions.ExchangeLink Then
                 CurrentFilterState.State = FilterHandler.FilterState.LinkOnly
@@ -358,12 +371,13 @@ Public Class MainForm
             tbLastFile.Text = TimeOperation(True).TotalMilliseconds
             ProgressBarOn(lngListSizeBytes)
             'LBH.ItemList = Showlist
+            'LBH.FillBox()
             Getlist(Showlist, path, lbxShowList)
             time = TimeOperation(False)
             loadrate = size / time.TotalMilliseconds
         End If
         ProgressBarOff()
-        'tbShowfile.Text = "SHOWFILE LOADED:" & path
+        tbShowfile.Text = "SHOWFILE LOADED:" & path
     End Sub
 
 
@@ -563,7 +577,7 @@ Public Class MainForm
         UpdateButtonAppearance()
     End Sub
     Public Sub AdvanceFile(blnForward As Boolean, Optional Random As Boolean = False)
-        Dim LBHH As New ListBoxHandler(LBH.ListBox)
+        Dim LBHH As New ListBoxHandler()
         If FocusControl Is lbxShowList Or CtrlDown Then
             LBHH = LBH
         Else
@@ -651,6 +665,16 @@ Public Class MainForm
         End If
 
     End Sub
+    Public Sub ToggleMovieSlideShow()
+        tmrMovieSlideShow.Enabled = Not tmrMovieSlideShow.Enabled
+        chbSlideShow.Checked = tmrMovieSlideShow.Enabled
+        If tmrMovieSlideShow.Enabled Then
+
+        Else
+
+        End If
+        UpdateLabel(InstructionLabel2, ScanInstructions(0))
+    End Sub
     Public Sub ToggleAutoTrail()
 
         tmrAutoTrail.Enabled = Not tmrAutoTrail.Enabled
@@ -668,6 +692,8 @@ Public Class MainForm
             Media.Player.settings.rate = 1
             Media.Player.Ctlcontrols.play()
         End If
+        UpdateLabel(InstructionLabel2, ScanInstructions(2))
+
     End Sub
     Public Function NumKeyEquivalent(e As KeyEventArgs) As Keys
         If e.Modifiers = Keys.Shift Then
@@ -880,7 +906,7 @@ Public Class MainForm
                 If e.Control AndAlso e.Shift Then
                     JumpRandom(True)
                 ElseIf e.Alt Then
-                    ToggleRandomJump()
+                    ToggleMovieScan()
                 Else
                     JumpRandom(False)
                 End If
@@ -975,10 +1001,7 @@ Public Class MainForm
 
             Case KeyReStartSS
                 If e.Shift Then
-                    tmrMovieSlideShow.Interval = 950
-                    tmrMovieSlideShow.Enabled = Not tmrMovieSlideShow.Enabled
-                    SP.Slideshow = Not tmrMovieSlideShow.Enabled
-                    chbSlideShow.Checked = tmrMovieSlideShow.Enabled
+                    ToggleMovieSlideShow()
 
                 Else
                     tmrSlideShow.Enabled = Not tmrSlideShow.Enabled
@@ -1226,7 +1249,7 @@ Public Class MainForm
         OnRandomChanged()
         ControlSetFocus(lbxFiles)
         Media.DontLoad = False
-        ' LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\ITC.msl")
+        LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\sg.msl")
         FBH.ListBox = lbxFiles
         LBH.ListBox = lbxShowList
     End Sub
@@ -2603,7 +2626,7 @@ Public Class MainForm
         'Op.ImportLinks(Showlist)
         'Select files with links
         Dim hilist As New List(Of String)
-        Dim FLBH As New ListBoxHandler(lbxFiles)
+        Dim FLBH As New ListBoxHandler()
         If FocusControl Is lbxFiles Then
             FLBH = FBH
         Else
@@ -2721,10 +2744,11 @@ Public Class MainForm
 
         'MsgBox("Uh-oh")
     End Sub
-    Private Sub ToggleRandomJump()
+    Private Sub ToggleMovieScan()
         tmrJumpRandom.Interval = tbScanRate.Value
         tmrJumpRandom.Enabled = Not tmrJumpRandom.Enabled
         chbScan.Checked = tmrJumpRandom.Enabled
+        UpdateLabel(InstructionLabel2, ScanInstructions(1))
     End Sub
     Private Sub chbSeparate_CheckedChanged(sender As Object, e As EventArgs) Handles chbSeparate.CheckedChanged
         separate = chbSeparate.Checked
@@ -2837,7 +2861,7 @@ Public Class MainForm
     End Sub
 
     Private Sub MovieScanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles MovieScanToolStripMenuItem.Click
-        ToggleRandomJump()
+        ToggleMovieScan()
     End Sub
 
 
@@ -2930,6 +2954,8 @@ Public Class MainForm
     Private Sub tbAutoTrail_Scroll(sender As Object, e As EventArgs) Handles tbAutoTrail.Scroll
 
     End Sub
+
+
 #End Region
 
 End Class

@@ -152,9 +152,15 @@ Public Module General
         Dim bk As Long
         Dim target As String
         target = LinkTarget(OldLinkPath)
+        Dim oldfile As New IO.FileInfo(OldLinkPath)
+        Dim dt = oldfile.LastWriteTime
         bk = BookmarkFromLinkName(OldLinkPath)
         Dim file As New List(Of String) From {target, bk}
-        WriteListToFile(file, Replace(OldLinkPath, ".lnk", LinkExt), False)
+        Dim newname = Replace(OldLinkPath, ".lnk", LinkExt)
+        WriteListToFile(file, newname, False)
+        Dim newfile As New IO.FileInfo(newname)
+        newfile.LastWriteTime = dt
+
     End Sub
     Public Function FilenameFromLink(n As String) As String
         If n = "" Then
@@ -690,7 +696,7 @@ Public Module General
     End Function
 
 
-    Public Function SetPlayOrder(Order As Byte, List As List(Of String)) As List(Of String)
+    Public Function SetPlayOrder(Order As Byte, List As List(Of String), Reverse As Boolean) As List(Of String)
         Try
             Select Case Order
                 Case SortHandler.Order.Name
@@ -715,7 +721,7 @@ Public Module General
         Catch ex As Exception
 
         End Try
-        If MainForm.PlayOrder.ReverseOrder Then
+        If Reverse Then
             List.Reverse()
         End If
         Return List
@@ -1059,6 +1065,14 @@ Public Module General
     End Function
     Friend Sub AddToolTip(ctl As Control, tp As ToolTip, text As String)
         tp.SetToolTip(ctl, text)
+    End Sub
+    Friend Sub UpdateLabel(lbl As Label, TextToAdd As String)
+        If lbl.Text.Contains(TextToAdd) Then
+            lbl.Text = lbl.Text.Replace(vbCrLf & TextToAdd, "")
+        Else
+            lbl.Text = lbl.Text & vbCrLf & TextToAdd
+        End If
+
     End Sub
 
 
