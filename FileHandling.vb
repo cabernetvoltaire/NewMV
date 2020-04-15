@@ -9,7 +9,6 @@ Friend Module FileHandling
     Public Random As RandomHandler = MainForm.Random
     Public NavigateMoveState As StateHandler = MainForm.NavigateMoveState
     ' Public FP As New FilePump
-    Public Listbox As ListBox = MainForm.lbxFiles
     Public Event FolderMoved(Path As String)
     Public Event FileMoved(Files As List(Of String), lbx As ListBox)
     Public WithEvents t As Thread

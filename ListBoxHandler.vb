@@ -42,9 +42,11 @@
     Public WriteOnly Property SelectItems() As List(Of String)
         Set(value As List(Of String))
             mListbox.SelectionMode = SelectionMode.MultiExtended
+            mListbox.SuspendLayout()
             For Each m In value
                 SetNamed(m)
             Next
+            mListbox.ResumeLayout()
         End Set
     End Property
 
@@ -57,6 +59,7 @@
         End Get
         Set(ByVal value As ListBox)
             mListbox = value
+            mItemList = AllfromListbox(mListbox)
 
 
         End Set
@@ -67,6 +70,7 @@
             Return mListbox.SelectedIndex
         End Get
         Set(ByVal value As Integer)
+
             mCurrentIndex = value
         End Set
     End Property
@@ -83,7 +87,6 @@
     End Sub
     Public Sub OrderList()
         mItemList = SetPlayOrder(SortOrder.State, ItemList, SortOrder.ReverseOrder)
-
     End Sub
     Public Sub HighlightList(ls As List(Of String))
         mListbox.DataSource = Nothing

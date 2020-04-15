@@ -148,6 +148,7 @@ Public Class MainForm
                 If Not Media.DontLoad Then
 
                     If FocusControl Is lbxShowList Then
+                        ' LBH.ListBox = lbxShowList
                         LBH.SortOrder = PlayOrder
                         UpdatePlayOrder(LBH)
                     Else
@@ -2260,19 +2261,6 @@ Public Class MainForm
         CollapseShowlist(False)
         LBH.AddList(list)
     End Sub
-    Private Sub AddCurrentFilesToShowListold()
-
-        For Each f In lbxFiles.SelectedItems
-            AddSingleFileToList(Showlist, f)
-        Next
-        FillShowbox(lbxShowList, CurrentFilterState.State, Showlist)
-        CollapseShowlist(False)
-    End Sub
-
-
-
-
-
 
     Private Sub chbNextFile_CheckedChanged(sender As Object, e As EventArgs) Handles chbNextFile.CheckedChanged
         Random.NextSelect = chbNextFile.Checked
@@ -2389,7 +2377,8 @@ Public Class MainForm
         x.Maxfiles = Val(InputBox("Min no. of files to preserve folder? (Blank means all folders burst)",, ""))
         Dim d As New IO.DirectoryInfo(CurrentFolder)
         If d.Exists Then
-            Await x.Burst(New IO.DirectoryInfo(CurrentFolder), True)
+
+            Await x.Burst(New IO.DirectoryInfo(CurrentFolder), True) 'TODO: sometimes crashes because CurrentFolder doesn't exist
             tvMain2.RefreshTree(CurrentFolder)
             tmrUpdateFileList.Enabled = True
         End If
@@ -2673,7 +2662,11 @@ Public Class MainForm
     Private Sub Response_Tick(sender As Object, e As EventArgs) Handles Response.Tick
         Response.Enabled = False
     End Sub
-
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub DisplayedToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DisplayedToolStripMenuItem.Click
         FaveMinder.RedirectShortCutList(New FileInfo(lbxFiles.SelectedItem), AllfromListbox(lbxShowList))
     End Sub
@@ -2707,7 +2700,7 @@ Public Class MainForm
 
 
     Private Sub lbxFiles_KeyDown(sender As Object, e As KeyEventArgs) Handles lbxFiles.KeyDown, lbxShowList.KeyDown
-        If e.KeyCode = KeyTraverseTree Or e.KeyCode = KeyTraverseTreeBack Then
+        If e.KeyCode = KeyTraverseTree Or e.KeyCode = KeyTraverseTreeBack Or e.KeyCode = Keys.Left Or e.KeyCode = Keys.Right Then
             tvMain2.tvFiles_KeyDown(sender, e)
         End If
     End Sub

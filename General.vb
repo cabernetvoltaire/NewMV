@@ -545,14 +545,18 @@ Public Module General
         Next
         Return s
     End Function
-
+    ''' <summary>
+    ''' Given a list of links, finds all the targets and places in Showbox
+    ''' </summary>
+    ''' <param name="list"></param>
+    ''' <returns></returns>
     Public Function ListFromLinks(list As List(Of String)) As List(Of String)
         Dim s As New List(Of String)
         For Each l In list
             Dim tgt As String = LinkTarget(l)
             If s.Contains(tgt) Then
             Else
-                s.Add(LinkTarget(tgt))
+                s.Add(tgt)
             End If
 
         Next
