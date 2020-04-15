@@ -12,6 +12,7 @@
     Private WithEvents mText As New TextBox
 
     Friend mItemList As New List(Of String)
+    Friend mFullItemList As New List(Of String)
     Public Event ListBoxFilled(sender As Object, e As EventArgs)
     Public Event ListboxChanged(sender As Object, e As EventArgs)
     Public Event ListIndexChanged(sender As Object, e As EventArgs)
@@ -24,7 +25,7 @@
         End Get
         Set(ByVal value As List(Of String))
             mItemList = value
-
+            mFullItemList = value
         End Set
     End Property
     Private Property mSelectedItems As New List(Of String)
@@ -60,7 +61,7 @@
         Set(ByVal value As ListBox)
             mListbox = value
             mItemList = AllfromListbox(mListbox)
-
+            mFullItemList = mItemList
 
         End Set
     End Property
@@ -80,8 +81,9 @@
         If Filter.State <> Filter.OldState Then
 
             With Filter
-                .FileList = mItemList
+                .FileList = mFullItemList
                 mItemList = .FileList
+                
             End With
         End If
     End Sub
@@ -139,6 +141,7 @@
             mListbox.SuspendLayout()
         End If
         mListbox.DataSource = mItemList
+
 
 
         If mItemList.Count = 0 And Filter.State <> FilterHandler.FilterState.All Then
@@ -295,6 +298,7 @@ Public Class FileboxHandler
             If Value <> "" Then
                 _DirectoryPath = Value
                 GetFiles()
+                mFullItemList = mItemList
                 FillBox(mItemList)
             End If
 
@@ -302,12 +306,12 @@ Public Class FileboxHandler
     End Property
 
     Private Sub GetFiles()
-        ItemList.Clear()
+        mItemList.Clear()
         Dim dir As New IO.DirectoryInfo(_DirectoryPath)
         If dir.Exists Then
             '            mListbox.DataSource = dir.GetFiles
             For Each f In dir.GetFiles
-                ItemList.Add(f.FullName)
+                mItemList.Add(f.FullName)
             Next
         End If
     End Sub

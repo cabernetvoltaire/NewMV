@@ -140,7 +140,11 @@ Public Class MainForm
                 lblNavigateState.Text = NavigateMoveState.Instructions
                 tbState.Text = UCase(NavigateMoveState.Description)
             Case "FilterHandler"
-                FBH.Filter = CurrentFilterState
+                If FocusControl Is lbxShowList Then
+                    LBH.Filter = CurrentFilterState
+                Else
+                    FBH.Filter = CurrentFilterState
+                End If
                 cbxFilter.BackColor = CurrentFilterState.Colour
                 cbxFilter.SelectedIndex = CurrentFilterState.State
                 tbFilter.Text = "FILTER:" & UCase(CurrentFilterState.Description)
@@ -150,10 +154,8 @@ Public Class MainForm
                     If FocusControl Is lbxShowList Then
                         ' LBH.ListBox = lbxShowList
                         LBH.SortOrder = PlayOrder
-                        UpdatePlayOrder(LBH)
                     Else
                         FBH.SortOrder = PlayOrder
-                        UpdatePlayOrder(FBH)
                     End If
                 End If
                 FBH.SortOrder = PlayOrder
@@ -161,6 +163,9 @@ Public Class MainForm
                 cbxOrder.BackColor = PlayOrder.Colour
                 tbRandom.Text = "ORDER:" & UCase(PlayOrder.Description)
         End Select
+        If Not Media.DontLoad AndAlso FocusControl Is lbxShowList Then UpdatePlayOrder(LBH)
+        If Not Media.DontLoad AndAlso FocusControl Is lbxFiles Then UpdatePlayOrder(FBH)
+
         SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
 
         If sender IsNot NavigateMoveState Then
@@ -855,7 +860,7 @@ Public Class MainForm
                 If e.Control And e.Alt And e.Shift Then
                     RemoveAllFavourites(Media.MediaPath)
                 ElseIf e.Control And e.Alt Then
-                    If Media.IsLink Then
+                    If Media.IsLink Then 'TODO: Does this work?
                         Dim finfo As New IO.FileInfo(Media.MediaPath)
                         Dim s As String = Media.UpdateBookmark(Media.MediaPath, Media.Position)
                         finfo.MoveTo(s)
@@ -1250,7 +1255,7 @@ Public Class MainForm
         OnRandomChanged()
         ControlSetFocus(lbxFiles)
         Media.DontLoad = False
-        LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\sg.msl")
+        LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\ITC.msl")
         FBH.ListBox = lbxFiles
         LBH.ListBox = lbxShowList
     End Sub

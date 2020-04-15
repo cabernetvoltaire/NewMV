@@ -69,7 +69,7 @@
         End If
     End Sub
     Private Function FilterLBList() As List(Of String)
-        Dim lst As New List(Of String)
+        Dim lst As New List(Of String) 'TODO: This removes items, we'd rather it hid them.
         Try
 
 
@@ -84,6 +84,7 @@
                     Case FilterHandler.FilterState.NoPicVid
                         If InStr(PICEXTENSIONS & VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And f.Extension.Length <> 0 Then
                         Else
+
                             lst.Remove(m)
                         End If
                     Case FilterHandler.FilterState.LinkOnly
