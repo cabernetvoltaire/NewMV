@@ -73,12 +73,12 @@
     '    Next
     'End Sub
 
-    Public Sub RedirectShortCutList(f As IO.FileInfo, shortcuts As List(Of String))
-        ReallocateShortCuts(f, shortcuts)
+    Public Sub RedirectShortCutList(destination As String, shortcuts As List(Of String))
+        ReallocateShortCuts(destination, shortcuts)
     End Sub
 
-    Private Sub ReallocateShortCut(f As IO.FileInfo, m As String, bk As Long, minfo As IO.FileInfo)
-        Dim sch As New ShortcutHandler(f.FullName, minfo.DirectoryName, minfo.Name)
+    Private Sub ReallocateShortCut(destination As String, m As String, bk As Long, minfo As IO.FileInfo)
+        Dim sch As New ShortcutHandler(destination, minfo.DirectoryName, minfo.Name)
         sch.MarkOffset = 0
         Dim fn As String = sch.New_Create_ShortCut(bk)
         'Remove the old shortcut
@@ -106,11 +106,11 @@
                 OkToDelete = False
             End If
         Else
-            ReallocateShortCuts(f, mf)
+            ReallocateShortCuts(destinationpath, mf)
         End If
     End Sub
 
-    Private Sub ReallocateShortCuts(f As IO.FileInfo, mf As List(Of String))
+    Private Sub ReallocateShortCuts(dest As String, mf As List(Of String))
         Dim bk As Long = 0
         For Each m In mf
             Dim minfo As New IO.FileInfo(m)
@@ -123,7 +123,7 @@
                 bk = 0
             End If
             'Create a new shortcut where the old one was.
-            ReallocateShortCut(f, m, bk, minfo)
+            ReallocateShortCut(dest, m, bk, minfo)
 
         Next
     End Sub

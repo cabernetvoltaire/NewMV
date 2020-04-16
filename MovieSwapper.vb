@@ -11,8 +11,17 @@ Public Class MediaSwapper
     'Public WithEvents Pic3 As New PictureHandler(Media3.Picture)
     Private Outliner As New PictureBox With {.BackColor = Color.HotPink}
     Private WithEvents PauseAll As New Timer With {.Interval = 3000, .Enabled = False}
+    Private mRandomNext As Boolean = False
+    Public WriteOnly Property RandomNext As Boolean
+        Set(value As Boolean)
+            mRandomNext = value
+            For Each m In MediaHandlers
+                m.PicHandler.RandomNext = value
+            Next
+        End Set
 
-    Public RandomNext As Boolean = False
+    End Property
+
     Private mFileList As New List(Of String) '
     Private mListIndex As Integer
     Private mListbox As New ListBox
@@ -60,14 +69,14 @@ Public Class MediaSwapper
         End Set
     End Property
     Private Sub GetNext()
-        If RandomNext Then
+        If mRandomNext Then
             NextItem = NextF.RandomItem
             'Do Until NextItem <> CurrentItem
             '    NextItem = NextF.RandomItem
             'Loop
 
         Else
-                NextItem = NextF.NextItem
+            NextItem = NextF.NextItem
         End If
     End Sub
     ''' <summary>

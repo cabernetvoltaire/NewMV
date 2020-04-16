@@ -3,6 +3,7 @@
     Public Event StateChanged(sender As Object, e As EventArgs)
     Public Event ZoomChange(sender As Object, e As EventArgs)
     Public Event AdvanceFile(sender As Object, e As EventArgs)
+    Public RandomNext As Boolean
     Private WithEvents mPicBox As New PictureBox
     Private tb As New ToolTip
     Public MouseZone As New PictureBox
@@ -152,7 +153,7 @@
 
         If WheelScroll Then 'State = Screenstate.Fitted Then
             'RaiseEvent AdvanceFile(sender, e)
-            MainForm.AdvanceFile(e.Delta < 0, False)
+            MainForm.AdvanceFile(e.Delta < 0, RandomNext)
             'MainForm.tmrSlideShow.Enabled = False 'Break slideshow if scrolled
             'Dim img As Image = Me.GetImage(Media.MediaPath)
         Else

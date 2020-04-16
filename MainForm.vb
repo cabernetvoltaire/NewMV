@@ -92,7 +92,6 @@ Public Class MainForm
             Media.SPT.State = StartPointHandler.StartTypes.Random
         End If
         MSFiles.RandomNext = Random.NextSelect
-
         ToggleRandomAdvanceToolStripMenuItem.Checked = Random.NextSelect
         ToggleRandomSelectToolStripMenuItem.Checked = Random.OnDirChange
         ToggleRandomStartToolStripMenuItem.Checked = Random.StartPointFlag
@@ -267,13 +266,13 @@ Public Class MainForm
             If x.Count = 0 Then
             Else
 
-                T = New Thread(New ThreadStart(Sub() Op.ReuniteWithFile(x, filepath))) With {
-            .IsBackground = True
-        }
-                T.SetApartmentState(ApartmentState.STA)
+                '        T = New Thread(New ThreadStart(Sub() Op.ReuniteWithFile(x, filepath))) With {
+                '    .IsBackground = True
+                '}
+                '        T.SetApartmentState(ApartmentState.STA)
 
-                T.Start() 'Causing memory leak?
-                ' Op.ReuniteWithFile(x, filepath)
+                '        T.Start() 'Causing memory leak?
+                '        ' Op.ReuniteWithFile(x, filepath)
             End If
         End If
 
@@ -816,7 +815,7 @@ Public Class MainForm
             Case KeyToggleButtons
                 ToggleButtons()
             Case KeyNextFile, KeyPreviousFile, LKeyNextFile, LKeyPreviousFile
-                AdvanceFile(e.KeyCode = KeyNextFile)
+                AdvanceFile(e.KeyCode = KeyNextFile, Random.NextSelect)
                 'e = SelectNextFile(e)
 
 
@@ -2689,7 +2688,7 @@ Public Class MainForm
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub DisplayedToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DisplayedToolStripMenuItem.Click
-        FaveMinder.RedirectShortCutList(New FileInfo(lbxFiles.SelectedItem), AllfromListbox(lbxShowList))
+        FaveMinder.RedirectShortCutList(lbxFiles.SelectedItem, AllfromListbox(lbxShowList))
     End Sub
 
     Private Sub chbInDir_CheckedChanged(sender As Object, e As EventArgs) Handles chbOnDir.CheckedChanged

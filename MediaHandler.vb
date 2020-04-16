@@ -468,7 +468,7 @@ Public Class MediaHandler
 
     End Sub
     Public Sub LoadMedia()
-        Mysettings.LastTimeSuccessful = False
+        ' Mysettings.LastTimeSuccessful = False
         '        PreferencesSave()
 
         Select Case mType
