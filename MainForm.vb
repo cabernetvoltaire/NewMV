@@ -816,7 +816,8 @@ Public Class MainForm
             Case KeyToggleButtons
                 ToggleButtons()
             Case KeyNextFile, KeyPreviousFile, LKeyNextFile, LKeyPreviousFile
-                e = SelectNextFile(e)
+                AdvanceFile(e.KeyCode = KeyNextFile)
+                'e = SelectNextFile(e)
 
 
 #End Region
@@ -1429,9 +1430,9 @@ Public Class MainForm
     End Sub
     Private Sub Listbox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbxFiles.SelectedIndexChanged, lbxShowList.SelectedIndexChanged 'LBH.ListIndexChanged, FBH.ListIndexChanged
         '  IndexHandler(FocusControl, e)
-        NewIndex.Enabled = False
+        'NewIndex.Enabled = False
 
-        NewIndex.Interval = 50
+        NewIndex.Interval = 20
 
         NewIndex.Enabled = True
 

@@ -47,10 +47,10 @@ Friend Module FileHandling
         MainForm.PopulateLinkList(sender)
         Media.SetLink(0)
         MainForm.AT.Counter = Media.Markers.Count
-        If sender.MediaPath <> "" Then
-            LastTimeSuccessful = True
-            PreferencesSave()
-        End If
+        'If sender.MediaPath <> "" Then
+        '    LastTimeSuccessful = True
+        '    PreferencesSave()
+        'End If
         If ShiftDown Then MainForm.HighlightCurrent(Media.LinkPath) 'Used for links only, to go to original file
 
 

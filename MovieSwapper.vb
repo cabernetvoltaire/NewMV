@@ -172,7 +172,7 @@ Public Class MediaSwapper
 
 
     Private Function Prepare(ByRef MH As MediaHandler, path As String) As Boolean
-        Debug.Print("PREPARE: " & MH.Player.Name & " with " & path)
+        Report("PREPARE: " & MH.Player.Name & " with " & path)
         ' MH.Forceload = True
         'If MH.MediaPath <> path Or ForceLoad Then
         MH.MediaPath = path 'Still not right for pics

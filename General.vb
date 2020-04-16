@@ -608,6 +608,7 @@ Public Module General
         End If
     End Sub
     Public Sub Report(str As String, Optional gaps As Integer = 0, Optional Sound As Boolean = False)
+        Exit Sub
         If DebugOn Then
             If Sound Then SystemSounds.Asterisk.Play()
 

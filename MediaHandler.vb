@@ -469,7 +469,7 @@ Public Class MediaHandler
     End Sub
     Public Sub LoadMedia()
         Mysettings.LastTimeSuccessful = False
-        PreferencesSave()
+        '        PreferencesSave()
 
         Select Case mType
             Case Filetype.Doc
