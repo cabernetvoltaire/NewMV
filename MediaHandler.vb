@@ -14,7 +14,7 @@ Public Class MediaHandler
     Private Property mSndH As New SoundController 'With {.SoundPlayer = Sound, .CurrentPlayer = Player}
     Public IsCurrent As Boolean = False
 
-    Private WithEvents ResetPosition As New Timer With {.Interval = 1000} 'Changing can affect loading
+    Private WithEvents ResetPosition As New Timer With {.Interval = 2000} 'Changing can affect loading
     Public WithEvents PositionUpdater As New Timer With {.Interval = 100} 'Too short causes a crash on exiting.
     Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 15000}
     Public WithEvents PicHandler As New PictureHandler(Picture)
@@ -487,8 +487,8 @@ Public Class MediaHandler
             Case Filetype.Pic
                 HandlePic(mMediaPath)
             Case Filetype.Unknown
-                mPlayer.URL = ""
-                mPicBox.Dispose()
+                'mPlayer.URL = ""
+                'mPicBox.Dispose()
                 Exit Sub
         End Select
 

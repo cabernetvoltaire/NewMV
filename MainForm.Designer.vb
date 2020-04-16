@@ -643,7 +643,7 @@ Partial Class MainForm
         Me.tvMain2.RootDrive = Nothing
         Me.tvMain2.SelectedFolder = Nothing
         Me.tvMain2.Size = New System.Drawing.Size(691, 619)
-        Me.tvMain2.TabIndex = 0
+        Me.tvMain2.TabIndex = 1
         Me.tvMain2.TrackDriveState = True
         '
         'MasterContainer
@@ -679,7 +679,7 @@ Partial Class MainForm
         Me.lbxFiles.Name = "lbxFiles"
         Me.lbxFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
         Me.lbxFiles.Size = New System.Drawing.Size(691, 306)
-        Me.lbxFiles.TabIndex = 0
+        Me.lbxFiles.TabIndex = 2
         '
         'ContextMenuStrip1
         '
@@ -726,7 +726,7 @@ Partial Class MainForm
         Me.lbxShowList.Location = New System.Drawing.Point(0, 0)
         Me.lbxShowList.Name = "lbxShowList"
         Me.lbxShowList.Size = New System.Drawing.Size(691, 465)
-        Me.lbxShowList.TabIndex = 0
+        Me.lbxShowList.TabIndex = 3
         '
         'pbxBlanker
         '

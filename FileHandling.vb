@@ -121,7 +121,7 @@ Friend Module FileHandling
 
 
 
-        If lbx.Items.Count <> 0 Then lbx.TabStop = True
+        'If lbx.Items.Count <> 0 Then lbx.TabStop = True
         lngShowlistLines = Showlist.Count
 
         If notlist.Count = 0 Then Exit Sub

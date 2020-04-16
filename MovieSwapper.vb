@@ -227,10 +227,10 @@ Public Class MediaSwapper
         Select Case ThisMH.MediaType
             Case Filetype.Movie
 
-                OutlineControl(ThisMH.Player, Outliner)
+                If separate Then OutlineControl(ThisMH.Player, Outliner)
                 ShowPlayer(ThisMH)
             Case Filetype.Pic
-                OutlineControl(ThisMH.Picture, Outliner)
+                If separate Then OutlineControl(ThisMH.Picture, Outliner)
                 ShowPicture(ThisMH)
         End Select
 

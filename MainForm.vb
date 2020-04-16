@@ -139,6 +139,8 @@ Public Class MainForm
             Case "StateHandler"
                 lblNavigateState.Text = NavigateMoveState.Instructions
                 tbState.Text = UCase(NavigateMoveState.Description)
+                SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
+
             Case "FilterHandler"
                 If FocusControl Is lbxShowList Then
                     LBH.Filter = CurrentFilterState
@@ -148,6 +150,7 @@ Public Class MainForm
                 cbxFilter.BackColor = CurrentFilterState.Colour
                 cbxFilter.SelectedIndex = CurrentFilterState.State
                 tbFilter.Text = "FILTER:" & UCase(CurrentFilterState.Description)
+                SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
             Case "SortHandler"
                 If Not Media.DontLoad Then
 
@@ -166,7 +169,6 @@ Public Class MainForm
         If Not Media.DontLoad AndAlso FocusControl Is lbxShowList Then UpdatePlayOrder(LBH)
         If Not Media.DontLoad AndAlso FocusControl Is lbxFiles Then UpdatePlayOrder(FBH)
 
-        SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
 
         If sender IsNot NavigateMoveState Then
             'If Not Media.DontLoad Then
@@ -185,13 +187,17 @@ Public Class MainForm
         If Not Media.DontLoad Then PreferencesSave()
     End Sub
     Private Sub SetControlColours(MainColor As Color, FilterColor As Color)
-        tvMain2.BackColor = FilterColor
-        tvMain2.HighlightSelectedNodes()
+        Me.SuspendLayout()
         lbxFiles.BackColor = FilterColor
         lbxShowList.BackColor = FilterColor
-
-        FocusControl.BackColor = MainColor
-
+        If tvMain2.Focused Then
+            tvMain2.BackColor = MainColor
+        Else
+            tvMain2.BackColor = FilterColor
+            FocusControl.BackColor = MainColor
+        End If
+        tvMain2.HighlightSelectedNodes()
+        Me.ResumeLayout()
     End Sub
     Public Sub OnSpeedChange(sender As Object, e As EventArgs) Handles SP.SpeedChanged
         Dim SH As SpeedHandler = CType(sender, SpeedHandler)
@@ -801,7 +807,7 @@ Public Class MainForm
             Case Keys.Left, Keys.Right, Keys.Up, Keys.Down
                 'If FocusControl IsNot lbxShowList Then
                 ControlSetFocus(tvMain2)
-                    tvMain2.tvFiles_KeyDown(sender, e)
+                tvMain2.tvFiles_KeyDown(sender, e)
                 'End If
 
             Case Keys.Escape
@@ -1027,7 +1033,7 @@ Public Class MainForm
         'Dim LLBH As New ListBoxHandler(FocusControl)
 
         If FocusControl Is lbxFiles Then
-            If e.Control Then
+            If e.Control And lbxShowList.Visible Then
                 ControlSetFocus(lbxShowList)
                 LBH.ListBox = lbxShowList
                 LBH.IncrementIndex(e.KeyCode = KeyNextFile)
@@ -1421,7 +1427,7 @@ Public Class MainForm
         End If
 
     End Sub
-    Private Sub Listbox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles LBH.ListIndexChanged, FBH.ListIndexChanged
+    Private Sub Listbox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbxFiles.SelectedIndexChanged, lbxShowList.SelectedIndexChanged 'LBH.ListIndexChanged, FBH.ListIndexChanged
         '  IndexHandler(FocusControl, e)
         NewIndex.Enabled = False
 
@@ -2961,6 +2967,7 @@ Public Class MainForm
     Private Sub tbAutoTrail_Scroll(sender As Object, e As EventArgs) Handles tbAutoTrail.Scroll
 
     End Sub
+
 
 
 #End Region
