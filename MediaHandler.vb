@@ -540,12 +540,14 @@ Public Class MediaHandler
 
         End Select
     End Sub
+    Function DisposeMedia(player As AxWindowsMediaPlayer) As Integer
+        player.close()
+        player.currentPlaylist.clear()
+        Return 0
+    End Function
     Public Sub CancelMedia()
         Try
-
-            If mPlayer.URL <> "" Then
-                mPlayer.URL = ""
-            End If
+            DisposeMedia(mPlayer)
         Catch ex As Exception
 
         End Try

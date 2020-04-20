@@ -588,7 +588,25 @@ Public Module General
         Loop
         fs.Close()
     End Sub
+    Public Function GetFileFromEachFolder(d As DirectoryInfo, s As String, Optional Random As Boolean = True) As List(Of String)
 
+        Dim x As New List(Of String)
+        For Each Di In d.EnumerateDirectories(s, SearchOption.AllDirectories)
+            Dim dirs() As FileInfo
+            dirs = Di.GetFiles
+            Dim i = Int(Rnd() * dirs.Count)
+            If dirs.Count > 0 Then
+                If Random Then
+                    x.Add(dirs(i).FullName)
+
+                Else
+                    x.Add(Di.EnumerateFiles.First.FullName)
+
+                End If
+            End If
+        Next
+        Return x
+    End Function
     Private Sub CopyList(list As List(Of String), list2 As SortedList(Of Date, String))
         list.Clear()
         For Each m As KeyValuePair(Of Date, String) In list2
@@ -1031,20 +1049,20 @@ Public Module General
     End Sub
     Public Function GetImage(strPath As String) As Image
         If strPath = "" Then Return Nothing
-        If strPath.EndsWith(".gif") = 0 Then
-            Return LoadImage(strPath)
+        'If strPath.EndsWith(".gif") = 0 Then
+        '    Return LoadImage(strPath)
 
-            ' Exit Function 'This Causes problems if extension is .gif
-        Else
-            Try
-                Dim img As Image = Image.FromFile(strPath)
-                Return img
-            Catch ex As Exception
-                'Reportfault("",ex.message)
-                Return Nothing
+        '    ' Exit Function 'This Causes problems if extension is .gif
+        'Else
+        Try
+            Dim img As Image = Image.FromFile(strPath)
+            Return img
+        Catch ex As Exception
+            'Reportfault("",ex.message)
+            Return Nothing
 
-            End Try
-        End If
+        End Try
+        'End If
     End Function
     Public Sub StoreList(list As List(Of String), Dest As String)
         If Dest = "" Then Exit Sub

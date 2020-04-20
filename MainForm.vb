@@ -6,7 +6,7 @@ Imports AxWMPLib
 Imports System.Threading
 Imports MasaSam.Forms.Controls
 
-Public Class MainForm
+Friend Class MainForm
 
     Public Initialising As Boolean = True
     Public AutoLoadButtons As Boolean = False
@@ -266,13 +266,13 @@ Public Class MainForm
             If x.Count = 0 Then
             Else
 
-                '        T = New Thread(New ThreadStart(Sub() Op.ReuniteWithFile(x, filepath))) With {
-                '    .IsBackground = True
-                '}
-                '        T.SetApartmentState(ApartmentState.STA)
+                T = New Thread(New ThreadStart(Sub() Op.ReuniteWithFile(x, filepath))) With {
+            .IsBackground = True
+        }
+                T.SetApartmentState(ApartmentState.STA)
 
-                '        T.Start() 'Causing memory leak?
-                '        ' Op.ReuniteWithFile(x, filepath)
+                T.Start() 'Causing memory leak?
+                ' Op.ReuniteWithFile(x, filepath)
             End If
         End If
 
@@ -611,6 +611,7 @@ Public Class MainForm
         End If
         GC.Collect()
 
+
     End Sub
 
     Public Sub CollapseShowlist(Collapse As Boolean)
@@ -816,6 +817,7 @@ Public Class MainForm
                 ToggleButtons()
             Case KeyNextFile, KeyPreviousFile, LKeyNextFile, LKeyPreviousFile
                 AdvanceFile(e.KeyCode = KeyNextFile, Random.NextSelect)
+                e.SuppressKeyPress = True
                 'e = SelectNextFile(e)
 
 
@@ -1266,7 +1268,7 @@ Public Class MainForm
         OnRandomChanged()
         ControlSetFocus(lbxFiles)
         Media.DontLoad = False
-        '        LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\ITC.msl")
+        LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\ITC.msl")
         FBH.ListBox = lbxFiles
         LBH.ListBox = lbxShowList
     End Sub
@@ -1967,7 +1969,7 @@ Public Class MainForm
 
     Private Sub SingleFilePerFolderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SingleFilePerFolderToolStripMenuItem.Click
         blnChooseOne = True
-        AddFilesToCollectionSingle(Showlist, PICEXTENSIONS & VIDEOEXTENSIONS, True)
+        AddFilesToCollectionSingle(Showlist, True)
         FillShowbox(lbxShowList, CurrentFilterState.State, Showlist)
 
     End Sub
@@ -2558,7 +2560,7 @@ Public Class MainForm
             End If
             If MsgBox("Make " & CurrentFolder & " the new Favourites folder?", MsgBoxStyle.OkCancel, "Assign Favourites folder") = MsgBoxResult.Ok Then
                 CurrentFavesPath = CurrentFolder
-                FaveMinder.NewPath(CurrentFavesPath)
+                'FaveMinder.NewPath(CurrentFavesPath)
                 PreferencesSave()
 
             End If
@@ -2642,7 +2644,7 @@ Public Class MainForm
             FLBH = LBH
         End If
         For Each f In FLBH.ItemList
-            If FaveMinder.GetLinksOf(f).Count = 0 Then
+            If AllFaveMinder.GetLinksOf(f).Count = 0 Then
                 hilist.Add(f)
             End If
         Next
@@ -2688,7 +2690,7 @@ Public Class MainForm
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub DisplayedToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DisplayedToolStripMenuItem.Click
-        FaveMinder.RedirectShortCutList(lbxFiles.SelectedItem, AllfromListbox(lbxShowList))
+        AllFaveMinder.RedirectShortCutList(lbxFiles.SelectedItem, AllfromListbox(lbxShowList))
     End Sub
 
     Private Sub chbInDir_CheckedChanged(sender As Object, e As EventArgs) Handles chbOnDir.CheckedChanged

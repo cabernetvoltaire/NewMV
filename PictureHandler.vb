@@ -75,16 +75,16 @@
     Public Sub GetImage(strPath As String)
         If strPath = "" Then
         Else
-            If Not strPath.EndsWith(".gif") Then
-                mPicImage = LoadImage(strPath)
-            Else
-                Try
-                    Dim img As Image = Image.FromFile(strPath)
-                    mPicImage = img
-                Catch ex As Exception
-                    mPicImage = Nothing
-                End Try
-            End If
+            'If Not strPath.EndsWith(".gif") Then
+            '    mPicImage = LoadImage(strPath)
+            'Else
+            Try
+                Dim img As Image = Image.FromFile(strPath)
+                mPicImage = img
+            Catch ex As Exception
+                mPicImage = Nothing
+            End Try
+            'End If
             OrientPic(mPicImage)
             PicBox.Image = mPicImage
             PicBox.Tag = strPath

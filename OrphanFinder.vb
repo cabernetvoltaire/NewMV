@@ -91,6 +91,38 @@
     End Sub
 
     Private Function DeepSearch() As Integer
+
+        Dim i As Integer = 0
+        'otherwise, have to do a complete search
+        'for each directory, 
+        Dim max = DirectoriesList.Count
+        While mFoundParents.Count < mOrphanTargetPairs.Count And i < max
+            Dim filename As String
+
+            For Each j In mOrphanTargetPairs
+
+                filename = j.Value 'name of the file 
+                filename = FilenameFromPath(filename, True)
+                Dim newlink As String
+                If SearchTreeForFile("Q:\Watch\", filename, newlink) = 1 Then
+
+                    'If My.Computer.FileSystem.FileExists(newlink) Then
+                    If Not mFoundParents.Keys.Contains(j.Key) Then
+                        mFoundParents.Add(j.Key, newlink)
+                        If mFoundParents.Count > 10 Then Reunite()
+                    End If
+
+                End If
+
+            Next
+            i += 1
+            'TODO: What about files which occur in multiple places, or different files with the same name?
+        End While
+
+        Return i
+    End Function
+    Private Function DeepSearchOld() As Integer
+
         Dim i As Integer = 0
         'otherwise, have to do a complete search
         'for each directory, 
@@ -107,9 +139,9 @@
                 If Len(filename) > 8 Then
                     Dim newlink = DirectoriesList(i) & "\" & filename
                     Report("Trying " & newlink, 0)
-                    'If SearchTreeForFile("Q:\", filename, newlink) = 1 Then
+                    If SearchTreeForFile("Q:\Watch\", filename, newlink) = 1 Then
 
-                    If My.Computer.FileSystem.FileExists(newlink) Then
+                        'If My.Computer.FileSystem.FileExists(newlink) Then
                         If Not mFoundParents.Keys.Contains(j.Key) Then
                             mFoundParents.Add(j.Key, newlink)
                             If mFoundParents.Count > 10 Then Reunite()
@@ -277,8 +309,10 @@
     Private Function FindBracketed(foundparent As Boolean) As Boolean
         For Each n In mOrphanTargetPairs
             Dim finfo As New IO.FileInfo(n.Value)
+            If finfo.Extension = "" Then Exit For
             If n.Value <> "" Then
                 For i = 0 To 3
+
                     Dim newtarget = finfo.FullName.Replace(finfo.Extension, "(" & Right(Str(i), 1) & ")" & finfo.Extension)
                     If My.Computer.FileSystem.FileExists(newtarget) Then
                         foundparent = True

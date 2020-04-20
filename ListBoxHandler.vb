@@ -81,6 +81,7 @@
         If Filter.State <> Filter.OldState Then
 
             With Filter
+                mFullItemList = mItemList
                 .FileList = mFullItemList
                 mItemList = .FileList
                 
@@ -318,7 +319,7 @@ Public Class FileboxHandler
     Public Sub Refresh()
         Dim ind As Integer = mListbox.SelectedIndex
         GetFiles()
-        FillBox(ItemList)
+        FillBox(mItemList)
         SetIndex(ind)
     End Sub
 

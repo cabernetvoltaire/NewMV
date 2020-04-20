@@ -14,11 +14,9 @@ Friend Module FileHandling
     Public WithEvents t As Thread
     Public WithEvents Media As New MediaHandler("Media")
     Public WithEvents MSFiles As New MediaSwapper(MainForm.MainWMP1, MainForm.MainWMP2, MainForm.MainWMP3, MainForm.PictureBox1, MainForm.PictureBox2, MainForm.PictureBox3)
-    '   Public WithEvents MSShow As New MovieSwapper(MainForm.MainWMP, MainForm.MainWMP2)
-    ' Public AllFaveMinder As New FavouritesMinder(GlobalFavesPath)
-    ' Public FaveMinder As New FavouritesMinder(CurrentFavesPath)
     Public AllFaveMinder As New FavouritesMinder("Q:\Favourites")
     Public FaveMinder As New FavouritesMinder("Q:\Favourites")
+
     Public Sub OnZoomChanged(sender As Object, e As EventArgs) Handles Media.Zoomchanged
         MSFiles.ZoomPics(Media.PicHandler.ZoomFactor)
 
@@ -336,8 +334,9 @@ Friend Module FileHandling
                                         Try
                                             AllFaveMinder.DestinationPath = spath
                                             AllFaveMinder.CheckFile(f)
+                                            MSFiles.CancelURL(spath)
                                             m.MoveTo(spath)
-                                        Catch ex As IO.IOException
+
 
                                         Catch ex As Exception
                                             MsgBox(ex.Message)
@@ -445,7 +444,7 @@ Friend Module FileHandling
         End If
         Return s
     End Function
-    Public Sub AddFilesToCollectionSingle(ByRef list As List(Of String), extensions As String, blnRecurse As Boolean)
+    Public Sub AddFilesToCollectionSingle(ByRef list As List(Of String), blnRecurse As Boolean)
         Dim s As String
         Dim d As New DirectoryInfo(CurrentFolder)
 
@@ -455,7 +454,7 @@ Friend Module FileHandling
         ProgressBarOn(1000)
         list = GetFileFromEachFolder(d, s, Random.OnDirChange)
         MainForm.Cursor = Cursors.Default
-
+        ProgressBarOff()
     End Sub
     Public Function AddFilesToCollection(extensions As String, blnRecurse As Boolean) As List(Of String)
         Dim s As String
@@ -468,29 +467,8 @@ Friend Module FileHandling
         MainForm.Cursor = Cursors.Default
         Return List
     End Function
-    Public Function GetFileFromEachFolder(d As DirectoryInfo, s As String, Optional Random As Boolean = True) As List(Of String)
 
-        Dim x As New List(Of String)
-        For Each Di In d.EnumerateDirectories(s, SearchOption.AllDirectories)
-            Dim dirs() As FileInfo
-            dirs = Di.GetFiles
-            Dim i = Int(Rnd() * dirs.Count)
-            If dirs.Count > 0 Then
-                If Random Then
-                    x.Add(dirs(i).FullName)
 
-                Else
-                    x.Add(Di.EnumerateFiles.First.FullName)
-
-                End If
-            End If
-        Next
-        Return x
-    End Function
-    Public Sub AddSingleFileToList(list As List(Of String), strPath As String)
-        list.Add(strPath)
-
-    End Sub
     Public Sub Deletefile(s As String)
 
 
@@ -517,8 +495,8 @@ Friend Module FileHandling
     '    i = i + dir.EnumerateFiles.Count
     '    Return i
     'End Function
-    Public Function ListSubFiles(strPath As String) As List(Of String)
-        Dim dir As New DirectoryInfo(strPath)
+    Public Function ListSubFiles(DirectoryPath As String) As List(Of String)
+        Dim dir As New DirectoryInfo(DirectoryPath)
         Dim ls As New List(Of String)
         If dir.EnumerateDirectories.Count <> 0 Then
             For Each f In dir.EnumerateDirectories
@@ -563,15 +541,7 @@ Friend Module FileHandling
 
     End Function
 
-    Private Sub AddRemove(list As List(Of String), blnRemove As Boolean, strSearch As String, file As FileInfo)
-        If InStr(LCase(file.FullName), LCase(strSearch)) <> 0 Or strSearch = "" Then
-            If blnRemove Then
-                list.Remove(file.FullName)
-            Else
-                list.Add(file.FullName)
-            End If
-        End If
-    End Sub
+
     Public Sub FindAllFoldersBelow(d As DirectoryInfo, list As List(Of String), blnRecurse As Boolean, blnNonEmptyOnly As Boolean)
 
 

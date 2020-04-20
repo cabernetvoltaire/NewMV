@@ -82,8 +82,8 @@
         sch.MarkOffset = 0
         Dim fn As String = sch.New_Create_ShortCut(bk)
         'Remove the old shortcut
-        FavesList.Remove(m)
-        FavesList.Add(fn)
+        mFavesList.Remove(m)
+        mFavesList.Add(fn)
     End Sub
 
     ''' <summary>
@@ -94,7 +94,7 @@
     Public Sub Check(f As IO.FileInfo, destinationpath As String)
         OkToDelete = False
         Dim mf As New List(Of String)
-        mf = FavesList.FindAll(Function(x) x.Contains("\" & f.Name))
+        mf = mFavesList.FindAll(Function(x) x.Contains("\" & f.Name))
         If mf.Count = 0 Then
             OkToDelete = True
         ElseIf destinationpath = "" Then
@@ -134,7 +134,7 @@
         Dim finfo As New IO.FileInfo(Path)
         Dim list As New List(Of String)
         If finfo.Exists Then
-            list = FavesList.FindAll(Function(x) InStr(x, "\" & finfo.Name) <> 0)
+            list = mFavesList.FindAll(Function(x) InStr(x, "\" & finfo.Name) <> 0)
         End If
         Linklist = list
         Return List
