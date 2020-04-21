@@ -16,6 +16,7 @@ Public Module General
         RightBottom = 7
         LeftBottom = 8
     End Enum
+    Public BreakHere As Boolean = False
     Public Declare Function SearchTreeForFile Lib "imagehlp" (ByVal RootPath As String, ByVal InputPathName As String, ByVal OutputPathBuffer As String) As Long
     Public Const LinkExt As String = ".mvl"
     Public Property bImageDimensionState As Byte
@@ -70,6 +71,7 @@ Public Module General
         End With
         MainForm.tmrProgressBar.Enabled = True
     End Sub
+
     Public Sub ProgressIncrement(st As Integer)
         With MainForm.TSPB
             '   .Maximum = max
@@ -180,6 +182,10 @@ Public Module General
             GC.SuppressFinalize(box)
             box.Image = Nothing
         End If
+    End Sub
+    Public Sub BreakExecution()
+        If BreakHere Then System.Diagnostics.Debugger.Break()
+        BreakHere = False
     End Sub
     Public Function FilenameFromPath(n As String, WithExtension As Boolean, Optional WithoutBrackets As Boolean = False) As String
         Dim currentpath = n

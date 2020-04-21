@@ -748,12 +748,12 @@ Partial Class MainForm
         'ctrPicAndButtons.Panel1
         '
         Me.ctrPicAndButtons.Panel1.BackColor = System.Drawing.Color.Black
-        Me.ctrPicAndButtons.Panel1.Controls.Add(Me.PictureBox2)
-        Me.ctrPicAndButtons.Panel1.Controls.Add(Me.PictureBox3)
         Me.ctrPicAndButtons.Panel1.Controls.Add(Me.MainWMP1)
         Me.ctrPicAndButtons.Panel1.Controls.Add(Me.MainWMP3)
         Me.ctrPicAndButtons.Panel1.Controls.Add(Me.MainWMP2)
         Me.ctrPicAndButtons.Panel1.Controls.Add(Me.SoundWMP)
+        Me.ctrPicAndButtons.Panel1.Controls.Add(Me.PictureBox2)
+        Me.ctrPicAndButtons.Panel1.Controls.Add(Me.PictureBox3)
         Me.ctrPicAndButtons.Panel1.Controls.Add(Me.PictureBox1)
         '
         'ctrPicAndButtons.Panel2

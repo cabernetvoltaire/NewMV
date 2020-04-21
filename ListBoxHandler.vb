@@ -89,6 +89,7 @@
         End If
     End Sub
     Public Sub OrderList()
+
         mItemList = SetPlayOrder(SortOrder.State, ItemList, SortOrder.ReverseOrder)
     End Sub
     Public Sub HighlightList(ls As List(Of String))
@@ -145,8 +146,14 @@
 
 
 
-        If mItemList.Count = 0 And Filter.State <> FilterHandler.FilterState.All Then
-            mListbox.DataSource = {"(If nothing is shown here, check filter)"}
+        If mItemList.Count = 0 Then
+            If Filter.State <> FilterHandler.FilterState.All Then
+
+                mListbox.DataSource = {"(If nothing is shown here, check filter)"}
+            Else
+                mListbox.DataSource = {"(Empty folder)"}
+
+            End If
         End If
 
         'SetFirst()
@@ -159,7 +166,7 @@
             Next
             tempListBox.ClearSelected()
             For listitemIndex = 0 To tempListBox.Items.Count
-                If Array.IndexOf(selectedind, listitemIndex) < 0 Then
+                If Array.IndexOf(selectedind, listitemIndex) <0 Then
                     tempListBox.SetSelected(listitemIndex, True)
                 End If
             Next
@@ -182,7 +189,7 @@
         ListBox.DataSource = Nothing
         For Each m In List
             mItemList.Remove(m)
-            RaiseEvent ListboxChanged(ListBox, Nothing)
+            'RaiseEvent ListIndexChanged(ListBox, Nothing)
         Next
         FillBox()
 
@@ -201,8 +208,10 @@
             End If
         End If
     End Sub
-    Public Sub SetIndex(num As Integer)
+    Public Sub SetIndex(num As Integer, Optional force As Boolean = False)
+
         ListBox.SelectedIndex = num
+        If force Then RaiseEvent ListIndexChanged(ListBox, Nothing)
     End Sub
     Public Sub SetNamed(Name As String)
         If ListBox.SelectedItem = Name Then Exit Sub

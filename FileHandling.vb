@@ -78,10 +78,15 @@ Friend Module FileHandling
                     ' MainForm.FBH.Refresh()
                     ' RefreshListbox(lbx1, files)
             End Select
-            MSFiles.ResettersOff()
+            '            MSFiles.ResettersOff()
         Next
         'MainForm.FBH.SetIndex(Math.Max(Math.Min(ind, MainForm.FBH.ListBox.Items.Count - 1), 0))
-        If lbx1.Items.Count <> 0 Then lbx1.SetSelected(Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0), True)
+        If lbx1.Items.Count <> 0 Then
+            Dim index = Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0)
+            MainForm.FBH.SetIndex(index, True)
+            '            lbx1.SetSelected(0,)
+            'lbx1.SetSelected(index, True)
+        End If
 
 
     End Sub
@@ -259,7 +264,7 @@ Friend Module FileHandling
 
         Else
 
-            ' RaiseEvent FileMoved(files, lbx1)
+            RaiseEvent FileMoved(files, MainForm.FBH.ListBox)
 
         End If
     End Sub
@@ -335,6 +340,7 @@ Friend Module FileHandling
                                             AllFaveMinder.DestinationPath = spath
                                             AllFaveMinder.CheckFile(f)
                                             MSFiles.CancelURL(spath)
+                                            BreakHere = True
                                             m.MoveTo(spath)
 
 
@@ -400,7 +406,7 @@ Friend Module FileHandling
             MsgBox(ex.Message)
         End Try
 
-        RaiseEvent FileMoved(files, MainForm.lbxFiles)
+        'RaiseEvent FileMoved(files, MainForm.lbxFiles)
     End Sub
     ''' <summary>
     ''' Checks to see if f is in the favourite links, and if so, updates the link. 

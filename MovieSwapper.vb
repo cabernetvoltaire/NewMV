@@ -148,6 +148,8 @@ Public Class MediaSwapper
             'Report("Current:" & CurrentItem, 0)
             'Report("Next:" & NextItem, 0)
             'Report("Previous:" & PreviousItem, 0)
+
+
             Select Case CurrentItem 'TODO: First time round, should load all items. This is the flaw that's been bugging us.
 
                 Case Media2.MediaPath
@@ -182,21 +184,15 @@ Public Class MediaSwapper
 
     Private Function Prepare(ByRef MH As MediaHandler, path As String) As Boolean
         Report("PREPARE: " & MH.Player.Name & " with " & path)
-        ' MH.Forceload = True
-        'If MH.MediaPath <> path Or ForceLoad Then
-        MH.MediaPath = path 'Still not right for pics
+        If MH.MediaPath <> path Then MH.MediaPath = path 'Still not right for pics
         Select Case MH.MediaType
             Case Filetype.Movie
                 If blnFullScreen Then
                 Else
-                    If separate Then
-                        MH.Player.uiMode = "mini"
-                    Else
-
-                        MH.Player.uiMode = "Full"
-                    End If
+                    MH.Player.uiMode = "Full"
                 End If
                 MH.Player.Visible = True
+
                 MH.PlaceResetter(True)
                 Return True
               '  RaiseEvent LoadedMedia(MH) 'Currently does nothing.
@@ -221,7 +217,7 @@ Public Class MediaSwapper
     End Function
     Public Sub CancelURL(filepath As String)
         For Each m In MediaHandlers
-            m.CancelMedia()
+            If m.MediaPath = filepath Then m.CancelMedia()
         Next
 
     End Sub
@@ -293,9 +289,7 @@ Public Class MediaSwapper
 
 
     End Sub
-    Private Sub OnMediaPlaying(sender As Object, e As EventArgs) Handles Media1.MediaPlaying, Media2.MediaPlaying, Media3.MediaPlaying
-        ' RaiseEvent MediaPlaying(sender, e)
-    End Sub
+
     Private Sub OnRandomChanged(sender As Object, e As EventArgs) Handles NextF.RandomChanged
         NextItem = NextF.NextItem
     End Sub

@@ -78,18 +78,22 @@
                 '    mPreviousItem = Listbox.Items(Int(Rnd() * (mListCount - 1)))
                 'Else
                 If mListCount > 1 Then
-                        If Not Forwards Then
-                            mPreviousItem = Listbox.Items((mCurrentIndex + 1) Mod (mListCount))
+                    If Not Forwards Then
+                        If mCurrentIndex = mListCount Then
+                            mPreviousItem = 0
                         Else
-                            If mCurrentIndex = 0 Then
-                                mCurrentIndex = mListCount
-                            End If
-                            mPreviousItem = Listbox.Items((mCurrentIndex - 1) Mod (mListCount))
+                            mPreviousItem = Listbox.Items((mCurrentIndex + 1) Mod (mListCount))
                         End If
                     Else
-                        mPreviousItem = Listbox.Items(0)
-
+                        If mCurrentIndex = 0 Then
+                            mCurrentIndex = mListCount
+                        End If
+                        mPreviousItem = Listbox.Items((mCurrentIndex - 1) Mod (mListCount))
                     End If
+                Else
+                    mPreviousItem = Listbox.Items(0)
+
+                End If
                 ' End If
                 Return mPreviousItem
             Catch ex As Exception

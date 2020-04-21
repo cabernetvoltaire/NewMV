@@ -153,10 +153,7 @@ Public Class MediaHandler
             'And raise a media changed event. 
 
             'TODO Fix this
-            If value = mMediaPath And Not Forceload Then
-                Report("Nothing to do")
-                'Path hasn't changed, so nothing to do. 
-            ElseIf value = "" Then
+            If value = "" Then
                 'Deals with absent file
                 mMediaPath = DefaultFile
                 mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
@@ -494,8 +491,9 @@ Public Class MediaHandler
 
     End Sub
     Private Sub HandleMovie(URL As String)
+        ' BreakExecution()
 
-        If URL <> mPlayer.URL Or Forceload Then
+        If URL <> mPlayer.URL Then
             If mPlayer Is Nothing Then
             Else
                 Try

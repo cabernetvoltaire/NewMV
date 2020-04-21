@@ -464,7 +464,10 @@ Friend Class MainForm
 
 
     Public Sub UpdatePlayOrder(LBHandler As ListBoxHandler)
-        LBHandler.SortOrder = PlayOrder
+        If LBHandler.SortOrder.Equals(PlayOrder) Then
+        Else
+            LBHandler.SortOrder = PlayOrder
+        End If
         If LBHandler Is LBH Then
             Dim s = lbxShowList.SelectedItem
             LBH.FillBox()
@@ -1268,7 +1271,7 @@ Friend Class MainForm
         OnRandomChanged()
         ControlSetFocus(lbxFiles)
         Media.DontLoad = False
-        LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\ITC.msl")
+        ' LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\ITC.msl")
         FBH.ListBox = lbxFiles
         LBH.ListBox = lbxShowList
     End Sub
@@ -1429,11 +1432,11 @@ Friend Class MainForm
         End If
 
     End Sub
-    Private Sub Listbox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbxFiles.SelectedIndexChanged, lbxShowList.SelectedIndexChanged 'LBH.ListIndexChanged, FBH.ListIndexChanged
+    Private Sub Listbox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles LBH.ListIndexChanged, FBH.ListIndexChanged
         '  IndexHandler(FocusControl, e)
-        'NewIndex.Enabled = False
+        NewIndex.Enabled = False
 
-        NewIndex.Interval = 20
+        NewIndex.Interval = 100 'Too small, and flow is jerky when scrolling
 
         NewIndex.Enabled = True
 
@@ -1724,7 +1727,7 @@ Friend Class MainForm
                 'Move Folder
                 MovingFolder(tvMain2.SelectedFolder, strVisibleButtons(i))
             Else
-                'Move files
+
                 Dim flag = blnSuppressCreate
                 blnSuppressCreate = True
                 If lbxShowList.Visible Then
@@ -1734,7 +1737,6 @@ Friend Class MainForm
 
                 Else
                     Dim m = FBH.SelectedItemsList
-                    Media.Forceload = True
                     FBH.RemoveItems(m)
                     MoveFiles(m, strVisibleButtons(i))
                 End If
@@ -2938,9 +2940,7 @@ Friend Class MainForm
 
     End Sub
 
-    Private Sub FBH_ListIndexChanged(sender As Object, e As EventArgs) Handles FBH.ListIndexChanged
 
-    End Sub
 
     Private Sub CreateToolTips()
         For Each ctl In Me.Controls
