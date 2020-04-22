@@ -107,11 +107,7 @@ Public Class MediaSwapper
     End Sub
 #End Region
 #Region "Methods"
-    Public Sub AssignMedias(Med1 As MediaHandler, Med2 As MediaHandler, Med3 As MediaHandler)
-        Media1 = Med1
-        Media2 = Med2
-        Media3 = Med3
-    End Sub
+
     Public Sub AssignPictures(ByRef PB1 As PictureBox, ByRef PB2 As PictureBox, ByRef PB3 As PictureBox)
         Media1.PicHandler.PicBox = PB1
         Media2.PicHandler.PicBox = PB2
@@ -184,6 +180,7 @@ Public Class MediaSwapper
 
     Private Function Prepare(ByRef MH As MediaHandler, path As String) As Boolean
         Report("PREPARE: " & MH.Player.Name & " with " & path)
+        'BreakExecution()
         If MH.MediaPath <> path Then MH.MediaPath = path 'Still not right for pics
         Select Case MH.MediaType
             Case Filetype.Movie
@@ -224,8 +221,7 @@ Public Class MediaSwapper
     Private Sub RotateMedia(ByRef ThisMH As MediaHandler, ByRef NextMH As MediaHandler, ByRef PrevMH As MediaHandler)
         'CurrentURLS.Clear()
         ' HideMedias(ThisMH)
-        Prepare(PrevMH, PreviousItem)
-        Prepare(NextMH, NextItem)
+
         Prepare(ThisMH, CurrentItem)
         ThisMH.IsCurrent = True
 
@@ -238,7 +234,8 @@ Public Class MediaSwapper
                 If separate Then OutlineControl(ThisMH.Picture, Outliner)
                 ShowPicture(ThisMH)
         End Select
-
+        Prepare(PrevMH, PreviousItem)
+        Prepare(NextMH, NextItem)
     End Sub
     Public Sub SetStartStates(ByRef SH As StartPointHandler)
         For Each m In MediaHandlers
@@ -272,6 +269,14 @@ Public Class MediaSwapper
         For Each m In MediaHandlers
             m.Player.settings.mute = True
         Next
+
+    End Sub
+    Private Sub ShowPicture(ByRef MHX As MediaHandler)
+        MuteAll()
+
+        MHX.Picture.Visible = True
+        MHX.Picture.BringToFront()
+        RaiseEvent MediaShown(MHX, Nothing)
 
     End Sub
     Private Sub ShowPlayer(ByRef MHX As MediaHandler)
@@ -308,14 +313,7 @@ Public Class MediaSwapper
         Next
 
     End Sub
-    Private Sub ShowPicture(ByRef MHX As MediaHandler)
-        MuteAll()
 
-        MHX.Picture.Visible = True
-        MHX.Picture.BringToFront()
-        RaiseEvent MediaShown(MHX, Nothing)
-
-    End Sub
     Public Sub PauseMovies() Handles PauseAll.Tick
 
         Media1.Speed.Paused = True

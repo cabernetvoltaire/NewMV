@@ -7,7 +7,8 @@
     Public Property FolderAdvance As Boolean = True
     Public NewItem As String = ""
     Public OldItem As String = ""
-
+    Private Nofile As String = "(Empty folder)"
+    Private CheckFilter As String="(If nothing is shown here, check filter)"
     Private mEditing As Boolean = False
     Private WithEvents mText As New TextBox
 
@@ -109,6 +110,10 @@
     End Sub
     Public Sub IncrementIndex(Forward As Boolean)
         If mListbox.SelectionMode <> SelectionMode.One Then mListbox.SelectionMode = SelectionMode.One
+        If ListBox.DataSource Is {Nofile} Or ListBox.DataSource Is {CheckFilter} Then
+            RaiseEvent EndReached(ListBox, Nothing)
+            Exit Sub
+        End If
         If ListBox.Items.Count > 0 Then
             If Random.NextSelect Then
                 SetNamed(MSFiles.NextItem)
@@ -149,9 +154,10 @@
         If mItemList.Count = 0 Then
             If Filter.State <> FilterHandler.FilterState.All Then
 
-                mListbox.DataSource = {"(If nothing is shown here, check filter)"}
+                mListbox.DataSource = {CheckFilter}
+
             Else
-                mListbox.DataSource = {"(Empty folder)"}
+                mListbox.DataSource = {Nofile}
 
             End If
         End If

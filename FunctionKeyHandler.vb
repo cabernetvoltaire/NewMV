@@ -85,7 +85,7 @@
     '            MovingFolder(tvMain2.SelectedFolder, strVisibleButtons(i))
     '        Else
 
-    'If lbxShowList.Visible Then
+    'If ShowListVisible Then
     '                MoveFiles(ListfromSelectedInListbox(lbxShowList), strVisibleButtons(i), lbxShowList)
     '            Else
     '                MoveFiles(ListfromSelectedInListbox(lbxFiles), strVisibleButtons(i), lbxFiles)

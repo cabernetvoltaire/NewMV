@@ -612,16 +612,16 @@ Friend Class MainForm
             ReDim FBCShown(count)
             NofShown = 0
         End If
-        GC.Collect()
+        ' GC.Collect()
 
 
     End Sub
 
     Public Sub CollapseShowlist(Collapse As Boolean)
-        ButtonsHidden = Collapse
+        ShowListVisible = Not Collapse
         MasterContainer.Panel2Collapsed = Collapse
         lbxFiles.SelectionMode = SelectionMode.One
-        ' ControlSetFocus(lbxFiles)
+        If Collapse Then ControlSetFocus(lbxFiles)
         MasterContainer.SplitterDistance = MasterContainer.Height / 3
         UpdateFileInfo()
     End Sub
@@ -1034,34 +1034,34 @@ Friend Class MainForm
         '    Response.Enabled = False
     End Sub
 
-    Private Function SelectNextFile(e As KeyEventArgs) As KeyEventArgs
-        'Dim LLBH As New ListBoxHandler(FocusControl)
+    'Private Function SelectNextFile(e As KeyEventArgs) As KeyEventArgs
+    '    'Dim LLBH As New ListBoxHandler(FocusControl)
 
-        If FocusControl Is lbxFiles Then
-            If e.Control And lbxShowList.Visible Then
-                ControlSetFocus(lbxShowList)
-                LBH.ListBox = lbxShowList
-                LBH.IncrementIndex(e.KeyCode = KeyNextFile)
-            Else
-                FBH.IncrementIndex(e.KeyCode = KeyNextFile)
-            End If
-        Else
-            If e.Control Then
-                ControlSetFocus(lbxFiles)
-                FBH.ListBox = lbxFiles
-                FBH.IncrementIndex(e.KeyCode = KeyNextFile)
-            Else
-                LBH.IncrementIndex(e.KeyCode = KeyNextFile)
+    '    If FocusControl Is lbxFiles Then
+    '        If e.Control And ShowListVisible Then
+    '            ControlSetFocus(lbxShowList)
+    '            LBH.ListBox = lbxShowList
+    '            LBH.IncrementIndex(e.KeyCode = KeyNextFile)
+    '        Else
+    '            FBH.IncrementIndex(e.KeyCode = KeyNextFile)
+    '        End If
+    '    Else
+    '        If e.Control Then
+    '            ControlSetFocus(lbxFiles)
+    '            FBH.ListBox = lbxFiles
+    '            FBH.IncrementIndex(e.KeyCode = KeyNextFile)
+    '        Else
+    '            LBH.IncrementIndex(e.KeyCode = KeyNextFile)
 
-            End If
-        End If
-        '        LLBH.IncrementIndex(e.KeyCode = KeyNextFile)
+    '        End If
+    '    End If
+    '    '        LLBH.IncrementIndex(e.KeyCode = KeyNextFile)
 
-        e.SuppressKeyPress = True
-        tmrSlideShow.Enabled = False
-        tmrMovieSlideShow.Enabled = False
-        Return e
-    End Function
+    '    e.SuppressKeyPress = True
+    '    tmrSlideShow.Enabled = False
+    '    tmrMovieSlideShow.Enabled = False
+    '    Return e
+    'End Function
 
     Private Function JumpToMark(e As KeyEventArgs) As KeyEventArgs
         If Media.Markers.Count > 0 Then
@@ -1466,28 +1466,28 @@ Friend Class MainForm
         AdvanceFile(True, Random.NextSelect)
     End Sub
 
-    Private Sub RotatePic(currentPicBox As PictureBox, blnLeft As Boolean)
-        If currentPicBox.Image Is Nothing Then Exit Sub
+    Private Sub RotatePic(PicBox As PictureBox, blnLeft As Boolean)
+        If PicBox.Image Is Nothing Then Exit Sub
         If Media.MediaType <> Filetype.Pic Then Exit Sub
         Media.PicHandler.GetImage(Media.MediaPath)
-        With currentPicBox.Image
+        With PicBox.Image
             If blnLeft Then
                 .RotateFlip(RotateFlipType.Rotate90FlipNone)
             Else
                 .RotateFlip(RotateFlipType.Rotate270FlipNone)
             End If
-            currentPicBox.Refresh()
+            PicBox.Refresh()
 
             Dim finfo As New FileInfo(Media.MediaPath)
             Dim dt As New Date
             'avoid the updating of the write time
             dt = finfo.LastWriteTime
-            Dim bt As Bitmap = currentPicBox.Image
+            Dim bt As Bitmap = PicBox.Image
             Dim b As Image = bt.Clone
 
 
             ' Dim b As Bitmap = InitializeStandaloneImageCopy(Media.MediaPath)
-            currentPicBox.Image.Dispose()
+            PicBox.Image.Dispose()
             Try
 
 
@@ -1730,7 +1730,7 @@ Friend Class MainForm
 
                 Dim flag = blnSuppressCreate
                 blnSuppressCreate = True
-                If lbxShowList.Visible Then
+                If ShowListVisible Then
                     Dim m = LBH.SelectedItemsList
                     LBH.RemoveItems(m)
                     MoveFiles(m, strVisibleButtons(i))
@@ -2901,7 +2901,7 @@ Friend Class MainForm
     End Sub
 
     Private Sub lbxFiles_Leave(sender As Object, e As EventArgs) Handles lbxFiles.Leave
-        If lbxShowList.Visible Then
+        If ShowListVisible Then
             lbxShowList.Focus()
         Else
             tvMain2.Focus()
@@ -2968,6 +2968,11 @@ Friend Class MainForm
 
     Private Sub tbAutoTrail_Scroll(sender As Object, e As EventArgs) Handles tbAutoTrail.Scroll
 
+    End Sub
+
+    Private Sub PromoteIdenticalSubFoldersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PromoteIdenticalSubFoldersToolStripMenuItem.Click
+        Dim m As New IO.DirectoryInfo(CurrentFolder)
+        SubfolderNamedSame(m)
     End Sub
 
 

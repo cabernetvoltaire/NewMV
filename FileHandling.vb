@@ -42,7 +42,9 @@ Friend Module FileHandling
 
         Media = sender
         MainForm.UpdateFileInfo()
-        MainForm.PopulateLinkList(sender)
+        If Media.MediaType = Filetype.Movie Then
+            MainForm.PopulateLinkList(sender)
+        End If
         Media.SetLink(0)
         MainForm.AT.Counter = Media.Markers.Count
         'If sender.MediaPath <> "" Then
@@ -546,7 +548,14 @@ Friend Module FileHandling
         Exit Function
 
     End Function
-
+    Public Sub SubfolderNamedSame(fol As IO.DirectoryInfo)
+        For Each m In fol.GetDirectories("*", SearchOption.AllDirectories)
+            If m.Name = fol.Name Then
+                MoveFolder(m.FullName, fol.Parent.FullName)
+            End If
+            SubfolderNamedSame(m)
+        Next
+    End Sub
 
     Public Sub FindAllFoldersBelow(d As DirectoryInfo, list As List(Of String), blnRecurse As Boolean, blnNonEmptyOnly As Boolean)
 

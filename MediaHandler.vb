@@ -90,8 +90,13 @@ Public Class MediaHandler
     Private mPlayPosition As Long
     Public Property Position() As Long
         Get
-            mPlayPosition = mPlayer.Ctlcontrols.currentPosition
-            Return mPlayPosition
+            If mType = Filetype.Movie Then
+
+                mPlayPosition = mPlayer.Ctlcontrols.currentPosition
+                Return mPlayPosition
+            Else
+                Return 0
+            End If
         End Get
         Set(ByVal value As Long)
             mPlayPosition = value
