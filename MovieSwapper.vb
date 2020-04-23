@@ -188,14 +188,14 @@ Public Class MediaSwapper
                 Else
                     MH.Player.uiMode = "Full"
                 End If
-                MH.Player.Visible = True
-
+                MH.Player.Visible = False
+                MH.Player.SendToBack()
                 MH.PlaceResetter(True)
                 Return True
               '  RaiseEvent LoadedMedia(MH) 'Currently does nothing.
             Case Filetype.Pic
                 'MH.PlaceResetter(False)
-                MH.Picture.Visible = True
+                MH.Picture.Visible = False
                 MH.Picture.Tag = path 'Important for thumbnail mouseover events. 
                 Return True
 
@@ -207,17 +207,7 @@ Public Class MediaSwapper
         CurrentURLS.Add(path)
         MH.IsCurrent = False
     End Function
-    Function DisposeMedia(player As AxWindowsMediaPlayer) As Integer
-        player.close()
-        player.currentPlaylist.clear()
-        Return 0
-    End Function
-    Public Sub CancelURL(filepath As String)
-        For Each m In MediaHandlers
-            If m.MediaPath = filepath Then m.CancelMedia()
-        Next
 
-    End Sub
     Private Sub RotateMedia(ByRef ThisMH As MediaHandler, ByRef NextMH As MediaHandler, ByRef PrevMH As MediaHandler)
         'CurrentURLS.Clear()
         ' HideMedias(ThisMH)
@@ -237,6 +227,28 @@ Public Class MediaSwapper
         Prepare(PrevMH, PreviousItem)
         Prepare(NextMH, NextItem)
     End Sub
+    Private Sub ShowPicture(ByRef MHX As MediaHandler)
+        MuteAll()
+
+        MHX.Picture.Visible = True
+        MHX.Picture.BringToFront()
+        RaiseEvent MediaShown(MHX, Nothing)
+
+    End Sub
+    Private Sub ShowPlayer(ByRef MHX As MediaHandler)
+        MuteAll()
+
+        MHX.PlaceResetter(False) 'Starts the video playing
+
+        With MHX.Player
+            .Visible = True
+            .BringToFront()
+            .settings.mute = Muted
+            RaiseEvent MediaShown(MHX, Nothing)
+        End With
+
+
+    End Sub
     Public Sub SetStartStates(ByRef SH As StartPointHandler)
         For Each m In MediaHandlers
             m.SPT.State = SH.State
@@ -248,6 +260,24 @@ Public Class MediaSwapper
             m.SPT = SH
         Next
     End Sub
+    Function DisposeMedia(player As AxWindowsMediaPlayer) As Integer
+        player.close()
+        player.currentPlaylist.clear()
+        Return 0
+    End Function
+    Public Sub CancelURL(filepath As String)
+        For Each m In MediaHandlers
+            If m.MediaPath = filepath Then m.CancelMedia()
+        Next
+
+    End Sub
+    Public Sub CancelURLS()
+        For Each m In MediaHandlers
+            m.CancelMedia()
+        Next
+
+    End Sub
+
     Public Sub URLSZero()
         Try
             For Each m In MediaHandlers
@@ -271,29 +301,7 @@ Public Class MediaSwapper
         Next
 
     End Sub
-    Private Sub ShowPicture(ByRef MHX As MediaHandler)
-        MuteAll()
 
-        MHX.Picture.Visible = True
-        MHX.Picture.BringToFront()
-        RaiseEvent MediaShown(MHX, Nothing)
-
-    End Sub
-    Private Sub ShowPlayer(ByRef MHX As MediaHandler)
-        MuteAll()
-
-        MHX.PlaceResetter(False) 'Starts the video playing
-
-        With MHX.Player
-            .Visible = True
-            .BringToFront()
-            .settings.mute = Muted
-            'MHX.Speed.Paused = False
-            RaiseEvent MediaShown(MHX, Nothing)
-        End With
-
-
-    End Sub
 
     Private Sub OnRandomChanged(sender As Object, e As EventArgs) Handles NextF.RandomChanged
         NextItem = NextF.NextItem

@@ -1866,7 +1866,9 @@ Friend Class MainForm
     End Sub
 
     Private Async Sub BurstFolderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BurstFolderToolStripMenuItem.Click
+        MSFiles.CancelURLS()
         Await BurstFolder(New DirectoryInfo(CurrentFolder))
+        FBH.FillBox()
         'tvMain2.RemoveNode(CurrentFolder)
         '        tvMain2.RefreshTree(New IO.DirectoryInfo(CurrentFolder).Parent.FullName)
     End Sub
@@ -2401,9 +2403,9 @@ Friend Class MainForm
         x.Maxfiles = Val(InputBox("Min no. of files to preserve folder? (Blank means all folders burst)",, ""))
         Dim d As New IO.DirectoryInfo(CurrentFolder)
         If d.Exists Then
-
+            MSFiles.CancelURLS()
             Await x.Burst(New IO.DirectoryInfo(CurrentFolder), True) 'TODO: sometimes crashes because CurrentFolder doesn't exist
-            tvMain2.RefreshTree(CurrentFolder)
+            ' tvMain2.RefreshTree(CurrentFolder)
             tmrUpdateFileList.Enabled = True
         End If
 

@@ -549,15 +549,14 @@ Public Class MediaHandler
         Return 0
     End Function
     Public Sub CancelMedia()
-        Try
-            DisposeMedia(mPlayer)
-        Catch ex As Exception
+        Select Case mType
+            Case Filetype.Movie
+                DisposeMedia(mPlayer)
+            Case Filetype.Pic
+                DisposePic(mPicBox)
 
-        End Try
-        If mPicBox.Visible Then
-            DisposePic(mPicBox)
-            'GC.Collect()
-        End If
+        End Select
+
     End Sub
 #End Region
 #End Region

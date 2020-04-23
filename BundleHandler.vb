@@ -49,11 +49,15 @@ Public Class BundleHandler
     Public Property Maxfiles As Integer
     Public Async Function Burst(CurrentFolder As IO.DirectoryInfo, Optional Harvest As Boolean = False) As Task
         Dim DestinationFolder As New IO.DirectoryInfo(CurrentFolder.FullName)
-        If Not Harvest Then DestinationFolder = CurrentFolder.Parent
+        If Not Harvest Then
+            DestinationFolder = CurrentFolder.Parent
+            FSTree.RemoveNode(CurrentFolder.FullName)
+        End If
         Dim folders As New List(Of IO.DirectoryInfo)
         For Each subfolder In CurrentFolder.GetDirectories("*", IO.SearchOption.AllDirectories)
             If subfolder.GetFiles.Count <= Maxfiles Or Maxfiles = 0 Then
                 folders.Add(subfolder)
+                FSTree.RemoveNode(subfolder.FullName)
             End If
         Next
         For Each fol In folders
@@ -85,18 +89,19 @@ Public Class BundleHandler
         Try
             Dim NoOfFiless = folder.EnumerateFiles.Count
             Dim NoOfFolders = folder.EnumerateDirectories.Count
-            If recurse Then
+            If NoOfFiless = 0 And NoOfFolders = 0 Then
+                'FSTree.RemoveNode(folder.FullName)
+                folder.Delete()
+                DirectoriesList.Remove(folder.FullName)
+
+            ElseIf recurse Then
 
                 For Each s In folder.EnumerateDirectories("*", IO.SearchOption.AllDirectories)
                     Await RemoveEmptyFolders(s.FullName, recurse)
                     ' DirectoriesList.Remove(s.FullName)
                 Next
             End If
-            If NoOfFiless = 0 And NoOfFolders = 0 Then
-                FSTree.RemoveNode(folder.FullName)
-                folder.Delete()
-                DirectoriesList.Remove(folder.FullName)
-            End If
+
         Catch ex As Exception
 
 
