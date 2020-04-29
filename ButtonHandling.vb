@@ -38,6 +38,7 @@ Module ButtonHandling
 
             End With
 
+            lblDest(i).Font = New Font(lblDest(i).Font, FontStyle.Bold)
             lblDest(i).Text = buttons.CurrentRow.Buttons(i).Label
         Next
     End Sub

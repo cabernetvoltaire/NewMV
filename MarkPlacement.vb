@@ -27,6 +27,7 @@ Public Class MarkPlacement
     Public Sub Create()
 
         Clear()
+        If mMarkers Is Nothing Then Exit Sub
         For Each m In mMarkers
             Dim start As Point
             start.Y = 0

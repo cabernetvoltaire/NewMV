@@ -22,7 +22,7 @@ Friend Class MainForm
     Public WithEvents PlayOrder As New SortHandler
     Private WithEvents FM As New FilterMove()
     Private WithEvents DM As New DateMove
-    Private WithEvents Att As New Attributes
+    Public WithEvents Att As New Attributes
     Private WithEvents Op As New OrphanFinder
     Public WithEvents SP As New SpeedHandler
     Public WithEvents AT As New AutoTrailer
@@ -296,7 +296,7 @@ Friend Class MainForm
             End If
             Media.Markers = Media.GetMarkersFromLinkList
             Media.Markers.Sort()
-            ' Marks.Markers = Media.Markers
+            Marks.Markers = Media.Markers
         End If
         DrawScrubberMarks()
 
@@ -311,7 +311,6 @@ Friend Class MainForm
         Marks.Duration = Media.Duration
         'Marks.Bar = Scrubber
         '  Marks.Clear()
-        Marks.Markers = Media.GetMarkersFromLinkList
         Scrubber.Width = ctrPicAndButtons.Width * ScrubberProportion
         Scrubber.Left = Scrubber.Width * ((1 - ScrubberProportion) / 2)
         'Scrubber.Visible = False
@@ -527,7 +526,14 @@ Friend Class MainForm
         e.SuppressKeyPress = True
         Return e
     End Function
-
+    Private Sub Background(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles BackgroundWorker1.DoWork
+        Dim x As FilesDest
+        x = e.Argument
+        FileHandling.MoveFiles(x.files, x.Dest, x.Folder)
+    End Sub
+    Private Sub BackgroundFinished() Handles BackgroundWorker1.RunWorkerCompleted
+        MsgBox("Files moved")
+    End Sub
     Private Sub TogglePause()
         If Media.Speed.Paused Then
             Media.Position = Media.Player.Ctlcontrols.currentPosition
@@ -621,7 +627,7 @@ Friend Class MainForm
         ShowListVisible = Not Collapse
         MasterContainer.Panel2Collapsed = Collapse
         lbxFiles.SelectionMode = SelectionMode.One
-        If Collapse Then ControlSetFocus(lbxFiles)
+        If Initialising = False And Collapse Then ControlSetFocus(lbxFiles)
         MasterContainer.SplitterDistance = MasterContainer.Height / 3
         UpdateFileInfo()
     End Sub
@@ -1185,12 +1191,7 @@ Friend Class MainForm
         End If
         'Select file in filelist
         FBH.SetNamed(strPath)
-        Att.DestinationLabel = lblAttributes
-        If Not tmrSlideShow.Enabled And chbShowAttr.Checked Then
-            Att.UpdateLabel(strPath)
-        Else
-            Att.Text = ""
-        End If
+
 
     End Sub
 
@@ -1266,23 +1267,25 @@ Friend Class MainForm
         AddHandler FileHandling.FolderMoved, AddressOf OnFolderMoved
         AddHandler FileHandling.FileMoved, AddressOf OnFilesMoved
 
-        InitialiseButtonsOld()
+        InitialiseButtons()
+
         NavigateMoveState.State = StateHandler.StateOptions.Navigate
         OnRandomChanged()
         ControlSetFocus(lbxFiles)
         Media.DontLoad = False
+        PopulateContextMenu()
         ' LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\ITC.msl")
+        FBH.DirectoryPath = CurrentFolder
+        tvMain2.SelectedFolder = CurrentFolder
         FBH.ListBox = lbxFiles
         LBH.ListBox = lbxShowList
     End Sub
 
-    Private Sub InitialiseButtonsOld()
+    Private Sub InitialiseButtons()
+        ButtonHandling.Buttons_Load()
         If ButtonFilePath = "" Then Exit Sub
         Try
             KeyAssignmentsRestore(ButtonFilePath)
-            If Not blnButtonsLoaded Then
-                ToggleButtons()
-            End If
 
         Catch ex As FileNotFoundException
             ctrPicAndButtons.Panel2Collapsed = True
@@ -1343,6 +1346,7 @@ Friend Class MainForm
         ' Set focus to the control, if it can receive focus.
         'Exit Sub
         If control Is tvMain2 Then
+            tvMain2.Focus()
         Else
             FocusControl = control
         End If
@@ -1352,6 +1356,7 @@ Friend Class MainForm
         If TypeOf (control) Is ListBox Then
             MSFiles.Listbox = control
         End If
+        SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
     End Sub
 
 
@@ -1469,7 +1474,7 @@ Friend Class MainForm
     Private Sub RotatePic(PicBox As PictureBox, blnLeft As Boolean)
         If PicBox.Image Is Nothing Then Exit Sub
         If Media.MediaType <> Filetype.Pic Then Exit Sub
-        Media.PicHandler.GetImage(Media.MediaPath)
+        '  Media.PicHandler.GetImage(Media.MediaPath)
         With PicBox.Image
             If blnLeft Then
                 .RotateFlip(RotateFlipType.Rotate90FlipNone)
@@ -1484,15 +1489,16 @@ Friend Class MainForm
             dt = finfo.LastWriteTime
             Dim bt As Bitmap = PicBox.Image
             Dim b As Image = bt.Clone
-
-
+            DisposePic(PicBox)
+            'MSFiles.CancelURL(Media.MediaPath)
             ' Dim b As Bitmap = InitializeStandaloneImageCopy(Media.MediaPath)
-            PicBox.Image.Dispose()
+
             Try
 
 
-                finfo.Delete()
+                My.Computer.FileSystem.DeleteFile(finfo.FullName, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
                 b.Save(Media.MediaPath)
+                PicBox.Image = LoadImage(Media.MediaPath)
                 finfo.LastWriteTime = dt
                 '  currentPicBox.ImageLocation = Media.MediaPath
             Catch ex As System.UnauthorizedAccessException
@@ -1512,6 +1518,7 @@ Friend Class MainForm
     End Sub
     Private Sub TreeEnter(sender As Object, e As EventArgs) Handles tvMain2.Enter
         'PFocus = CtrlFocus.Tree
+
         SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
     End Sub
 
@@ -1591,10 +1598,7 @@ Friend Class MainForm
         If Not f.Exists Then Exit Sub
         Dim listcount = lbxFiles.Items.Count
         Dim showcount = lbxShowList.Items.Count
-        Dim dt As Date
-        dt = f.LastAccessTime
-        If f.LastWriteTime < dt Then dt = f.LastWriteTime
-        If f.CreationTime < dt Then dt = f.CreationTime
+        Dim dt As Date = GetDate(f)
         Select Case Math.Log10(f.Length)
             Case < 5
                 tbDate.ForeColor = Color.Red
@@ -1866,7 +1870,7 @@ Friend Class MainForm
     End Sub
 
     Private Async Sub BurstFolderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BurstFolderToolStripMenuItem.Click
-        MSFiles.CancelURLS()
+        ' MSFiles.CancelURLS()
         Await BurstFolder(New DirectoryInfo(CurrentFolder))
         FBH.FillBox()
         'tvMain2.RemoveNode(CurrentFolder)
@@ -1982,22 +1986,16 @@ Friend Class MainForm
     '    BundleFiles(lbxFiles, CurrentFolder)
     'End Sub
 
-    Public Sub BundleFiles(lbx1 As ListBox, strFolder As String)
+    Public Sub BundleFiles(lbx1 As ListBox, Folder As String)
         If lbx1.SelectedItems.Count > 1 Then
         Else
             SelectSubList(FocusControl, False)
-
         End If
-        Dim x As New BundleHandler(tvMain2, lbx1, strFolder)
-        x.List = ListfromSelectedInListbox(lbx1)
-        x.ListBox = lbx1
+        Dim x As New BundleHandler(tvMain2, lbx1, Folder)
         Dim blnold = blnSuppressCreate
         blnSuppressCreate = False
         x.Bundle("")
         blnSuppressCreate = blnold
-        'blnSuppressCreate = False
-        'MoveFiles(ListfromSelectedInListbox(lbx1), strFolder, lbx1)
-        'tvMain2.RefreshTree(CurrentFolder)
         tmrUpdateFileList.Enabled = True
 
     End Sub
@@ -2403,7 +2401,7 @@ Friend Class MainForm
         x.Maxfiles = Val(InputBox("Min no. of files to preserve folder? (Blank means all folders burst)",, ""))
         Dim d As New IO.DirectoryInfo(CurrentFolder)
         If d.Exists Then
-            MSFiles.CancelURLS()
+            'MSFiles.CancelURLS()
             Await x.Burst(New IO.DirectoryInfo(CurrentFolder), True) 'TODO: sometimes crashes because CurrentFolder doesn't exist
             ' tvMain2.RefreshTree(CurrentFolder)
             tmrUpdateFileList.Enabled = True
@@ -2977,8 +2975,32 @@ Friend Class MainForm
         SubfolderNamedSame(m)
     End Sub
 
+    Private Sub lbxFiles_GotFocus(sender As Object, e As EventArgs) Handles lbxFiles.GotFocus, lbxShowList.GotFocus, tvMain2.GotFocus
+        SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
+    End Sub
 
+    Private Sub RenewLinksOfSelectedToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RenewLinksOfSelectedToolStripMenuItem.Click
+        Dim Oh As New OrphanFinder
+        T = New Thread(New ThreadStart(Sub() Oh.ListReuniter(AllfromListbox(lbxShowList)))) With {
+            .IsBackground = True
+        }
 
+        T.SetApartmentState(ApartmentState.STA)
+
+        T.Start()
+
+    End Sub
+
+    Private Sub PopulateContextMenu()
+        ContextMenuStrip1.Items.Clear()
+        For Each m In MenuStrip2.Items
+            Dim clone As New ToolStripMenuItem
+            clone = CloneMenu(m)
+            If clone IsNot Nothing Then
+                ContextMenuStrip1.Items.Add(clone)
+            End If
+        Next
+    End Sub
 #End Region
 
 End Class

@@ -13,6 +13,7 @@ Public Class BundleHandler
         End Set
 
     End Property
+
     Private Property mPath As String
     Public Property FSTree As MasaSam.Forms.Controls.FileSystemTree
     Public Property ListBox As New ListBox

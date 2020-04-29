@@ -3,7 +3,7 @@
     Private probs(3) As Decimal
     Private mDuration As Byte
     Private mProb As Decimal
-    Public Property Counter As Byte
+    Public Property Counter As Int16
     ''' <summary>
     ''' Seeds of the base durations of different selections (varied by randomiser)
     ''' </summary>

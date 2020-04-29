@@ -1034,6 +1034,67 @@ Public Module General
         Next
         Return s
     End Function
+    Friend Function CloneMenu(m As ToolStripMenuItem) As ToolStripMenuItem
+        Dim newitem As New ToolStripMenuItem()
+        With newitem
+            .Name = m.Name
+            .Text = m.Text
+            .ToolTipText = m.ToolTipText
+            .Enabled = m.Enabled
+            If m.HasDropDownItems Then
+                For Each sm In m.DropDownItems
+                    If TypeOf (sm) Is ToolStripMenuItem Then
+                        newitem.DropDownItems.Add(CloneMenu(sm))
+                    End If
+                Next
+            End If
+        End With
+        AddHandler newitem.Click, AddressOf m.PerformClick
+        Return newitem
+    End Function
+    Friend Function CloneMenu(m As ToolStripMenuItem, name As String) As ToolStripMenuItem
+        Dim newitem As New ToolStripMenuItem()
+        Dim listofallitems As New List(Of ToolStripMenuItem)
+        With newitem
+            .Name = m.Name
+            .ShortcutKeys = m.ShortcutKeys
+            .Text = m.Text
+            .ToolTipText = m.ToolTipText
+            .Enabled = m.Enabled
+            If m.HasDropDownItems Then .Tag = True
+            listofallitems = MarkMenuItemsToInclude(GetAllMenuItems(newitem), name)
+            If m.HasDropDownItems Then
+                For Each sm In m.DropDownItems
+                    If TypeOf (sm) Is ToolStripMenuItem Then
+                        Dim clone As New ToolStripMenuItem
+                        clone = CloneMenu(sm, name)
+                        If clone IsNot Nothing And listofallitems.Contains(clone) Then newitem.DropDownItems.Add(clone)
+                    End If
+                Next
+            End If
+        End With
+        AddHandler newitem.Click, AddressOf m.PerformClick
+        Return newitem
+    End Function
+    Friend Function MarkMenuItemsToInclude(list As List(Of ToolStripMenuItem), name As String) As List(Of ToolStripMenuItem)
+        For Each f In list
+            If f.Name.Contains(name) Then
+                f.Tag = f.Tag & f.Name
+            End If
+        Next
+        list = list.FindAll(Function(x) x.Tag <> "")
+        'mark all items which should be included, and those which are its ancestors
+    End Function
+    Friend Function GetAllMenuItems(t As ToolStripMenuItem) As List(Of ToolStripMenuItem)
+        Dim list As New List(Of ToolStripMenuItem)
+        list.Add(t)
+        If t.Tag Then
+            For Each m In t.DropDownItems
+                list.AddRange(GetAllMenuItems(m))
+            Next
+        End If
+        Return list
+    End Function
 
     Public Sub MovietoPic(pic As PictureBox, img As Image)
         pic.Image = img

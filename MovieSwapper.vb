@@ -146,7 +146,7 @@ Public Class MediaSwapper
             'Report("Previous:" & PreviousItem, 0)
 
 
-            Select Case CurrentItem 'TODO: First time round, should load all items. This is the flaw that's been bugging us.
+            Select Case CurrentItem
 
                 Case Media2.MediaPath
                     RotateMedia(Media2, Media3, Media1)
@@ -188,14 +188,16 @@ Public Class MediaSwapper
                 Else
                     MH.Player.uiMode = "Full"
                 End If
-                MH.Player.Visible = False
-                MH.Player.SendToBack()
+                '                MH.Player.Visible = False
+                '               MH.Player.SendToBack()
                 MH.PlaceResetter(True)
+                DisposePic(MH.PicHandler.PicBox)
                 Return True
               '  RaiseEvent LoadedMedia(MH) 'Currently does nothing.
             Case Filetype.Pic
                 'MH.PlaceResetter(False)
-                MH.Picture.Visible = False
+                MH.DisposeMovie()
+                MH.Picture.Visible = True
                 MH.Picture.Tag = path 'Important for thumbnail mouseover events. 
                 Return True
 
@@ -237,7 +239,7 @@ Public Class MediaSwapper
     End Sub
     Private Sub ShowPlayer(ByRef MHX As MediaHandler)
         MuteAll()
-
+        ResetPositionsAgain()
         MHX.PlaceResetter(False) 'Starts the video playing
 
         With MHX.Player
@@ -265,6 +267,12 @@ Public Class MediaSwapper
         player.currentPlaylist.clear()
         Return 0
     End Function
+    Private Sub ResetPositionsAgain()
+        For Each m In MediaHandlers
+            m.ResetPositionCanceller.Enabled = True
+            m.PlaceResetter(True)
+        Next
+    End Sub
     Public Sub CancelURL(filepath As String)
         For Each m In MediaHandlers
             If m.MediaPath = filepath Then m.CancelMedia()

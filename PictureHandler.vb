@@ -81,14 +81,14 @@
             Try
                 Dim img As Image = Image.FromFile(strPath)
                 mPicImage = img
+                OrientPic(mPicImage)
+                PicBox.Image = mPicImage
+                PicBox.Tag = strPath
+                tb.SetToolTip(PicBox, strPath)
             Catch ex As Exception
                 mPicImage = Nothing
             End Try
             'End If
-            OrientPic(mPicImage)
-            PicBox.Image = mPicImage
-            PicBox.Tag = strPath
-            'tb.SetToolTip(PicBox, strPath)
             'tb.AutoPopDelay = 1
             'PicBoxContainer.Controls.Add(MouseZone)
             'MouseZone.Width = PicBoxContainer.Width / 2

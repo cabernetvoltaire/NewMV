@@ -11,6 +11,7 @@ Friend Module FileHandling
     ' Public FP As New FilePump
     Public Event FolderMoved(Path As String)
     Public Event FileMoved(Files As List(Of String), lbx As ListBox)
+
     Public WithEvents t As Thread
     Public WithEvents Media As New MediaHandler("Media")
     Public WithEvents MSFiles As New MediaSwapper(MainForm.MainWMP1, MainForm.MainWMP2, MainForm.MainWMP3, MainForm.PictureBox1, MainForm.PictureBox2, MainForm.PictureBox3)
@@ -46,11 +47,20 @@ Friend Module FileHandling
             MainForm.PopulateLinkList(sender)
         End If
         Media.SetLink(0)
-        MainForm.AT.Counter = Media.Markers.Count
-        'If sender.MediaPath <> "" Then
-        '    LastTimeSuccessful = True
-        '    PreferencesSave()
-        'End If
+        With MainForm
+            .AT.Counter = Media.Markers.Count
+            .Att.DestinationLabel = .lblAttributes
+            If Not .tmrSlideShow.Enabled And .chbShowAttr.Checked Then
+                .Att.DestinationLabel.Text = Media.Metadata
+                '                .Att.UpdateLabel(Media.MediaPath)
+            Else
+                .Att.Text = ""
+            End If
+        End With
+        If sender.MediaPath <> "" Then
+            LastTimeSuccessful = True
+            PreferencesSave()
+        End If
         If ShiftDown Then MainForm.HighlightCurrent(Media.LinkPath) 'Used for links only, to go to original file
 
 
@@ -72,17 +82,12 @@ Friend Module FileHandling
                     ReplaceListboxItem(lbx1, ind, f)
                     lbx1.SelectedItem = lbx1.Items(ind)
                     MainForm.UpdatePlayOrder(MainForm.FBH)
-
-                Case Else
-                    If MainForm.LBH.ListBox IsNot Nothing Then
-                        MainForm.LBH.FillBox()
-                    End If
-                    ' MainForm.FBH.Refresh()
-                    ' RefreshListbox(lbx1, files)
             End Select
-            '            MSFiles.ResettersOff()
         Next
-        'MainForm.FBH.SetIndex(Math.Max(Math.Min(ind, MainForm.FBH.ListBox.Items.Count - 1), 0))
+        If ShowListVisible Then
+            MainForm.LBH.FillBox()
+        End If
+        MainForm.FBH.FillBox()
         If lbx1.Items.Count <> 0 Then
             Dim index = Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0)
             MainForm.FBH.SetIndex(index, True)
@@ -96,7 +101,7 @@ Friend Module FileHandling
 
 
     ''' <summary>
-    ''' Loads Dest into List, and adds all to lbx. Any files not found are put in notlist, which can then be removed from the lbx
+    ''' Loads Dest into List, and adds all to lbx. 
     ''' </summary>
     ''' <param name="list"></param>
     ''' <param name="Dest"></param>
@@ -217,6 +222,10 @@ Friend Module FileHandling
     '        GetFiles(x, flist)
     '    Next
     'End Sub
+    Public Sub MoveFilesNew(files As List(Of String), strDest As String, Optional Folder As Boolean = False)
+        Dim x As New FilesDest With {.files = files, .Dest = strDest, .Folder = Folder}
+        MainForm.BackgroundWorker1.RunWorkerAsync(x)
+    End Sub
 
 
     ''' <summary>
@@ -262,14 +271,10 @@ Friend Module FileHandling
 
         GC.Collect()
 
-        If Folder Then
+        RaiseEvent FileMoved(files, MainForm.FBH.ListBox)
 
-        Else
-
-            RaiseEvent FileMoved(files, MainForm.FBH.ListBox)
-
-        End If
     End Sub
+
     Private Sub Finishedmoving()
 
     End Sub
@@ -341,6 +346,7 @@ Friend Module FileHandling
                                         Try
                                             AllFaveMinder.DestinationPath = spath
                                             AllFaveMinder.CheckFile(f)
+                                            MSFiles.CancelURL(m.FullName)
                                             MSFiles.CancelURL(spath)
                                             BreakHere = True
                                             m.MoveTo(spath)
@@ -641,3 +647,9 @@ Friend Module FileHandling
     End Sub
 
 End Module
+Public Class FilesDest
+    Property files As New List(Of String)
+    Property Dest As String
+    Property Folder As Boolean
+
+End Class

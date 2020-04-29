@@ -1,4 +1,5 @@
 ﻿Imports AxWMPLib
+Imports System.Text.UTF8Encoding
 Public Class MediaHandler
 #Region "Members"
 
@@ -14,11 +15,11 @@ Public Class MediaHandler
     Private Property mSndH As New SoundController 'With {.SoundPlayer = Sound, .CurrentPlayer = Player}
     Public IsCurrent As Boolean = False
 
-    Private WithEvents ResetPosition As New Timer With {.Interval = 2000} 'Changing can affect loading
-    Public WithEvents PositionUpdater As New Timer With {.Interval = 100} 'Too short causes a crash on exiting.
+    Private WithEvents ResetPosition As New Timer With {.Interval = 1000} 'Changing can affect loading
+    Public WithEvents PositionUpdater As New Timer With {.Interval = 200} 'Too short causes a crash on exiting.
     Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 15000}
     Public WithEvents PicHandler As New PictureHandler(Picture)
-
+    Public Metadata As String = ""
 
     Private ReadOnly DefaultFile As String = "C:\exiftools.exe"
     Public WithEvents SPT As New StartPointHandler
@@ -166,9 +167,8 @@ Public Class MediaHandler
             Else
                 mMediaPath = value
                 mType = FindType(value)
-                Try
-                    Dim f As New IO.FileInfo(value)
-                    If f.Exists Then
+                Dim f As New IO.FileInfo(value)
+                If f.Exists Then
                         If mType = Filetype.Link Then
                             mIsLink = True
                             mLinkPath = LinkTarget(f.FullName)
@@ -184,10 +184,8 @@ Public Class MediaHandler
                         mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
                         If Not DontLoad Then LoadMedia()
                     End If
-                Catch ex As Exception
 
-                End Try
-                mMarkers = GetMarkersFromLinkList()
+                    mMarkers = GetMarkersFromLinkList()
                 mMarkers.Sort()
                 'RaiseEvent MediaChanged(Me, New EventArgs)
 
@@ -328,8 +326,8 @@ Public Class MediaHandler
         For i = 0 To count - 1 'Find preceding marker to position
 
             If mMarkers(i) < p + 1 Then
-                    mlinkcounter = i
-                End If
+                mlinkcounter = i
+            End If
 
         Next
         If Forward Then
@@ -431,7 +429,7 @@ Public Class MediaHandler
             mPlayPosition = m.StartPoint
             m = Nothing
             'Or it's a link with a bookmark
-        ElseIf mIslink And mBookmark > -1 AndAlso Speed.PausedPosition = 0 AndAlso Not ToMarker Then 'And mMarkers.Count = 0 Then
+        ElseIf mIsLink And mBookmark > -1 AndAlso Speed.PausedPosition = 0 AndAlso Not ToMarker Then 'And mMarkers.Count = 0 Then
             If SPT.State = StartPointHandler.StartTypes.FirstMarker Then
                 mPlayPosition = mBookmark
             Else
@@ -527,6 +525,9 @@ Public Class MediaHandler
         '    If PicHandler.PicBox.Tag = path Then
         '    Else
         PicHandler.GetImage(path)
+        If Not path.EndsWith(".gif") Then
+            Metadata = ImageDate(Image.FromFile(path))
+        End If
         '    End If
         DisplayerName = mPicBox.Name
     End Sub
@@ -543,17 +544,17 @@ Public Class MediaHandler
 
         End Select
     End Sub
-    Function DisposeMedia(player As AxWindowsMediaPlayer) As Integer
-        player.close()
-        player.currentPlaylist.clear()
+    Function DisposeMovie() As Integer
+        mPlayer.close()
+        mPlayer.currentPlaylist.clear()
         Return 0
     End Function
     Public Sub CancelMedia()
         Select Case mType
             Case Filetype.Movie
-                DisposeMedia(mPlayer)
+                DisposeMovie()
             Case Filetype.Pic
-                DisposePic(mPicBox)
+                DisposePic(PicHandler.PicBox)
 
         End Select
 
@@ -648,5 +649,23 @@ Public Class MediaHandler
     End Sub
 
 #End Region
+    Private Function ImageDate(img As Image) As String
+        '  Exit Function
+        Dim r As New System.Text.RegularExpressions.Regex(":")
+        Dim text As String = ""
+        Dim datetaken As String
+        Dim m As Imaging.PropertyItem
+        Try
+            m = img.GetPropertyItem(36867)
+            datetaken = r.Replace(UTF8.GetString(m.Value), "-", 2)
+            text = DateTime.Parse(datetaken)
+
+        Catch ex As Exception
+
+        End Try
+
+
+        Return text
+    End Function
 
 End Class

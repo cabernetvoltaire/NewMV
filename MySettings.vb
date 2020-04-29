@@ -1,7 +1,7 @@
 ﻿Imports System.Environment
 Friend Module Mysettings
 
-
+    Public FirstLoad As Boolean = False
     Public PFocus As Byte = CtrlFocus.Tree
 #Region "Literals"
     Public Property ZoneSize As Decimal = 0.4
@@ -148,6 +148,10 @@ Friend Module Mysettings
 
 
     Public Sub PreferencesGet()
+        If FirstLoad Then
+            ResetDefaultPrefs()
+            Exit Sub
+        End If
         Dim prefslist As New List(Of String)
         Dim f As New IO.FileInfo(PrefsFilePath)
         Dim prefs As New IO.DirectoryInfo(PrefsPath)
@@ -326,8 +330,8 @@ Friend Module Mysettings
         End With
         With MainForm
             .ctrFileBoxes.SplitterDistance = .ctrFileBoxes.Height / 4
-            .ctrMainFrame.SplitterDistance = .ctrFileBoxes.Width / 2
-
+            .ctrMainFrame.SplitterDistance = .ctrFileBoxes.Width * 0.75
+            .ctrPicAndButtons.SplitterDistance = .ctrMainFrame.Height * 8 / 9
             .CurrentFilterState.State = 0
             .PlayOrder.State = 0
             .NavigateMoveState.State = 0

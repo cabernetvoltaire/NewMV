@@ -1,4 +1,5 @@
-﻿Public Class OrphanFinder
+﻿Imports System.Threading
+Public Class OrphanFinder
     Private mFolderPath As String
     Private mSHandler As New ShortcutHandler
     Public Event FoundParent As EventHandler
@@ -401,17 +402,23 @@
         Next
         Return list
     End Function
-    Public Sub ReuniteWithFile(list As List(Of String), filename As String)
+    Public Sub ListReuniter(ListofFiles As List(Of String))
+        For Each f In ListofFiles
+            ReuniteWithFile(AllFaveMinder.GetLinksOf(f), f)
+        Next
+    End Sub
+    Public Sub ReuniteWithFile(ListofLinkFiles As List(Of String), filename As String) 'TODO: Needs to extract filename from list element
         'All the shortcuts in list are redirected to filename
         mFoundParents.Clear()
         Try
 
-            For Each m In list
-                If LinkTargetExists(m) Then
+            For Each linkfile In ListofLinkFiles
+                If LinkTargetExists(linkfile) Then
                 Else
-                    If mFoundParents.Keys.Contains(m) Then
+
+                    If mFoundParents.Keys.Contains(linkfile) Then
                     Else
-                        mFoundParents.Add(m, filename)
+                        mFoundParents.Add(linkfile, filename)
                     End If
                 End If
             Next
