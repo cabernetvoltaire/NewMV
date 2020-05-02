@@ -13,6 +13,7 @@ Public Class MediaHandler
 
     Private WithEvents Sound As New AxWindowsMediaPlayer
     Private Property mSndH As New SoundController 'With {.SoundPlayer = Sound, .CurrentPlayer = Player}
+    Public Property Textbox As New TextBox With {.Multiline = True, .Dock = DockStyle.None}
     Public IsCurrent As Boolean = False
 
     Private WithEvents ResetPosition As New Timer With {.Interval = 1000} 'Changing can affect loading
@@ -32,6 +33,16 @@ Public Class MediaHandler
     Private mLoop As Boolean = False
     Private mType As Filetype
     Public Name As String = Me.Name
+    Public WriteOnly Property Visible As Boolean
+        Set(value As Boolean)
+            mPlayer.Visible = value
+            Textbox.Visible = value
+            PicHandler.PicBox.Visible = value
+
+        End Set
+    End Property
+
+
     Public Property MediaType() As Filetype
         Get
             If mMediaPath = "" Then
@@ -39,17 +50,21 @@ Public Class MediaHandler
 
                 mType = FindType(mMediaPath)
             End If
-            If mType = Filetype.Link Then
-                mIsLink = True
-                '  IsLink = True
-                mLinkPath = LinkTarget(mMediaPath)
-                mType = FindType(mLinkPath)
-                GetBookmark()
-            Else
-                mIsLink = False
-                mLinkPath = ""
-                mBookmark = -1
-            End If
+            mIsLink = False
+            Select Case mType
+                Case Filetype.Link
+                    mIsLink = True
+                    '  IsLink = True
+                    mLinkPath = LinkTarget(mMediaPath)
+                    mType = FindType(mLinkPath)
+                    GetBookmark()
+                Case Filetype.Doc
+
+
+                Case Else
+                    mLinkPath = ""
+                    mBookmark = -1
+            End Select
             Return mType
         End Get
         Set(ByVal value As Filetype)
@@ -473,6 +488,7 @@ Public Class MediaHandler
 
         Select Case mType
             Case Filetype.Doc
+                HandleDoc(mMediaPath)
 
             Case Filetype.Link
                 Select Case FindType(mLinkPath)
@@ -486,11 +502,20 @@ Public Class MediaHandler
                 HandleMovie(mMediaPath)
             Case Filetype.Pic
                 HandlePic(mMediaPath)
+            Case Filetype.Browsable
             Case Filetype.Unknown
+
                 'mPlayer.URL = ""
                 'mPicBox.Dispose()
                 Exit Sub
         End Select
+
+    End Sub
+    Private Sub HandleDoc(url As String)
+        Dim fileReader As String
+        fileReader = My.Computer.FileSystem.ReadAllText(url)
+        Textbox.Text = fileReader
+        Textbox.BringToFront()
 
     End Sub
     Private Sub HandleMovie(URL As String)
@@ -525,10 +550,13 @@ Public Class MediaHandler
         '    If PicHandler.PicBox.Tag = path Then
         '    Else
         PicHandler.GetImage(path)
-        If Not path.EndsWith(".gif") Then
-            Metadata = ImageDate(Image.FromFile(path))
+        If PicHandler.PicBox.Image Is Nothing Then
+        Else
+            If Not path.EndsWith(".gif") Then
+
+                Metadata = ImageDate(PicHandler.PicBox.Image)
+            End If
         End If
-        '    End If
         DisplayerName = mPicBox.Name
     End Sub
 
@@ -650,6 +678,10 @@ Public Class MediaHandler
 
 #End Region
     Private Function ImageDate(img As Image) As String
+        If img Is Nothing Then
+            Return ""
+            Exit Function
+        End If
         '  Exit Function
         Dim r As New System.Text.RegularExpressions.Regex(":")
         Dim text As String = ""

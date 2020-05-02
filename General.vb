@@ -3,6 +3,7 @@ Imports System.IO
 Imports System.Drawing.Imaging
 Imports System.Media
 Imports System.Threading
+Imports Microsoft.IShellDispatch6
 
 Public Module General
     Public Enum ExifOrientations As Byte
@@ -678,7 +679,7 @@ Public Module General
                 Return Filetype.Movie
             ElseIf InStr(PICEXTENSIONS, strExt) <> 0 Then
                 Return Filetype.Pic
-            ElseIf InStr(".txt.prn.sty.doc", strExt) <> 0 Then
+            ElseIf InStr(LCase(".txt.prn.sty.doc.csv"), lcase(strExt)) <> 0 Then
                 Return Filetype.Doc
             Else
                 Return Filetype.Unknown
@@ -1041,6 +1042,9 @@ Public Module General
             .Text = m.Text
             .ToolTipText = m.ToolTipText
             .Enabled = m.Enabled
+            'Add any other things you want to preserve, like .Image
+            'Not much point preserving Keyboard Shortcuts on a context menu
+            'as it's designed for a mouse click.
             If m.HasDropDownItems Then
                 For Each sm In m.DropDownItems
                     If TypeOf (sm) Is ToolStripMenuItem Then
@@ -1170,5 +1174,6 @@ Public Module General
         Dim r As Rectangle = ctl.Bounds
         outliner.SetBounds(r.Left - 5, r.Top - 5, r.Width + 10, r.Height + 10)
     End Sub
+
 
 End Module

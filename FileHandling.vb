@@ -46,6 +46,7 @@ Friend Module FileHandling
         If Media.MediaType = Filetype.Movie Then
             MainForm.PopulateLinkList(sender)
         End If
+
         Media.SetLink(0)
         With MainForm
             .AT.Counter = Media.Markers.Count

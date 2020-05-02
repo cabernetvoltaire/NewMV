@@ -1,9 +1,13 @@
-﻿Public Class PicTest
+﻿Imports System.Runtime.InteropServices.ComVisible
+Public Class PicTest
     Dim PH As New PictureHandler()
 
     Private Sub PicTest_Load(sender As Object, e As EventArgs) Handles Me.Load
-        PH.PicBox = PictureBox1
-        PH.GetImage("E:\Pictures\Pictures\1522253386990.jpg")
+        Dim m As New PrintPreviewControl
+
+        m.Document.DocumentName = "C:\Users\paulc\AppData\Roaming\Metavisua\Preferences\CDEFMVPrefs.txt"
+        PrintPreviewControl1 = m
+        'PH.GetImage("E:\Pictures\Pictures\1522253386990.jpg")
         '  PH.PreparePic()
     End Sub
 

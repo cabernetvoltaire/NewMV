@@ -67,16 +67,15 @@ Partial Class MainForm
         Me.ctrMainFrame = New System.Windows.Forms.SplitContainer()
         Me.ctrFileBoxes = New System.Windows.Forms.SplitContainer()
         Me.tvMain2 = New MasaSam.Forms.Controls.FileSystemTree()
-        Me.MasterContainer = New System.Windows.Forms.SplitContainer()
-        Me.lbxFiles = New System.Windows.Forms.ListBox()
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem3 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem4 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem5 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator13 = New System.Windows.Forms.ToolStripSeparator()
+        Me.MasterContainer = New System.Windows.Forms.SplitContainer()
+        Me.lbxFiles = New System.Windows.Forms.ListBox()
         Me.lbxShowList = New System.Windows.Forms.ListBox()
-        Me.pbxBlanker = New System.Windows.Forms.PictureBox()
         Me.ctrPicAndButtons = New System.Windows.Forms.SplitContainer()
         Me.MainWMP1 = New AxWMPLib.AxWindowsMediaPlayer()
         Me.MainWMP3 = New AxWMPLib.AxWindowsMediaPlayer()
@@ -287,12 +286,11 @@ Partial Class MainForm
         Me.ctrFileBoxes.Panel1.SuspendLayout()
         Me.ctrFileBoxes.Panel2.SuspendLayout()
         Me.ctrFileBoxes.SuspendLayout()
+        Me.ContextMenuStrip1.SuspendLayout()
         CType(Me.MasterContainer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MasterContainer.Panel1.SuspendLayout()
         Me.MasterContainer.Panel2.SuspendLayout()
         Me.MasterContainer.SuspendLayout()
-        Me.ContextMenuStrip1.SuspendLayout()
-        CType(Me.pbxBlanker, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ctrPicAndButtons, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ctrPicAndButtons.Panel1.SuspendLayout()
         Me.ctrPicAndButtons.Panel2.SuspendLayout()
@@ -606,7 +604,6 @@ Partial Class MainForm
         'ctrMainFrame.Panel2
         '
         Me.ctrMainFrame.Panel2.BackColor = System.Drawing.Color.Black
-        Me.ctrMainFrame.Panel2.Controls.Add(Me.pbxBlanker)
         Me.ctrMainFrame.Panel2.Controls.Add(Me.ctrPicAndButtons)
         Me.ctrMainFrame.Panel2MinSize = 1000
         Me.ctrMainFrame.Size = New System.Drawing.Size(3904, 1715)
@@ -652,42 +649,6 @@ Partial Class MainForm
         Me.tvMain2.TabIndex = 1
         Me.tvMain2.TrackDriveState = True
         '
-        'MasterContainer
-        '
-        Me.MasterContainer.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.MasterContainer.Location = New System.Drawing.Point(0, 0)
-        Me.MasterContainer.Margin = New System.Windows.Forms.Padding(4)
-        Me.MasterContainer.Name = "MasterContainer"
-        Me.MasterContainer.Orientation = System.Windows.Forms.Orientation.Horizontal
-        '
-        'MasterContainer.Panel1
-        '
-        Me.MasterContainer.Panel1.Controls.Add(Me.lbxFiles)
-        '
-        'MasterContainer.Panel2
-        '
-        Me.MasterContainer.Panel2.Controls.Add(Me.lbxShowList)
-        Me.MasterContainer.Size = New System.Drawing.Size(844, 958)
-        Me.MasterContainer.SplitterDistance = 368
-        Me.MasterContainer.SplitterWidth = 30
-        Me.MasterContainer.TabIndex = 1
-        Me.MasterContainer.TabStop = False
-        '
-        'lbxFiles
-        '
-        Me.lbxFiles.AllowDrop = True
-        Me.lbxFiles.ContextMenuStrip = Me.ContextMenuStrip1
-        Me.lbxFiles.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lbxFiles.FormattingEnabled = True
-        Me.lbxFiles.ItemHeight = 24
-        Me.lbxFiles.Items.AddRange(New Object() {"If there is nothing showing here, check your filter"})
-        Me.lbxFiles.Location = New System.Drawing.Point(0, 0)
-        Me.lbxFiles.Margin = New System.Windows.Forms.Padding(6)
-        Me.lbxFiles.Name = "lbxFiles"
-        Me.lbxFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.lbxFiles.Size = New System.Drawing.Size(844, 368)
-        Me.lbxFiles.TabIndex = 2
-        '
         'ContextMenuStrip1
         '
         Me.ContextMenuStrip1.ImageScalingSize = New System.Drawing.Size(24, 24)
@@ -724,6 +685,42 @@ Partial Class MainForm
         Me.ToolStripSeparator13.Name = "ToolStripSeparator13"
         Me.ToolStripSeparator13.Size = New System.Drawing.Size(269, 6)
         '
+        'MasterContainer
+        '
+        Me.MasterContainer.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.MasterContainer.Location = New System.Drawing.Point(0, 0)
+        Me.MasterContainer.Margin = New System.Windows.Forms.Padding(4)
+        Me.MasterContainer.Name = "MasterContainer"
+        Me.MasterContainer.Orientation = System.Windows.Forms.Orientation.Horizontal
+        '
+        'MasterContainer.Panel1
+        '
+        Me.MasterContainer.Panel1.Controls.Add(Me.lbxFiles)
+        '
+        'MasterContainer.Panel2
+        '
+        Me.MasterContainer.Panel2.Controls.Add(Me.lbxShowList)
+        Me.MasterContainer.Size = New System.Drawing.Size(844, 958)
+        Me.MasterContainer.SplitterDistance = 368
+        Me.MasterContainer.SplitterWidth = 30
+        Me.MasterContainer.TabIndex = 1
+        Me.MasterContainer.TabStop = False
+        '
+        'lbxFiles
+        '
+        Me.lbxFiles.AllowDrop = True
+        Me.lbxFiles.ContextMenuStrip = Me.ContextMenuStrip1
+        Me.lbxFiles.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lbxFiles.FormattingEnabled = True
+        Me.lbxFiles.ItemHeight = 24
+        Me.lbxFiles.Items.AddRange(New Object() {"If there is nothing showing here, check your filter"})
+        Me.lbxFiles.Location = New System.Drawing.Point(0, 0)
+        Me.lbxFiles.Margin = New System.Windows.Forms.Padding(6)
+        Me.lbxFiles.Name = "lbxFiles"
+        Me.lbxFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
+        Me.lbxFiles.Size = New System.Drawing.Size(844, 368)
+        Me.lbxFiles.TabIndex = 2
+        '
         'lbxShowList
         '
         Me.lbxShowList.AllowDrop = True
@@ -735,17 +732,6 @@ Partial Class MainForm
         Me.lbxShowList.Name = "lbxShowList"
         Me.lbxShowList.Size = New System.Drawing.Size(844, 560)
         Me.lbxShowList.TabIndex = 3
-        '
-        'pbxBlanker
-        '
-        Me.pbxBlanker.BackColor = System.Drawing.Color.BlanchedAlmond
-        Me.pbxBlanker.Location = New System.Drawing.Point(838, 234)
-        Me.pbxBlanker.Margin = New System.Windows.Forms.Padding(4)
-        Me.pbxBlanker.Name = "pbxBlanker"
-        Me.pbxBlanker.Size = New System.Drawing.Size(563, 535)
-        Me.pbxBlanker.TabIndex = 5
-        Me.pbxBlanker.TabStop = False
-        Me.pbxBlanker.Visible = False
         '
         'ctrPicAndButtons
         '
@@ -2478,12 +2464,11 @@ Partial Class MainForm
         Me.ctrFileBoxes.Panel2.ResumeLayout(False)
         CType(Me.ctrFileBoxes, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ctrFileBoxes.ResumeLayout(False)
+        Me.ContextMenuStrip1.ResumeLayout(False)
         Me.MasterContainer.Panel1.ResumeLayout(False)
         Me.MasterContainer.Panel2.ResumeLayout(False)
         CType(Me.MasterContainer, System.ComponentModel.ISupportInitialize).EndInit()
         Me.MasterContainer.ResumeLayout(False)
-        Me.ContextMenuStrip1.ResumeLayout(False)
-        CType(Me.pbxBlanker, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ctrPicAndButtons.Panel1.ResumeLayout(False)
         Me.ctrPicAndButtons.Panel2.ResumeLayout(False)
         CType(Me.ctrPicAndButtons, System.ComponentModel.ISupportInitialize).EndInit()
@@ -2590,7 +2575,6 @@ Partial Class MainForm
     Friend WithEvents tbStartpoint As ToolStripStatusLabel
     Friend WithEvents tbSpeed As ToolStripStatusLabel
     Friend WithEvents tbZoom As ToolStripStatusLabel
-    Friend WithEvents pbxBlanker As PictureBox
     Friend WithEvents LoadFiles As System.ComponentModel.BackgroundWorker
     Friend WithEvents FileSystemWatcher1 As IO.FileSystemWatcher
     Friend WithEvents tmrLoadLastFolder As Timer

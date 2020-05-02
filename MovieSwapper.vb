@@ -9,6 +9,7 @@ Public Class MediaSwapper
     'Public WithEvents Pic1 As New PictureHandler(Media1.Picture)
     'Public WithEvents Pic2 As New PictureHandler(Media2.Picture)
     'Public WithEvents Pic3 As New PictureHandler(Media3.Picture)
+    Private textbox As New TextBox
     Private Outliner As New PictureBox With {.BackColor = Color.HotPink}
     Private WithEvents PauseAll As New Timer With {.Interval = 3000, .Enabled = False}
     Private mRandomNext As Boolean = False
@@ -200,7 +201,9 @@ Public Class MediaSwapper
                 MH.Picture.Visible = True
                 MH.Picture.Tag = path 'Important for thumbnail mouseover events. 
                 Return True
+            Case Filetype.Doc
 
+                Return True
             Case Else
                 Return False
 
@@ -225,23 +228,38 @@ Public Class MediaSwapper
             Case Filetype.Pic
                 If separate Then OutlineControl(ThisMH.Picture, Outliner)
                 ShowPicture(ThisMH)
+            Case Filetype.Doc
+                If separate Then OutlineControl(ThisMH.Picture, Outliner)
+                ShowTextFile(ThisMH)
         End Select
         Prepare(PrevMH, PreviousItem)
         Prepare(NextMH, NextItem)
     End Sub
     Private Sub ShowPicture(ByRef MHX As MediaHandler)
         MuteAll()
-
+        HideMedias(MHX)
         MHX.Picture.Visible = True
         MHX.Picture.BringToFront()
         RaiseEvent MediaShown(MHX, Nothing)
 
     End Sub
+    Private Sub ShowTextFile(ByRef MHX As MediaHandler)
+        MuteAll()
+        HideMedias(MHX)
+
+        MHX.Visible = False
+        MHX.Textbox.BringToFront()
+        MHX.Textbox.Visible = True
+        RaiseEvent MediaShown(MHX, Nothing)
+
+    End Sub
     Private Sub ShowPlayer(ByRef MHX As MediaHandler)
         MuteAll()
+        HideMedias(MHX)
+
         ResetPositionsAgain()
         MHX.PlaceResetter(False) 'Starts the video playing
-
+        MHX.Visible = False
         With MHX.Player
             .Visible = True
             .BringToFront()
@@ -323,8 +341,7 @@ Public Class MediaSwapper
     Private Sub HideMedias(CurrentMH As MediaHandler)
         For Each m In MediaHandlers
             If m IsNot CurrentMH Then
-                m.Picture.Visible = False
-                m.Player.Visible = False
+                m.Visible = False
             End If
         Next
 
@@ -354,23 +371,38 @@ Public Class MediaSwapper
 
     Public Sub DockMedias(separated As Boolean)
         If separated Then
+            Dim i As Int16 = 0
+            Dim j As Int16 = 0
             For Each m In MediaHandlers
+                Dim x As Int16
+                Dim y As Int16
+                Select Case i
+                    Case 0
+                        x = 0
+                        y = 0
+                    Case 1
+                        x = 650
+                        y = 0
+                    Case 2
+                        x = 250
+                        y = 480
+                End Select
+
                 m.Picture.Dock = DockStyle.None
                 m.Player.Dock = DockStyle.None
+                m.Textbox.Dock = DockStyle.None
+                m.Textbox.SetBounds(x, y, 600, 400)
+                m.Picture.SetBounds(x, y, 600, 400)
+                m.Player.SetBounds(x, y, 600, 400)
+                i += 1
 
             Next
-
-            Media1.Picture.SetBounds(0, 0, 600, 400)
-            Media2.Picture.SetBounds(650, 0, 600, 400)
-            Media3.Picture.SetBounds(250, 480, 600, 400)
-            Media1.Player.SetBounds(0, 0, 600, 400)
-            Media2.Player.SetBounds(650, 0, 600, 400)
-            Media3.Player.SetBounds(250, 480, 600, 400)
 
         Else
             For Each m In MediaHandlers
                 m.Picture.Dock = DockStyle.Fill
                 m.Player.Dock = DockStyle.Fill
+                m.Textbox.Dock = DockStyle.Fill
             Next
 
         End If

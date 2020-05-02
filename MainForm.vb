@@ -1274,6 +1274,8 @@ Friend Class MainForm
         ControlSetFocus(lbxFiles)
         Media.DontLoad = False
         PopulateContextMenu()
+        ctrPicAndButtons.Panel1.Controls.Add(Media.Textbox)
+        Media.Textbox.Dock = DockStyle.Fill
         ' LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\ITC.msl")
         FBH.DirectoryPath = CurrentFolder
         tvMain2.SelectedFolder = CurrentFolder
