@@ -63,7 +63,7 @@ Partial Class MainForm
         Me.ToolStripStatusLabel4 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.stripLastDone = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripProgressBar1 = New System.Windows.Forms.ToolStripProgressBar()
-        Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
+        Me.FullPanel = New System.Windows.Forms.TableLayoutPanel()
         Me.ctrMainFrame = New System.Windows.Forms.SplitContainer()
         Me.ctrFileBoxes = New System.Windows.Forms.SplitContainer()
         Me.tvMain2 = New MasaSam.Forms.Controls.FileSystemTree()
@@ -85,7 +85,6 @@ Partial Class MainForm
         Me.PictureBox3 = New System.Windows.Forms.PictureBox()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.btnRow = New System.Windows.Forms.TableLayoutPanel()
-        Me.CBXButtonFiles = New System.Windows.Forms.ComboBox()
         Me.Scrubber = New System.Windows.Forms.PictureBox()
         Me.Panel8 = New System.Windows.Forms.Panel()
         Me.lbl8 = New System.Windows.Forms.Label()
@@ -131,21 +130,16 @@ Partial Class MainForm
         Me.chbNextFile = New System.Windows.Forms.CheckBox()
         Me.lbxGroups = New System.Windows.Forms.ListBox()
         Me.lblAttributes = New System.Windows.Forms.Label()
-        Me.GroupBox3 = New System.Windows.Forms.GroupBox()
-        Me.chbSeparate = New System.Windows.Forms.CheckBox()
-        Me.chbEncrypt = New System.Windows.Forms.CheckBox()
-        Me.chbPreviewLinks = New System.Windows.Forms.CheckBox()
-        Me.chbShowAttr = New System.Windows.Forms.CheckBox()
-        Me.CHBAutoAdvance = New System.Windows.Forms.CheckBox()
         Me.lblNavigateState = New System.Windows.Forms.Label()
         Me.gpbAutoTrail = New System.Windows.Forms.GroupBox()
-        Me.tbMovieSlideShowSpeed = New System.Windows.Forms.TrackBar()
         Me.tbAutoTrail = New System.Windows.Forms.TrackBar()
         Me.tbScanRate = New System.Windows.Forms.TrackBar()
+        Me.tbMovieSlideShowSpeed = New System.Windows.Forms.TrackBar()
         Me.chbScan = New System.Windows.Forms.CheckBox()
         Me.chbAutoTrail = New System.Windows.Forms.CheckBox()
         Me.chbSlideShow = New System.Windows.Forms.CheckBox()
         Me.InstructionLabel2 = New System.Windows.Forms.Label()
+        Me.CBXButtonFiles = New System.Windows.Forms.ComboBox()
         Me.tmrUpdateFileList = New System.Windows.Forms.Timer(Me.components)
         Me.tmrPicLoad = New System.Windows.Forms.Timer(Me.components)
         Me.tmrJumpVideo = New System.Windows.Forms.Timer(Me.components)
@@ -276,8 +270,14 @@ Partial Class MainForm
         Me.Response = New System.Windows.Forms.Timer(Me.components)
         Me.tmrProgressBar = New System.Windows.Forms.Timer(Me.components)
         Me.tmrJumpRandom = New System.Windows.Forms.Timer(Me.components)
+        Me.CHBAutoAdvance = New System.Windows.Forms.CheckBox()
+        Me.chbShowAttr = New System.Windows.Forms.CheckBox()
+        Me.chbPreviewLinks = New System.Windows.Forms.CheckBox()
+        Me.chbEncrypt = New System.Windows.Forms.CheckBox()
+        Me.chbSeparate = New System.Windows.Forms.CheckBox()
+        Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.StatusStrip1.SuspendLayout()
-        Me.TableLayoutPanel2.SuspendLayout()
+        Me.FullPanel.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ctrMainFrame.Panel1.SuspendLayout()
         Me.ctrMainFrame.Panel2.SuspendLayout()
@@ -319,13 +319,13 @@ Partial Class MainForm
         CType(Me.tbAbsolute, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbPercentage, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
-        Me.GroupBox3.SuspendLayout()
         Me.gpbAutoTrail.SuspendLayout()
-        CType(Me.tbMovieSlideShowSpeed, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbAutoTrail, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbScanRate, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.tbMovieSlideShowSpeed, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.FileSystemWatcher1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip2.SuspendLayout()
+        Me.GroupBox3.SuspendLayout()
         Me.SuspendLayout()
         '
         'FileToolStripMenuItem
@@ -573,27 +573,27 @@ Partial Class MainForm
         Me.ToolStripProgressBar1.Name = "ToolStripProgressBar1"
         Me.ToolStripProgressBar1.Size = New System.Drawing.Size(100, 29)
         '
-        'TableLayoutPanel2
+        'FullPanel
         '
-        Me.TableLayoutPanel2.AutoSize = True
-        Me.TableLayoutPanel2.ColumnCount = 1
-        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel2.Controls.Add(Me.ctrMainFrame, 0, 1)
-        Me.TableLayoutPanel2.Controls.Add(Me.FlowLayoutPanel1, 0, 0)
-        Me.TableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel2.Location = New System.Drawing.Point(0, 38)
-        Me.TableLayoutPanel2.Margin = New System.Windows.Forms.Padding(4)
-        Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
-        Me.TableLayoutPanel2.RowCount = 2
-        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel2.Size = New System.Drawing.Size(3912, 1921)
-        Me.TableLayoutPanel2.TabIndex = 0
+        Me.FullPanel.AutoSize = True
+        Me.FullPanel.ColumnCount = 1
+        Me.FullPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.FullPanel.Controls.Add(Me.ctrMainFrame, 0, 1)
+        Me.FullPanel.Controls.Add(Me.FlowLayoutPanel1, 0, 0)
+        Me.FullPanel.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.FullPanel.Location = New System.Drawing.Point(0, 38)
+        Me.FullPanel.Margin = New System.Windows.Forms.Padding(4)
+        Me.FullPanel.Name = "FullPanel"
+        Me.FullPanel.RowCount = 2
+        Me.FullPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.FullPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.FullPanel.Size = New System.Drawing.Size(3912, 1921)
+        Me.FullPanel.TabIndex = 0
         '
         'ctrMainFrame
         '
         Me.ctrMainFrame.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctrMainFrame.Location = New System.Drawing.Point(4, 202)
+        Me.ctrMainFrame.Location = New System.Drawing.Point(4, 234)
         Me.ctrMainFrame.Margin = New System.Windows.Forms.Padding(4)
         Me.ctrMainFrame.Name = "ctrMainFrame"
         '
@@ -757,6 +757,7 @@ Partial Class MainForm
         Me.ctrPicAndButtons.Panel2.BackColor = System.Drawing.Color.Transparent
         Me.ctrPicAndButtons.Panel2.CausesValidation = False
         Me.ctrPicAndButtons.Panel2.Controls.Add(Me.btnRow)
+        Me.ctrPicAndButtons.Panel2MinSize = 45
         Me.ctrPicAndButtons.Size = New System.Drawing.Size(3010, 1715)
         Me.ctrPicAndButtons.SplitterDistance = 1419
         Me.ctrPicAndButtons.SplitterWidth = 7
@@ -813,7 +814,7 @@ Partial Class MainForm
         '
         Me.PictureBox2.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.PictureBox2.BackColor = System.Drawing.Color.Black
-        Me.PictureBox2.Location = New System.Drawing.Point(1511, 141)
+        Me.PictureBox2.Location = New System.Drawing.Point(1511, 59)
         Me.PictureBox2.Margin = New System.Windows.Forms.Padding(4)
         Me.PictureBox2.Name = "PictureBox2"
         Me.PictureBox2.Size = New System.Drawing.Size(400, 400)
@@ -825,7 +826,7 @@ Partial Class MainForm
         '
         Me.PictureBox3.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.PictureBox3.BackColor = System.Drawing.Color.Black
-        Me.PictureBox3.Location = New System.Drawing.Point(356, 452)
+        Me.PictureBox3.Location = New System.Drawing.Point(356, 370)
         Me.PictureBox3.Margin = New System.Windows.Forms.Padding(4)
         Me.PictureBox3.Name = "PictureBox3"
         Me.PictureBox3.Size = New System.Drawing.Size(400, 400)
@@ -837,7 +838,7 @@ Partial Class MainForm
         '
         Me.PictureBox1.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.PictureBox1.BackColor = System.Drawing.Color.Black
-        Me.PictureBox1.Location = New System.Drawing.Point(0, 1)
+        Me.PictureBox1.Location = New System.Drawing.Point(0, -81)
         Me.PictureBox1.Margin = New System.Windows.Forms.Padding(4)
         Me.PictureBox1.Name = "PictureBox1"
         Me.PictureBox1.Size = New System.Drawing.Size(862, 715)
@@ -859,7 +860,6 @@ Partial Class MainForm
         Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661837!))
         Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661837!))
         Me.btnRow.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.661837!))
-        Me.btnRow.Controls.Add(Me.CBXButtonFiles, 0, 2)
         Me.btnRow.Controls.Add(Me.Scrubber, 0, 0)
         Me.btnRow.Controls.Add(Me.Panel8, 9, 1)
         Me.btnRow.Controls.Add(Me.Panel7, 8, 1)
@@ -876,25 +876,11 @@ Partial Class MainForm
         Me.btnRow.Margin = New System.Windows.Forms.Padding(4)
         Me.btnRow.Name = "btnRow"
         Me.btnRow.RowCount = 3
-        Me.btnRow.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 42.85715!))
-        Me.btnRow.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 216.0!))
-        Me.btnRow.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 57.14285!))
+        Me.btnRow.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.btnRow.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.btnRow.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.btnRow.Size = New System.Drawing.Size(3010, 289)
         Me.btnRow.TabIndex = 3
-        '
-        'CBXButtonFiles
-        '
-        Me.CBXButtonFiles.AllowDrop = True
-        Me.CBXButtonFiles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CBXButtonFiles.FormattingEnabled = True
-        Me.CBXButtonFiles.Items.AddRange(New Object() {"Watch.msb"})
-        Me.CBXButtonFiles.Location = New System.Drawing.Point(4, 251)
-        Me.CBXButtonFiles.Margin = New System.Windows.Forms.Padding(4)
-        Me.CBXButtonFiles.Name = "CBXButtonFiles"
-        Me.CBXButtonFiles.Size = New System.Drawing.Size(290, 32)
-        Me.CBXButtonFiles.Sorted = True
-        Me.CBXButtonFiles.TabIndex = 54
-        Me.CBXButtonFiles.TabStop = False
         '
         'Scrubber
         '
@@ -1208,6 +1194,7 @@ Partial Class MainForm
         '
         'FlowLayoutPanel1
         '
+        Me.FlowLayoutPanel1.AutoSize = True
         Me.FlowLayoutPanel1.Controls.Add(Me.GroupFilters)
         Me.FlowLayoutPanel1.Controls.Add(Me.GroupBox2)
         Me.FlowLayoutPanel1.Controls.Add(Me.GroupBox1)
@@ -1217,11 +1204,12 @@ Partial Class MainForm
         Me.FlowLayoutPanel1.Controls.Add(Me.lblNavigateState)
         Me.FlowLayoutPanel1.Controls.Add(Me.gpbAutoTrail)
         Me.FlowLayoutPanel1.Controls.Add(Me.InstructionLabel2)
+        Me.FlowLayoutPanel1.Controls.Add(Me.CBXButtonFiles)
         Me.FlowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.FlowLayoutPanel1.Location = New System.Drawing.Point(2, 2)
         Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(2)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(3908, 194)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(3908, 226)
         Me.FlowLayoutPanel1.TabIndex = 19
         '
         'GroupFilters
@@ -1439,93 +1427,10 @@ Partial Class MainForm
         Me.lblAttributes.Size = New System.Drawing.Size(0, 25)
         Me.lblAttributes.TabIndex = 47
         '
-        'GroupBox3
-        '
-        Me.GroupBox3.Controls.Add(Me.chbSeparate)
-        Me.GroupBox3.Controls.Add(Me.chbEncrypt)
-        Me.GroupBox3.Controls.Add(Me.chbPreviewLinks)
-        Me.GroupBox3.Controls.Add(Me.chbShowAttr)
-        Me.GroupBox3.Controls.Add(Me.CHBAutoAdvance)
-        Me.GroupBox3.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupBox3.Location = New System.Drawing.Point(1747, 4)
-        Me.GroupBox3.Margin = New System.Windows.Forms.Padding(4)
-        Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Padding = New System.Windows.Forms.Padding(4)
-        Me.GroupBox3.Size = New System.Drawing.Size(241, 190)
-        Me.GroupBox3.TabIndex = 49
-        Me.GroupBox3.TabStop = False
-        Me.GroupBox3.Text = "Options"
-        '
-        'chbSeparate
-        '
-        Me.chbSeparate.AutoSize = True
-        Me.chbSeparate.Dock = System.Windows.Forms.DockStyle.Top
-        Me.chbSeparate.Location = New System.Drawing.Point(4, 113)
-        Me.chbSeparate.Margin = New System.Windows.Forms.Padding(2)
-        Me.chbSeparate.Name = "chbSeparate"
-        Me.chbSeparate.Size = New System.Drawing.Size(233, 29)
-        Me.chbSeparate.TabIndex = 53
-        Me.chbSeparate.TabStop = False
-        Me.chbSeparate.Text = "Separate"
-        Me.chbSeparate.UseVisualStyleBackColor = True
-        '
-        'chbEncrypt
-        '
-        Me.chbEncrypt.AutoSize = True
-        Me.chbEncrypt.Checked = True
-        Me.chbEncrypt.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chbEncrypt.Dock = System.Windows.Forms.DockStyle.Top
-        Me.chbEncrypt.Location = New System.Drawing.Point(4, 84)
-        Me.chbEncrypt.Margin = New System.Windows.Forms.Padding(2)
-        Me.chbEncrypt.Name = "chbEncrypt"
-        Me.chbEncrypt.Size = New System.Drawing.Size(233, 29)
-        Me.chbEncrypt.TabIndex = 49
-        Me.chbEncrypt.TabStop = False
-        Me.chbEncrypt.Text = "Encrypt"
-        Me.chbEncrypt.UseVisualStyleBackColor = True
-        '
-        'chbPreviewLinks
-        '
-        Me.chbPreviewLinks.AutoSize = True
-        Me.chbPreviewLinks.Dock = System.Windows.Forms.DockStyle.Top
-        Me.chbPreviewLinks.Location = New System.Drawing.Point(4, 55)
-        Me.chbPreviewLinks.Margin = New System.Windows.Forms.Padding(2)
-        Me.chbPreviewLinks.Name = "chbPreviewLinks"
-        Me.chbPreviewLinks.Size = New System.Drawing.Size(233, 29)
-        Me.chbPreviewLinks.TabIndex = 48
-        Me.chbPreviewLinks.TabStop = False
-        Me.chbPreviewLinks.Text = "Preview Links"
-        Me.chbPreviewLinks.UseVisualStyleBackColor = True
-        '
-        'chbShowAttr
-        '
-        Me.chbShowAttr.AutoSize = True
-        Me.chbShowAttr.Dock = System.Windows.Forms.DockStyle.Top
-        Me.chbShowAttr.Location = New System.Drawing.Point(4, 26)
-        Me.chbShowAttr.Margin = New System.Windows.Forms.Padding(2)
-        Me.chbShowAttr.Name = "chbShowAttr"
-        Me.chbShowAttr.Size = New System.Drawing.Size(233, 29)
-        Me.chbShowAttr.TabIndex = 47
-        Me.chbShowAttr.TabStop = False
-        Me.chbShowAttr.Text = "Show Attributes (loads slower)"
-        Me.chbShowAttr.UseVisualStyleBackColor = True
-        '
-        'CHBAutoAdvance
-        '
-        Me.CHBAutoAdvance.AutoSize = True
-        Me.CHBAutoAdvance.Location = New System.Drawing.Point(4, 146)
-        Me.CHBAutoAdvance.Margin = New System.Windows.Forms.Padding(4)
-        Me.CHBAutoAdvance.Name = "CHBAutoAdvance"
-        Me.CHBAutoAdvance.Size = New System.Drawing.Size(162, 29)
-        Me.CHBAutoAdvance.TabIndex = 5
-        Me.CHBAutoAdvance.TabStop = False
-        Me.CHBAutoAdvance.Text = "Auto Advance"
-        Me.CHBAutoAdvance.UseVisualStyleBackColor = True
-        '
         'lblNavigateState
         '
         Me.lblNavigateState.AutoSize = True
-        Me.lblNavigateState.Location = New System.Drawing.Point(1994, 0)
+        Me.lblNavigateState.Location = New System.Drawing.Point(2065, 0)
         Me.lblNavigateState.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblNavigateState.Name = "lblNavigateState"
         Me.lblNavigateState.Size = New System.Drawing.Size(71, 25)
@@ -1534,13 +1439,14 @@ Partial Class MainForm
         '
         'gpbAutoTrail
         '
-        Me.gpbAutoTrail.Controls.Add(Me.tbMovieSlideShowSpeed)
         Me.gpbAutoTrail.Controls.Add(Me.tbAutoTrail)
         Me.gpbAutoTrail.Controls.Add(Me.tbScanRate)
+        Me.gpbAutoTrail.Controls.Add(Me.tbMovieSlideShowSpeed)
         Me.gpbAutoTrail.Controls.Add(Me.chbScan)
         Me.gpbAutoTrail.Controls.Add(Me.chbAutoTrail)
         Me.gpbAutoTrail.Controls.Add(Me.chbSlideShow)
-        Me.gpbAutoTrail.Location = New System.Drawing.Point(2071, 4)
+        Me.gpbAutoTrail.Dock = System.Windows.Forms.DockStyle.Top
+        Me.gpbAutoTrail.Location = New System.Drawing.Point(2142, 4)
         Me.gpbAutoTrail.Margin = New System.Windows.Forms.Padding(4)
         Me.gpbAutoTrail.Name = "gpbAutoTrail"
         Me.gpbAutoTrail.Padding = New System.Windows.Forms.Padding(4)
@@ -1549,49 +1455,52 @@ Partial Class MainForm
         Me.gpbAutoTrail.TabStop = False
         Me.gpbAutoTrail.Text = "Autotrail"
         '
-        'tbMovieSlideShowSpeed
-        '
-        Me.tbMovieSlideShowSpeed.Location = New System.Drawing.Point(188, 16)
-        Me.tbMovieSlideShowSpeed.Margin = New System.Windows.Forms.Padding(4)
-        Me.tbMovieSlideShowSpeed.Maximum = 20000
-        Me.tbMovieSlideShowSpeed.Minimum = 1000
-        Me.tbMovieSlideShowSpeed.Name = "tbMovieSlideShowSpeed"
-        Me.tbMovieSlideShowSpeed.Size = New System.Drawing.Size(352, 80)
-        Me.tbMovieSlideShowSpeed.SmallChange = 10
-        Me.tbMovieSlideShowSpeed.TabIndex = 6
-        Me.tbMovieSlideShowSpeed.TickFrequency = 1000
-        Me.tbMovieSlideShowSpeed.Value = 4000
-        '
         'tbAutoTrail
         '
-        Me.tbAutoTrail.Location = New System.Drawing.Point(188, 137)
+        Me.tbAutoTrail.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbAutoTrail.Location = New System.Drawing.Point(281, 128)
         Me.tbAutoTrail.Margin = New System.Windows.Forms.Padding(4)
         Me.tbAutoTrail.Maximum = 5
         Me.tbAutoTrail.Minimum = 1
         Me.tbAutoTrail.Name = "tbAutoTrail"
-        Me.tbAutoTrail.Size = New System.Drawing.Size(352, 80)
-        Me.tbAutoTrail.TabIndex = 5
+        Me.tbAutoTrail.Size = New System.Drawing.Size(449, 80)
+        Me.tbAutoTrail.TabIndex = 8
         Me.tbAutoTrail.TickFrequency = 10
         Me.tbAutoTrail.TickStyle = System.Windows.Forms.TickStyle.None
         Me.tbAutoTrail.Value = 1
         '
         'tbScanRate
         '
-        Me.tbScanRate.Location = New System.Drawing.Point(188, 76)
+        Me.tbScanRate.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbScanRate.Location = New System.Drawing.Point(281, 67)
         Me.tbScanRate.Margin = New System.Windows.Forms.Padding(4)
         Me.tbScanRate.Maximum = 1200
         Me.tbScanRate.Minimum = 50
         Me.tbScanRate.Name = "tbScanRate"
-        Me.tbScanRate.Size = New System.Drawing.Size(352, 80)
+        Me.tbScanRate.Size = New System.Drawing.Size(449, 80)
         Me.tbScanRate.SmallChange = 10
-        Me.tbScanRate.TabIndex = 4
+        Me.tbScanRate.TabIndex = 7
         Me.tbScanRate.TickFrequency = 50
         Me.tbScanRate.Value = 200
+        '
+        'tbMovieSlideShowSpeed
+        '
+        Me.tbMovieSlideShowSpeed.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbMovieSlideShowSpeed.Location = New System.Drawing.Point(281, 7)
+        Me.tbMovieSlideShowSpeed.Margin = New System.Windows.Forms.Padding(4)
+        Me.tbMovieSlideShowSpeed.Maximum = 20000
+        Me.tbMovieSlideShowSpeed.Minimum = 1000
+        Me.tbMovieSlideShowSpeed.Name = "tbMovieSlideShowSpeed"
+        Me.tbMovieSlideShowSpeed.Size = New System.Drawing.Size(449, 80)
+        Me.tbMovieSlideShowSpeed.SmallChange = 10
+        Me.tbMovieSlideShowSpeed.TabIndex = 9
+        Me.tbMovieSlideShowSpeed.TickFrequency = 1000
+        Me.tbMovieSlideShowSpeed.Value = 4000
         '
         'chbScan
         '
         Me.chbScan.AutoSize = True
-        Me.chbScan.Location = New System.Drawing.Point(13, 70)
+        Me.chbScan.Location = New System.Drawing.Point(15, 81)
         Me.chbScan.Margin = New System.Windows.Forms.Padding(4)
         Me.chbScan.Name = "chbScan"
         Me.chbScan.Size = New System.Drawing.Size(142, 29)
@@ -1601,7 +1510,6 @@ Partial Class MainForm
         '
         'chbAutoTrail
         '
-        Me.chbAutoTrail.AutoSize = True
         Me.chbAutoTrail.Location = New System.Drawing.Point(15, 130)
         Me.chbAutoTrail.Margin = New System.Windows.Forms.Padding(4)
         Me.chbAutoTrail.Name = "chbAutoTrail"
@@ -1626,12 +1534,26 @@ Partial Class MainForm
         '
         Me.InstructionLabel2.AutoSize = True
         Me.InstructionLabel2.Dock = System.Windows.Forms.DockStyle.Top
-        Me.InstructionLabel2.Location = New System.Drawing.Point(2793, 0)
+        Me.InstructionLabel2.Location = New System.Drawing.Point(2864, 0)
         Me.InstructionLabel2.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.InstructionLabel2.Name = "InstructionLabel2"
         Me.InstructionLabel2.Size = New System.Drawing.Size(160, 25)
         Me.InstructionLabel2.TabIndex = 56
         Me.InstructionLabel2.Text = "InstructionLabel2"
+        '
+        'CBXButtonFiles
+        '
+        Me.CBXButtonFiles.AllowDrop = True
+        Me.CBXButtonFiles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CBXButtonFiles.FormattingEnabled = True
+        Me.CBXButtonFiles.Items.AddRange(New Object() {"Watch.msb"})
+        Me.CBXButtonFiles.Location = New System.Drawing.Point(3030, 4)
+        Me.CBXButtonFiles.Margin = New System.Windows.Forms.Padding(4)
+        Me.CBXButtonFiles.Name = "CBXButtonFiles"
+        Me.CBXButtonFiles.Size = New System.Drawing.Size(290, 32)
+        Me.CBXButtonFiles.Sorted = True
+        Me.CBXButtonFiles.TabIndex = 58
+        Me.CBXButtonFiles.TabStop = False
         '
         'tmrUpdateFileList
         '
@@ -2436,13 +2358,92 @@ Partial Class MainForm
         '
         Me.tmrJumpRandom.Interval = 500
         '
+        'CHBAutoAdvance
+        '
+        Me.CHBAutoAdvance.AutoSize = True
+        Me.CHBAutoAdvance.Location = New System.Drawing.Point(4, 159)
+        Me.CHBAutoAdvance.Margin = New System.Windows.Forms.Padding(4)
+        Me.CHBAutoAdvance.Name = "CHBAutoAdvance"
+        Me.CHBAutoAdvance.Size = New System.Drawing.Size(162, 29)
+        Me.CHBAutoAdvance.TabIndex = 5
+        Me.CHBAutoAdvance.TabStop = False
+        Me.CHBAutoAdvance.Text = "Auto Advance"
+        Me.CHBAutoAdvance.UseVisualStyleBackColor = True
+        '
+        'chbShowAttr
+        '
+        Me.chbShowAttr.AutoSize = True
+        Me.chbShowAttr.Location = New System.Drawing.Point(4, 26)
+        Me.chbShowAttr.Margin = New System.Windows.Forms.Padding(2)
+        Me.chbShowAttr.Name = "chbShowAttr"
+        Me.chbShowAttr.Size = New System.Drawing.Size(302, 29)
+        Me.chbShowAttr.TabIndex = 47
+        Me.chbShowAttr.TabStop = False
+        Me.chbShowAttr.Text = "Show Attributes (loads slower)"
+        Me.chbShowAttr.UseVisualStyleBackColor = True
+        '
+        'chbPreviewLinks
+        '
+        Me.chbPreviewLinks.AutoSize = True
+        Me.chbPreviewLinks.Location = New System.Drawing.Point(4, 55)
+        Me.chbPreviewLinks.Margin = New System.Windows.Forms.Padding(2)
+        Me.chbPreviewLinks.Name = "chbPreviewLinks"
+        Me.chbPreviewLinks.Size = New System.Drawing.Size(158, 29)
+        Me.chbPreviewLinks.TabIndex = 48
+        Me.chbPreviewLinks.TabStop = False
+        Me.chbPreviewLinks.Text = "Preview Links"
+        Me.chbPreviewLinks.UseVisualStyleBackColor = True
+        '
+        'chbEncrypt
+        '
+        Me.chbEncrypt.AutoSize = True
+        Me.chbEncrypt.Checked = True
+        Me.chbEncrypt.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chbEncrypt.Location = New System.Drawing.Point(4, 84)
+        Me.chbEncrypt.Margin = New System.Windows.Forms.Padding(2)
+        Me.chbEncrypt.Name = "chbEncrypt"
+        Me.chbEncrypt.Size = New System.Drawing.Size(104, 29)
+        Me.chbEncrypt.TabIndex = 49
+        Me.chbEncrypt.TabStop = False
+        Me.chbEncrypt.Text = "Encrypt"
+        Me.chbEncrypt.UseVisualStyleBackColor = True
+        '
+        'chbSeparate
+        '
+        Me.chbSeparate.AutoSize = True
+        Me.chbSeparate.Location = New System.Drawing.Point(4, 113)
+        Me.chbSeparate.Margin = New System.Windows.Forms.Padding(2)
+        Me.chbSeparate.Name = "chbSeparate"
+        Me.chbSeparate.Size = New System.Drawing.Size(118, 29)
+        Me.chbSeparate.TabIndex = 53
+        Me.chbSeparate.TabStop = False
+        Me.chbSeparate.Text = "Separate"
+        Me.chbSeparate.UseVisualStyleBackColor = True
+        '
+        'GroupBox3
+        '
+        Me.GroupBox3.AutoSize = True
+        Me.GroupBox3.Controls.Add(Me.chbSeparate)
+        Me.GroupBox3.Controls.Add(Me.chbEncrypt)
+        Me.GroupBox3.Controls.Add(Me.chbPreviewLinks)
+        Me.GroupBox3.Controls.Add(Me.chbShowAttr)
+        Me.GroupBox3.Controls.Add(Me.CHBAutoAdvance)
+        Me.GroupBox3.Location = New System.Drawing.Point(1747, 4)
+        Me.GroupBox3.Margin = New System.Windows.Forms.Padding(4)
+        Me.GroupBox3.Name = "GroupBox3"
+        Me.GroupBox3.Padding = New System.Windows.Forms.Padding(4)
+        Me.GroupBox3.Size = New System.Drawing.Size(312, 218)
+        Me.GroupBox3.TabIndex = 49
+        Me.GroupBox3.TabStop = False
+        Me.GroupBox3.Text = "Options"
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(11.0!, 24.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(3912, 1994)
-        Me.Controls.Add(Me.TableLayoutPanel2)
+        Me.Controls.Add(Me.FullPanel)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.MenuStrip2)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
@@ -2455,7 +2456,8 @@ Partial Class MainForm
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
-        Me.TableLayoutPanel2.ResumeLayout(False)
+        Me.FullPanel.ResumeLayout(False)
+        Me.FullPanel.PerformLayout()
         Me.ctrMainFrame.Panel1.ResumeLayout(False)
         Me.ctrMainFrame.Panel2.ResumeLayout(False)
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).EndInit()
@@ -2509,16 +2511,16 @@ Partial Class MainForm
         CType(Me.tbPercentage, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
-        Me.GroupBox3.ResumeLayout(False)
-        Me.GroupBox3.PerformLayout()
         Me.gpbAutoTrail.ResumeLayout(False)
         Me.gpbAutoTrail.PerformLayout()
-        CType(Me.tbMovieSlideShowSpeed, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbAutoTrail, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbScanRate, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.tbMovieSlideShowSpeed, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.FileSystemWatcher1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.MenuStrip2.ResumeLayout(False)
         Me.MenuStrip2.PerformLayout()
+        Me.GroupBox3.ResumeLayout(False)
+        Me.GroupBox3.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -2540,7 +2542,7 @@ Partial Class MainForm
     Friend WithEvents SlideShowToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents VideoToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents HelpToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
+    Friend WithEvents FullPanel As TableLayoutPanel
     Friend WithEvents ctrMainFrame As SplitContainer
     Friend WithEvents ctrFileBoxes As SplitContainer
 
@@ -2622,19 +2624,6 @@ Partial Class MainForm
     Friend WithEvents tsslPicState As ToolStripStatusLabel
     Friend WithEvents tbState As ToolStripStatusLabel
     Friend WithEvents SoundWMP As AxWMPLib.AxWindowsMediaPlayer
-    Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
-    Friend WithEvents GroupBox2 As GroupBox
-    Friend WithEvents tbPercentage As TrackBar
-    Friend WithEvents tbxPercentage As TextBox
-    Friend WithEvents cbxStartPoint As ComboBox
-    Friend WithEvents GroupBox1 As GroupBox
-    Friend WithEvents chbAutoTrail As CheckBox
-    Friend WithEvents chbOnDir As CheckBox
-    Friend WithEvents chbNextFile As CheckBox
-    Friend WithEvents lbxGroups As ListBox
-    Friend WithEvents lblAttributes As Label
-    Friend WithEvents tbxAbsolute As TextBox
-    Friend WithEvents tbAbsolute As TrackBar
     Friend WithEvents MenuStrip2 As MenuStrip
     Friend WithEvents FileToolStripMenuItem2 As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem14 As ToolStripMenuItem
@@ -2723,23 +2712,13 @@ Partial Class MainForm
     Friend WithEvents ToolStripSeparator12 As ToolStripSeparator
     Friend WithEvents AutoButton As ToolStripMenuItem
     Friend WithEvents Response As Timer
-    Friend WithEvents GroupBox3 As GroupBox
-    Friend WithEvents chbPreviewLinks As CheckBox
-    Friend WithEvents chbShowAttr As CheckBox
     Friend WithEvents DisplayedToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SelectedToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents chbEncrypt As CheckBox
-    Friend WithEvents GroupFilters As GroupBox
-    Friend WithEvents Label1 As Label
-    Friend WithEvents cbxOrder As ComboBox
-    Friend WithEvents Label3 As Label
-    Friend WithEvents cbxFilter As ComboBox
     Friend WithEvents ForceFavouritesReloadToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ForceDirectoriesReloadToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents RemoveToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents HideDeadLinksToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents InvertSelectionToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents chbSeparate As CheckBox
     Friend WithEvents TBFractionAbsolute As ToolStripStatusLabel
     Friend WithEvents AlphabeticGroupsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents Scrubber As PictureBox
@@ -2750,7 +2729,6 @@ Partial Class MainForm
     Friend WithEvents ListDeadFilesToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents IncludingAllSubfoldersToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents JustTopFoldersToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents chbLoadButtonFiles As CheckBox
     Friend WithEvents LettersToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ContextMenuStrip1 As ContextMenuStrip
     Friend WithEvents ToolStripMenuItem1 As ToolStripMenuItem
@@ -2762,22 +2740,46 @@ Partial Class MainForm
     Friend WithEvents tmrProgressBar As Timer
     Friend WithEvents SelectAndBundleToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents RefreshAllFilesWithLinksToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents CHBAutoAdvance As CheckBox
-    Friend WithEvents CBXButtonFiles As ComboBox
-    Friend WithEvents lblNavigateState As Label
     Friend WithEvents MovieScanToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents tmrJumpRandom As Timer
     Friend WithEvents ResetButtonsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator14 As ToolStripSeparator
     Friend WithEvents PreferencesToolStripMenuItem1 As ToolStripMenuItem
-    Friend WithEvents gpbAutoTrail As GroupBox
-    Friend WithEvents tbScanRate As TrackBar
-    Friend WithEvents chbScan As CheckBox
-    Friend WithEvents chbSlideShow As CheckBox
-    Friend WithEvents tbAutoTrail As TrackBar
     Friend WithEvents ReplaceOldLinksToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents InstructionLabel2 As Label
-    Friend WithEvents tbMovieSlideShowSpeed As TrackBar
     Friend WithEvents PromoteIdenticalSubFoldersToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents RenewLinksOfSelectedToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
+    Friend WithEvents GroupFilters As GroupBox
+    Friend WithEvents Label1 As Label
+    Friend WithEvents cbxOrder As ComboBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents cbxFilter As ComboBox
+    Friend WithEvents GroupBox2 As GroupBox
+    Friend WithEvents tbAbsolute As TrackBar
+    Friend WithEvents tbxAbsolute As TextBox
+    Friend WithEvents tbPercentage As TrackBar
+    Friend WithEvents tbxPercentage As TextBox
+    Friend WithEvents cbxStartPoint As ComboBox
+    Friend WithEvents GroupBox1 As GroupBox
+    Friend WithEvents chbLoadButtonFiles As CheckBox
+    Friend WithEvents chbOnDir As CheckBox
+    Friend WithEvents chbNextFile As CheckBox
+    Friend WithEvents lbxGroups As ListBox
+    Friend WithEvents lblAttributes As Label
+    Friend WithEvents lblNavigateState As Label
+    Friend WithEvents gpbAutoTrail As GroupBox
+    Friend WithEvents chbScan As CheckBox
+    Friend WithEvents chbAutoTrail As CheckBox
+    Friend WithEvents chbSlideShow As CheckBox
+    Friend WithEvents InstructionLabel2 As Label
+    Friend WithEvents CBXButtonFiles As ComboBox
+    Friend WithEvents tbAutoTrail As TrackBar
+    Friend WithEvents tbScanRate As TrackBar
+    Friend WithEvents tbMovieSlideShowSpeed As TrackBar
+    Friend WithEvents GroupBox3 As GroupBox
+    Friend WithEvents chbSeparate As CheckBox
+    Friend WithEvents chbEncrypt As CheckBox
+    Friend WithEvents chbPreviewLinks As CheckBox
+    Friend WithEvents chbShowAttr As CheckBox
+    Friend WithEvents CHBAutoAdvance As CheckBox
 End Class

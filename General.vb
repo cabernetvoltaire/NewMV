@@ -679,7 +679,7 @@ Public Module General
                 Return Filetype.Movie
             ElseIf InStr(PICEXTENSIONS, strExt) <> 0 Then
                 Return Filetype.Pic
-            ElseIf InStr(LCase(".txt.prn.sty.doc.csv"), lcase(strExt)) <> 0 Then
+            ElseIf InStr(LCase(".txt.prn.sty.doc.csv.html"), lcase(strExt)) <> 0 Then
                 Return Filetype.Doc
             Else
                 Return Filetype.Unknown
@@ -758,7 +758,41 @@ Public Module General
         Return List
     End Function
 
+    Friend Function ExtractParagraphs(Story As String, MH As MediaHandler) As String
+        Dim txtan As New TextAnalyzer With {.RawText = Story}
 
+        Return txtan.CleanText
+
+        'Return Story
+        Exit Function
+
+        Dim lines() As String = Story.Split(vbLf)
+        If lines.Length = 1 Then
+            Return lines(0)
+            Exit Function
+        End If
+        Dim paras As New List(Of String)
+        Dim currentpara As String = ""
+        For i = 0 To lines.Length - 1
+            Dim line As String = lines(i)
+            line = line.Replace(vbCr, "").Replace(vbLf, " ").Replace(vbCrLf, "")
+            If line.Length <> 0 And line.Replace(" ", "").Length <> 0 Then
+                If line(0) = " " Then
+                    paras.Add(currentpara)
+                    currentpara = ""
+                    currentpara = " " & line
+                Else
+                    currentpara = currentpara & " " & line
+                End If
+            End If
+        Next
+        paras.Add(currentpara)
+        Dim returnstring As String = ""
+        For Each p In paras
+            returnstring = returnstring & vbCrLf & vbCrLf & p
+        Next
+        Return returnstring
+    End Function
 
 
     Function GetDate(f As FileInfo) As DateTime
@@ -1174,6 +1208,20 @@ Public Module General
         Dim r As Rectangle = ctl.Bounds
         outliner.SetBounds(r.Left - 5, r.Top - 5, r.Width + 10, r.Height + 10)
     End Sub
+    Public Class MetaInfo
+        Public Mdir As MetadataExtractor.Directory
+        Public Directory As IReadOnlyList(Of MetadataExtractor.Directory)
+        Public FileName As String
+        Public CreateDate As String
+        Public FileSize As Long
+        Public Duration As Long
+        Public Sub GetData()
+            For Each m In Directory
+                'If m.GetTagName() = "File Name" Then
 
+                'End If
+            Next
+        End Sub
+    End Class
 
 End Module

@@ -46,7 +46,10 @@ Friend Module FileHandling
         If Media.MediaType = Filetype.Movie Then
             MainForm.PopulateLinkList(sender)
         End If
-
+        'If Media.MediaType = Filetype.Doc Then
+        '    MainForm.TextBox1 = Media.Textbox
+        '    MainForm.TextBox1.Dock = DockStyle.Fill
+        'End If
         Media.SetLink(0)
         With MainForm
             .AT.Counter = Media.Markers.Count

@@ -1,5 +1,7 @@
 ﻿Imports AxWMPLib
 Imports System.Text.UTF8Encoding
+
+
 Public Class MediaHandler
 #Region "Members"
 
@@ -13,12 +15,21 @@ Public Class MediaHandler
 
     Private WithEvents Sound As New AxWindowsMediaPlayer
     Private Property mSndH As New SoundController 'With {.SoundPlayer = Sound, .CurrentPlayer = Player}
-    Public Property Textbox As New TextBox With {.Multiline = True, .Dock = DockStyle.None}
+    Public Property Textbox As New RichTextBox With {
+        .Multiline = True,
+        .Dock = DockStyle.Fill,
+        .BorderStyle = BorderStyle.None,
+        .ScrollBars = ScrollBars.Both, .WordWrap = True,
+        .Font = New Font("Calibri", 16, FontStyle.Regular),
+        .BackColor = Color.Black,
+        .ForeColor = Color.AntiqueWhite}
+    Private MetaDirectory As IReadOnlyList(Of MetadataExtractor.Directory)
+    Public ShowMeta As Boolean = False
     Public IsCurrent As Boolean = False
 
     Private WithEvents ResetPosition As New Timer With {.Interval = 1000} 'Changing can affect loading
-    Public WithEvents PositionUpdater As New Timer With {.Interval = 200} 'Too short causes a crash on exiting.
-    Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 15000}
+    Public WithEvents PositionUpdater As New Timer With {.Interval = 100} 'Too short causes a crash on exiting.
+    Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 30000}
     Public WithEvents PicHandler As New PictureHandler(Picture)
     Public Metadata As String = ""
 
@@ -184,23 +195,23 @@ Public Class MediaHandler
                 mType = FindType(value)
                 Dim f As New IO.FileInfo(value)
                 If f.Exists Then
-                        If mType = Filetype.Link Then
-                            mIsLink = True
-                            mLinkPath = LinkTarget(f.FullName)
-                            If mLinkPath = "" Then mLinkPath = mMediaPath
-                        Else
-                            mIsLink = False
-                            mLinkPath = ""
-                        End If
-                        If Not DontLoad Then LoadMedia()
-                        mMediaDirectory = f.Directory.FullName
+                    If mType = Filetype.Link Then
+                        mIsLink = True
+                        mLinkPath = LinkTarget(f.FullName)
+                        If mLinkPath = "" Then mLinkPath = mMediaPath
                     Else
-                        mMediaPath = DefaultFile
-                        mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
-                        If Not DontLoad Then LoadMedia()
+                        mIsLink = False
+                        mLinkPath = ""
                     End If
+                    If Not DontLoad Then LoadMedia()
+                    mMediaDirectory = f.Directory.FullName
+                Else
+                    mMediaPath = DefaultFile
+                    mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
+                    If Not DontLoad Then LoadMedia()
+                End If
 
-                    mMarkers = GetMarkersFromLinkList()
+                mMarkers = GetMarkersFromLinkList()
                 mMarkers.Sort()
                 'RaiseEvent MediaChanged(Me, New EventArgs)
 
@@ -509,14 +520,35 @@ Public Class MediaHandler
                 'mPicBox.Dispose()
                 Exit Sub
         End Select
+        Try
 
+            If mIsLink Then
+                MetaDirectory = MetadataExtractor.ImageMetadataReader.ReadMetadata(mLinkPath)
+            Else
+
+                MetaDirectory = MetadataExtractor.ImageMetadataReader.ReadMetadata(mMediaPath)
+
+            End If
+
+        Catch ex As Exception
+
+        End Try
     End Sub
     Private Sub HandleDoc(url As String)
         Dim fileReader As String
         fileReader = My.Computer.FileSystem.ReadAllText(url)
-        Textbox.Text = fileReader
-        Textbox.BringToFront()
+        Try
+            Textbox.LoadFile(url)
+        Catch ex As Exception
+            Dim s As String = ExtractParagraphs(fileReader, Me)
+            If s = "No" Then
+            Else
+                Textbox.Text = s
 
+            End If
+
+        End Try
+        MainForm.ctrPicAndButtons.Panel1.Controls.Add(Textbox)
     End Sub
     Private Sub HandleMovie(URL As String)
         ' BreakExecution()
@@ -616,7 +648,7 @@ Public Class MediaHandler
                 'MsgBox("playing " & Media.Player.URL & " on " & Me.Name)
                 mSndH.Slow = False
                 PositionUpdater.Enabled = True
-                ResetPositionCanceller.Enabled = True 'Changing can affect loading
+
 
                 ' mResetCounter = 0
                 mDuration = mPlayer.currentMedia.duration
@@ -672,6 +704,7 @@ Public Class MediaHandler
     End Sub
 
     Private Sub ResetPositionCanceller_Tick(sender As Object, e As EventArgs) Handles ResetPositionCanceller.Tick
+        Exit Sub
         ResetPosition.Enabled = False
         ResetPositionCanceller.Enabled = False
     End Sub
@@ -682,11 +715,16 @@ Public Class MediaHandler
             Return ""
             Exit Function
         End If
-        '  Exit Function
+        'Return MetaDirectory(2).Tags(2).ToString
+        Exit Function
+
+
+
         Dim r As New System.Text.RegularExpressions.Regex(":")
         Dim text As String = ""
         Dim datetaken As String
         Dim m As Imaging.PropertyItem
+
         Try
             m = img.GetPropertyItem(36867)
             datetaken = r.Replace(UTF8.GetString(m.Value), "-", 2)

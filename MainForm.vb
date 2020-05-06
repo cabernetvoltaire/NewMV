@@ -29,6 +29,7 @@ Friend Class MainForm
     Public WithEvents X As New OrphanFinder
     Public WithEvents VT As New VideoThumbnailer
     Public WithEvents FKH As FunctionKeyHandler
+
     Public Splash As New SplashScreen1
 
     ' Public WithEvents Response As New Timer
@@ -271,8 +272,7 @@ Friend Class MainForm
         }
                 T.SetApartmentState(ApartmentState.STA)
 
-                T.Start() 'Causing memory leak?
-                ' Op.ReuniteWithFile(x, filepath)
+                T.Start()
             End If
         End If
 
@@ -1275,7 +1275,6 @@ Friend Class MainForm
         Media.DontLoad = False
         PopulateContextMenu()
         ctrPicAndButtons.Panel1.Controls.Add(Media.Textbox)
-        Media.Textbox.Dock = DockStyle.Fill
         ' LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\ITC.msl")
         FBH.DirectoryPath = CurrentFolder
         tvMain2.SelectedFolder = CurrentFolder
@@ -1443,7 +1442,6 @@ Friend Class MainForm
         '  IndexHandler(FocusControl, e)
         NewIndex.Enabled = False
 
-        NewIndex.Interval = 100 'Too small, and flow is jerky when scrolling
 
         NewIndex.Enabled = True
 
@@ -2861,7 +2859,7 @@ Friend Class MainForm
         RefreshLinks(ListfromSelectedInListbox(FocusControl))
     End Sub
 
-    Private Sub CBXButtonFiles_SelectedIndexChanged(sender As Object, e As EventArgs) Handles CBXButtonFiles.SelectedIndexChanged
+    Private Sub CBXButtonFiles_SelectedIndexChanged(sender As Object, e As EventArgs)
         Dim folder As String = CBXButtonFiles.SelectedItem
         Autoload(FilenameFromPath(folder, False))
     End Sub
@@ -2872,6 +2870,8 @@ Friend Class MainForm
     End Sub
 
     Private Sub chbShowAttr_CheckedChanged(sender As Object, e As EventArgs) Handles chbShowAttr.CheckedChanged
+        lblAttributes.Visible = chbShowAttr.Checked
+
         'MsgBox("Attribute Changed")
     End Sub
 
@@ -2910,7 +2910,7 @@ Friend Class MainForm
         End If
     End Sub
 
-    Private Sub tbScanRate_ValueChanged(sender As Object, e As EventArgs) Handles tbScanRate.ValueChanged
+    Private Sub tbScanRate_ValueChanged(sender As Object, e As EventArgs) 
         tmrJumpRandom.Interval = tbScanRate.Value
     End Sub
     Private Sub MainForm_Mousewheel(sender As Object, e As MouseEventArgs) Handles Me.MouseWheel
@@ -2964,11 +2964,11 @@ Friend Class MainForm
         tmrMovieSlideShow.Enabled = chbSlideShow.Checked
     End Sub
 
-    Private Sub tbMovieSlideShowSpeed_Scroll(sender As Object, e As EventArgs) Handles tbMovieSlideShowSpeed.Scroll
+    Private Sub tbMovieSlideShowSpeed_Scroll(sender As Object, e As EventArgs) 
         tmrMovieSlideShow.Interval = tbMovieSlideShowSpeed.Value
     End Sub
 
-    Private Sub tbAutoTrail_Scroll(sender As Object, e As EventArgs) Handles tbAutoTrail.Scroll
+    Private Sub tbAutoTrail_Scroll(sender As Object, e As EventArgs) 
 
     End Sub
 
@@ -3003,6 +3003,8 @@ Friend Class MainForm
             End If
         Next
     End Sub
+
+
 #End Region
 
 End Class

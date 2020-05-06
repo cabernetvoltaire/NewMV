@@ -6,10 +6,8 @@ Public Class MediaSwapper
     Public WithEvents Media2 As New MediaHandler("mMedia2")
     Public WithEvents Media3 As New MediaHandler("mMedia3")
     Public MediaHandlers As New List(Of MediaHandler) From {Media1, Media2, Media3}
-    'Public WithEvents Pic1 As New PictureHandler(Media1.Picture)
-    'Public WithEvents Pic2 As New PictureHandler(Media2.Picture)
-    'Public WithEvents Pic3 As New PictureHandler(Media3.Picture)
-    Private textbox As New TextBox
+
+
     Private Outliner As New PictureBox With {.BackColor = Color.HotPink}
     Private WithEvents PauseAll As New Timer With {.Interval = 3000, .Enabled = False}
     Private mRandomNext As Boolean = False
@@ -80,6 +78,8 @@ Public Class MediaSwapper
             NextItem = NextF.NextItem
         End If
     End Sub
+
+
     ''' <summary>
     ''' Sets the listindex to make the currently shown medium.
     ''' </summary>
@@ -124,6 +124,7 @@ Public Class MediaSwapper
         Media1.Player = MP1
         Media2.Player = MP2
         Media3.Player = MP3
+
 
     End Sub
     ''' <summary>
@@ -237,7 +238,7 @@ Public Class MediaSwapper
     End Sub
     Private Sub ShowPicture(ByRef MHX As MediaHandler)
         MuteAll()
-        HideMedias(MHX)
+        ' HideMedias(MHX)
         MHX.Picture.Visible = True
         MHX.Picture.BringToFront()
         RaiseEvent MediaShown(MHX, Nothing)
@@ -245,7 +246,7 @@ Public Class MediaSwapper
     End Sub
     Private Sub ShowTextFile(ByRef MHX As MediaHandler)
         MuteAll()
-        HideMedias(MHX)
+        ' HideMedias(MHX)
 
         MHX.Visible = False
         MHX.Textbox.BringToFront()
@@ -255,7 +256,7 @@ Public Class MediaSwapper
     End Sub
     Private Sub ShowPlayer(ByRef MHX As MediaHandler)
         MuteAll()
-        HideMedias(MHX)
+        '  HideMedias(MHX)
 
         ResetPositionsAgain()
         MHX.PlaceResetter(False) 'Starts the video playing
@@ -395,6 +396,11 @@ Public Class MediaSwapper
                 m.Picture.SetBounds(x, y, 600, 400)
                 m.Player.SetBounds(x, y, 600, 400)
                 i += 1
+                'm.Player.SendToBack()
+                'm.PicHandler.PicBox.SendToBack()
+
+                Outliner.BringToFront()
+                'm.Textbox.SendToBack()
 
             Next
 
@@ -402,7 +408,7 @@ Public Class MediaSwapper
             For Each m In MediaHandlers
                 m.Picture.Dock = DockStyle.Fill
                 m.Player.Dock = DockStyle.Fill
-                m.Textbox.Dock = DockStyle.Fill
+                ' m.Textbox.Dock = DockStyle.Fill
             Next
 
         End If
