@@ -369,7 +369,29 @@ Public Class MediaSwapper
             m.PicHandler.ZoomFactor = zoomfactor
         Next
     End Sub
+    'Public Sub DockMedias(separated As Boolean)
+    '    If separated Then
+    '        For Each m In MediaHandlers
+    '            m.Picture.Dock = DockStyle.None
+    '            m.Player.Dock = DockStyle.None
 
+    '        Next
+
+    '        Media1.Picture.SetBounds(0, 0, 600, 400)
+    '        Media2.Picture.SetBounds(650, 0, 600, 400)
+    '        Media3.Picture.SetBounds(250, 480, 600, 400)
+    '        Media1.Player.SetBounds(0, 0, 600, 400)
+    '        Media2.Player.SetBounds(650, 0, 600, 400)
+    '        Media3.Player.SetBounds(250, 480, 600, 400)
+
+    '    Else
+    '        For Each m In MediaHandlers
+    '            m.Picture.Dock = DockStyle.Fill
+    '            m.Player.Dock = DockStyle.Fill
+    '        Next
+
+    '    End If
+    'End Sub
     Public Sub DockMedias(separated As Boolean)
         If separated Then
             Dim i As Int16 = 0
@@ -399,10 +421,10 @@ Public Class MediaSwapper
                 'm.Player.SendToBack()
                 'm.PicHandler.PicBox.SendToBack()
 
-                Outliner.BringToFront()
                 'm.Textbox.SendToBack()
 
             Next
+            Outliner.Visible = True
 
         Else
             For Each m In MediaHandlers

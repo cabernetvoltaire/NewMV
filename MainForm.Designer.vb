@@ -66,7 +66,6 @@ Partial Class MainForm
         Me.FullPanel = New System.Windows.Forms.TableLayoutPanel()
         Me.ctrMainFrame = New System.Windows.Forms.SplitContainer()
         Me.ctrFileBoxes = New System.Windows.Forms.SplitContainer()
-        Me.tvMain2 = New MasaSam.Forms.Controls.FileSystemTree()
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem3 = New System.Windows.Forms.ToolStripMenuItem()
@@ -77,10 +76,6 @@ Partial Class MainForm
         Me.lbxFiles = New System.Windows.Forms.ListBox()
         Me.lbxShowList = New System.Windows.Forms.ListBox()
         Me.ctrPicAndButtons = New System.Windows.Forms.SplitContainer()
-        Me.MainWMP1 = New AxWMPLib.AxWindowsMediaPlayer()
-        Me.MainWMP3 = New AxWMPLib.AxWindowsMediaPlayer()
-        Me.MainWMP2 = New AxWMPLib.AxWindowsMediaPlayer()
-        Me.SoundWMP = New AxWMPLib.AxWindowsMediaPlayer()
         Me.PictureBox2 = New System.Windows.Forms.PictureBox()
         Me.PictureBox3 = New System.Windows.Forms.PictureBox()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
@@ -130,6 +125,12 @@ Partial Class MainForm
         Me.chbNextFile = New System.Windows.Forms.CheckBox()
         Me.lbxGroups = New System.Windows.Forms.ListBox()
         Me.lblAttributes = New System.Windows.Forms.Label()
+        Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.chbSeparate = New System.Windows.Forms.CheckBox()
+        Me.chbEncrypt = New System.Windows.Forms.CheckBox()
+        Me.chbPreviewLinks = New System.Windows.Forms.CheckBox()
+        Me.chbShowAttr = New System.Windows.Forms.CheckBox()
+        Me.CHBAutoAdvance = New System.Windows.Forms.CheckBox()
         Me.lblNavigateState = New System.Windows.Forms.Label()
         Me.gpbAutoTrail = New System.Windows.Forms.GroupBox()
         Me.tbAutoTrail = New System.Windows.Forms.TrackBar()
@@ -263,6 +264,8 @@ Partial Class MainForm
         Me.ShowlistToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DashboardToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExperimentToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DatabaseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CreateListOfFilesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PositionUpdater = New System.Windows.Forms.Timer(Me.components)
         Me.tmrMovieSlideShow = New System.Windows.Forms.Timer(Me.components)
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
@@ -270,12 +273,11 @@ Partial Class MainForm
         Me.Response = New System.Windows.Forms.Timer(Me.components)
         Me.tmrProgressBar = New System.Windows.Forms.Timer(Me.components)
         Me.tmrJumpRandom = New System.Windows.Forms.Timer(Me.components)
-        Me.CHBAutoAdvance = New System.Windows.Forms.CheckBox()
-        Me.chbShowAttr = New System.Windows.Forms.CheckBox()
-        Me.chbPreviewLinks = New System.Windows.Forms.CheckBox()
-        Me.chbEncrypt = New System.Windows.Forms.CheckBox()
-        Me.chbSeparate = New System.Windows.Forms.CheckBox()
-        Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.tmrHighlightCurrent = New System.Windows.Forms.Timer(Me.components)
+        Me.MainWMP1 = New AxWMPLib.AxWindowsMediaPlayer()
+        Me.MainWMP3 = New AxWMPLib.AxWindowsMediaPlayer()
+        Me.MainWMP2 = New AxWMPLib.AxWindowsMediaPlayer()
+        Me.SoundWMP = New AxWMPLib.AxWindowsMediaPlayer()
         Me.StatusStrip1.SuspendLayout()
         Me.FullPanel.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -295,10 +297,6 @@ Partial Class MainForm
         Me.ctrPicAndButtons.Panel1.SuspendLayout()
         Me.ctrPicAndButtons.Panel2.SuspendLayout()
         Me.ctrPicAndButtons.SuspendLayout()
-        CType(Me.MainWMP1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.MainWMP3, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.MainWMP2, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.SoundWMP, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox3, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -319,13 +317,17 @@ Partial Class MainForm
         CType(Me.tbAbsolute, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbPercentage, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
+        Me.GroupBox3.SuspendLayout()
         Me.gpbAutoTrail.SuspendLayout()
         CType(Me.tbAutoTrail, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbScanRate, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbMovieSlideShowSpeed, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.FileSystemWatcher1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip2.SuspendLayout()
-        Me.GroupBox3.SuspendLayout()
+        CType(Me.MainWMP1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.MainWMP3, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.MainWMP2, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.SoundWMP, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'FileToolStripMenuItem
@@ -620,10 +622,6 @@ Partial Class MainForm
         Me.ctrFileBoxes.Name = "ctrFileBoxes"
         Me.ctrFileBoxes.Orientation = System.Windows.Forms.Orientation.Horizontal
         '
-        'ctrFileBoxes.Panel1
-        '
-        Me.ctrFileBoxes.Panel1.Controls.Add(Me.tvMain2)
-        '
         'ctrFileBoxes.Panel2
         '
         Me.ctrFileBoxes.Panel2.Controls.Add(Me.MasterContainer)
@@ -632,22 +630,6 @@ Partial Class MainForm
         Me.ctrFileBoxes.SplitterWidth = 14
         Me.ctrFileBoxes.TabIndex = 0
         Me.ctrFileBoxes.TabStop = False
-        '
-        'tvMain2
-        '
-        Me.tvMain2.AllowDrop = True
-        Me.tvMain2.AutoExpandNodes = False
-        Me.tvMain2.ContextMenuStrip = Me.ContextMenuStrip1
-        Me.tvMain2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.tvMain2.FileExtensions = "*"
-        Me.tvMain2.Location = New System.Drawing.Point(0, 0)
-        Me.tvMain2.Margin = New System.Windows.Forms.Padding(11)
-        Me.tvMain2.Name = "tvMain2"
-        Me.tvMain2.RootDrive = Nothing
-        Me.tvMain2.SelectedFolder = Nothing
-        Me.tvMain2.Size = New System.Drawing.Size(844, 743)
-        Me.tvMain2.TabIndex = 1
-        Me.tvMain2.TrackDriveState = True
         '
         'ContextMenuStrip1
         '
@@ -763,52 +745,6 @@ Partial Class MainForm
         Me.ctrPicAndButtons.SplitterWidth = 7
         Me.ctrPicAndButtons.TabIndex = 0
         Me.ctrPicAndButtons.TabStop = False
-        '
-        'MainWMP1
-        '
-        Me.MainWMP1.Enabled = True
-        Me.MainWMP1.Location = New System.Drawing.Point(162, 128)
-        Me.MainWMP1.Margin = New System.Windows.Forms.Padding(4)
-        Me.MainWMP1.Name = "MainWMP1"
-        Me.MainWMP1.OcxState = CType(resources.GetObject("MainWMP1.OcxState"), System.Windows.Forms.AxHost.State)
-        Me.MainWMP1.Size = New System.Drawing.Size(620, 491)
-        Me.MainWMP1.TabIndex = 6
-        Me.MainWMP1.TabStop = False
-        '
-        'MainWMP3
-        '
-        Me.MainWMP3.Enabled = True
-        Me.MainWMP3.Location = New System.Drawing.Point(460, 394)
-        Me.MainWMP3.Margin = New System.Windows.Forms.Padding(4)
-        Me.MainWMP3.Name = "MainWMP3"
-        Me.MainWMP3.OcxState = CType(resources.GetObject("MainWMP3.OcxState"), System.Windows.Forms.AxHost.State)
-        Me.MainWMP3.Size = New System.Drawing.Size(690, 491)
-        Me.MainWMP3.TabIndex = 5
-        Me.MainWMP3.TabStop = False
-        '
-        'MainWMP2
-        '
-        Me.MainWMP2.Enabled = True
-        Me.MainWMP2.Location = New System.Drawing.Point(749, 25)
-        Me.MainWMP2.Margin = New System.Windows.Forms.Padding(4)
-        Me.MainWMP2.Name = "MainWMP2"
-        Me.MainWMP2.OcxState = CType(resources.GetObject("MainWMP2.OcxState"), System.Windows.Forms.AxHost.State)
-        Me.MainWMP2.Size = New System.Drawing.Size(664, 518)
-        Me.MainWMP2.TabIndex = 4
-        Me.MainWMP2.TabStop = False
-        Me.MainWMP2.UseWaitCursor = True
-        Me.MainWMP2.Visible = False
-        '
-        'SoundWMP
-        '
-        Me.SoundWMP.Enabled = True
-        Me.SoundWMP.Location = New System.Drawing.Point(499, 376)
-        Me.SoundWMP.Margin = New System.Windows.Forms.Padding(2)
-        Me.SoundWMP.Name = "SoundWMP"
-        Me.SoundWMP.OcxState = CType(resources.GetObject("SoundWMP.OcxState"), System.Windows.Forms.AxHost.State)
-        Me.SoundWMP.Size = New System.Drawing.Size(572, 412)
-        Me.SoundWMP.TabIndex = 3
-        Me.SoundWMP.Visible = False
         '
         'PictureBox2
         '
@@ -1426,6 +1362,85 @@ Partial Class MainForm
         Me.lblAttributes.Name = "lblAttributes"
         Me.lblAttributes.Size = New System.Drawing.Size(0, 25)
         Me.lblAttributes.TabIndex = 47
+        '
+        'GroupBox3
+        '
+        Me.GroupBox3.AutoSize = True
+        Me.GroupBox3.Controls.Add(Me.chbSeparate)
+        Me.GroupBox3.Controls.Add(Me.chbEncrypt)
+        Me.GroupBox3.Controls.Add(Me.chbPreviewLinks)
+        Me.GroupBox3.Controls.Add(Me.chbShowAttr)
+        Me.GroupBox3.Controls.Add(Me.CHBAutoAdvance)
+        Me.GroupBox3.Location = New System.Drawing.Point(1747, 4)
+        Me.GroupBox3.Margin = New System.Windows.Forms.Padding(4)
+        Me.GroupBox3.Name = "GroupBox3"
+        Me.GroupBox3.Padding = New System.Windows.Forms.Padding(4)
+        Me.GroupBox3.Size = New System.Drawing.Size(312, 218)
+        Me.GroupBox3.TabIndex = 49
+        Me.GroupBox3.TabStop = False
+        Me.GroupBox3.Text = "Options"
+        '
+        'chbSeparate
+        '
+        Me.chbSeparate.AutoSize = True
+        Me.chbSeparate.Location = New System.Drawing.Point(4, 113)
+        Me.chbSeparate.Margin = New System.Windows.Forms.Padding(2)
+        Me.chbSeparate.Name = "chbSeparate"
+        Me.chbSeparate.Size = New System.Drawing.Size(118, 29)
+        Me.chbSeparate.TabIndex = 53
+        Me.chbSeparate.TabStop = False
+        Me.chbSeparate.Text = "Separate"
+        Me.chbSeparate.UseVisualStyleBackColor = True
+        '
+        'chbEncrypt
+        '
+        Me.chbEncrypt.AutoSize = True
+        Me.chbEncrypt.Checked = True
+        Me.chbEncrypt.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chbEncrypt.Location = New System.Drawing.Point(4, 84)
+        Me.chbEncrypt.Margin = New System.Windows.Forms.Padding(2)
+        Me.chbEncrypt.Name = "chbEncrypt"
+        Me.chbEncrypt.Size = New System.Drawing.Size(104, 29)
+        Me.chbEncrypt.TabIndex = 49
+        Me.chbEncrypt.TabStop = False
+        Me.chbEncrypt.Text = "Encrypt"
+        Me.chbEncrypt.UseVisualStyleBackColor = True
+        '
+        'chbPreviewLinks
+        '
+        Me.chbPreviewLinks.AutoSize = True
+        Me.chbPreviewLinks.Location = New System.Drawing.Point(4, 55)
+        Me.chbPreviewLinks.Margin = New System.Windows.Forms.Padding(2)
+        Me.chbPreviewLinks.Name = "chbPreviewLinks"
+        Me.chbPreviewLinks.Size = New System.Drawing.Size(158, 29)
+        Me.chbPreviewLinks.TabIndex = 48
+        Me.chbPreviewLinks.TabStop = False
+        Me.chbPreviewLinks.Text = "Preview Links"
+        Me.chbPreviewLinks.UseVisualStyleBackColor = True
+        '
+        'chbShowAttr
+        '
+        Me.chbShowAttr.AutoSize = True
+        Me.chbShowAttr.Location = New System.Drawing.Point(4, 26)
+        Me.chbShowAttr.Margin = New System.Windows.Forms.Padding(2)
+        Me.chbShowAttr.Name = "chbShowAttr"
+        Me.chbShowAttr.Size = New System.Drawing.Size(302, 29)
+        Me.chbShowAttr.TabIndex = 47
+        Me.chbShowAttr.TabStop = False
+        Me.chbShowAttr.Text = "Show Attributes (loads slower)"
+        Me.chbShowAttr.UseVisualStyleBackColor = True
+        '
+        'CHBAutoAdvance
+        '
+        Me.CHBAutoAdvance.AutoSize = True
+        Me.CHBAutoAdvance.Location = New System.Drawing.Point(4, 159)
+        Me.CHBAutoAdvance.Margin = New System.Windows.Forms.Padding(4)
+        Me.CHBAutoAdvance.Name = "CHBAutoAdvance"
+        Me.CHBAutoAdvance.Size = New System.Drawing.Size(162, 29)
+        Me.CHBAutoAdvance.TabIndex = 5
+        Me.CHBAutoAdvance.TabStop = False
+        Me.CHBAutoAdvance.Text = "Auto Advance"
+        Me.CHBAutoAdvance.UseVisualStyleBackColor = True
         '
         'lblNavigateState
         '
@@ -2329,9 +2344,22 @@ Partial Class MainForm
         '
         'ExperimentToolStripMenuItem
         '
+        Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DatabaseToolStripMenuItem, Me.CreateListOfFilesToolStripMenuItem})
         Me.ExperimentToolStripMenuItem.Name = "ExperimentToolStripMenuItem"
         Me.ExperimentToolStripMenuItem.Size = New System.Drawing.Size(129, 34)
         Me.ExperimentToolStripMenuItem.Text = "Experiment"
+        '
+        'DatabaseToolStripMenuItem
+        '
+        Me.DatabaseToolStripMenuItem.Name = "DatabaseToolStripMenuItem"
+        Me.DatabaseToolStripMenuItem.Size = New System.Drawing.Size(258, 34)
+        Me.DatabaseToolStripMenuItem.Text = "Database"
+        '
+        'CreateListOfFilesToolStripMenuItem
+        '
+        Me.CreateListOfFilesToolStripMenuItem.Name = "CreateListOfFilesToolStripMenuItem"
+        Me.CreateListOfFilesToolStripMenuItem.Size = New System.Drawing.Size(258, 34)
+        Me.CreateListOfFilesToolStripMenuItem.Text = "CreateListOfFiles"
         '
         'PositionUpdater
         '
@@ -2358,87 +2386,59 @@ Partial Class MainForm
         '
         Me.tmrJumpRandom.Interval = 500
         '
-        'CHBAutoAdvance
+        'tmrHighlightCurrent
         '
-        Me.CHBAutoAdvance.AutoSize = True
-        Me.CHBAutoAdvance.Location = New System.Drawing.Point(4, 159)
-        Me.CHBAutoAdvance.Margin = New System.Windows.Forms.Padding(4)
-        Me.CHBAutoAdvance.Name = "CHBAutoAdvance"
-        Me.CHBAutoAdvance.Size = New System.Drawing.Size(162, 29)
-        Me.CHBAutoAdvance.TabIndex = 5
-        Me.CHBAutoAdvance.TabStop = False
-        Me.CHBAutoAdvance.Text = "Auto Advance"
-        Me.CHBAutoAdvance.UseVisualStyleBackColor = True
+        Me.tmrHighlightCurrent.Interval = 10
         '
-        'chbShowAttr
+        'MainWMP1
         '
-        Me.chbShowAttr.AutoSize = True
-        Me.chbShowAttr.Location = New System.Drawing.Point(4, 26)
-        Me.chbShowAttr.Margin = New System.Windows.Forms.Padding(2)
-        Me.chbShowAttr.Name = "chbShowAttr"
-        Me.chbShowAttr.Size = New System.Drawing.Size(302, 29)
-        Me.chbShowAttr.TabIndex = 47
-        Me.chbShowAttr.TabStop = False
-        Me.chbShowAttr.Text = "Show Attributes (loads slower)"
-        Me.chbShowAttr.UseVisualStyleBackColor = True
+        Me.MainWMP1.Enabled = True
+        Me.MainWMP1.Location = New System.Drawing.Point(162, 128)
+        Me.MainWMP1.Margin = New System.Windows.Forms.Padding(4)
+        Me.MainWMP1.Name = "MainWMP1"
+        Me.MainWMP1.OcxState = CType(resources.GetObject("MainWMP1.OcxState"), System.Windows.Forms.AxHost.State)
+        Me.MainWMP1.Size = New System.Drawing.Size(620, 491)
+        Me.MainWMP1.TabIndex = 6
+        Me.MainWMP1.TabStop = False
         '
-        'chbPreviewLinks
+        'MainWMP3
         '
-        Me.chbPreviewLinks.AutoSize = True
-        Me.chbPreviewLinks.Location = New System.Drawing.Point(4, 55)
-        Me.chbPreviewLinks.Margin = New System.Windows.Forms.Padding(2)
-        Me.chbPreviewLinks.Name = "chbPreviewLinks"
-        Me.chbPreviewLinks.Size = New System.Drawing.Size(158, 29)
-        Me.chbPreviewLinks.TabIndex = 48
-        Me.chbPreviewLinks.TabStop = False
-        Me.chbPreviewLinks.Text = "Preview Links"
-        Me.chbPreviewLinks.UseVisualStyleBackColor = True
+        Me.MainWMP3.Enabled = True
+        Me.MainWMP3.Location = New System.Drawing.Point(460, 394)
+        Me.MainWMP3.Margin = New System.Windows.Forms.Padding(4)
+        Me.MainWMP3.Name = "MainWMP3"
+        Me.MainWMP3.OcxState = CType(resources.GetObject("MainWMP3.OcxState"), System.Windows.Forms.AxHost.State)
+        Me.MainWMP3.Size = New System.Drawing.Size(690, 491)
+        Me.MainWMP3.TabIndex = 5
+        Me.MainWMP3.TabStop = False
         '
-        'chbEncrypt
+        'MainWMP2
         '
-        Me.chbEncrypt.AutoSize = True
-        Me.chbEncrypt.Checked = True
-        Me.chbEncrypt.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chbEncrypt.Location = New System.Drawing.Point(4, 84)
-        Me.chbEncrypt.Margin = New System.Windows.Forms.Padding(2)
-        Me.chbEncrypt.Name = "chbEncrypt"
-        Me.chbEncrypt.Size = New System.Drawing.Size(104, 29)
-        Me.chbEncrypt.TabIndex = 49
-        Me.chbEncrypt.TabStop = False
-        Me.chbEncrypt.Text = "Encrypt"
-        Me.chbEncrypt.UseVisualStyleBackColor = True
+        Me.MainWMP2.Enabled = True
+        Me.MainWMP2.Location = New System.Drawing.Point(749, 25)
+        Me.MainWMP2.Margin = New System.Windows.Forms.Padding(4)
+        Me.MainWMP2.Name = "MainWMP2"
+        Me.MainWMP2.OcxState = CType(resources.GetObject("MainWMP2.OcxState"), System.Windows.Forms.AxHost.State)
+        Me.MainWMP2.Size = New System.Drawing.Size(664, 518)
+        Me.MainWMP2.TabIndex = 4
+        Me.MainWMP2.TabStop = False
+        Me.MainWMP2.UseWaitCursor = True
+        Me.MainWMP2.Visible = False
         '
-        'chbSeparate
+        'SoundWMP
         '
-        Me.chbSeparate.AutoSize = True
-        Me.chbSeparate.Location = New System.Drawing.Point(4, 113)
-        Me.chbSeparate.Margin = New System.Windows.Forms.Padding(2)
-        Me.chbSeparate.Name = "chbSeparate"
-        Me.chbSeparate.Size = New System.Drawing.Size(118, 29)
-        Me.chbSeparate.TabIndex = 53
-        Me.chbSeparate.TabStop = False
-        Me.chbSeparate.Text = "Separate"
-        Me.chbSeparate.UseVisualStyleBackColor = True
-        '
-        'GroupBox3
-        '
-        Me.GroupBox3.AutoSize = True
-        Me.GroupBox3.Controls.Add(Me.chbSeparate)
-        Me.GroupBox3.Controls.Add(Me.chbEncrypt)
-        Me.GroupBox3.Controls.Add(Me.chbPreviewLinks)
-        Me.GroupBox3.Controls.Add(Me.chbShowAttr)
-        Me.GroupBox3.Controls.Add(Me.CHBAutoAdvance)
-        Me.GroupBox3.Location = New System.Drawing.Point(1747, 4)
-        Me.GroupBox3.Margin = New System.Windows.Forms.Padding(4)
-        Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Padding = New System.Windows.Forms.Padding(4)
-        Me.GroupBox3.Size = New System.Drawing.Size(312, 218)
-        Me.GroupBox3.TabIndex = 49
-        Me.GroupBox3.TabStop = False
-        Me.GroupBox3.Text = "Options"
+        Me.SoundWMP.Enabled = True
+        Me.SoundWMP.Location = New System.Drawing.Point(499, 376)
+        Me.SoundWMP.Margin = New System.Windows.Forms.Padding(2)
+        Me.SoundWMP.Name = "SoundWMP"
+        Me.SoundWMP.OcxState = CType(resources.GetObject("SoundWMP.OcxState"), System.Windows.Forms.AxHost.State)
+        Me.SoundWMP.Size = New System.Drawing.Size(572, 412)
+        Me.SoundWMP.TabIndex = 3
+        Me.SoundWMP.Visible = False
         '
         'MainForm
         '
+        Me.AllowDrop = True
         Me.AutoScaleDimensions = New System.Drawing.SizeF(11.0!, 24.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
@@ -2475,10 +2475,6 @@ Partial Class MainForm
         Me.ctrPicAndButtons.Panel2.ResumeLayout(False)
         CType(Me.ctrPicAndButtons, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ctrPicAndButtons.ResumeLayout(False)
-        CType(Me.MainWMP1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.MainWMP3, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.MainWMP2, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.SoundWMP, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox3, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
@@ -2511,6 +2507,8 @@ Partial Class MainForm
         CType(Me.tbPercentage, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
+        Me.GroupBox3.ResumeLayout(False)
+        Me.GroupBox3.PerformLayout()
         Me.gpbAutoTrail.ResumeLayout(False)
         Me.gpbAutoTrail.PerformLayout()
         CType(Me.tbAutoTrail, System.ComponentModel.ISupportInitialize).EndInit()
@@ -2519,8 +2517,10 @@ Partial Class MainForm
         CType(Me.FileSystemWatcher1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.MenuStrip2.ResumeLayout(False)
         Me.MenuStrip2.PerformLayout()
-        Me.GroupBox3.ResumeLayout(False)
-        Me.GroupBox3.PerformLayout()
+        CType(Me.MainWMP1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.MainWMP3, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.MainWMP2, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.SoundWMP, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -2782,4 +2782,7 @@ Partial Class MainForm
     Friend WithEvents chbPreviewLinks As CheckBox
     Friend WithEvents chbShowAttr As CheckBox
     Friend WithEvents CHBAutoAdvance As CheckBox
+    Friend WithEvents DatabaseToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents tmrHighlightCurrent As Timer
+    Friend WithEvents CreateListOfFilesToolStripMenuItem As ToolStripMenuItem
 End Class

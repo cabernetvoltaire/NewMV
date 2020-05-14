@@ -596,6 +596,23 @@ Public Module General
         Loop
         fs.Close()
     End Sub
+    Friend Sub CreateDatabaseOfFiles(Path As String)
+        With My.Computer.FileSystem
+            Dim list As New List(Of String)
+            Dim dirs As New List(Of String)
+
+            dirs = GenerateSafeFolderList(Path)
+
+            For Each d In dirs
+                Dim dir As New DirectoryInfo(d)
+                For Each f In dir.GetFiles
+                    list.Add(f.Name & "@" & f.FullName.Replace(f.Name, "") & "@" & f.Length)
+                Next
+            Next
+
+            WriteListToFile(list, "Q:\Files2.txt", False)
+        End With
+    End Sub
     Public Function GetFileFromEachFolder(d As DirectoryInfo, s As String, Optional Random As Boolean = True) As List(Of String)
 
         Dim x As New List(Of String)

@@ -39,10 +39,20 @@ Friend Module FileHandling
     Public Sub OnMediaSpeedChanged(sender As Object, e As EventArgs) Handles Media.SpeedChanged
         MainForm.OnSpeedChange(sender, e)
     End Sub
+    Friend Sub SetDataformEntry()
+        If Media.IsLink Then
+            DatabaseForm.ShortFilepath = Path.GetFileName(Media.LinkPath)
+        Else
+            DatabaseForm.ShortFilepath = Path.GetFileName(Media.MediaPath)
+
+        End If
+    End Sub
     Public Sub OnMediaShown(sender As Object, e As EventArgs) Handles MSFiles.MediaShown
 
         Media = sender
         MainForm.UpdateFileInfo()
+        If DatabaseForm.Visible Then SetDataformEntry()
+
         If Media.MediaType = Filetype.Movie Then
             MainForm.PopulateLinkList(sender)
         End If

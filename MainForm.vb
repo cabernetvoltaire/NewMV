@@ -70,7 +70,7 @@ Friend Class MainForm
             tvMain2.Traverse(False)
         End If
     End Sub
-    Public Sub OnFolderRename(sender As Object, e As NodeLabelEditEventArgs) Handles tvMain2.LabelEdited
+    Public Sub OnFolderRename(sender As Object, e As NodeLabelEditEventArgs)
         If Not e.CancelEdit Then
             CurrentFolder = CurrentFolder.Replace(e.Node.Text, e.Label)
 
@@ -150,7 +150,10 @@ Friend Class MainForm
                 cbxFilter.BackColor = CurrentFilterState.Colour
                 cbxFilter.SelectedIndex = CurrentFilterState.State
                 tbFilter.Text = "FILTER:" & UCase(CurrentFilterState.Description)
-                SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
+                If Not Media.DontLoad Then
+                    SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
+
+                End If
             Case "SortHandler"
                 If Not Media.DontLoad Then
 
@@ -187,6 +190,7 @@ Friend Class MainForm
         If Not Media.DontLoad Then PreferencesSave()
     End Sub
     Private Sub SetControlColours(MainColor As Color, FilterColor As Color)
+        If Media.DontLoad Then Exit Sub
         Me.SuspendLayout()
         lbxFiles.BackColor = FilterColor
         lbxShowList.BackColor = FilterColor
@@ -208,7 +212,7 @@ Friend Class MainForm
 
         End If
     End Sub
-    Public Sub OnRenameFolderStart(sender As Object, e As KeyEventArgs) Handles tvMain2.KeyDown
+    Public Sub OnRenameFolderStart(sender As Object, e As KeyEventArgs)
         If e.KeyCode = Keys.F2 Then
             CancelDisplay(True)
         End If
@@ -781,6 +785,7 @@ Friend Class MainForm
                 ElseIf FocusControl Is lbxShowList Then
                     CurrentFilterState.State = FilterHandler.FilterState.All
                     HighlightCurrent(Media.MediaPath)
+
                 Else
                     'Get link file
                     'Highlight 
@@ -789,6 +794,7 @@ Friend Class MainForm
                         Dim s As String = AllFaveMinder.GetLinksOf(Media.MediaPath)(Media.LinkCounter)
                         CurrentFilterState.State = FilterHandler.FilterState.All
                         HighlightCurrent(s)
+
                     End If
                     '                    MsgBox("Highlight Links")
 
@@ -1170,30 +1176,21 @@ Friend Class MainForm
         blnLoopPlay = Not blnLoopPlay
     End Sub
 
-    Public Sub OnTVMainReady(sender As Object, e As EventArgs) Handles tvMain2.TreeBuilt
+    Public Sub OnTVMainReady(sender As Object, e As EventArgs)
         HighlightCurrent(Media.MediaPath)
 
     End Sub
 
-
+    Public HighlightPath As String
     Friend Sub HighlightCurrent(strPath As String)
+        HighlightPath = strPath
+        tmrHighlightCurrent.Enabled = True
 
-        If strPath = "" Then Exit Sub 'Empty
-        Dim finfo As New FileInfo(strPath)
-        'Change the tree if it needs changing
-
-        Dim s As String = Path.GetDirectoryName(strPath)
-
-        If tvMain2.SelectedFolder <> s Then
-            tvMain2.SelectedFolder = s
-            tmrUpdateFileList.Enabled = False
-            FBH.DirectoryPath = s
-        End If
-        'Select file in filelist
-        FBH.SetNamed(strPath)
 
 
     End Sub
+
+
 
     Private Sub AddFiles(blnRecurse As Boolean)
         ProgressBarOn(1000)
@@ -1277,9 +1274,11 @@ Friend Class MainForm
         ctrPicAndButtons.Panel1.Controls.Add(Media.Textbox)
         ' LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\ITC.msl")
         FBH.DirectoryPath = CurrentFolder
-        tvMain2.SelectedFolder = CurrentFolder
+        ' tvMain2.SelectedFolder = CurrentFolder
         FBH.ListBox = lbxFiles
         LBH.ListBox = lbxShowList
+        '   DatabaseForm.Show()
+
     End Sub
 
     Private Sub InitialiseButtons()
@@ -1516,7 +1515,7 @@ Friend Class MainForm
         SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
 
     End Sub
-    Private Sub TreeEnter(sender As Object, e As EventArgs) Handles tvMain2.Enter
+    Private Sub TreeEnter(sender As Object, e As EventArgs)
         'PFocus = CtrlFocus.Tree
 
         SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
@@ -1877,7 +1876,7 @@ Friend Class MainForm
         '        tvMain2.RefreshTree(New IO.DirectoryInfo(CurrentFolder).Parent.FullName)
     End Sub
 
-    Private Sub OnDirectorySelected(sender As Object, e As DirectoryInfoEventArgs) Handles tvMain2.DirectorySelected
+    Private Sub OnDirectorySelected(sender As Object, e As DirectoryInfoEventArgs)
         tmrUpdateFileList.Enabled = False
         'PreferencesSave()
         lbxGroups.Items.Clear()
@@ -2386,7 +2385,7 @@ Friend Class MainForm
     End Sub
 
 
-    Private Sub tvMain2_DragEnter(sender As Object, e As DragEventArgs) Handles tvMain2.DragEnter
+    Private Sub tvMain2_DragEnter(sender As Object, e As DragEventArgs)
         If (e.Data.GetDataPresent(DataFormats.Text)) Then
             If (e.KeyState And 8) = 8 Then
                 e.Effect = DragDropEffects.Copy
@@ -2774,7 +2773,7 @@ Friend Class MainForm
 
     End Sub
 
-    Private Sub tvMain2_Load(sender As Object, e As EventArgs) Handles tvMain2.Load
+    Private Sub tvMain2_Load(sender As Object, e As EventArgs)
 
     End Sub
 
@@ -2817,7 +2816,8 @@ Friend Class MainForm
         deadfiles.Sort()
 
         For Each f In deadfiles
-            FormDeadFiles.TextBox1.Text = FormDeadFiles.TextBox1.Text & f & vbCrLf
+            FormDeadFiles.ListBox1.Items.Add(f)
+
 
         Next
     End Sub
@@ -2859,7 +2859,7 @@ Friend Class MainForm
         RefreshLinks(ListfromSelectedInListbox(FocusControl))
     End Sub
 
-    Private Sub CBXButtonFiles_SelectedIndexChanged(sender As Object, e As EventArgs)
+    Private Sub CBXButtonFiles_SelectedIndexChanged(sender As Object, e As EventArgs) Handles CBXButtonFiles.SelectedIndexChanged
         Dim folder As String = CBXButtonFiles.SelectedItem
         Autoload(FilenameFromPath(folder, False))
     End Sub
@@ -2910,7 +2910,7 @@ Friend Class MainForm
         End If
     End Sub
 
-    Private Sub tbScanRate_ValueChanged(sender As Object, e As EventArgs) 
+    Private Sub tbScanRate_ValueChanged(sender As Object, e As EventArgs)
         tmrJumpRandom.Interval = tbScanRate.Value
     End Sub
     Private Sub MainForm_Mousewheel(sender As Object, e As MouseEventArgs) Handles Me.MouseWheel
@@ -2964,11 +2964,11 @@ Friend Class MainForm
         tmrMovieSlideShow.Enabled = chbSlideShow.Checked
     End Sub
 
-    Private Sub tbMovieSlideShowSpeed_Scroll(sender As Object, e As EventArgs) 
+    Private Sub tbMovieSlideShowSpeed_Scroll(sender As Object, e As EventArgs)
         tmrMovieSlideShow.Interval = tbMovieSlideShowSpeed.Value
     End Sub
 
-    Private Sub tbAutoTrail_Scroll(sender As Object, e As EventArgs) 
+    Private Sub tbAutoTrail_Scroll(sender As Object, e As EventArgs)
 
     End Sub
 
@@ -2977,7 +2977,7 @@ Friend Class MainForm
         SubfolderNamedSame(m)
     End Sub
 
-    Private Sub lbxFiles_GotFocus(sender As Object, e As EventArgs) Handles lbxFiles.GotFocus, lbxShowList.GotFocus, tvMain2.GotFocus
+    Private Sub lbxFiles_GotFocus(sender As Object, e As EventArgs) Handles lbxFiles.GotFocus, lbxShowList.GotFocus
         SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
     End Sub
 
@@ -3003,6 +3003,34 @@ Friend Class MainForm
             End If
         Next
     End Sub
+
+    Private Sub DatabaseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DatabaseToolStripMenuItem.Click
+        DatabaseForm.Show()
+
+    End Sub
+
+    Private Sub tmrHighlightCurrent_Tick(sender As Object, e As EventArgs) Handles tmrHighlightCurrent.Tick
+        If HighlightPath = "" Then Exit Sub 'Empty
+        Dim finfo As New FileInfo(HighlightPath)
+        'Change the tree if it needs changing
+
+        Dim s As String = Path.GetDirectoryName(HighlightPath)
+
+        If tvMain2.SelectedFolder <> s Then
+            tvMain2.SelectedFolder = s
+            tmrUpdateFileList.Enabled = False
+            FBH.DirectoryPath = s
+        End If
+        'Select file in filelist
+        FBH.SetNamed(HighlightPath)
+        tmrHighlightCurrent.Enabled = False
+    End Sub
+
+    Private Sub CreateListOfFilesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateListOfFilesToolStripMenuItem.Click
+        CreateDatabaseOfFiles(CurrentFolder)
+    End Sub
+
+
 
 
 #End Region

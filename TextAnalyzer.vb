@@ -14,8 +14,8 @@ Public Class TextAnalyzer
     Private _Lines() As String
     Private _RawText As String
     Private _MeanLineLength As Decimal
-    Private _MinLineLength As Int16
-    Private _MaxLineLength As Int16
+    Private _MinLineLength As Integer
+    Private _MaxLineLength As Integer
     Private _EmptyLinesCount As Integer
     Private _LineThenSpaceRatio As Decimal
     Private _DocType As DocType
@@ -31,7 +31,7 @@ Public Class TextAnalyzer
             _Lines = _RawTextCRLFs.Split("|")
             CalcLineStats()
             _DocType = AnalyzeType()
-            MsgBox(_DocType.ToString)
+            'MsgBox(_DocType.ToString)
             'RemoveEmptyLines()
         End Set
     End Property
@@ -160,7 +160,7 @@ Public Class TextAnalyzer
     Private Sub CalcLineStats()
         Dim sum As Int32
         Dim min As Int16 = 50
-        Dim max As Int16
+        Dim max As Integer
         For i = 0 To _Lines.Length - 1
             Dim length As Int32 = _Lines(i).Length
             sum = sum + length
@@ -172,9 +172,12 @@ Public Class TextAnalyzer
         Next
         CountEmptyLines()
         LineThenSpaceRatio()
-        _MeanLineLength = sum / (_Lines.Length - 1)
+        If _Lines.Length > 1 Then
+            _MeanLineLength = sum / (_Lines.Length - 1)
+        End If
+
         _MinLineLength = min
-        _MaxLineLength = max
+            _MaxLineLength = max
     End Sub
     Private Sub LineThenSpaceRatio()
         Dim LastBlank As Boolean = False

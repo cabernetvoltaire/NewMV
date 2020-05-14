@@ -1,6 +1,6 @@
 ﻿Imports AxWMPLib
 Imports System.Text.UTF8Encoding
-
+Imports System.IO
 
 Public Class MediaHandler
 #Region "Members"
@@ -219,6 +219,7 @@ Public Class MediaHandler
 
         End Set
     End Property
+
 
 
     Public Function GetMarkersFromLinkList() As List(Of Long)
