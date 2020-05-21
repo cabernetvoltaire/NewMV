@@ -1,4 +1,7 @@
-﻿Public Class DatabaseForm
+﻿Imports System.Collections.Generic
+Imports System.ComponentModel
+
+Public Class DatabaseForm
     '   Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
     'Dim ds As New DataSet()
     'Dim connectionString As String = "Provider=Microsoft.ACE.OLEDB.15.0;Data Source=Q:\TreeSize Professional File Search Export - Movies.xlsx;" & "Extended Properties=Excel 12.0;"
@@ -7,6 +10,7 @@
     'excelData.Fill(ds)
     'Me.DataGridView1.DataSource = ds.Tables(0)
     'Me.Refresh()
+
     Dim DontFind As Boolean = True
     Dim MyConnection As System.Data.OleDb.OleDbConnection
     Dim DtSet As System.Data.DataSet
@@ -32,16 +36,7 @@
 
     Private Sub Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Me.Shown
 
-        MyConnection = New System.Data.OleDb.OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source='Q:\TreeSize Professional File Search Export - Movies.xlsx';Extended Properties=Excel 8.0;")
-        MyCommand = New System.Data.OleDb.OleDbDataAdapter("select * from [Sheet2$]", MyConnection)
-        MyCommand.TableMappings.Add("Name", "Containing Path")
-        DtSet = New System.Data.DataSet()
-        MyCommand.Fill(DtSet)
-        dgv.DataSource = DtSet.Tables(0)
-        ' DataGridView1.DataMember = "[Sheet3$]"
-        MyConnection.Close()
-        SetDataformEntry()
-        'HideRows(0, "jpg")
+        BackgroundWorker1.RunWorkerAsync()
         Me.Text = Str(dgv.Rows.Count) & " rows"
         Me.WindowState = FormWindowState.Maximized
         'dgv.AutoResizeColumns()
@@ -58,6 +53,7 @@
     End Sub
 
     Private Sub dgv_SelectionChanged(sender As Object, e As DataGridViewRowStateChangedEventArgs) Handles dgv.RowStateChanged
+        Exit Sub
         If DontFind Then Exit Sub
         If dgv.CurrentRow IsNot Nothing Then
 
@@ -90,6 +86,30 @@
                 MainForm.HandleKeys(sender, e)
         End Select
     End Sub
+
+    Private Sub BackgroundWorker1_DoWork(sender As Object, e As DoWorkEventArgs) Handles BackgroundWorker1.DoWork
+        Me.Invoke(New MethodInvoker(Sub() LoadData()))
+    End Sub
+
+    Private Sub LoadData()
+        MyConnection = New System.Data.OleDb.OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source='Q:\TreeSize Professional File Search Export - Movies.xlsx';Extended Properties=Excel 8.0;")
+        MyCommand = New System.Data.OleDb.OleDbDataAdapter("select * from [Files2$]", MyConnection)
+        MyCommand.TableMappings.Add("Name", "Containing Path")
+        DtSet = New System.Data.DataSet()
+        MyCommand.Fill(DtSet)
+        dgv.DataSource = DtSet.Tables(0)
+        ' DataGridView1.DataMember = "[Sheet3$]"
+        MyConnection.Close()
+        dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+        SetDataformEntry()
+        'HideRows(0, "jpg")
+
+    End Sub
+
+    Private Sub BackgroundWorker1_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs) Handles BackgroundWorker1.RunWorkerCompleted
+
+    End Sub
+
     Private Function HideRows(cell As Integer, search As String)
         Try
 
@@ -104,13 +124,20 @@
         End Try
     End Function
     Private Function Findrow(s As String) As Integer
-        ' If DontFind Then Exit Function
+        ' Exit Function
+        If DontFind Then Exit Function
+
 
         Dim foundrow As Integer = -2
+
+
+
         For i = 0 To dgv.Rows.Count - 2
             Try
-                If dgv.Rows(i).Cells(0).Value = s Then
-                    foundrow = i
+                If dgv.Rows(i).Cells(0).Value IsNot Nothing Then
+                    If dgv.Rows(i).Cells(0).Value = s Then
+                        foundrow = i
+                    End If
                 End If
             Catch ex As Exception
             End Try

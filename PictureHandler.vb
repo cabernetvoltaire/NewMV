@@ -84,7 +84,7 @@
                 OrientPic(mPicImage)
                 PicBox.Image = mPicImage
                 PicBox.Tag = strPath
-                tb.SetToolTip(PicBox, strPath)
+                'tb.SetToolTip(PicBox, strPath)
             Catch ex As Exception
                 mPicImage = Nothing
             End Try
@@ -173,11 +173,15 @@
 #Region "Methods"
     Public Sub MouseMove(sender As Object, e As MouseEventArgs) Handles mPicBox.MouseMove
         If mState = Screenstate.Fitted Then Exit Sub
+        'When the mouse moves
         Dim mouse As Point
         mouse.X = e.X
         mouse.Y = e.Y
+        'Adjust the point
         mouse.X = mouse.X + mPicBox.Left
         mouse.Y = mouse.Y + mPicBox.Top
+
+        'Move the picture using the new point
 
         MovePic(mouse, mPicBox, mPicBox.Parent)
 
@@ -198,9 +202,9 @@
                 ydist = y * (inside.Height - outside.Height) / outside.Height
                 inside.Top = -ydist
             Case PicState.Overscan, PicState.Underscan
-                ydist = y * (inside.Height - outside.Height) / outside.Height
+                ydist = y * (inside.Height - outside.Height) / (outside.Height)
                 inside.Top = -ydist
-                xdist = x * (inside.Width - outside.Width) / outside.Width
+                xdist = x * (inside.Width - outside.Width) / (outside.Width)
                 inside.Left = -xdist
 
         End Select

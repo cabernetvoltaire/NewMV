@@ -167,7 +167,7 @@ Friend Module Mysettings
             End If
         Next
         If f.Exists Then
-            ReadListfromFile(prefslist, f.FullName, False)
+            prefslist = ReadListfromFile(f.FullName, False)
             MainForm.ctrPicAndButtons.SplitterDistance = 8.7 * MainForm.ctrPicAndButtons.Height / 10
             For Each s In prefslist
                 If InStr(s, "$") <> 0 Then
@@ -344,7 +344,7 @@ Friend Module Mysettings
 
     Public Sub LoadForm()
         Dim prefslist As New List(Of String)
-        ReadListfromFile(prefslist, PrefsFilePath, False)
+        prefslist = ReadListfromFile(PrefsFilePath, False)
         Dim screed As String = ""
 
         Preferences.Show()

@@ -70,7 +70,7 @@ Friend Class MainForm
             tvMain2.Traverse(False)
         End If
     End Sub
-    Public Sub OnFolderRename(sender As Object, e As NodeLabelEditEventArgs)
+    Public Sub OnFolderRename(sender As Object, e As NodeLabelEditEventArgs) Handles tvmain2.LabelEdited
         If Not e.CancelEdit Then
             CurrentFolder = CurrentFolder.Replace(e.Node.Text, e.Label)
 
@@ -212,12 +212,12 @@ Friend Class MainForm
 
         End If
     End Sub
-    Public Sub OnRenameFolderStart(sender As Object, e As KeyEventArgs)
+    Public Sub OnRenameFolderStart(sender As Object, e As KeyEventArgs) Handles tvmain2.KeyDown
         If e.KeyCode = Keys.F2 Then
             CancelDisplay(True)
         End If
         If e.KeyCode = KeyTraverseTree Or e.KeyCode = KeyTraverseTreeBack Or e.KeyCode = Keys.Down Or e.KeyCode = Keys.Up Then
-            tvMain2.tvFiles_KeyDown(sender, e)
+            tvmain2.tvFiles_KeyDown(sender, e)
         End If
     End Sub
     Friend Sub OnFolderMoved(ByVal path As String)
@@ -360,6 +360,7 @@ Friend Class MainForm
         Return path
     End Function
     Private Sub LoadShowList(Optional DesiredFile As String = "")
+        ProgressBarOn(100)
         Dim path As String = ""
         If DesiredFile <> "" Then
             path = DesiredFile
@@ -372,23 +373,16 @@ Friend Class MainForm
                 End If
             End With
         End If
-        LastShowList = path
-        If path = "" Then Exit Sub
-
-        Dim finfo As New FileInfo(path)
-        Dim size As Long = finfo.Length
-        Dim time As TimeSpan
-        Dim loadrate As Single
-        lngListSizeBytes = size
+        LBH.ListBox.Tag = path
+        'LastShowList = path
         If path <> "" Then
             CollapseShowlist(False)
-            tbLastFile.Text = TimeOperation(True).TotalMilliseconds
-            ProgressBarOn(lngListSizeBytes)
-            'LBH.ItemList = Showlist
-            'LBH.FillBox()
-            Getlist(Showlist, path, lbxShowList)
-            time = TimeOperation(False)
-            loadrate = size / time.TotalMilliseconds
+
+            LBH.ItemList = ReadListfromFile(path, True)
+            LBH.FillBox()
+            ' Getlist(Showlist, path, lbxShowList)
+        Else
+
         End If
         ProgressBarOff()
         tbShowfile.Text = "SHOWFILE LOADED:" & path
@@ -422,47 +416,6 @@ Friend Class MainForm
             End If
         End If
         Exit Sub
-        With My.Computer.FileSystem
-            Dim m As MsgBoxResult = MsgBoxResult.No
-            If .DirectoryExists(FolderName) Then
-                If blnConfirm Then
-                    m = MsgBox("Delete folder " & FolderName & "?", MsgBoxStyle.YesNoCancel)
-                End If
-                If Not blnConfirm OrElse m = MsgBoxResult.Yes Then
-                    Dim f As New DirectoryInfo(FolderName)
-                    Try
-                        For Each ff In f.EnumerateFiles
-                            If MSFiles.CurrentURLS.Contains(ff.FullName) Then
-                                MSFiles.CancelURL(ff.FullName)
-                            End If
-                            .DeleteFile(ff.FullName, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
-
-                        Next
-                        For Each fol In f.EnumerateDirectories
-                            DeleteFolder(fol.FullName, tvw, False)
-                        Next
-
-                        f.Delete(FileIO.RecycleOption.SendToRecycleBin)
-                        DirectoriesList.Remove(FolderName)
-                        '.DeleteDirectory(CurrentFolder, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
-                    Catch x As System.IO.IOException
-                        MsgBox(Err.Description)
-
-
-                        'MsgBox(Err.Description)
-
-                    End Try
-
-                    tvw.Traverse(False)
-                    tvw.RemoveNode(f.FullName)
-                    ' tvw.RefreshTree(f.Parent.FullName)
-                End If
-
-            ElseIf m = MsgBoxResult.No Or m = MsgBoxResult.Cancel Then
-                ControlSetFocus(lbxFiles)
-
-            End If
-        End With
     End Sub
 
 
@@ -602,7 +555,7 @@ Friend Class MainForm
     End Sub
     Public Sub AdvanceFile(blnForward As Boolean, Optional Random As Boolean = False)
         Dim LBHH As New ListBoxHandler()
-        If FocusControl Is lbxShowList Or CtrlDown Then
+        If CtrlDown Then
             LBHH = LBH
         Else
             LBHH = FBH
@@ -777,27 +730,29 @@ Friend Class MainForm
 
 #Region "Alpha and Numeric"
 
-            Case Keys.Enter And e.Control
-                If Media.IsLink Then
-                    tmrUpdateFileList.Enabled = False
-                    CurrentFilterState.State = FilterHandler.FilterState.All
-                    HighlightCurrent(Media.LinkPath)
-                ElseIf FocusControl Is lbxShowList Then
-                    CurrentFilterState.State = FilterHandler.FilterState.All
-                    HighlightCurrent(Media.MediaPath)
+            Case Keys.Enter
+                If e.Control Then
 
-                Else
-                    'Get link file
-                    'Highlight 
-                    If Media.Markers.Count > 0 Then
-
-                        Dim s As String = AllFaveMinder.GetLinksOf(Media.MediaPath)(Media.LinkCounter)
+                    If Media.IsLink Then
+                        tmrUpdateFileList.Enabled = False
                         CurrentFilterState.State = FilterHandler.FilterState.All
-                        HighlightCurrent(s)
+                        HighlightCurrent(Media.LinkPath)
+                    ElseIf FocusControl Is lbxShowList Then
+                        CurrentFilterState.State = FilterHandler.FilterState.All
+                        HighlightCurrent(Media.MediaPath)
+                    Else
+                        'Get link file
+                        'Highlight 
+                        If Media.Markers.Count > 0 Then
 
+                            Dim s As String = AllFaveMinder.GetLinksOf(Media.MediaPath)(Media.LinkCounter)
+                            CurrentFilterState.State = FilterHandler.FilterState.All
+                            HighlightCurrent(s)
+
+                        End If
                     End If
-                    '                    MsgBox("Highlight Links")
-
+                Else
+                    tvmain2.RefreshTree(CurrentFolder)
                 End If
             Case Keys.A To Keys.Z, Keys.D0 To Keys.D9
                 If Not e.Control Then
@@ -819,13 +774,17 @@ Friend Class MainForm
                 e.SuppressKeyPress = True
               '  End If
 
-            Case Keys.Left, Keys.Right, Keys.Up, Keys.Down
-                'If FocusControl IsNot lbxShowList Then
-                ControlSetFocus(tvMain2)
-                tvMain2.tvFiles_KeyDown(sender, e)
-                'End If
+            Case Keys.Left, Keys.Right
+                ControlSetFocus(tvmain2)
+                tvmain2.tvFiles_KeyDown(sender, e)
+            Case Keys.Up, Keys.Down
+                If tvmain2.Focused Then
+                    ControlSetFocus(tvmain2)
+                    tvmain2.tvFiles_KeyDown(sender, e)
 
+                End If
             Case Keys.Escape
+                MSFiles.CancelURL()
                 CancelDisplay(True)
 
             Case KeyToggleButtons
@@ -1176,7 +1135,7 @@ Friend Class MainForm
         blnLoopPlay = Not blnLoopPlay
     End Sub
 
-    Public Sub OnTVMainReady(sender As Object, e As EventArgs)
+    Public Sub OnTVMainReady(sender As Object, e As EventArgs) Handles tvmain2.TreeBuilt
         HighlightCurrent(Media.MediaPath)
 
     End Sub
@@ -1270,7 +1229,7 @@ Friend Class MainForm
         OnRandomChanged()
         ControlSetFocus(lbxFiles)
         Media.DontLoad = False
-        PopulateContextMenu()
+        PopulateContextMenu("File")
         ctrPicAndButtons.Panel1.Controls.Add(Media.Textbox)
         ' LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\ITC.msl")
         FBH.DirectoryPath = CurrentFolder
@@ -1643,7 +1602,7 @@ Friend Class MainForm
         tbFilter.Text = "FILTER:" & UCase(CurrentFilterState.Description)
         tbLastFile.Text = Media.MediaPath
         tbRandom.Text = "ORDER:" & UCase(PlayOrder.Description)
-        tbShowfile.Text = "SHOWFILE: " & LastShowList
+        tbShowfile.Text = "SHOWFILE: " & LBH.ListBox.Tag
         '   tbSpeed.Text = tbSpeed.Text = "SPEED (" & PlaybackSpeed & "fps)"
         tbButton.Text = "BUTTONFILE: " & ButtonFilePath
         TBFractionAbsolute.Text = "Fraction: " & Str(SP.FractionalJump) & "ths Absolute:" & Str(SP.AbsoluteJump) & "s"
@@ -1876,7 +1835,7 @@ Friend Class MainForm
         '        tvMain2.RefreshTree(New IO.DirectoryInfo(CurrentFolder).Parent.FullName)
     End Sub
 
-    Private Sub OnDirectorySelected(sender As Object, e As DirectoryInfoEventArgs)
+    Private Sub OnDirectorySelected(sender As Object, e As DirectoryInfoEventArgs) Handles tvmain2.DirectorySelected
         tmrUpdateFileList.Enabled = False
         'PreferencesSave()
         lbxGroups.Items.Clear()
@@ -2385,7 +2344,7 @@ Friend Class MainForm
     End Sub
 
 
-    Private Sub tvMain2_DragEnter(sender As Object, e As DragEventArgs)
+    Private Sub tvMain2_DragEnter(sender As Object, e As DragEventArgs) Handles tvmain2.DragEnter
         If (e.Data.GetDataPresent(DataFormats.Text)) Then
             If (e.KeyState And 8) = 8 Then
                 e.Effect = DragDropEffects.Copy
@@ -2401,7 +2360,7 @@ Friend Class MainForm
         Dim d As New IO.DirectoryInfo(CurrentFolder)
         If d.Exists Then
             'MSFiles.CancelURLS()
-            Await x.Burst(New IO.DirectoryInfo(CurrentFolder), True) 'TODO: sometimes crashes because CurrentFolder doesn't exist
+            Await x.HarvestFolder(New IO.DirectoryInfo(CurrentFolder)) 'TODO: sometimes crashes because CurrentFolder doesn't exist
             ' tvMain2.RefreshTree(CurrentFolder)
             tmrUpdateFileList.Enabled = True
         End If
@@ -2973,8 +2932,8 @@ Friend Class MainForm
     End Sub
 
     Private Sub PromoteIdenticalSubFoldersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PromoteIdenticalSubFoldersToolStripMenuItem.Click
-        Dim m As New IO.DirectoryInfo(CurrentFolder)
-        SubfolderNamedSame(m)
+        'Dim m As New IO.DirectoryInfo(CurrentFolder)
+        MoveSameFolders(CurrentFolder)
     End Sub
 
     Private Sub lbxFiles_GotFocus(sender As Object, e As EventArgs) Handles lbxFiles.GotFocus, lbxShowList.GotFocus
@@ -2993,13 +2952,22 @@ Friend Class MainForm
 
     End Sub
 
-    Private Sub PopulateContextMenu()
+    Private Sub PopulateContextMenu(Optional Tag As String = "")
         ContextMenuStrip1.Items.Clear()
         For Each m In MenuStrip2.Items
             Dim clone As New ToolStripMenuItem
             clone = CloneMenu(m)
             If clone IsNot Nothing Then
-                ContextMenuStrip1.Items.Add(clone)
+                If Tag = "" Then
+                    ContextMenuStrip1.Items.Add(clone)
+                Else
+                    If clone.Tag IsNot Nothing Then
+                        If clone.Tag = Tag Then
+                            ContextMenuStrip1.Items.Add(clone)
+                        End If
+                    Else
+                    End If
+                End If
             End If
         Next
     End Sub
@@ -3028,6 +2996,63 @@ Friend Class MainForm
 
     Private Sub CreateListOfFilesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateListOfFilesToolStripMenuItem.Click
         CreateDatabaseOfFiles(CurrentFolder)
+    End Sub
+
+    Private Sub PrependAllFilenamesWithFolderNameToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PrependAllFilenamesWithFolderNameToolStripMenuItem.Click
+        MSFiles.CancelURL()
+        Dim list As New List(Of String)
+        list = FBH.ItemList
+        PrependFolderName(list)
+        FBH.Refresh()
+    End Sub
+
+    Private Sub RecursivelyToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RecursivelyToolStripMenuItem.Click
+        T = New Thread(New ThreadStart(Sub() PrependRecursive(False)))
+        T.IsBackground = True
+        T.SetApartmentState(ApartmentState.STA)
+        T.Start()
+        T.Join()
+        FBH.Refresh()
+    End Sub
+
+    Private Sub PrependRecursive(Shortonly As Boolean)
+        MSFiles.CancelURL()
+        Dim list As New List(Of String)
+        Dim dir As New IO.DirectoryInfo(CurrentFolder)
+        For Each d In dir.GetDirectories("*", IO.SearchOption.AllDirectories)
+            For Each f In d.GetFiles
+                If Shortonly And f.Name.Length > 8 Then
+                Else
+                    list.Add(f.FullName)
+                End If
+            Next
+        Next
+        For Each f In dir.GetFiles
+            list.Add(f.FullName)
+        Next
+        PrependFolderName(list)
+
+    End Sub
+
+    Private Sub SelectedToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles SelectedToolStripMenuItem1.Click
+        MSFiles.CancelURL()
+        Dim list As New List(Of String)
+        list = FBH.SelectedItemsList
+        PrependFolderName(list)
+        FBH.Refresh()
+    End Sub
+
+    Private Sub ShortFilenamesRecursivelyToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ShortFilenamesRecursivelyToolStripMenuItem.Click
+        T = New Thread(New ThreadStart(Sub() PrependRecursive(True)))
+        T.IsBackground = True
+        T.SetApartmentState(ApartmentState.STA)
+        T.Start()
+        T.Join()
+        FBH.Refresh()
+    End Sub
+
+    Private Sub FlattenAllSubfolderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FlattenAllSubfolderToolStripMenuItem.Click
+        FlattenAllSubFolders(New IO.DirectoryInfo(CurrentFolder))
     End Sub
 
 

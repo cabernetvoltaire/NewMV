@@ -249,7 +249,7 @@ Public Module General
 
         Try
             Dim items As New List(Of String)
-            ReadListfromFile(items, str, False)
+            items = ReadListfromFile(str, False)
             str = items(0)
             Dim f As New IO.FileInfo(items(0))
             If f.Exists Then
@@ -333,7 +333,7 @@ Public Module General
         Dim list As New List(Of String)
         Dim pathfile As New IO.FileInfo(DirectoriesListFile)
         If Not Force AndAlso pathfile.Exists Then
-            ReadListfromFile(list, DirectoriesListFile, Encrypted)
+            list = ReadListfromFile(DirectoriesListFile, Encrypted)
             '   MsgBox(list.Count)
         Else
             '   DirectoriesLister(path, list)
@@ -584,8 +584,9 @@ Public Module General
         Next
         fs.Close()
     End Sub
-    Public Sub ReadListfromFile(list As List(Of String), filepath As String, Encrypted As Boolean)
+    Public Function ReadListfromFile(filepath As String, Encrypted As Boolean) As List(Of String)
         Dim fs As New StreamReader(New FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Read))
+        Dim list As New List(Of String)
         Dim line As String
         Do While fs.Peek <> -1
             line = fs.ReadLine
@@ -594,8 +595,10 @@ Public Module General
             End If
             list.Add(line)
         Loop
+
         fs.Close()
-    End Sub
+        Return list
+    End Function
     Friend Sub CreateDatabaseOfFiles(Path As String)
         With My.Computer.FileSystem
             Dim list As New List(Of String)
@@ -605,8 +608,9 @@ Public Module General
 
             For Each d In dirs
                 Dim dir As New DirectoryInfo(d)
+                list.Add("Name" & vbTab & "Path" & vbTab & "Size in bytes" & vbTab & "Date")
                 For Each f In dir.GetFiles
-                    list.Add(f.Name & "@" & f.FullName.Replace(f.Name, "") & "@" & f.Length)
+                    list.Add(f.Name & vbTab & f.FullName.Replace(f.Name, "") & vbTab & f.Length & vbTab & f.CreationTime)
                 Next
             Next
 
@@ -1073,10 +1077,7 @@ Public Module General
         Return th
     End Function
 
-    Friend Function FolderNameFromPath(path As String) As String
-        Dim parts() = path.Split("\")
-        Return parts(parts.Length - 1)
-    End Function
+
     Friend Function FolderPathFromPath(path As String) As String
         Dim parts() = path.Split("\")
         Dim s As String
@@ -1093,6 +1094,7 @@ Public Module General
             .Text = m.Text
             .ToolTipText = m.ToolTipText
             .Enabled = m.Enabled
+            .Tag = m.Tag
             'Add any other things you want to preserve, like .Image
             'Not much point preserving Keyboard Shortcuts on a context menu
             'as it's designed for a mouse click.
@@ -1107,49 +1109,18 @@ Public Module General
         AddHandler newitem.Click, AddressOf m.PerformClick
         Return newitem
     End Function
-    Friend Function CloneMenu(m As ToolStripMenuItem, name As String) As ToolStripMenuItem
-        Dim newitem As New ToolStripMenuItem()
-        Dim listofallitems As New List(Of ToolStripMenuItem)
-        With newitem
-            .Name = m.Name
-            .ShortcutKeys = m.ShortcutKeys
-            .Text = m.Text
-            .ToolTipText = m.ToolTipText
-            .Enabled = m.Enabled
-            If m.HasDropDownItems Then .Tag = True
-            listofallitems = MarkMenuItemsToInclude(GetAllMenuItems(newitem), name)
-            If m.HasDropDownItems Then
-                For Each sm In m.DropDownItems
-                    If TypeOf (sm) Is ToolStripMenuItem Then
-                        Dim clone As New ToolStripMenuItem
-                        clone = CloneMenu(sm, name)
-                        If clone IsNot Nothing And listofallitems.Contains(clone) Then newitem.DropDownItems.Add(clone)
-                    End If
-                Next
-            End If
-        End With
-        AddHandler newitem.Click, AddressOf m.PerformClick
-        Return newitem
-    End Function
-    Friend Function MarkMenuItemsToInclude(list As List(Of ToolStripMenuItem), name As String) As List(Of ToolStripMenuItem)
-        For Each f In list
-            If f.Name.Contains(name) Then
-                f.Tag = f.Tag & f.Name
-            End If
-        Next
-        list = list.FindAll(Function(x) x.Tag <> "")
-        'mark all items which should be included, and those which are its ancestors
-    End Function
-    Friend Function GetAllMenuItems(t As ToolStripMenuItem) As List(Of ToolStripMenuItem)
-        Dim list As New List(Of ToolStripMenuItem)
-        list.Add(t)
-        If t.Tag Then
-            For Each m In t.DropDownItems
-                list.AddRange(GetAllMenuItems(m))
-            Next
-        End If
-        Return list
-    End Function
+
+
+    'Friend Function GetAllMenuItems(t As ToolStripMenuItem) As List(Of ToolStripMenuItem)
+    '    Dim list As New List(Of ToolStripMenuItem)
+    '    list.Add(t)
+    '    If t.Tag Then
+    '        For Each m In t.DropDownItems
+    '            list.AddRange(GetAllMenuItems(m))
+    '        Next
+    '    End If
+    '    Return list
+    'End Function
 
     Public Sub MovietoPic(pic As PictureBox, img As Image)
         pic.Image = img
@@ -1209,6 +1180,20 @@ Public Module General
         End If
         Return spath
     End Function
+    Friend Sub PrependFolderName(list As List(Of String))
+        For Each s In list
+            Dim f As New IO.FileInfo(s)
+            Dim name = f.Name
+            Dim dir = f.Directory.Name
+            ' AllFaveMinder.CheckFile(f)
+            Try
+                f.MoveTo(Path.GetFullPath(s).Replace(f.Name, dir & "_" & name))
+
+            Catch ex As Exception
+
+            End Try
+        Next
+    End Sub
     Friend Sub AddToolTip(ctl As Control, tp As ToolTip, text As String)
         tp.SetToolTip(ctl, text)
     End Sub
@@ -1225,6 +1210,56 @@ Public Module General
         Dim r As Rectangle = ctl.Bounds
         outliner.SetBounds(r.Left - 5, r.Top - 5, r.Width + 10, r.Height + 10)
     End Sub
+    ''' <summary>
+    ''' Returns all subfolders of path which have the same name as name
+    ''' </summary>
+    ''' <param name="path"></param>
+    ''' <returns></returns>
+    Friend Function SameNameFoldersBelow(path As String, name As String) As List(Of DirectoryInfo)
+        Dim folder As New IO.DirectoryInfo(path)
+        Dim list As New List(Of IO.DirectoryInfo)
+        For Each f In folder.GetDirectories("*", SearchOption.AllDirectories)
+            If LCase(f.Name) = LCase(name) Then
+                list.Add(f)
+            End If
+        Next
+        Return list
+
+    End Function
+    Friend Sub MoveSameFolders(path As String)
+        Dim folder As New IO.DirectoryInfo(path)
+        Dim fcl As New FoldersAndTheirMatches
+        For Each f In folder.GetDirectories("*", SearchOption.TopDirectoryOnly)
+            fcl.Folder = f
+            fcl.MoveFolders()
+        Next
+
+
+    End Sub
+    Friend Function FlattenAllSubFolders(fol As IO.DirectoryInfo)
+        For Each f In fol.GetDirectories("*", SearchOption.AllDirectories)
+            If f.Parent.FullName <> fol.FullName Then
+                MoveFolder(f.FullName, fol.FullName)
+            End If
+        Next
+
+    End Function
+    Public Class FoldersAndTheirMatches
+        Private Property _Folder As IO.DirectoryInfo
+        WriteOnly Property Folder As IO.DirectoryInfo
+            Set(value As IO.DirectoryInfo)
+                _Folder = value
+                Matches = SameNameFoldersBelow(value.Parent.FullName, value.Name)
+            End Set
+        End Property
+
+        Friend Matches As List(Of IO.DirectoryInfo)
+        Friend Sub MoveFolders()
+            For Each m In Matches
+                If m.Parent.FullName <> _Folder.Parent.FullName Then MoveFolder(m.FullName, _Folder.Parent.FullName)
+            Next
+        End Sub
+    End Class
     Public Class MetaInfo
         Public Mdir As MetadataExtractor.Directory
         Public Directory As IReadOnlyList(Of MetadataExtractor.Directory)

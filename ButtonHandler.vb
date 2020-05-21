@@ -17,7 +17,7 @@ Public Class ButtonHandler
         'Get the file path
 
         Dim btnList As New List(Of String)
-        ReadListfromFile(btnList, path, True)
+        btnList = ReadListfromFile(path, True)
         Dim subs As String()
         For Each s In btnList
             subs = s.Split("|")

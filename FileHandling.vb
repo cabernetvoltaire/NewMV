@@ -102,6 +102,7 @@ Friend Module FileHandling
             MainForm.LBH.FillBox()
         End If
         MainForm.FBH.FillBox()
+        DeleteEmptyFolders(New IO.DirectoryInfo(CurrentFolder), True)
         If lbx1.Items.Count <> 0 Then
             Dim index = Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0)
             MainForm.FBH.SetIndex(index, True)
@@ -124,7 +125,7 @@ Friend Module FileHandling
     Public Sub Getlist(list As List(Of String), Dest As String, lbx As ListBox)
 
         Dim notlist As New List(Of String)
-        ReadListfromFile(list, Dest, Encrypted)
+        ReadListfromFile(Dest, Encrypted)
         lbx.DataSource = list
         'For Each s In list
         '    Try
@@ -167,11 +168,13 @@ Friend Module FileHandling
         Next
     End Sub
     Public Sub MoveFolder(Dir As String, Dest As String)
+        MSFiles.CancelURL()
+
         If Dest = "" Then
             Dim SourceDir As New DirectoryInfo(Dir)
             DirectoriesList.Remove(SourceDir.FullName)
             For Each d In SourceDir.EnumerateDirectories("*", SearchOption.AllDirectories)
-                MoveDirectoryContents(SourceDir, True)
+                MoveDirectoryContents(d, True)
             Next
             MoveDirectoryContents(SourceDir, True)
         Else
@@ -184,11 +187,14 @@ Friend Module FileHandling
 
             'Make target subdirectories.
             MoveDirectoryContents(TargetDir, SourceDir, SourceDir, True)
-            For Each d In SourceDir.EnumerateDirectories("*", SearchOption.AllDirectories)
-                MoveDirectoryContents(TargetDir, SourceDir, d, True)
-            Next
-            If SourceDir.GetFiles.Count = 0 And SourceDir.GetDirectories.Count = 0 Then
-                SourceDir.Delete()
+            If SourceDir.Exists Then
+                If SourceDir.GetFiles.Count = 0 And SourceDir.GetDirectories.Count = 0 Then
+                    SourceDir.Delete()
+                Else
+                    For Each d In SourceDir.EnumerateDirectories("*", SearchOption.AllDirectories)
+                        MoveDirectoryContents(TargetDir, SourceDir, d, True)
+                    Next
+                End If
             End If
         End If
 
@@ -216,6 +222,7 @@ Friend Module FileHandling
     End Sub
 
     Private Sub MoveDirectoryContents(SourceDir As DirectoryInfo, Optional Parent As Boolean = False)
+        'To delete all the files in SourceDir
         Dim flist As New List(Of String)
         For Each f In SourceDir.EnumerateFiles("*", SearchOption.TopDirectoryOnly)
             flist.Add(f.FullName)
@@ -272,18 +279,19 @@ Friend Module FileHandling
         End Select
 
         t = New Thread(New ThreadStart(Sub() MovingFiles(files, strDest, s)))
-
+        t.IsBackground = True
+        t.SetApartmentState(ApartmentState.STA)
+        t.Start()
 
         Static i As Byte
         With buttons
             .CurrentSet.Last.Buttons(i).Path = strDest
             i = (i + 1) Mod 8
         End With
-        t.IsBackground = True
-        t.SetApartmentState(ApartmentState.STA)
-        t.Start()
+
 
         GC.Collect()
+        't.Join()
 
         RaiseEvent FileMoved(files, MainForm.FBH.ListBox)
 
@@ -342,12 +350,12 @@ Friend Module FileHandling
                             'If Not currentPicBox.Image Is Nothing Then DisposePic(currentPicBox)
                             If strDest = "" Then
                                 Dim f As New IO.FileInfo(m.FullName)
-                                AllFaveMinder.DestinationPath = strDest
-                                AllFaveMinder.CheckFile(f)
-                                If AllFaveMinder.OkToDelete Then
+                                'AllFaveMinder.DestinationPath = strDest
+                                'AllFaveMinder.CheckFile(f)
+                                'If AllFaveMinder.OkToDelete Then
 
-                                    Deletefile(m.FullName)
-                                End If
+                                Deletefile(m.FullName)
+                                'End If
                             Else
                                 Dim f As New IO.FileInfo(m.FullName)
                                 Dim destfile As New IO.FileInfo(spath)
@@ -616,35 +624,10 @@ Friend Module FileHandling
 
     Public Async Function HarvestBelow(d As DirectoryInfo) As Task
         Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
-        Await x.Burst(d, True)
+        Await x.HarvestFolder(d)
 
     End Function
-    'Public Async Function HarvestFolder(d As DirectoryInfo, Recurse As Boolean, Parent As Boolean) As Task
-    '    If Recurse Then
-    '        Try
-    '            For Each di In d.EnumerateDirectories
-    '                Await HarvestFolder(di, Recurse, Parent)
-    '            Next
-    '        Catch ex As Exception
-    '            MsgBox(ex.Message)
-    '        End Try
-    '    End If
-    '    blnSuppressCreate = True
-    '    Dim l As New List(Of String)
-    '    For Each f In d.EnumerateFiles
-    '        l.Add(f.FullName)
-    '    Next
-    '    If Parent Then
-    '        MoveFiles(l, d.Parent.FullName, MainForm.lbxFiles)
-    '    Else
-    '        MoveFiles(l, CurrentFolder, MainForm.lbxFiles)
 
-    '        blnSuppressCreate = False
-    '    End If
-
-    '    Await DeleteEmptyFolders(d, True)
-    '    RaiseEvent FolderMoved(d.FullName)
-    'End Function
     Public Async Function BurstFolder(d As DirectoryInfo) As Task
         Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
 

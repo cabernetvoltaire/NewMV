@@ -31,7 +31,7 @@ Public Class ButtonForm
         handler.ActualButtons = {Button1, Button2, Button3a, Button4, Button5, Button6, Button7, Button8a}
     End Sub
     Private Sub ButtonForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
+        Exit Sub
         ' FocusOnMain()
         handler.LoadButtonSet(LoadButtonFileName(ButtonFilePath))
         ' buttons = handler.buttons

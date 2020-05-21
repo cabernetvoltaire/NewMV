@@ -298,7 +298,7 @@ Public Class MediaSwapper
         Next
 
     End Sub
-    Public Sub CancelURLS()
+    Public Sub CancelURL()
         For Each m In MediaHandlers
             m.CancelMedia()
         Next

@@ -66,14 +66,14 @@ Partial Class MainForm
         Me.FullPanel = New System.Windows.Forms.TableLayoutPanel()
         Me.ctrMainFrame = New System.Windows.Forms.SplitContainer()
         Me.ctrFileBoxes = New System.Windows.Forms.SplitContainer()
+        Me.MasterContainer = New System.Windows.Forms.SplitContainer()
+        Me.lbxFiles = New System.Windows.Forms.ListBox()
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem3 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem4 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem5 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator13 = New System.Windows.Forms.ToolStripSeparator()
-        Me.MasterContainer = New System.Windows.Forms.SplitContainer()
-        Me.lbxFiles = New System.Windows.Forms.ListBox()
         Me.lbxShowList = New System.Windows.Forms.ListBox()
         Me.ctrPicAndButtons = New System.Windows.Forms.SplitContainer()
         Me.PictureBox2 = New System.Windows.Forms.PictureBox()
@@ -230,6 +230,7 @@ Partial Class MainForm
         Me.InvertSelectionToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PromoteFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PromoteIdenticalSubFoldersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.FlattenAllSubfolderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FullScreenToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.Screen1ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Screen2ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -260,6 +261,11 @@ Partial Class MainForm
         Me.MovieScanToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ReplaceOldLinksToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RenewLinksOfSelectedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator15 = New System.Windows.Forms.ToolStripSeparator()
+        Me.PrependAllFilenamesWithFolderNameToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RecursivelyToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SelectedToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ShortFilenamesRecursivelyToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ButtonFormToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ShowlistToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DashboardToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -274,6 +280,7 @@ Partial Class MainForm
         Me.tmrProgressBar = New System.Windows.Forms.Timer(Me.components)
         Me.tmrJumpRandom = New System.Windows.Forms.Timer(Me.components)
         Me.tmrHighlightCurrent = New System.Windows.Forms.Timer(Me.components)
+        Me.tvmain2 = New MasaSam.Forms.Controls.FileSystemTree()
         Me.MainWMP1 = New AxWMPLib.AxWindowsMediaPlayer()
         Me.MainWMP3 = New AxWMPLib.AxWindowsMediaPlayer()
         Me.MainWMP2 = New AxWMPLib.AxWindowsMediaPlayer()
@@ -288,11 +295,11 @@ Partial Class MainForm
         Me.ctrFileBoxes.Panel1.SuspendLayout()
         Me.ctrFileBoxes.Panel2.SuspendLayout()
         Me.ctrFileBoxes.SuspendLayout()
-        Me.ContextMenuStrip1.SuspendLayout()
         CType(Me.MasterContainer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MasterContainer.Panel1.SuspendLayout()
         Me.MasterContainer.Panel2.SuspendLayout()
         Me.MasterContainer.SuspendLayout()
+        Me.ContextMenuStrip1.SuspendLayout()
         CType(Me.ctrPicAndButtons, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ctrPicAndButtons.Panel1.SuspendLayout()
         Me.ctrPicAndButtons.Panel2.SuspendLayout()
@@ -622,6 +629,10 @@ Partial Class MainForm
         Me.ctrFileBoxes.Name = "ctrFileBoxes"
         Me.ctrFileBoxes.Orientation = System.Windows.Forms.Orientation.Horizontal
         '
+        'ctrFileBoxes.Panel1
+        '
+        Me.ctrFileBoxes.Panel1.Controls.Add(Me.tvmain2)
+        '
         'ctrFileBoxes.Panel2
         '
         Me.ctrFileBoxes.Panel2.Controls.Add(Me.MasterContainer)
@@ -630,42 +641,6 @@ Partial Class MainForm
         Me.ctrFileBoxes.SplitterWidth = 14
         Me.ctrFileBoxes.TabIndex = 0
         Me.ctrFileBoxes.TabStop = False
-        '
-        'ContextMenuStrip1
-        '
-        Me.ContextMenuStrip1.ImageScalingSize = New System.Drawing.Size(24, 24)
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem1, Me.ToolStripMenuItem3, Me.ToolStripMenuItem4, Me.ToolStripMenuItem5, Me.ToolStripSeparator13})
-        Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(273, 146)
-        '
-        'ToolStripMenuItem1
-        '
-        Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
-        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(272, 34)
-        Me.ToolStripMenuItem1.Text = "Select Dead Files"
-        '
-        'ToolStripMenuItem3
-        '
-        Me.ToolStripMenuItem3.Name = "ToolStripMenuItem3"
-        Me.ToolStripMenuItem3.Size = New System.Drawing.Size(272, 34)
-        Me.ToolStripMenuItem3.Text = "ToolStripMenuItem3"
-        '
-        'ToolStripMenuItem4
-        '
-        Me.ToolStripMenuItem4.Name = "ToolStripMenuItem4"
-        Me.ToolStripMenuItem4.Size = New System.Drawing.Size(272, 34)
-        Me.ToolStripMenuItem4.Text = "ToolStripMenuItem4"
-        '
-        'ToolStripMenuItem5
-        '
-        Me.ToolStripMenuItem5.Name = "ToolStripMenuItem5"
-        Me.ToolStripMenuItem5.Size = New System.Drawing.Size(272, 34)
-        Me.ToolStripMenuItem5.Text = "ToolStripMenuItem5"
-        '
-        'ToolStripSeparator13
-        '
-        Me.ToolStripSeparator13.Name = "ToolStripSeparator13"
-        Me.ToolStripSeparator13.Size = New System.Drawing.Size(269, 6)
         '
         'MasterContainer
         '
@@ -702,6 +677,42 @@ Partial Class MainForm
         Me.lbxFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
         Me.lbxFiles.Size = New System.Drawing.Size(844, 368)
         Me.lbxFiles.TabIndex = 2
+        '
+        'ContextMenuStrip1
+        '
+        Me.ContextMenuStrip1.ImageScalingSize = New System.Drawing.Size(24, 24)
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem1, Me.ToolStripMenuItem3, Me.ToolStripMenuItem4, Me.ToolStripMenuItem5, Me.ToolStripSeparator13})
+        Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(273, 146)
+        '
+        'ToolStripMenuItem1
+        '
+        Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
+        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(272, 34)
+        Me.ToolStripMenuItem1.Text = "Select Dead Files"
+        '
+        'ToolStripMenuItem3
+        '
+        Me.ToolStripMenuItem3.Name = "ToolStripMenuItem3"
+        Me.ToolStripMenuItem3.Size = New System.Drawing.Size(272, 34)
+        Me.ToolStripMenuItem3.Text = "ToolStripMenuItem3"
+        '
+        'ToolStripMenuItem4
+        '
+        Me.ToolStripMenuItem4.Name = "ToolStripMenuItem4"
+        Me.ToolStripMenuItem4.Size = New System.Drawing.Size(272, 34)
+        Me.ToolStripMenuItem4.Text = "ToolStripMenuItem4"
+        '
+        'ToolStripMenuItem5
+        '
+        Me.ToolStripMenuItem5.Name = "ToolStripMenuItem5"
+        Me.ToolStripMenuItem5.Size = New System.Drawing.Size(272, 34)
+        Me.ToolStripMenuItem5.Text = "ToolStripMenuItem5"
+        '
+        'ToolStripSeparator13
+        '
+        Me.ToolStripSeparator13.Name = "ToolStripSeparator13"
+        Me.ToolStripSeparator13.Size = New System.Drawing.Size(269, 6)
         '
         'lbxShowList
         '
@@ -1909,9 +1920,10 @@ Partial Class MainForm
         '
         'HarvestFolderToolStripMenuItem
         '
-        Me.HarvestFolderToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteEmptyFoldersToolStripMenuItem, Me.HarvestFoldersToolStripMenuItem, Me.ToolStripSeparator8, Me.BundleToolStripMenuItem, Me.BurstFolderToolStripMenuItem, Me.ToolStripSeparator9, Me.GroupToolStripMenuItem, Me.PromoteFolderToolStripMenuItem, Me.FilterMoveToolStripMenuItem, Me.InvertSelectionToolStripMenuItem, Me.PromoteFileToolStripMenuItem, Me.PromoteIdenticalSubFoldersToolStripMenuItem})
+        Me.HarvestFolderToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteEmptyFoldersToolStripMenuItem, Me.HarvestFoldersToolStripMenuItem, Me.ToolStripSeparator8, Me.BundleToolStripMenuItem, Me.BurstFolderToolStripMenuItem, Me.ToolStripSeparator9, Me.GroupToolStripMenuItem, Me.PromoteFolderToolStripMenuItem, Me.FilterMoveToolStripMenuItem, Me.InvertSelectionToolStripMenuItem, Me.PromoteFileToolStripMenuItem, Me.PromoteIdenticalSubFoldersToolStripMenuItem, Me.FlattenAllSubfolderToolStripMenuItem})
         Me.HarvestFolderToolStripMenuItem.Name = "HarvestFolderToolStripMenuItem"
         Me.HarvestFolderToolStripMenuItem.Size = New System.Drawing.Size(157, 34)
+        Me.HarvestFolderToolStripMenuItem.Tag = "Folder"
         Me.HarvestFolderToolStripMenuItem.Text = "&Folder Actions"
         '
         'DeleteEmptyFoldersToolStripMenuItem
@@ -1919,6 +1931,7 @@ Partial Class MainForm
         Me.DeleteEmptyFoldersToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.IncludingAllSubfoldersToolStripMenuItem, Me.JustTopFoldersToolStripMenuItem})
         Me.DeleteEmptyFoldersToolStripMenuItem.Name = "DeleteEmptyFoldersToolStripMenuItem"
         Me.DeleteEmptyFoldersToolStripMenuItem.Size = New System.Drawing.Size(387, 34)
+        Me.DeleteEmptyFoldersToolStripMenuItem.Tag = "Folder"
         Me.DeleteEmptyFoldersToolStripMenuItem.Text = "Delete Empty Folders"
         '
         'IncludingAllSubfoldersToolStripMenuItem
@@ -1945,6 +1958,7 @@ Partial Class MainForm
         Me.HarvestFoldersToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.H), System.Windows.Forms.Keys)
         Me.HarvestFoldersToolStripMenuItem.Size = New System.Drawing.Size(387, 34)
+        Me.HarvestFoldersToolStripMenuItem.Tag = "Folder"
         Me.HarvestFoldersToolStripMenuItem.Text = "Harvest Folders"
         '
         'RecursiveToolStripMenuItem
@@ -1966,6 +1980,7 @@ Partial Class MainForm
         Me.BundleToolStripMenuItem.Name = "BundleToolStripMenuItem"
         Me.BundleToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.B), System.Windows.Forms.Keys)
         Me.BundleToolStripMenuItem.Size = New System.Drawing.Size(387, 34)
+        Me.BundleToolStripMenuItem.Tag = "Folder"
         Me.BundleToolStripMenuItem.Text = "Bundle"
         Me.BundleToolStripMenuItem.ToolTipText = "Places all the selected files into a sub-folder of their current directory."
         '
@@ -1975,6 +1990,7 @@ Partial Class MainForm
         Me.BurstFolderToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.B), System.Windows.Forms.Keys)
         Me.BurstFolderToolStripMenuItem.Size = New System.Drawing.Size(387, 34)
+        Me.BurstFolderToolStripMenuItem.Tag = "Folder"
         Me.BurstFolderToolStripMenuItem.Text = "Burst Folder"
         '
         'ToolStripSeparator9
@@ -1987,6 +2003,7 @@ Partial Class MainForm
         Me.GroupToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ByMonthToolStripMenuItem, Me.ByDateToolStripMenuItem, Me.ByYearToolStripMenuItem, Me.ByTimeToolStripMenuItem, Me.BySizeToolStripMenuItem, Me.CalendarToolStripMenuItem, Me.ToolStripSeparator6, Me.ByNameToolStripMenuItem, Me.ByExtToolStripMenuItem, Me.ByLinkFolderToolStripMenuItem, Me.AlphabeticGroupsToolStripMenuItem})
         Me.GroupToolStripMenuItem.Name = "GroupToolStripMenuItem"
         Me.GroupToolStripMenuItem.Size = New System.Drawing.Size(387, 34)
+        Me.GroupToolStripMenuItem.Tag = "Folder"
         Me.GroupToolStripMenuItem.Text = "&Group..."
         '
         'ByMonthToolStripMenuItem
@@ -2109,6 +2126,12 @@ Partial Class MainForm
         Me.PromoteIdenticalSubFoldersToolStripMenuItem.Size = New System.Drawing.Size(387, 34)
         Me.PromoteIdenticalSubFoldersToolStripMenuItem.Text = "Promote Identical SubFolders"
         '
+        'FlattenAllSubfolderToolStripMenuItem
+        '
+        Me.FlattenAllSubfolderToolStripMenuItem.Name = "FlattenAllSubfolderToolStripMenuItem"
+        Me.FlattenAllSubfolderToolStripMenuItem.Size = New System.Drawing.Size(387, 34)
+        Me.FlattenAllSubfolderToolStripMenuItem.Text = "Flatten All Subfolders"
+        '
         'FullScreenToolStripMenuItem1
         '
         Me.FullScreenToolStripMenuItem1.CheckOnClick = True
@@ -2207,11 +2230,12 @@ Partial Class MainForm
         '
         'DuplicatesToolStripMenuItem
         '
-        Me.DuplicatesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DuplicatesToolStripMenuItem1, Me.ThumbnailsToolStripMenuItem, Me.SelectDeadLinksToolStripMenuItem, Me.RefreshSelectedLinksToolStripMenuItem, Me.ToolStripSeparator11, Me.SelectNonFavouritsToolStripMenuItem, Me.HideDeadLinksToolStripMenuItem, Me.MovieScanToolStripMenuItem, Me.ReplaceOldLinksToolStripMenuItem, Me.RenewLinksOfSelectedToolStripMenuItem})
+        Me.DuplicatesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DuplicatesToolStripMenuItem1, Me.ThumbnailsToolStripMenuItem, Me.SelectDeadLinksToolStripMenuItem, Me.RefreshSelectedLinksToolStripMenuItem, Me.ToolStripSeparator11, Me.SelectNonFavouritsToolStripMenuItem, Me.HideDeadLinksToolStripMenuItem, Me.MovieScanToolStripMenuItem, Me.ReplaceOldLinksToolStripMenuItem, Me.RenewLinksOfSelectedToolStripMenuItem, Me.ToolStripSeparator15, Me.PrependAllFilenamesWithFolderNameToolStripMenuItem})
         Me.DuplicatesToolStripMenuItem.Name = "DuplicatesToolStripMenuItem"
         Me.DuplicatesToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.D), System.Windows.Forms.Keys)
         Me.DuplicatesToolStripMenuItem.Size = New System.Drawing.Size(114, 34)
+        Me.DuplicatesToolStripMenuItem.Tag = "File"
         Me.DuplicatesToolStripMenuItem.Text = "&Functions"
         '
         'DuplicatesToolStripMenuItem1
@@ -2219,7 +2243,7 @@ Partial Class MainForm
         Me.DuplicatesToolStripMenuItem1.Name = "DuplicatesToolStripMenuItem1"
         Me.DuplicatesToolStripMenuItem1.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.D), System.Windows.Forms.Keys)
-        Me.DuplicatesToolStripMenuItem1.Size = New System.Drawing.Size(391, 34)
+        Me.DuplicatesToolStripMenuItem1.Size = New System.Drawing.Size(473, 34)
         Me.DuplicatesToolStripMenuItem1.Text = "&Duplicates"
         '
         'ThumbnailsToolStripMenuItem
@@ -2227,7 +2251,8 @@ Partial Class MainForm
         Me.ThumbnailsToolStripMenuItem.Name = "ThumbnailsToolStripMenuItem"
         Me.ThumbnailsToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.T), System.Windows.Forms.Keys)
-        Me.ThumbnailsToolStripMenuItem.Size = New System.Drawing.Size(391, 34)
+        Me.ThumbnailsToolStripMenuItem.Size = New System.Drawing.Size(473, 34)
+        Me.ThumbnailsToolStripMenuItem.Tag = "File"
         Me.ThumbnailsToolStripMenuItem.Text = "&Thumbnails"
         '
         'SelectDeadLinksToolStripMenuItem
@@ -2237,92 +2262,141 @@ Partial Class MainForm
         Me.SelectDeadLinksToolStripMenuItem.ShortcutKeyDisplayString = ""
         Me.SelectDeadLinksToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.L), System.Windows.Forms.Keys)
-        Me.SelectDeadLinksToolStripMenuItem.Size = New System.Drawing.Size(391, 34)
+        Me.SelectDeadLinksToolStripMenuItem.Size = New System.Drawing.Size(473, 34)
+        Me.SelectDeadLinksToolStripMenuItem.Tag = "File"
         Me.SelectDeadLinksToolStripMenuItem.Text = "Select Dead &Links"
         '
         'SelectAndBundleToolStripMenuItem
         '
         Me.SelectAndBundleToolStripMenuItem.Name = "SelectAndBundleToolStripMenuItem"
         Me.SelectAndBundleToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.SelectAndBundleToolStripMenuItem.Tag = "File"
         Me.SelectAndBundleToolStripMenuItem.Text = "Select and Bundle"
         '
         'RefreshSelectedLinksToolStripMenuItem
         '
         Me.RefreshSelectedLinksToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SelectedToolStripMenuItem, Me.DisplayedToolStripMenuItem, Me.SelectedDeepToolStripMenuItem, Me.ListDeadFilesToolStripMenuItem, Me.SelectThenRefreshToolStripMenuItem, Me.RefreshAllFilesWithLinksToolStripMenuItem})
         Me.RefreshSelectedLinksToolStripMenuItem.Name = "RefreshSelectedLinksToolStripMenuItem"
-        Me.RefreshSelectedLinksToolStripMenuItem.Size = New System.Drawing.Size(391, 34)
+        Me.RefreshSelectedLinksToolStripMenuItem.Size = New System.Drawing.Size(473, 34)
+        Me.RefreshSelectedLinksToolStripMenuItem.Tag = "File"
         Me.RefreshSelectedLinksToolStripMenuItem.Text = "Refresh Selected Links"
         '
         'SelectedToolStripMenuItem
         '
         Me.SelectedToolStripMenuItem.Name = "SelectedToolStripMenuItem"
         Me.SelectedToolStripMenuItem.Size = New System.Drawing.Size(340, 34)
+        Me.SelectedToolStripMenuItem.Tag = "File"
         Me.SelectedToolStripMenuItem.Text = "Selected"
         '
         'DisplayedToolStripMenuItem
         '
         Me.DisplayedToolStripMenuItem.Name = "DisplayedToolStripMenuItem"
         Me.DisplayedToolStripMenuItem.Size = New System.Drawing.Size(340, 34)
+        Me.DisplayedToolStripMenuItem.Tag = "File"
         Me.DisplayedToolStripMenuItem.Text = "Displayed"
         '
         'SelectedDeepToolStripMenuItem
         '
         Me.SelectedDeepToolStripMenuItem.Name = "SelectedDeepToolStripMenuItem"
         Me.SelectedDeepToolStripMenuItem.Size = New System.Drawing.Size(340, 34)
+        Me.SelectedDeepToolStripMenuItem.Tag = "File"
         Me.SelectedDeepToolStripMenuItem.Text = "Selected (Deep)"
         '
         'ListDeadFilesToolStripMenuItem
         '
         Me.ListDeadFilesToolStripMenuItem.Name = "ListDeadFilesToolStripMenuItem"
         Me.ListDeadFilesToolStripMenuItem.Size = New System.Drawing.Size(340, 34)
+        Me.ListDeadFilesToolStripMenuItem.Tag = "File"
         Me.ListDeadFilesToolStripMenuItem.Text = "List dead files"
         '
         'SelectThenRefreshToolStripMenuItem
         '
         Me.SelectThenRefreshToolStripMenuItem.Name = "SelectThenRefreshToolStripMenuItem"
         Me.SelectThenRefreshToolStripMenuItem.Size = New System.Drawing.Size(340, 34)
+        Me.SelectThenRefreshToolStripMenuItem.Tag = "File"
         Me.SelectThenRefreshToolStripMenuItem.Text = "Select Then Refresh"
         '
         'RefreshAllFilesWithLinksToolStripMenuItem
         '
         Me.RefreshAllFilesWithLinksToolStripMenuItem.Name = "RefreshAllFilesWithLinksToolStripMenuItem"
         Me.RefreshAllFilesWithLinksToolStripMenuItem.Size = New System.Drawing.Size(340, 34)
+        Me.RefreshAllFilesWithLinksToolStripMenuItem.Tag = "File"
         Me.RefreshAllFilesWithLinksToolStripMenuItem.Text = "Refresh all files with Links"
         '
         'ToolStripSeparator11
         '
         Me.ToolStripSeparator11.Name = "ToolStripSeparator11"
-        Me.ToolStripSeparator11.Size = New System.Drawing.Size(388, 6)
+        Me.ToolStripSeparator11.Size = New System.Drawing.Size(470, 6)
         '
         'SelectNonFavouritsToolStripMenuItem
         '
         Me.SelectNonFavouritsToolStripMenuItem.Name = "SelectNonFavouritsToolStripMenuItem"
-        Me.SelectNonFavouritsToolStripMenuItem.Size = New System.Drawing.Size(391, 34)
+        Me.SelectNonFavouritsToolStripMenuItem.Size = New System.Drawing.Size(473, 34)
+        Me.SelectNonFavouritsToolStripMenuItem.Tag = "File"
         Me.SelectNonFavouritsToolStripMenuItem.Text = "Select Non-Favourites"
         '
         'HideDeadLinksToolStripMenuItem
         '
         Me.HideDeadLinksToolStripMenuItem.Name = "HideDeadLinksToolStripMenuItem"
-        Me.HideDeadLinksToolStripMenuItem.Size = New System.Drawing.Size(391, 34)
+        Me.HideDeadLinksToolStripMenuItem.Size = New System.Drawing.Size(473, 34)
+        Me.HideDeadLinksToolStripMenuItem.Tag = "File"
         Me.HideDeadLinksToolStripMenuItem.Text = "Hide Dead Links"
         '
         'MovieScanToolStripMenuItem
         '
         Me.MovieScanToolStripMenuItem.Name = "MovieScanToolStripMenuItem"
-        Me.MovieScanToolStripMenuItem.Size = New System.Drawing.Size(391, 34)
+        Me.MovieScanToolStripMenuItem.Size = New System.Drawing.Size(473, 34)
+        Me.MovieScanToolStripMenuItem.Tag = "File"
         Me.MovieScanToolStripMenuItem.Text = "Movie Scan"
         '
         'ReplaceOldLinksToolStripMenuItem
         '
         Me.ReplaceOldLinksToolStripMenuItem.Name = "ReplaceOldLinksToolStripMenuItem"
-        Me.ReplaceOldLinksToolStripMenuItem.Size = New System.Drawing.Size(391, 34)
+        Me.ReplaceOldLinksToolStripMenuItem.Size = New System.Drawing.Size(473, 34)
+        Me.ReplaceOldLinksToolStripMenuItem.Tag = "File"
         Me.ReplaceOldLinksToolStripMenuItem.Text = "Replace Old Links"
         '
         'RenewLinksOfSelectedToolStripMenuItem
         '
         Me.RenewLinksOfSelectedToolStripMenuItem.Name = "RenewLinksOfSelectedToolStripMenuItem"
-        Me.RenewLinksOfSelectedToolStripMenuItem.Size = New System.Drawing.Size(391, 34)
+        Me.RenewLinksOfSelectedToolStripMenuItem.Size = New System.Drawing.Size(473, 34)
+        Me.RenewLinksOfSelectedToolStripMenuItem.Tag = "File"
         Me.RenewLinksOfSelectedToolStripMenuItem.Text = "Renew Links of selected"
+        '
+        'ToolStripSeparator15
+        '
+        Me.ToolStripSeparator15.Name = "ToolStripSeparator15"
+        Me.ToolStripSeparator15.Size = New System.Drawing.Size(470, 6)
+        Me.ToolStripSeparator15.Tag = "File"
+        '
+        'PrependAllFilenamesWithFolderNameToolStripMenuItem
+        '
+        Me.PrependAllFilenamesWithFolderNameToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RecursivelyToolStripMenuItem, Me.SelectedToolStripMenuItem1, Me.ShortFilenamesRecursivelyToolStripMenuItem})
+        Me.PrependAllFilenamesWithFolderNameToolStripMenuItem.Name = "PrependAllFilenamesWithFolderNameToolStripMenuItem"
+        Me.PrependAllFilenamesWithFolderNameToolStripMenuItem.Size = New System.Drawing.Size(473, 34)
+        Me.PrependAllFilenamesWithFolderNameToolStripMenuItem.Tag = "File"
+        Me.PrependAllFilenamesWithFolderNameToolStripMenuItem.Text = "Prepend All Filenames with FolderName"
+        '
+        'RecursivelyToolStripMenuItem
+        '
+        Me.RecursivelyToolStripMenuItem.Name = "RecursivelyToolStripMenuItem"
+        Me.RecursivelyToolStripMenuItem.Size = New System.Drawing.Size(364, 34)
+        Me.RecursivelyToolStripMenuItem.Tag = "File"
+        Me.RecursivelyToolStripMenuItem.Text = "Recursively"
+        '
+        'SelectedToolStripMenuItem1
+        '
+        Me.SelectedToolStripMenuItem1.Name = "SelectedToolStripMenuItem1"
+        Me.SelectedToolStripMenuItem1.Size = New System.Drawing.Size(364, 34)
+        Me.SelectedToolStripMenuItem1.Tag = "File"
+        Me.SelectedToolStripMenuItem1.Text = "Selected"
+        '
+        'ShortFilenamesRecursivelyToolStripMenuItem
+        '
+        Me.ShortFilenamesRecursivelyToolStripMenuItem.Name = "ShortFilenamesRecursivelyToolStripMenuItem"
+        Me.ShortFilenamesRecursivelyToolStripMenuItem.Size = New System.Drawing.Size(364, 34)
+        Me.ShortFilenamesRecursivelyToolStripMenuItem.Tag = "File"
+        Me.ShortFilenamesRecursivelyToolStripMenuItem.Text = "Short Filenames, Recursively"
         '
         'ButtonFormToolStripMenuItem
         '
@@ -2389,6 +2463,19 @@ Partial Class MainForm
         'tmrHighlightCurrent
         '
         Me.tmrHighlightCurrent.Interval = 10
+        '
+        'tvmain2
+        '
+        Me.tvmain2.AutoExpandNodes = False
+        Me.tvmain2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tvmain2.FileExtensions = "*"
+        Me.tvmain2.Location = New System.Drawing.Point(0, 0)
+        Me.tvmain2.Margin = New System.Windows.Forms.Padding(6)
+        Me.tvmain2.Name = "tvmain2"
+        Me.tvmain2.RootDrive = Nothing
+        Me.tvmain2.SelectedFolder = Nothing
+        Me.tvmain2.Size = New System.Drawing.Size(844, 743)
+        Me.tvmain2.TabIndex = 0
         '
         'MainWMP1
         '
@@ -2466,11 +2553,11 @@ Partial Class MainForm
         Me.ctrFileBoxes.Panel2.ResumeLayout(False)
         CType(Me.ctrFileBoxes, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ctrFileBoxes.ResumeLayout(False)
-        Me.ContextMenuStrip1.ResumeLayout(False)
         Me.MasterContainer.Panel1.ResumeLayout(False)
         Me.MasterContainer.Panel2.ResumeLayout(False)
         CType(Me.MasterContainer, System.ComponentModel.ISupportInitialize).EndInit()
         Me.MasterContainer.ResumeLayout(False)
+        Me.ContextMenuStrip1.ResumeLayout(False)
         Me.ctrPicAndButtons.Panel1.ResumeLayout(False)
         Me.ctrPicAndButtons.Panel2.ResumeLayout(False)
         CType(Me.ctrPicAndButtons, System.ComponentModel.ISupportInitialize).EndInit()
@@ -2612,7 +2699,7 @@ Partial Class MainForm
     Friend WithEvents TSPB As ToolStripProgressBar
     Friend WithEvents tmrMediaSpeed As Timer
     Friend WithEvents tmrUpdateForm As Timer
-    Friend WithEvents tvMain2 As Controls.FileSystemTree
+
     Friend WithEvents tmrSlowMo As Timer
     Friend WithEvents tmrUpdateFolderSelection As Timer
     Friend WithEvents ToolTip1 As ToolTip
@@ -2785,4 +2872,11 @@ Partial Class MainForm
     Friend WithEvents DatabaseToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents tmrHighlightCurrent As Timer
     Friend WithEvents CreateListOfFilesToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents tvmain2 As Controls.FileSystemTree
+    Friend WithEvents ToolStripSeparator15 As ToolStripSeparator
+    Friend WithEvents PrependAllFilenamesWithFolderNameToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents RecursivelyToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents SelectedToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents ShortFilenamesRecursivelyToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents FlattenAllSubfolderToolStripMenuItem As ToolStripMenuItem
 End Class

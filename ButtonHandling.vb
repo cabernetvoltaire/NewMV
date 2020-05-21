@@ -428,6 +428,7 @@ Module ButtonHandling
         'If directory name exists as buttonfile, then load button file (optionally)
 
         'Check for button file
+
         Dim f As New IO.DirectoryInfo(Buttonfolder)
         Dim file As New IO.FileInfo(f.FullName & "\" & Foldername & ".msb")
         Static lastasked As String
@@ -445,6 +446,7 @@ Module ButtonHandling
     End Function
     Public Sub NewButtonList()
         ClearCurrentButtons(buttons)
+
         SaveButtonlist()
 
     End Sub
@@ -474,7 +476,7 @@ Module ButtonHandling
         ClearCurrentButtons(buttons)
         'Get the file path
         Dim fs As New List(Of String)
-        ReadListfromFile(fs, path, Encrypted)
+        fs = ReadListfromFile(path, Encrypted)
         Dim subs As String()
         For Each s In fs
 
