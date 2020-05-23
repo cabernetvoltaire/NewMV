@@ -7,7 +7,7 @@ Imports System.Threading
 Imports MasaSam.Forms.Controls
 
 Friend Class MainForm
-
+    Public DB As New Database
     Public Initialising As Boolean = True
     Public AutoLoadButtons As Boolean = False
     Public ButtonsHidden As Boolean = False
@@ -2416,7 +2416,10 @@ Friend Class MainForm
             AddToButtonFilesList(CurrentFolder)
             UpdateFileInfo()
         End If
+        ProgressBarOn(1000)
+
         FBH.DirectoryPath = CurrentFolder
+        ProgressBarOff()
         FBH.Random = Random
         FBH.SetFirst()
         tmrUpdateFileList.Enabled = False
@@ -2581,9 +2584,11 @@ Friend Class MainForm
 
         For Each m In lbx.SelectedItems
             files.Add(m)
+            ProgressIncrement(1)
         Next
+        op2.DB = DB
         op2.OrphanList = files
-        If op2.FindOrphans(sender Is SelectedDeepToolStripMenuItem) Then FBH.FillBox()
+        If op2.FindOrphans() Then FBH.FillBox()
         ProgressBarOff()
     End Sub
 
@@ -2759,6 +2764,7 @@ Friend Class MainForm
     End Sub
 
     Private Sub ListDeadFilesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ListDeadFilesToolStripMenuItem.Click
+        ProgressBarOn(1000)
         FormDeadFiles.Show()
         SelectDeadLinks(FocusControl)
         Dim op2 As New OrphanFinder
@@ -2768,6 +2774,7 @@ Friend Class MainForm
 
         For Each m In lbx.SelectedItems
             files.Add(m)
+            ProgressIncrement(1)
         Next
         op2.OrphanList = files
         Dim deadfiles As New List(Of String)
@@ -2776,9 +2783,10 @@ Friend Class MainForm
 
         For Each f In deadfiles
             FormDeadFiles.ListBox1.Items.Add(f)
-
+            ProgressIncrement(1)
 
         Next
+        ProgressBarOff()
     End Sub
 
     Private Sub chbLoadButtonFiles_CheckedChanged(sender As Object, e As EventArgs) Handles chbLoadButtonFiles.CheckedChanged
@@ -2801,8 +2809,8 @@ Friend Class MainForm
     End Sub
 
     Private Sub tmrProgressBar_Tick(sender As Object, e As EventArgs) Handles tmrProgressBar.Tick
-        tmrProgressBar.Interval = 1000
-        ProgressIncrement(10)
+        tmrProgressBar.Interval = 100
+        ProgressIncrement(1)
     End Sub
 
     Private Sub SelectAndBundleToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectAndBundleToolStripMenuItem.Click
@@ -3055,9 +3063,59 @@ Friend Class MainForm
         FlattenAllSubFolders(New IO.DirectoryInfo(CurrentFolder))
     End Sub
 
+    Private Sub LoadDatabaseIntoMemoryToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LoadDatabaseIntoMemoryToolStripMenuItem.Click
+        LoadDatabase()
+        LoadButtonFileToolStripMenuItem.Visible = False
+    End Sub
 
+    Private Sub LoadDatabase()
+        ProgressBarOn(400000)
+        Dim list As New List(Of String)
+        list = ReadListfromFile("Q:\files2.txt", False)
+        Dim i As Integer = 0
+        For Each entry In list
+            Dim x() As String
+            x = entry.Split(vbTab)
+            Dim ent As New DatabaseEntry
+            ent.Filename = x(0)
+            ent.Path = x(1)
+            ent.Size = x(2)
+            DB.AddEntry(ent)
+            ProgressIncrement(1)
+        Next
+        'DB.Sort()
+        ProgressBarOff()
+    End Sub
 
+    Private Sub OnFBHIncrease(sender As Object, e As EventArgs) Handles FBH.ListBoxIncreased
+        ProgressIncrement(1)
+    End Sub
 
+    Private Sub StatusStrip1_ItemClicked(sender As Object, e As ToolStripItemClickedEventArgs) Handles StatusStrip1.ItemClicked
+
+    End Sub
+    Public Sub ProgressBarOn(max As Long)
+        With TSPB
+            .Value = 0
+            .Maximum = max 'Math.Max(lngListSizeBytes, 100)
+            .Visible = True
+        End With
+        tmrProgressBar.Enabled = True
+    End Sub
+    Public Sub ProgressBarOff()
+        tmrProgressBar.Enabled = False
+        With TSPB
+            .Visible = False
+        End With
+        TSPB.Value = 0
+    End Sub
+    Public Sub ProgressIncrement(st As Integer)
+        With TSPB
+            '   .Maximum = max
+            .Value = (.Value + st) Mod .Maximum
+        End With
+        'MainForm.Update()
+    End Sub
 #End Region
 
 End Class

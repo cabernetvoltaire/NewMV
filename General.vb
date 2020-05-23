@@ -65,29 +65,10 @@ Public Module General
 
 #Region "Controls"
 
-    Public Sub ProgressBarOn(max As Long)
-        With MainForm.TSPB
-            .Value = 0
-            .Maximum = max 'Math.Max(lngListSizeBytes, 100)
-            .Visible = True
-        End With
-        MainForm.tmrProgressBar.Enabled = True
-    End Sub
 
-    Public Sub ProgressIncrement(st As Integer)
-        With MainForm.TSPB
-            '   .Maximum = max
-            .Value = (.Value + st) Mod .Maximum
-        End With
-        'MainForm.Update()
-    End Sub
-    Public Sub ProgressBarOff()
-        MainForm.tmrProgressBar.Enabled = False
-        With MainForm.TSPB
-            .Visible = False
-        End With
 
-    End Sub
+
+
 #End Region
 
 #Region "Links"
@@ -606,12 +587,16 @@ Public Module General
 
             dirs = GenerateSafeFolderList(Path)
 
+            list.Add("Name" & vbTab & "Path" & vbTab & "Size in bytes" & vbTab & "Date")
             For Each d In dirs
                 Dim dir As New DirectoryInfo(d)
-                list.Add("Name" & vbTab & "Path" & vbTab & "Size in bytes" & vbTab & "Date")
                 For Each f In dir.GetFiles
-                    list.Add(f.Name & vbTab & f.FullName.Replace(f.Name, "") & vbTab & f.Length & vbTab & f.CreationTime)
+                    If FindType(f.FullName) = Filetype.Movie Then
+                        list.Add(f.Name & vbTab & f.FullName.Replace(f.Name, "") & vbTab & f.Length & vbTab & f.CreationTime)
+
+                    End If
                 Next
+                Application.DoEvents()
             Next
 
             WriteListToFile(list, "Q:\Files2.txt", False)
@@ -959,15 +944,28 @@ Public Module General
         Next
         Return k
     End Function
+    ''' <summary>
+    ''' Removes the brackets from a list of filenames, optionally only retaining the original
+    ''' </summary>
+    ''' <param name="list"></param>
     Sub RemoveBrackets(list As List(Of String))
+        Dim x As New BracketRemover
+        x.ListOfFiles = list
+        x.RemoveBrackets()
+        Exit Sub
         For Each f In list
             Dim file As New IO.FileInfo(f)
             If file.Exists Then
                 Dim n As String = file.Name
                 'Need to use regex here.
-                n = n.Replace("(0)", "")
-                n = n.Replace("(1)", "")
-                n = n.Replace("(2)", "")
+                For i = 1 To 100
+                    If n = n.Replace("(" & Str(i) & ")", "") Then
+                    Else
+                        n.Replace("(" & Str(i) & ")", "")
+                    End If
+
+
+                Next
                 n = AppendExistingFilename(n, file)
                 If file.Name <> n Then
 
@@ -975,7 +973,7 @@ Public Module General
                         My.Computer.FileSystem.RenameFile(file.FullName, n)
 
                     Catch ex As Exception
-
+                        MsgBox(ex.Message)
                     End Try
                 End If
 
@@ -1163,6 +1161,12 @@ Public Module General
         WriteListToFile(list, Dest, Encrypted)
 
     End Sub
+    ''' <summary>
+    ''' If spath exists, then returns an appropriately suffixed new name
+    ''' </summary>
+    ''' <param name="spath"></param>
+    ''' <param name="m"></param>
+    ''' <returns></returns>
     Public Function AppendExistingFilename(spath As String, m As IO.FileInfo) As String
         Dim i = 0
         If m.Name = FilenameFromPath(spath, True) Then 'Existing path - rename
@@ -1275,5 +1279,121 @@ Public Module General
             Next
         End Sub
     End Class
+    Public Class DatabaseEntry
+        Implements IComparable
 
+        Private Property mFullPath As String
+        Public Property Filename As String
+        Public ReadOnly Property FullPath As String
+            Get
+                Return mFullPath
+            End Get
+        End Property
+
+        Private Property mPath As String
+        Public Property Path As String
+            Set(value As String)
+                mPath = value
+                mFullPath = String.Concat(mPath, Filename)
+            End Set
+            Get
+                Return mPath
+            End Get
+        End Property
+        Public Size As Long
+
+        Public Function CompareTo(obj As Object) As Integer Implements IComparable.CompareTo
+            If obj.filename = Filename Then
+                Return 0
+            ElseIf obj.filename < Filename Then
+                Return 1
+            Else
+                Return -1
+
+
+            End If
+        End Function
+    End Class
+    Public Class Database
+        Public Entries As New List(Of DatabaseEntry)
+        Public Sub AddEntry(entry As DatabaseEntry)
+            Entries.Add(entry)
+
+        End Sub
+        Public Sub Sort()
+            Entries.Sort()
+        End Sub
+        Public Function FindEntry(filename As String) As DatabaseEntry
+            Dim n As New List(Of DatabaseEntry)
+            n = Entries.FindAll(Function(x) x.Filename.Equals(filename))
+            Select Case n.Count
+                Case 0
+                    n = Entries.FindAll(Function(x) x.Filename.Contains(Path.GetFileNameWithoutExtension(filename)))
+                    If n.Count = 0 Then
+                        Return Nothing
+                    Else
+
+                    End If
+                Case 1
+                    Return n(0)
+                Case Else
+                    'Decide which one to return
+            End Select
+
+        End Function
+
+    End Class
+    Public Class BracketRemover
+        Public ListOfFiles As New List(Of String)
+        Public RemoveDuplicates As Boolean = True
+        Private Sub RemoveNonBracketed()
+            Dim tList As New List(Of String)
+            For Each m In ListOfFiles
+                Dim x As New IO.FileInfo(m)
+                If m.EndsWith(")" & x.Extension) Then
+                    tList.Add(m)
+                End If
+            Next
+            ListOfFiles = tList
+        End Sub
+        Public Sub RemoveBrackets()
+            RemoveNonBracketed()
+
+            For Each f In ListOfFiles
+                Dim file As New IO.FileInfo(f)
+                If file.Exists Then
+                    'Remove any bracketed numbers at the end of the filename
+                    Dim n As String = file.FullName
+                    'Need to use regex here.
+                    For i = 0 To 100
+                        Dim p As String = Str(i).Substring(1)
+                        p = n.Replace("(" & p & ")", "")
+                        If n <> p Then
+                            n = p
+                            Exit For
+                        End If
+                    Next
+                    'If it was successful, then rename the file without the brackets
+                    'but if this causes a clash with an existing file of that name
+                    'delete this file if permitted, and if their lengths are the same
+                    If file.FullName <> n Then
+                        Dim nfile As New IO.FileInfo(n)
+                        Try
+                            My.Computer.FileSystem.RenameFile(file.FullName, nfile.Name)
+                        Catch ex As IOException
+                            If RemoveDuplicates Then
+                                If nfile.Exists Then
+                                    If file.Length = nfile.Length Then
+                                        file.Delete()
+                                    End If
+                                End If
+                            End If
+                        End Try
+                    End If
+
+                End If
+
+            Next
+        End Sub
+    End Class
 End Module

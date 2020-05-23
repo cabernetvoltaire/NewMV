@@ -175,11 +175,20 @@ Class DateMove
                 Else
                     s.CreateSubdirectory(UCase(letter) & "\")
                 End If
-                dest = f.DirectoryName & "\" & UCase(letter)
-                'Move each file into it. 
-
             Next
-            MoveFiles(list, dest)
+            'Move each file into it. 
+            For Each d In s.GetDirectories
+                If d.Name.Length = 1 Then
+                    For Each f In s.GetFiles
+                        If UCase(f.Name(0)) = d.Name Then
+                            list.Add(f.FullName)
+                        End If
+                    Next
+                    blnSuppressCreate = True
+                    MoveFiles(list, d.FullName)
+                    list.Clear()
+                End If
+            Next
         Else
 
             If Files Then
@@ -201,6 +210,7 @@ Class DateMove
                             list.Add(f.FullName)
                         End If
                     Next
+                    blnSuppressCreate = True
                     MoveFiles(list, dest)
                 Next
             End If

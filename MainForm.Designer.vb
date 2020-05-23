@@ -43,7 +43,6 @@ Partial Class MainForm
         Me.VideoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
-        Me.TSPB = New System.Windows.Forms.ToolStripProgressBar()
         Me.tbFiles = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbFilter = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbRandom = New System.Windows.Forms.ToolStripStatusLabel()
@@ -57,6 +56,7 @@ Partial Class MainForm
         Me.tbDate = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbState = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbLastFile = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.TSPB = New System.Windows.Forms.ToolStripProgressBar()
         Me.tssFolderInfo = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tssMoveCopy = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tssFilter = New System.Windows.Forms.ToolStripStatusLabel()
@@ -66,6 +66,7 @@ Partial Class MainForm
         Me.FullPanel = New System.Windows.Forms.TableLayoutPanel()
         Me.ctrMainFrame = New System.Windows.Forms.SplitContainer()
         Me.ctrFileBoxes = New System.Windows.Forms.SplitContainer()
+        Me.tvmain2 = New MasaSam.Forms.Controls.FileSystemTree()
         Me.MasterContainer = New System.Windows.Forms.SplitContainer()
         Me.lbxFiles = New System.Windows.Forms.ListBox()
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
@@ -76,6 +77,10 @@ Partial Class MainForm
         Me.ToolStripSeparator13 = New System.Windows.Forms.ToolStripSeparator()
         Me.lbxShowList = New System.Windows.Forms.ListBox()
         Me.ctrPicAndButtons = New System.Windows.Forms.SplitContainer()
+        Me.MainWMP1 = New AxWMPLib.AxWindowsMediaPlayer()
+        Me.MainWMP3 = New AxWMPLib.AxWindowsMediaPlayer()
+        Me.MainWMP2 = New AxWMPLib.AxWindowsMediaPlayer()
+        Me.SoundWMP = New AxWMPLib.AxWindowsMediaPlayer()
         Me.PictureBox2 = New System.Windows.Forms.PictureBox()
         Me.PictureBox3 = New System.Windows.Forms.PictureBox()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
@@ -272,6 +277,7 @@ Partial Class MainForm
         Me.ExperimentToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DatabaseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CreateListOfFilesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LoadDatabaseIntoMemoryToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PositionUpdater = New System.Windows.Forms.Timer(Me.components)
         Me.tmrMovieSlideShow = New System.Windows.Forms.Timer(Me.components)
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
@@ -280,11 +286,6 @@ Partial Class MainForm
         Me.tmrProgressBar = New System.Windows.Forms.Timer(Me.components)
         Me.tmrJumpRandom = New System.Windows.Forms.Timer(Me.components)
         Me.tmrHighlightCurrent = New System.Windows.Forms.Timer(Me.components)
-        Me.tvmain2 = New MasaSam.Forms.Controls.FileSystemTree()
-        Me.MainWMP1 = New AxWMPLib.AxWindowsMediaPlayer()
-        Me.MainWMP3 = New AxWMPLib.AxWindowsMediaPlayer()
-        Me.MainWMP2 = New AxWMPLib.AxWindowsMediaPlayer()
-        Me.SoundWMP = New AxWMPLib.AxWindowsMediaPlayer()
         Me.StatusStrip1.SuspendLayout()
         Me.FullPanel.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -304,6 +305,10 @@ Partial Class MainForm
         Me.ctrPicAndButtons.Panel1.SuspendLayout()
         Me.ctrPicAndButtons.Panel2.SuspendLayout()
         Me.ctrPicAndButtons.SuspendLayout()
+        CType(Me.MainWMP1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.MainWMP3, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.MainWMP2, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.SoundWMP, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox3, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -331,10 +336,6 @@ Partial Class MainForm
         CType(Me.tbMovieSlideShowSpeed, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.FileSystemWatcher1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip2.SuspendLayout()
-        CType(Me.MainWMP1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.MainWMP3, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.MainWMP2, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.SoundWMP, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'FileToolStripMenuItem
@@ -459,14 +460,6 @@ Partial Class MainForm
         Me.StatusStrip1.TabIndex = 16
         Me.StatusStrip1.Text = "StatusStrip1"
         '
-        'TSPB
-        '
-        Me.TSPB.Name = "TSPB"
-        Me.TSPB.Size = New System.Drawing.Size(501, 29)
-        Me.TSPB.Step = 1
-        Me.TSPB.Style = System.Windows.Forms.ProgressBarStyle.Marquee
-        Me.TSPB.Visible = False
-        '
         'tbFiles
         '
         Me.tbFiles.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenOuter
@@ -547,6 +540,15 @@ Partial Class MainForm
         Me.tbLastFile.Size = New System.Drawing.Size(97, 30)
         Me.tbLastFile.Text = "LASTFILE"
         '
+        'TSPB
+        '
+        Me.TSPB.AutoSize = False
+        Me.TSPB.ForeColor = System.Drawing.Color.Turquoise
+        Me.TSPB.Name = "TSPB"
+        Me.TSPB.Size = New System.Drawing.Size(501, 29)
+        Me.TSPB.Step = 1
+        Me.TSPB.Style = System.Windows.Forms.ProgressBarStyle.Continuous
+        '
         'tssFolderInfo
         '
         Me.tssFolderInfo.Name = "tssFolderInfo"
@@ -602,7 +604,7 @@ Partial Class MainForm
         'ctrMainFrame
         '
         Me.ctrMainFrame.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctrMainFrame.Location = New System.Drawing.Point(4, 234)
+        Me.ctrMainFrame.Location = New System.Drawing.Point(4, 223)
         Me.ctrMainFrame.Margin = New System.Windows.Forms.Padding(4)
         Me.ctrMainFrame.Name = "ctrMainFrame"
         '
@@ -641,6 +643,19 @@ Partial Class MainForm
         Me.ctrFileBoxes.SplitterWidth = 14
         Me.ctrFileBoxes.TabIndex = 0
         Me.ctrFileBoxes.TabStop = False
+        '
+        'tvmain2
+        '
+        Me.tvmain2.AutoExpandNodes = False
+        Me.tvmain2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tvmain2.FileExtensions = "*"
+        Me.tvmain2.Location = New System.Drawing.Point(0, 0)
+        Me.tvmain2.Margin = New System.Windows.Forms.Padding(6)
+        Me.tvmain2.Name = "tvmain2"
+        Me.tvmain2.RootDrive = Nothing
+        Me.tvmain2.SelectedFolder = Nothing
+        Me.tvmain2.Size = New System.Drawing.Size(844, 743)
+        Me.tvmain2.TabIndex = 0
         '
         'MasterContainer
         '
@@ -756,6 +771,52 @@ Partial Class MainForm
         Me.ctrPicAndButtons.SplitterWidth = 7
         Me.ctrPicAndButtons.TabIndex = 0
         Me.ctrPicAndButtons.TabStop = False
+        '
+        'MainWMP1
+        '
+        Me.MainWMP1.Enabled = True
+        Me.MainWMP1.Location = New System.Drawing.Point(162, 128)
+        Me.MainWMP1.Margin = New System.Windows.Forms.Padding(4)
+        Me.MainWMP1.Name = "MainWMP1"
+        Me.MainWMP1.OcxState = CType(resources.GetObject("MainWMP1.OcxState"), System.Windows.Forms.AxHost.State)
+        Me.MainWMP1.Size = New System.Drawing.Size(620, 491)
+        Me.MainWMP1.TabIndex = 6
+        Me.MainWMP1.TabStop = False
+        '
+        'MainWMP3
+        '
+        Me.MainWMP3.Enabled = True
+        Me.MainWMP3.Location = New System.Drawing.Point(460, 394)
+        Me.MainWMP3.Margin = New System.Windows.Forms.Padding(4)
+        Me.MainWMP3.Name = "MainWMP3"
+        Me.MainWMP3.OcxState = CType(resources.GetObject("MainWMP3.OcxState"), System.Windows.Forms.AxHost.State)
+        Me.MainWMP3.Size = New System.Drawing.Size(690, 491)
+        Me.MainWMP3.TabIndex = 5
+        Me.MainWMP3.TabStop = False
+        '
+        'MainWMP2
+        '
+        Me.MainWMP2.Enabled = True
+        Me.MainWMP2.Location = New System.Drawing.Point(749, 25)
+        Me.MainWMP2.Margin = New System.Windows.Forms.Padding(4)
+        Me.MainWMP2.Name = "MainWMP2"
+        Me.MainWMP2.OcxState = CType(resources.GetObject("MainWMP2.OcxState"), System.Windows.Forms.AxHost.State)
+        Me.MainWMP2.Size = New System.Drawing.Size(664, 518)
+        Me.MainWMP2.TabIndex = 4
+        Me.MainWMP2.TabStop = False
+        Me.MainWMP2.UseWaitCursor = True
+        Me.MainWMP2.Visible = False
+        '
+        'SoundWMP
+        '
+        Me.SoundWMP.Enabled = True
+        Me.SoundWMP.Location = New System.Drawing.Point(499, 376)
+        Me.SoundWMP.Margin = New System.Windows.Forms.Padding(2)
+        Me.SoundWMP.Name = "SoundWMP"
+        Me.SoundWMP.OcxState = CType(resources.GetObject("SoundWMP.OcxState"), System.Windows.Forms.AxHost.State)
+        Me.SoundWMP.Size = New System.Drawing.Size(572, 412)
+        Me.SoundWMP.TabIndex = 3
+        Me.SoundWMP.Visible = False
         '
         'PictureBox2
         '
@@ -1156,7 +1217,7 @@ Partial Class MainForm
         Me.FlowLayoutPanel1.Location = New System.Drawing.Point(2, 2)
         Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(2)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(3908, 226)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(3908, 215)
         Me.FlowLayoutPanel1.TabIndex = 19
         '
         'GroupFilters
@@ -1386,7 +1447,7 @@ Partial Class MainForm
         Me.GroupBox3.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupBox3.Name = "GroupBox3"
         Me.GroupBox3.Padding = New System.Windows.Forms.Padding(4)
-        Me.GroupBox3.Size = New System.Drawing.Size(312, 218)
+        Me.GroupBox3.Size = New System.Drawing.Size(312, 207)
         Me.GroupBox3.TabIndex = 49
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Options"
@@ -1444,7 +1505,7 @@ Partial Class MainForm
         'CHBAutoAdvance
         '
         Me.CHBAutoAdvance.AutoSize = True
-        Me.CHBAutoAdvance.Location = New System.Drawing.Point(4, 159)
+        Me.CHBAutoAdvance.Location = New System.Drawing.Point(4, 148)
         Me.CHBAutoAdvance.Margin = New System.Windows.Forms.Padding(4)
         Me.CHBAutoAdvance.Name = "CHBAutoAdvance"
         Me.CHBAutoAdvance.Size = New System.Drawing.Size(162, 29)
@@ -1484,7 +1545,7 @@ Partial Class MainForm
         'tbAutoTrail
         '
         Me.tbAutoTrail.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbAutoTrail.Location = New System.Drawing.Point(281, 128)
+        Me.tbAutoTrail.Location = New System.Drawing.Point(281, 101)
         Me.tbAutoTrail.Margin = New System.Windows.Forms.Padding(4)
         Me.tbAutoTrail.Maximum = 5
         Me.tbAutoTrail.Minimum = 1
@@ -2418,7 +2479,7 @@ Partial Class MainForm
         '
         'ExperimentToolStripMenuItem
         '
-        Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DatabaseToolStripMenuItem, Me.CreateListOfFilesToolStripMenuItem})
+        Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DatabaseToolStripMenuItem, Me.CreateListOfFilesToolStripMenuItem, Me.LoadDatabaseIntoMemoryToolStripMenuItem})
         Me.ExperimentToolStripMenuItem.Name = "ExperimentToolStripMenuItem"
         Me.ExperimentToolStripMenuItem.Size = New System.Drawing.Size(129, 34)
         Me.ExperimentToolStripMenuItem.Text = "Experiment"
@@ -2426,14 +2487,20 @@ Partial Class MainForm
         'DatabaseToolStripMenuItem
         '
         Me.DatabaseToolStripMenuItem.Name = "DatabaseToolStripMenuItem"
-        Me.DatabaseToolStripMenuItem.Size = New System.Drawing.Size(258, 34)
+        Me.DatabaseToolStripMenuItem.Size = New System.Drawing.Size(367, 34)
         Me.DatabaseToolStripMenuItem.Text = "Database"
         '
         'CreateListOfFilesToolStripMenuItem
         '
         Me.CreateListOfFilesToolStripMenuItem.Name = "CreateListOfFilesToolStripMenuItem"
-        Me.CreateListOfFilesToolStripMenuItem.Size = New System.Drawing.Size(258, 34)
+        Me.CreateListOfFilesToolStripMenuItem.Size = New System.Drawing.Size(367, 34)
         Me.CreateListOfFilesToolStripMenuItem.Text = "CreateListOfFiles"
+        '
+        'LoadDatabaseIntoMemoryToolStripMenuItem
+        '
+        Me.LoadDatabaseIntoMemoryToolStripMenuItem.Name = "LoadDatabaseIntoMemoryToolStripMenuItem"
+        Me.LoadDatabaseIntoMemoryToolStripMenuItem.Size = New System.Drawing.Size(367, 34)
+        Me.LoadDatabaseIntoMemoryToolStripMenuItem.Text = "Load Database into Memory"
         '
         'PositionUpdater
         '
@@ -2463,65 +2530,6 @@ Partial Class MainForm
         'tmrHighlightCurrent
         '
         Me.tmrHighlightCurrent.Interval = 10
-        '
-        'tvmain2
-        '
-        Me.tvmain2.AutoExpandNodes = False
-        Me.tvmain2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.tvmain2.FileExtensions = "*"
-        Me.tvmain2.Location = New System.Drawing.Point(0, 0)
-        Me.tvmain2.Margin = New System.Windows.Forms.Padding(6)
-        Me.tvmain2.Name = "tvmain2"
-        Me.tvmain2.RootDrive = Nothing
-        Me.tvmain2.SelectedFolder = Nothing
-        Me.tvmain2.Size = New System.Drawing.Size(844, 743)
-        Me.tvmain2.TabIndex = 0
-        '
-        'MainWMP1
-        '
-        Me.MainWMP1.Enabled = True
-        Me.MainWMP1.Location = New System.Drawing.Point(162, 128)
-        Me.MainWMP1.Margin = New System.Windows.Forms.Padding(4)
-        Me.MainWMP1.Name = "MainWMP1"
-        Me.MainWMP1.OcxState = CType(resources.GetObject("MainWMP1.OcxState"), System.Windows.Forms.AxHost.State)
-        Me.MainWMP1.Size = New System.Drawing.Size(620, 491)
-        Me.MainWMP1.TabIndex = 6
-        Me.MainWMP1.TabStop = False
-        '
-        'MainWMP3
-        '
-        Me.MainWMP3.Enabled = True
-        Me.MainWMP3.Location = New System.Drawing.Point(460, 394)
-        Me.MainWMP3.Margin = New System.Windows.Forms.Padding(4)
-        Me.MainWMP3.Name = "MainWMP3"
-        Me.MainWMP3.OcxState = CType(resources.GetObject("MainWMP3.OcxState"), System.Windows.Forms.AxHost.State)
-        Me.MainWMP3.Size = New System.Drawing.Size(690, 491)
-        Me.MainWMP3.TabIndex = 5
-        Me.MainWMP3.TabStop = False
-        '
-        'MainWMP2
-        '
-        Me.MainWMP2.Enabled = True
-        Me.MainWMP2.Location = New System.Drawing.Point(749, 25)
-        Me.MainWMP2.Margin = New System.Windows.Forms.Padding(4)
-        Me.MainWMP2.Name = "MainWMP2"
-        Me.MainWMP2.OcxState = CType(resources.GetObject("MainWMP2.OcxState"), System.Windows.Forms.AxHost.State)
-        Me.MainWMP2.Size = New System.Drawing.Size(664, 518)
-        Me.MainWMP2.TabIndex = 4
-        Me.MainWMP2.TabStop = False
-        Me.MainWMP2.UseWaitCursor = True
-        Me.MainWMP2.Visible = False
-        '
-        'SoundWMP
-        '
-        Me.SoundWMP.Enabled = True
-        Me.SoundWMP.Location = New System.Drawing.Point(499, 376)
-        Me.SoundWMP.Margin = New System.Windows.Forms.Padding(2)
-        Me.SoundWMP.Name = "SoundWMP"
-        Me.SoundWMP.OcxState = CType(resources.GetObject("SoundWMP.OcxState"), System.Windows.Forms.AxHost.State)
-        Me.SoundWMP.Size = New System.Drawing.Size(572, 412)
-        Me.SoundWMP.TabIndex = 3
-        Me.SoundWMP.Visible = False
         '
         'MainForm
         '
@@ -2562,6 +2570,10 @@ Partial Class MainForm
         Me.ctrPicAndButtons.Panel2.ResumeLayout(False)
         CType(Me.ctrPicAndButtons, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ctrPicAndButtons.ResumeLayout(False)
+        CType(Me.MainWMP1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.MainWMP3, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.MainWMP2, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.SoundWMP, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox3, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
@@ -2604,10 +2616,6 @@ Partial Class MainForm
         CType(Me.FileSystemWatcher1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.MenuStrip2.ResumeLayout(False)
         Me.MenuStrip2.PerformLayout()
-        CType(Me.MainWMP1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.MainWMP3, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.MainWMP2, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.SoundWMP, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -2879,4 +2887,5 @@ Partial Class MainForm
     Friend WithEvents SelectedToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents ShortFilenamesRecursivelyToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents FlattenAllSubfolderToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents LoadDatabaseIntoMemoryToolStripMenuItem As ToolStripMenuItem
 End Class

@@ -487,10 +487,10 @@ Friend Module FileHandling
         s = InputBox("Only include files containing? (Leave empty to add all)")
         If s = "" Then s = "*"
         MainForm.Cursor = Cursors.WaitCursor
-        ProgressBarOn(1000)
+        MainForm.ProgressBarOn(1000)
         list = GetFileFromEachFolder(d, s, Random.OnDirChange)
         MainForm.Cursor = Cursors.Default
-        ProgressBarOff()
+        MainForm.ProgressBarOff()
     End Sub
     Public Function AddFilesToCollection(extensions As String, blnRecurse As Boolean) As List(Of String)
         Dim s As String
@@ -498,9 +498,10 @@ Friend Module FileHandling
         Dim List As New List(Of String)
         s = InputBox("Only include files containing? (Leave empty to add all)")
         MainForm.Cursor = Cursors.WaitCursor
-        ProgressBarOn(1000)
+        MainForm.ProgressBarOn(1000)
         List = FindAllFilesBelow(d, List, extensions, False, s, blnRecurse, blnChooseOne)
         MainForm.Cursor = Cursors.Default
+        MainForm.ProgressBarOff()
         Return List
     End Function
 

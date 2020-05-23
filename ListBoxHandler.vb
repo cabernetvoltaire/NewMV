@@ -20,6 +20,7 @@
     Public Event ListItemChanged(sender As Object, e As EventArgs)
     Public Event EndReached(sender As Object, e As EventArgs)
 
+
     Public Property ItemList() As List(Of String)
         Get
             Return mItemList
@@ -302,6 +303,7 @@
 End Class
 Public Class FileboxHandler
     Inherits ListBoxHandler
+    Public Event ListBoxIncreased(sender As Object, e As EventArgs)
 
     Private _DirectoryPath As String
 
@@ -328,6 +330,7 @@ Public Class FileboxHandler
             '            mListbox.DataSource = dir.GetFiles
             For Each f In dir.GetFiles
                 mItemList.Add(f.FullName)
+                RaiseEvent ListBoxIncreased(Me, Nothing)
             Next
         End If
     End Sub
