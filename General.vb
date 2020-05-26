@@ -370,8 +370,38 @@ Public Module General
         Return path
 
     End Function
+    Public Function LoadDatabaseFileName(path As String) As String
+        If path = "" Then
+            With New OpenFileDialog
+                .InitialDirectory = ListFilePath
+                .DefaultExt = "msd"
+                .Filter = "Metavisua database files|*.msd|All files|*.*"
+
+                If .ShowDialog() = System.Windows.Forms.DialogResult.OK Then
+                    path = .FileName
+                End If
+            End With
+        End If
+        Return path
+
+    End Function
+    Public Function SaveDatabaseFileName(path As String) As String
+        If path = "" Then
+            With New SaveFileDialog
+                .InitialDirectory = ListFilePath
+                .DefaultExt = "msd"
+                .Filter = "Metavisua database files|*.msd|All files|*.*"
+
+                If .ShowDialog() = System.Windows.Forms.DialogResult.OK Then
+                    path = .FileName
+                End If
+            End With
+        End If
+        Return path
+
+    End Function
     Public Function BrowseToFolder(Title As String, DefaultPath As String) As String
-        Dim path As String
+        Dim path As String = ""
         With New FolderBrowserDialog
             .SelectedPath = DefaultPath
             .Description = Title
@@ -379,6 +409,7 @@ Public Module General
                 path = .SelectedPath
             End If
         End With
+
         Return path
     End Function
     Public Function BrowseToFile(Title As String) As String
@@ -580,26 +611,38 @@ Public Module General
         fs.Close()
         Return list
     End Function
-    Friend Sub CreateDatabaseOfFiles(Path As String)
+    Friend Sub CreateDatabaseOfFiles(Path As String, Filename As String)
         With My.Computer.FileSystem
             Dim list As New List(Of String)
             Dim dirs As New List(Of String)
 
             dirs = GenerateSafeFolderList(Path)
 
-            list.Add("Name" & vbTab & "Path" & vbTab & "Size in bytes" & vbTab & "Date")
+            '            list.Add("Name" & vbTab & "Path" & vbTab & "Size in bytes" & vbTab & "Date")
             For Each d In dirs
                 Dim dir As New DirectoryInfo(d)
+                Dim paths As New List(Of String)
+                'Create list of filepaths only
                 For Each f In dir.GetFiles
-                    If FindType(f.FullName) = Filetype.Movie Then
+                    paths.Add(f.FullName)
+                Next
+                Dim x As New FilterHandler With {.State = CurrentfilterState.State}
+                x.FileList = paths
+                paths = x.FileList
+                For Each file In paths
+                    Try
+                        Dim f As New FileInfo(file)
                         list.Add(f.Name & vbTab & f.FullName.Replace(f.Name, "") & vbTab & f.Length & vbTab & f.CreationTime)
 
-                    End If
+                    Catch ex As Exception
+
+                    End Try
                 Next
+                'Filter them
+                'Then create database list of those files
                 Application.DoEvents()
             Next
-
-            WriteListToFile(list, "Q:\Files2.txt", False)
+            WriteListToFile(list, Filename, Encrypted)
         End With
     End Sub
     Public Function GetFileFromEachFolder(d As DirectoryInfo, s As String, Optional Random As Boolean = True) As List(Of String)
@@ -608,9 +651,9 @@ Public Module General
         For Each Di In d.EnumerateDirectories(s, SearchOption.AllDirectories)
             Dim dirs() As FileInfo
             dirs = Di.GetFiles
-            Dim i = Int(Rnd() * dirs.Count)
             If dirs.Count > 0 Then
                 If Random Then
+                    Dim i = Int(Rnd() * dirs.Count)
                     x.Add(dirs(i).FullName)
 
                 Else
@@ -1303,9 +1346,9 @@ Public Module General
         Public Size As Long
 
         Public Function CompareTo(obj As Object) As Integer Implements IComparable.CompareTo
-            If obj.filename = Filename Then
+            If obj.size = Size Then
                 Return 0
-            ElseIf obj.filename < Filename Then
+            ElseIf obj.size < Size Then
                 Return 1
             Else
                 Return -1
@@ -1316,9 +1359,18 @@ Public Module General
     End Class
     Public Class Database
         Public Entries As New List(Of DatabaseEntry)
+        Public Name As String
+        Private Property mItemCount As Long = 0
+        Public ReadOnly Property ItemCount As Long
+            Get
+                Return mItemCount
+            End Get
+        End Property
+
+
         Public Sub AddEntry(entry As DatabaseEntry)
             Entries.Add(entry)
-
+            mItemCount += 1
         End Sub
         Public Sub Sort()
             Entries.Sort()

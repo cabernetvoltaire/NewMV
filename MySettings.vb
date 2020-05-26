@@ -3,6 +3,7 @@ Friend Module Mysettings
 
     Public FirstLoad As Boolean = False
     Public PFocus As Byte = CtrlFocus.Tree
+    Public IncludeRemovables As Boolean = False
 #Region "Literals"
     Public Property ZoneSize As Decimal = 0.4
     Public Const OrientationId As Integer = &H112
@@ -391,8 +392,14 @@ Friend Module Mysettings
     Private Function DrivesScan() As String
         Dim drivestring As String = ""
         For Each m In My.Computer.FileSystem.Drives
-            drivestring = drivestring + m.Name
-            drivestring = drivestring.Replace(":\", "")
+            If m.DriveType = IO.DriveType.Fixed Then
+                drivestring = drivestring + m.Name
+                drivestring = drivestring.Replace(":\", "")
+            ElseIf IncludeRemovables Then
+                drivestring = drivestring + m.Name
+                drivestring = drivestring.Replace(":\", "")
+            End If
+
         Next
         Return drivestring
     End Function

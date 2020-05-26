@@ -5,6 +5,7 @@ Imports System.IO
 Imports AxWMPLib
 Imports System.Threading
 Imports MasaSam.Forms.Controls
+Imports MasaSam.Forms.Sample
 
 Friend Class MainForm
     Public DB As New Database
@@ -67,7 +68,7 @@ Friend Class MainForm
     Public Sub OnEndReached(sender As Object, e As EventArgs) Handles FBH.EndReached, LBH.EndReached
         If AutoTraverse Then
 
-            tvMain2.Traverse(False)
+            tvmain2.Traverse(False)
         End If
     End Sub
     Public Sub OnFolderRename(sender As Object, e As NodeLabelEditEventArgs) Handles tvmain2.LabelEdited
@@ -194,13 +195,13 @@ Friend Class MainForm
         Me.SuspendLayout()
         lbxFiles.BackColor = FilterColor
         lbxShowList.BackColor = FilterColor
-        If tvMain2.Focused Then
-            tvMain2.BackColor = MainColor
+        If tvmain2.Focused Then
+            tvmain2.BackColor = MainColor
         Else
-            tvMain2.BackColor = FilterColor
+            tvmain2.BackColor = FilterColor
             FocusControl.BackColor = MainColor
         End If
-        tvMain2.HighlightSelectedNodes()
+        tvmain2.HighlightSelectedNodes()
         Me.ResumeLayout()
     End Sub
     Public Sub OnSpeedChange(sender As Object, e As EventArgs) Handles SP.SpeedChanged
@@ -221,8 +222,8 @@ Friend Class MainForm
         End If
     End Sub
     Friend Sub OnFolderMoved(ByVal path As String)
-        Dim d As New IO.DirectoryInfo(tvMain2.SelectedFolder)
-        tvMain2.RemoveNode(path)
+        Dim d As New IO.DirectoryInfo(tvmain2.SelectedFolder)
+        tvmain2.RemoveNode(path)
         ' tvMain2.RefreshTree(d.FullName)
         'Dim dir As New IO.DirectoryInfo(path)
         'Dir.Delete()
@@ -762,7 +763,7 @@ Friend Class MainForm
                         Case Keys.I
                             AddFolders.Show()
                             AddFolders.Folder = CurrentFolder
-                            tvMain2.RefreshTree(CurrentFolder)
+                            tvmain2.RefreshTree(CurrentFolder)
                     End Select
                 End If
 #End Region
@@ -770,7 +771,7 @@ Friend Class MainForm
 #Region "Control Keys"
             Case KeyTraverseTree, KeyTraverseTreeBack
                 '   If FocusControl IsNot tvMain2 Then
-                tvMain2.Traverse(e.KeyCode = KeyTraverseTreeBack)
+                tvmain2.Traverse(e.KeyCode = KeyTraverseTreeBack)
                 e.SuppressKeyPress = True
               '  End If
 
@@ -983,7 +984,7 @@ Friend Class MainForm
                     End If
                 Else
                     If LastFolder.Count > 0 Then
-                        tvMain2.SelectedFolder = LastFolder.Pop '= CurrentFolder
+                        tvmain2.SelectedFolder = LastFolder.Pop '= CurrentFolder
                     End If
                 End If
 
@@ -1065,9 +1066,9 @@ Friend Class MainForm
         Dim lbx As New ListBox
         CancelDisplay(False)
         If e.Shift Then
-            DeleteFolder(CurrentFolder, tvMain2, NavigateMoveState.State = StateHandler.StateOptions.Navigate)
+            DeleteFolder(CurrentFolder, tvmain2, NavigateMoveState.State = StateHandler.StateOptions.Navigate)
         Else
-            If FocusControl Is tvMain2 Then
+            If FocusControl Is tvmain2 Then
             Else
                 lbx = FocusControl
             End If
@@ -1102,7 +1103,7 @@ Friend Class MainForm
         CurrentFilterState.State = FilterHandler.FilterState.LinkOnly
         ChangeFolder(CurrentFavesPath)
 
-        tvMain2.SelectedFolder = CurrentFolder
+        tvmain2.SelectedFolder = CurrentFolder
     End Sub
     Public Sub ChangeFolder(strPath As String)
         'If strPath <> FavesFolderPath Then
@@ -1304,8 +1305,8 @@ Friend Class MainForm
     Public Sub ControlSetFocus(control As Control)
         ' Set focus to the control, if it can receive focus.
         'Exit Sub
-        If control Is tvMain2 Then
-            tvMain2.Focus()
+        If control Is tvmain2 Then
+            tvmain2.Focus()
         Else
             FocusControl = control
         End If
@@ -1340,7 +1341,7 @@ Friend Class MainForm
         ShiftDown = e.Shift
         CtrlDown = e.Control
         AltDown = e.Alt
-        If FocusControl IsNot tvMain2 Then
+        If FocusControl IsNot tvmain2 Then
             'IndexHandler(FocusControl, New EventArgs)
 
         End If
@@ -1681,13 +1682,13 @@ Friend Class MainForm
                 'Jump to folder
                 If strVisibleButtons(i) <> CurrentFolder Then
                     ChangeFolder(strVisibleButtons(i))
-                    tvMain2.SelectedFolder = CurrentFolder
+                    tvmain2.SelectedFolder = CurrentFolder
                 ElseIf Random.OnDirChange Then
                     AdvanceFile(True, True) 'TODO: Whaat?
                 End If
             ElseIf e.Shift Then
                 'Move Folder
-                MovingFolder(tvMain2.SelectedFolder, strVisibleButtons(i))
+                MovingFolder(tvmain2.SelectedFolder, strVisibleButtons(i))
             Else
 
                 Dim flag = blnSuppressCreate
@@ -1708,7 +1709,7 @@ Friend Class MainForm
             'Navigate behaviour
             If e.Shift And e.Control And strVisibleButtons(i) <> "" Then
                 'Move folder
-                MovingFolder(tvMain2.SelectedFolder, strVisibleButtons(i))
+                MovingFolder(tvmain2.SelectedFolder, strVisibleButtons(i))
 
             ElseIf e.Shift Then
                 'Move files
@@ -1718,7 +1719,7 @@ Friend Class MainForm
                 If strVisibleButtons(i) <> CurrentFolder Then
                     ChangeFolder(strVisibleButtons(i))
                     'CancelDisplay()
-                    tvMain2.SelectedFolder = strVisibleButtons(i)
+                    tvmain2.SelectedFolder = strVisibleButtons(i)
                     ' FBH.DirectoryPath = strVisibleButtons(i)
                 ElseIf Random.OnDirChange Then
                     'Change file if same folder
@@ -1752,7 +1753,7 @@ Friend Class MainForm
         '    Exit Sub
         'Else
         Await DeleteEmptyFolders(New DirectoryInfo(CurrentFolder), sender Is IncludingAllSubfoldersToolStripMenuItem)
-        tvMain2.RefreshTree(CurrentFolder)
+        tvmain2.RefreshTree(CurrentFolder)
         'End If
 
     End Sub
@@ -1819,6 +1820,7 @@ Friend Class MainForm
 
         ConstructMenuShortcuts()
         ConstructMenutooltips()
+        'LoadDatabase("Q:\.msb\Smudge.msd")
     End Sub
 
     Private Sub ToggleMove()
@@ -1949,7 +1951,7 @@ Friend Class MainForm
         Else
             SelectSubList(FocusControl, False)
         End If
-        Dim x As New BundleHandler(tvMain2, lbx1, Folder)
+        Dim x As New BundleHandler(tvmain2, lbx1, Folder)
         Dim blnold = blnSuppressCreate
         blnSuppressCreate = False
         x.Bundle("")
@@ -1967,7 +1969,7 @@ Friend Class MainForm
         Next
         blnSuppressCreate = False
 
-        tvMain2.RefreshTree(CurrentFolder)
+        tvmain2.RefreshTree(CurrentFolder)
         tmrUpdateFileList.Enabled = True
     End Sub
 
@@ -2161,7 +2163,7 @@ Friend Class MainForm
     End Sub
 
     Private Sub BundleToolStripMenuItem_Click_1(sender As Object, e As EventArgs) Handles BundleToolStripMenuItem.Click
-        If FocusControl IsNot tvMain2 Then
+        If FocusControl IsNot tvmain2 Then
             BundleFiles(FocusControl, CurrentFolder)
         End If
     End Sub
@@ -2253,7 +2255,7 @@ Friend Class MainForm
     Private Sub FilterMoveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FilterMoveToolStripMenuItem.Click
         '   FM.Recursive = False
         FM.FilterMoveFiles(CurrentFolder, False)
-        tvMain2.RefreshTree(CurrentFolder)
+        tvmain2.RefreshTree(CurrentFolder)
 
         tmrUpdateFileList.Enabled = True
 
@@ -2262,7 +2264,7 @@ Friend Class MainForm
     Private Sub FilterMoveRecursiveToolStripMenuItem_Click(sender As Object, e As EventArgs)
         FM.FilterMoveFiles(CurrentFolder, True)
         ReportAction(Format("Filtering {0}", CurrentFolder))
-        tvMain2.RefreshTree(CurrentFolder)
+        tvmain2.RefreshTree(CurrentFolder)
 
         tmrUpdateFileList.Enabled = True
 
@@ -2299,19 +2301,19 @@ Friend Class MainForm
     Private Sub Filter(index As DateMove.DMY)
         CancelDisplay(False)
         DM.FilterByDate(CurrentFolder, False, index)
-        tvMain2.RefreshTree(CurrentFolder)
+        tvmain2.RefreshTree(CurrentFolder)
     End Sub
     Private Sub FilterAlphabetic(Folders As Boolean, Files As Boolean)
         CancelDisplay(False)
         DM.FilterByAlpha(CurrentFolder, Folders:=Folders, Files:=Files)
-        tvMain2.RefreshTree(CurrentFolder)
+        tvmain2.RefreshTree(CurrentFolder)
 
     End Sub
 
     Private Sub FilterAlphabetic(Folders As Boolean, Files As Boolean, Letters As Boolean)
         CancelDisplay(False)
         DM.FilterByAlpha(CurrentFolder, Folders, Files, Letters)
-        tvMain2.RefreshTree(CurrentFolder)
+        tvmain2.RefreshTree(CurrentFolder)
 
     End Sub
 
@@ -2355,7 +2357,7 @@ Friend Class MainForm
     End Sub
 
     Private Async Sub RecursiveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RecursiveToolStripMenuItem.Click
-        Dim x As New BundleHandler(tvMain2, lbxFiles, CurrentFolder)
+        Dim x As New BundleHandler(tvmain2, lbxFiles, CurrentFolder)
         x.Maxfiles = Val(InputBox("Min no. of files to preserve folder? (Blank means all folders burst)",, ""))
         Dim d As New IO.DirectoryInfo(CurrentFolder)
         If d.Exists Then
@@ -2369,7 +2371,7 @@ Friend Class MainForm
 
     Private Sub BySizeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BySizeToolStripMenuItem.Click
         DM.FilterBySize(CurrentFolder, False)
-        tvMain2.RefreshTree(CurrentFolder)
+        tvmain2.RefreshTree(CurrentFolder)
         tmrUpdateFileList.Enabled = True
     End Sub
 
@@ -2394,19 +2396,19 @@ Friend Class MainForm
 
     Private Sub ToolStripMenuItem2_Click(sender As Object, e As EventArgs) Handles ByMonthToolStripMenuItem.Click
         Filter(DateMove.DMY.Month)
-        tvMain2.RefreshTree(CurrentFolder)
+        tvmain2.RefreshTree(CurrentFolder)
         tmrUpdateFileList.Enabled = True
     End Sub
 
     Private Sub ToolStripMenuItem3_Click(sender As Object, e As EventArgs) Handles ByDateToolStripMenuItem.Click
         Filter(DateMove.DMY.Day)
-        tvMain2.RefreshTree(CurrentFolder)
+        tvmain2.RefreshTree(CurrentFolder)
         tmrUpdateFileList.Enabled = True
     End Sub
 
     Private Sub ToolStripMenuItem4_Click(sender As Object, e As EventArgs) Handles ByYearToolStripMenuItem.Click
         Filter(DateMove.DMY.Year)
-        tvMain2.RefreshTree(CurrentFolder)
+        tvmain2.RefreshTree(CurrentFolder)
         tmrUpdateFileList.Enabled = True
     End Sub
 
@@ -2440,13 +2442,13 @@ Friend Class MainForm
 
     Private Sub ToolStripMenuItem8_Click(sender As Object, e As EventArgs) Handles CalendarToolStripMenuItem.Click
         DM.FilterByCalendar(New DirectoryInfo(CurrentFolder))
-        tvMain2.RefreshTree(CurrentFolder)
+        tvmain2.RefreshTree(CurrentFolder)
         tmrUpdateFileList.Enabled = True
     End Sub
 
     Private Sub ToolStripMenuItem9_Click(sender As Object, e As EventArgs) Handles ByExtToolStripMenuItem.Click
         DM.FilterByType(CurrentFolder)
-        tvMain2.RefreshTree(CurrentFolder)
+        tvmain2.RefreshTree(CurrentFolder)
         tmrUpdateFileList.Enabled = True
     End Sub
 
@@ -2470,7 +2472,7 @@ Friend Class MainForm
     Private Sub LevelFolders_Click(sender As Object, e As EventArgs) Handles PromoteFolderToolStripMenuItem.Click
         LevelAllFolders()
         '        PromoteFolder(New DirectoryInfo(CurrentFolder))
-        tvMain2.RefreshTree(CurrentFolder)
+        tvmain2.RefreshTree(CurrentFolder)
         tmrUpdateFileList.Enabled = True
     End Sub
 
@@ -2480,6 +2482,14 @@ Friend Class MainForm
     End Sub
 
     Private Sub DuplicatesToolStripMenuItem1_Click_1(sender As Object, e As EventArgs) Handles DuplicatesToolStripMenuItem1.Click
+        Dim x As New DuplicatesForm
+
+        x.DB = DB
+        x.FindDuplicates()
+        x.Show()
+        x.ShowDuplicates()
+        Exit Sub
+
         With FindDuplicates
 
             If FocusControl Is lbxShowList Then
@@ -2688,7 +2698,7 @@ Friend Class MainForm
 
     Private Sub lbxFiles_KeyDown(sender As Object, e As KeyEventArgs) Handles lbxFiles.KeyDown, lbxShowList.KeyDown
         If e.KeyCode = KeyTraverseTree Or e.KeyCode = KeyTraverseTreeBack Or e.KeyCode = Keys.Left Or e.KeyCode = Keys.Right Then
-            tvMain2.tvFiles_KeyDown(sender, e)
+            tvmain2.tvFiles_KeyDown(sender, e)
         End If
     End Sub
 
@@ -2815,7 +2825,7 @@ Friend Class MainForm
 
     Private Sub SelectAndBundleToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectAndBundleToolStripMenuItem.Click
         SelectDeadLinks(FocusControl)
-        Dim m As New BundleHandler(tvMain2, FocusControl, CurrentFolder)
+        Dim m As New BundleHandler(tvmain2, FocusControl, CurrentFolder)
         m.Bundle("Dead")
 
     End Sub
@@ -2873,7 +2883,7 @@ Friend Class MainForm
         If ShowListVisible Then
             lbxShowList.Focus()
         Else
-            tvMain2.Focus()
+            tvmain2.Focus()
         End If
     End Sub
 
@@ -2992,8 +3002,8 @@ Friend Class MainForm
 
         Dim s As String = Path.GetDirectoryName(HighlightPath)
 
-        If tvMain2.SelectedFolder <> s Then
-            tvMain2.SelectedFolder = s
+        If tvmain2.SelectedFolder <> s Then
+            tvmain2.SelectedFolder = s
             tmrUpdateFileList.Enabled = False
             FBH.DirectoryPath = s
         End If
@@ -3003,7 +3013,7 @@ Friend Class MainForm
     End Sub
 
     Private Sub CreateListOfFilesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateListOfFilesToolStripMenuItem.Click
-        CreateDatabaseOfFiles(CurrentFolder)
+        CreateDatabaseOfFiles("Q:\Files.txt", CurrentFolder)
     End Sub
 
     Private Sub PrependAllFilenamesWithFolderNameToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PrependAllFilenamesWithFolderNameToolStripMenuItem.Click
@@ -3064,14 +3074,16 @@ Friend Class MainForm
     End Sub
 
     Private Sub LoadDatabaseIntoMemoryToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LoadDatabaseIntoMemoryToolStripMenuItem.Click
-        LoadDatabase()
+        LoadDatabase("Q:\Files2.txt")
         LoadButtonFileToolStripMenuItem.Visible = False
     End Sub
 
-    Private Sub LoadDatabase()
-        ProgressBarOn(400000)
+    Private Sub LoadDatabase(filename As String)
+        DB.Entries.Clear()
+        ProgressBarOn(1000)
         Dim list As New List(Of String)
-        list = ReadListfromFile("Q:\files2.txt", False)
+        list = ReadListfromFile(filename, Encrypted)
+        DB.Name = filename
         Dim i As Integer = 0
         For Each entry In list
             Dim x() As String
@@ -3084,6 +3096,7 @@ Friend Class MainForm
             ProgressIncrement(1)
         Next
         'DB.Sort()
+        ShowCurrentlyLoadedToolStripMenuItem.Enabled = True
         ProgressBarOff()
     End Sub
 
@@ -3115,6 +3128,59 @@ Friend Class MainForm
             .Value = (.Value + st) Mod .Maximum
         End With
         'MainForm.Update()
+    End Sub
+
+    Private Sub CreateNewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateNewToolStripMenuItem.Click
+        CreateNewDatabase()
+
+    End Sub
+
+    Private Sub CreateNewDatabase()
+        'Open file browser
+        MsgBox("Browse to folder to be included, with its subfolders in the database" & vbCrLf & "Ensure filter is selected appropriately")
+        Dim filename = SaveDatabaseFileName("")
+        'Create Database from current folder
+        If filename <> "" Then
+            ProgressBarOn(1000)
+            CreateDatabaseOfFiles(CurrentFolder, filename)
+            ProgressBarOff()
+            MsgBox(filename & " has been created.")
+        End If
+        'Throw New NotImplementedException()
+    End Sub
+
+    Private Sub LoadToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LoadToolStripMenuItem.Click
+        LoadExistingDatabase()
+
+    End Sub
+
+    Private Sub LoadExistingDatabase()
+        'Open file browser
+        Dim filename = LoadDatabaseFileName("")
+
+        'Import database
+
+        If filename <> "" Then
+            LoadDatabase(filename)
+            MsgBox(filename & " has been loaded.")
+
+        End If
+
+    End Sub
+
+    Private Sub PicFullScreen(sender As Object, e As EventArgs) Handles PictureBox1.DoubleClick
+
+    End Sub
+
+    Private Sub ShowCurrentlyLoadedToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ShowCurrentlyLoadedToolStripMenuItem.Click
+        ShowDatabase(DB)
+    End Sub
+
+    Private Sub ShowDatabase(dB As Database)
+        Dim form As New DatabaseShower With {.DB = dB, .Text = .DB.Name & " " & .DB.ItemCount & " files loaded"}
+        form.LoadEntries()
+        form.Show()
+        'Throw New NotImplementedException()
     End Sub
 #End Region
 

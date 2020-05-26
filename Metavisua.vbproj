@@ -189,8 +189,20 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Database.vb" />
+    <Compile Include="DatabaseShower.Designer.vb">
+      <DependentUpon>DatabaseShower.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DatabaseShower.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="DateMove.vb" />
     <Compile Include="Duplicates.vb" />
+    <Compile Include="DuplicatesForm.Designer.vb">
+      <DependentUpon>DuplicatesForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DuplicatesForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Encryption.vb" />
     <Compile Include="FavouritesMinder.vb" />
     <Compile Include="FileNamesGrouper.vb" />
@@ -362,6 +374,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dashboard.resx">
       <DependentUpon>Dashboard.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DatabaseShower.resx">
+      <DependentUpon>DatabaseShower.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DuplicatesForm.resx">
+      <DependentUpon>DuplicatesForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FindDuplicates.resx">
       <DependentUpon>FindDuplicates.vb</DependentUpon>

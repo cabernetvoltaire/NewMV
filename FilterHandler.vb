@@ -70,10 +70,10 @@
     End Sub
     Private Function FilterLBList() As List(Of String)
         Dim lst As New List(Of String) 'TODO: This removes items, we'd rather it hid them.
-        Try
+        'Try
 
 
-            For Each f In mFileList
+        For Each f In mFileList
                 lst.Add(f)
             Next
             Dim filelist As New Dictionary(Of String, String)
@@ -121,11 +121,11 @@
                     lst.Add(v)
                 Next
             End If
-        Catch ex As Exception
-            MsgBox("Error in file list" & ex.Message)
-            Return Nothing
-            Exit Function
-        End Try
+        ' Catch ex As Exception
+        'MsgBox("Error in file list" & ex.Message)
+        '    Return Nothing
+        '    Exit Function
+        ' End Try
 
         Return lst
     End Function
