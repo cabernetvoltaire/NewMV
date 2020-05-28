@@ -602,9 +602,12 @@ Public Module General
         Dim line As String
         Do While fs.Peek <> -1
             line = fs.ReadLine
+            Dim x As String = line
+
             If Encrypted Then
                 line = Encrypter.DecryptData(line)
             End If
+
             list.Add(line)
         Loop
 
@@ -1097,6 +1100,7 @@ Public Module General
         If BM1 Is Nothing Or BM2 Is Nothing Then
             Return EmptyTrue
         Else
+            'Check the overlapping regions of the pics. This should be good enough
             Dim xw As Integer = Math.Min(BM1.Width, BM2.Width)
             Dim yh As Integer = Math.Min(BM1.Height, BM2.Height)
             For x = 1 To xw - 1
@@ -1344,7 +1348,10 @@ Public Module General
             End Get
         End Property
         Public Size As Long
-
+        'Public Thumbnail As New Bitmap(100, 100)
+        'Public Function GetThumbnail()
+        '    Thumbnail = LoadImage(mFullPath).GetThumbnailImage(100, 100, Nothing, Nothing)
+        'End Function
         Public Function CompareTo(obj As Object) As Integer Implements IComparable.CompareTo
             If obj.size = Size Then
                 Return 0
@@ -1372,10 +1379,14 @@ Public Module General
             Entries.Add(entry)
             mItemCount += 1
         End Sub
+        Private mSorted As Boolean
         Public Sub Sort()
             Entries.Sort()
+
         End Sub
         Public Function FindEntry(filename As String) As DatabaseEntry
+            If Not mSorted Then Sort()
+
             Dim n As New List(Of DatabaseEntry)
             n = Entries.FindAll(Function(x) x.Filename.Equals(filename))
             Select Case n.Count
@@ -1393,6 +1404,14 @@ Public Module General
             End Select
 
         End Function
+        Public Function FindPartEntry(Search As String) As List(Of DatabaseEntry)
+            If Not mSorted Then Sort()
+
+            Dim n As New List(Of DatabaseEntry)
+            n = Entries.FindAll(Function(x) x.FullPath.Contains(Search))
+            Return n
+        End Function
+
 
     End Class
     Public Class BracketRemover
@@ -1448,4 +1467,22 @@ Public Module General
             Next
         End Sub
     End Class
+
+    Public Function ReadBinary(path As String, size As Long) As Byte()
+        Dim bytesRead As Integer
+        Dim bytes(size) As Byte
+        Using strm As New FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+            Using rdr As New BinaryReader(strm)
+                'Read integer and byte vaules from the file
+                Dim i As Integer = rdr.ReadInt32()
+                Dim l As Long = rdr.ReadInt64()
+                Dim b As Byte = rdr.ReadByte()
+
+                'Read 100 bytes from the file
+                bytesRead = rdr.Read(bytes, 0, size)
+
+            End Using
+        End Using
+        Return bytes
+    End Function
 End Module

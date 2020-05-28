@@ -637,7 +637,14 @@ Public Class MediaHandler
     Private Sub PlaystateChange(sender As Object, e As _WMPOCXEvents_PlayStateChangeEvent) Handles mPlayer.PlayStateChange
         Select Case e.newState
             Case WMPLib.WMPPlayState.wmppsStopped
-                mPlayer.Ctlcontrols.play()
+                Try
+                    mPlayer.Ctlcontrols.play()
+
+                Catch ex As Exception
+                    LastTimeSuccessful = False
+                    PreferencesSave()
+                End Try
+
             Case WMPLib.WMPPlayState.wmppsMediaEnded
                 If Autotrail = False AndAlso mPlayer.Equals(Media.Player) AndAlso mType = Filetype.Movie AndAlso Not LoopMovie Then
                     Playing = False

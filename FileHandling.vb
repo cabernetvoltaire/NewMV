@@ -27,10 +27,7 @@ Friend Module FileHandling
         'Media.Playing= False
     End Sub
     '  Public WithEvents SndH As New SoundController
-    Public Sub OnMediaPlaying(sender As Object, e As EventArgs) Handles Media.MediaPlaying
 
-
-    End Sub
 
     Public Sub OnMediaStartChanged(sender As Object, e As EventArgs) Handles Media.StartChanged
         MainForm.OnStartChanged(sender, e)
@@ -39,19 +36,19 @@ Friend Module FileHandling
     Public Sub OnMediaSpeedChanged(sender As Object, e As EventArgs) Handles Media.SpeedChanged
         MainForm.OnSpeedChange(sender, e)
     End Sub
-    Friend Sub SetDataformEntry()
-        If Media.IsLink Then
-            DatabaseForm.ShortFilepath = Path.GetFileName(Media.LinkPath)
-        Else
-            DatabaseForm.ShortFilepath = Path.GetFileName(Media.MediaPath)
+    'Friend Sub SetDataformEntry()
+    '    If Media.IsLink Then
+    '        DatabaseForm.ShortFilepath = Path.GetFileName(Media.LinkPath)
+    '    Else
+    '        DatabaseForm.ShortFilepath = Path.GetFileName(Media.MediaPath)
 
-        End If
-    End Sub
+    '    End If
+    'End Sub
     Public Sub OnMediaShown(sender As Object, e As EventArgs) Handles MSFiles.MediaShown
 
         Media = sender
         MainForm.UpdateFileInfo()
-        If DatabaseForm.Visible Then SetDataformEntry()
+        'If DatabaseForm.Visible Then SetDataformEntry()
 
         If Media.MediaType = Filetype.Movie Then
             MainForm.PopulateLinkList(sender)
@@ -244,7 +241,7 @@ Friend Module FileHandling
     '    Next
     'End Sub
     Public Sub MoveFilesNew(files As List(Of String), strDest As String, Optional Folder As Boolean = False)
-        Dim x As New FilesDest With {.files = files, .Dest = strDest, .Folder = Folder}
+        Dim x As New FilesMover With {.Files = files, .DestinationFolder = New DirectoryInfo(strDest)}
         MainForm.BackgroundWorker1.RunWorkerAsync(x)
     End Sub
 
@@ -645,9 +642,27 @@ Friend Module FileHandling
     End Sub
 
 End Module
-Public Class FilesDest
-    Property files As New List(Of String)
-    Property Dest As String
-    Property Folder As Boolean
+Public Class FilesMover
+    Property Files As New List(Of String)
+    Private mDestinationFolder As DirectoryInfo
+    Public Property DestinationFolder() As DirectoryInfo
+        Get
+            Return mDestinationFolder
+        End Get
+        Set(ByVal value As DirectoryInfo)
+            If value.Exists Then
+                mDestinationFolder = value
+            Else
+                Throw New Exception("Folder does not exist")
+            End If
+        End Set
+    End Property
+
+    Public Sub MoveFiles()
+        For Each f In Files
+            Dim file As New FileInfo(f)
+            file.MoveTo(DestinationFolder.FullName)
+        Next
+    End Sub
 
 End Class

@@ -51,9 +51,11 @@ Friend Class MainForm
         "Auto Trail in progress" & vbCrLf & "Change core speed change with slider"}
 
 #Region "Event Responders"
-    Sub OnThumbnailed(file As String) Handles VT.Thumbnailed
-        emblem.ImageLocation = file
-        emblem.Load()
+    Public Sub OnThumbnailHover(sender As Object, e As EventArgs)
+        If TypeOf (sender) Is PictureBox Then
+            Dim de As DatabaseEntry=DirectCast(sender.tag, DatabaseEntry)
+            HighlightCurrent(sender.tag.fullpath)
+        End If
     End Sub
     Public Sub OnItemChanged(sender As Object, e As EventArgs) Handles FBH.ListItemChanged
         Dim m = New IO.FileInfo(FBH.OldItem)
@@ -485,9 +487,9 @@ Friend Class MainForm
         Return e
     End Function
     Private Sub Background(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles BackgroundWorker1.DoWork
-        Dim x As FilesDest
+        Dim x As FilesMover
         x = e.Argument
-        FileHandling.MoveFiles(x.files, x.Dest, x.Folder)
+        x.MoveFiles()
     End Sub
     Private Sub BackgroundFinished() Handles BackgroundWorker1.RunWorkerCompleted
         MsgBox("Files moved")
@@ -1820,7 +1822,7 @@ Friend Class MainForm
 
         ConstructMenuShortcuts()
         ConstructMenutooltips()
-        'LoadDatabase("Q:\.msb\Smudge.msd")
+
     End Sub
 
     Private Sub ToggleMove()
@@ -2487,7 +2489,8 @@ Friend Class MainForm
         x.DB = DB
         x.FindDuplicates()
         x.Show()
-        x.ShowDuplicates()
+        x.ShowDuplicates(InputBox("Start from?(Max " & Str(x.AllDuplicates.Count)))
+        AddHandler x.HighlightFile, AddressOf OnThumbnailHover
         Exit Sub
 
         With FindDuplicates
@@ -2775,7 +2778,7 @@ Friend Class MainForm
 
     Private Sub ListDeadFilesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ListDeadFilesToolStripMenuItem.Click
         ProgressBarOn(1000)
-        FormDeadFiles.Show()
+        'FormDeadFiles.Show()
         SelectDeadLinks(FocusControl)
         Dim op2 As New OrphanFinder
         Dim lbx As New ListBox
@@ -2792,7 +2795,7 @@ Friend Class MainForm
         deadfiles.Sort()
 
         For Each f In deadfiles
-            FormDeadFiles.ListBox1.Items.Add(f)
+            '   FormDeadFiles.ListBox1.Items.Add(f)
             ProgressIncrement(1)
 
         Next
@@ -2990,10 +2993,10 @@ Friend Class MainForm
         Next
     End Sub
 
-    Private Sub DatabaseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DatabaseToolStripMenuItem.Click
-        DatabaseForm.Show()
+    'Private Sub DatabaseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DatabaseToolStripMenuItem.Click
+    '    DatabaseForm.Show()
 
-    End Sub
+    'End Sub
 
     Private Sub tmrHighlightCurrent_Tick(sender As Object, e As EventArgs) Handles tmrHighlightCurrent.Tick
         If HighlightPath = "" Then Exit Sub 'Empty
@@ -3012,7 +3015,7 @@ Friend Class MainForm
         tmrHighlightCurrent.Enabled = False
     End Sub
 
-    Private Sub CreateListOfFilesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateListOfFilesToolStripMenuItem.Click
+    Private Sub CreateListOfFilesToolStripMenuItem_Click(sender As Object, e As EventArgs)
         CreateDatabaseOfFiles("Q:\Files.txt", CurrentFolder)
     End Sub
 
@@ -3073,13 +3076,13 @@ Friend Class MainForm
         FlattenAllSubFolders(New IO.DirectoryInfo(CurrentFolder))
     End Sub
 
-    Private Sub LoadDatabaseIntoMemoryToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LoadDatabaseIntoMemoryToolStripMenuItem.Click
-        LoadDatabase("Q:\Files2.txt")
-        LoadButtonFileToolStripMenuItem.Visible = False
-    End Sub
 
-    Private Sub LoadDatabase(filename As String)
-        DB.Entries.Clear()
+
+    Private Sub LoadDatabase(filename As String, Append As Boolean)
+        If Not Append Then
+            DB.Entries.Clear()
+
+        End If
         ProgressBarOn(1000)
         Dim list As New List(Of String)
         list = ReadListfromFile(filename, Encrypted)
@@ -3150,22 +3153,20 @@ Friend Class MainForm
     End Sub
 
     Private Sub LoadToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LoadToolStripMenuItem.Click
-        LoadExistingDatabase()
+        DatabaseLoader(False)
 
     End Sub
 
-    Private Sub LoadExistingDatabase()
-        'Open file browser
+
+    Private Sub DatabaseLoader(Append As Boolean)
         Dim filename = LoadDatabaseFileName("")
 
         'Import database
 
         If filename <> "" Then
-            LoadDatabase(filename)
+            LoadDatabase(filename, Append)
             MsgBox(filename & " has been loaded.")
-
         End If
-
     End Sub
 
     Private Sub PicFullScreen(sender As Object, e As EventArgs) Handles PictureBox1.DoubleClick
@@ -3177,10 +3178,14 @@ Friend Class MainForm
     End Sub
 
     Private Sub ShowDatabase(dB As Database)
-        Dim form As New DatabaseShower With {.DB = dB, .Text = .DB.Name & " " & .DB.ItemCount & " files loaded"}
-        form.LoadEntries()
+        Dim form As New DatabaseShower With {.MDB = dB, .Text = .MDB.Name & " " & .MDB.ItemCount & " files loaded"}
+        form.LoadEntries(dB)
         form.Show()
         'Throw New NotImplementedException()
+    End Sub
+
+    Private Sub AppendDatabaseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AppendDatabaseToolStripMenuItem.Click
+        DatabaseLoader(True)
     End Sub
 #End Region
 

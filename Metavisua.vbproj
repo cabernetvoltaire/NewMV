@@ -233,18 +233,6 @@
     <Compile Include="Form4.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DatabaseForm.Designer.vb">
-      <DependentUpon>DatabaseForm.vb</DependentUpon>
-    </Compile>
-    <Compile Include="DatabaseForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormDeadFiles.Designer.vb">
-      <DependentUpon>FormDeadFiles.vb</DependentUpon>
-    </Compile>
-    <Compile Include="FormDeadFiles.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="FunctionKeyHandler.vb" />
     <Compile Include="Grouper.vb" />
     <Compile Include="GroupingForm.Designer.vb">
@@ -394,12 +382,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form4.resx">
       <DependentUpon>Form4.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DatabaseForm.resx">
-      <DependentUpon>DatabaseForm.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormDeadFiles.resx">
-      <DependentUpon>FormDeadFiles.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GroupingForm.resx">
       <DependentUpon>GroupingForm.vb</DependentUpon>

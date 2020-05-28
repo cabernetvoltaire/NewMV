@@ -200,7 +200,9 @@ Partial Class MainForm
         Me.PreferencesToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.DatabaseToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.LoadToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AppendDatabaseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CreateNewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ShowCurrentlyLoadedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem10 = New System.Windows.Forms.ToolStripMenuItem()
         Me.LinearToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AlphaToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -278,9 +280,6 @@ Partial Class MainForm
         Me.ShowlistToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DashboardToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExperimentToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DatabaseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CreateListOfFilesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.LoadDatabaseIntoMemoryToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PositionUpdater = New System.Windows.Forms.Timer(Me.components)
         Me.tmrMovieSlideShow = New System.Windows.Forms.Timer(Me.components)
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
@@ -289,7 +288,7 @@ Partial Class MainForm
         Me.tmrProgressBar = New System.Windows.Forms.Timer(Me.components)
         Me.tmrJumpRandom = New System.Windows.Forms.Timer(Me.components)
         Me.tmrHighlightCurrent = New System.Windows.Forms.Timer(Me.components)
-        Me.ShowCurrentlyLoadedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SaveToolStripMenuItem2 = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.FullPanel.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -608,7 +607,7 @@ Partial Class MainForm
         'ctrMainFrame
         '
         Me.ctrMainFrame.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctrMainFrame.Location = New System.Drawing.Point(4, 223)
+        Me.ctrMainFrame.Location = New System.Drawing.Point(4, 216)
         Me.ctrMainFrame.Margin = New System.Windows.Forms.Padding(4)
         Me.ctrMainFrame.Name = "ctrMainFrame"
         '
@@ -1221,7 +1220,7 @@ Partial Class MainForm
         Me.FlowLayoutPanel1.Location = New System.Drawing.Point(2, 2)
         Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(2)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(3908, 215)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(3908, 208)
         Me.FlowLayoutPanel1.TabIndex = 19
         '
         'GroupFilters
@@ -1451,7 +1450,7 @@ Partial Class MainForm
         Me.GroupBox3.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupBox3.Name = "GroupBox3"
         Me.GroupBox3.Padding = New System.Windows.Forms.Padding(4)
-        Me.GroupBox3.Size = New System.Drawing.Size(312, 207)
+        Me.GroupBox3.Size = New System.Drawing.Size(312, 200)
         Me.GroupBox3.TabIndex = 49
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Options"
@@ -1509,7 +1508,7 @@ Partial Class MainForm
         'CHBAutoAdvance
         '
         Me.CHBAutoAdvance.AutoSize = True
-        Me.CHBAutoAdvance.Location = New System.Drawing.Point(4, 148)
+        Me.CHBAutoAdvance.Location = New System.Drawing.Point(4, 141)
         Me.CHBAutoAdvance.Margin = New System.Windows.Forms.Padding(4)
         Me.CHBAutoAdvance.Name = "CHBAutoAdvance"
         Me.CHBAutoAdvance.Size = New System.Drawing.Size(162, 29)
@@ -1935,7 +1934,7 @@ Partial Class MainForm
         '
         'DatabaseToolStripMenuItem1
         '
-        Me.DatabaseToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LoadToolStripMenuItem, Me.CreateNewToolStripMenuItem, Me.ShowCurrentlyLoadedToolStripMenuItem})
+        Me.DatabaseToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CreateNewToolStripMenuItem, Me.LoadToolStripMenuItem, Me.AppendDatabaseToolStripMenuItem, Me.SaveToolStripMenuItem2, Me.ShowCurrentlyLoadedToolStripMenuItem})
         Me.DatabaseToolStripMenuItem1.Name = "DatabaseToolStripMenuItem1"
         Me.DatabaseToolStripMenuItem1.Size = New System.Drawing.Size(295, 34)
         Me.DatabaseToolStripMenuItem1.Text = "Database"
@@ -1944,13 +1943,26 @@ Partial Class MainForm
         '
         Me.LoadToolStripMenuItem.Name = "LoadToolStripMenuItem"
         Me.LoadToolStripMenuItem.Size = New System.Drawing.Size(318, 34)
-        Me.LoadToolStripMenuItem.Text = "Load"
+        Me.LoadToolStripMenuItem.Text = "Open"
+        '
+        'AppendDatabaseToolStripMenuItem
+        '
+        Me.AppendDatabaseToolStripMenuItem.Name = "AppendDatabaseToolStripMenuItem"
+        Me.AppendDatabaseToolStripMenuItem.Size = New System.Drawing.Size(318, 34)
+        Me.AppendDatabaseToolStripMenuItem.Text = "Append"
         '
         'CreateNewToolStripMenuItem
         '
         Me.CreateNewToolStripMenuItem.Name = "CreateNewToolStripMenuItem"
         Me.CreateNewToolStripMenuItem.Size = New System.Drawing.Size(318, 34)
-        Me.CreateNewToolStripMenuItem.Text = "Create New"
+        Me.CreateNewToolStripMenuItem.Text = "New"
+        '
+        'ShowCurrentlyLoadedToolStripMenuItem
+        '
+        Me.ShowCurrentlyLoadedToolStripMenuItem.Enabled = False
+        Me.ShowCurrentlyLoadedToolStripMenuItem.Name = "ShowCurrentlyLoadedToolStripMenuItem"
+        Me.ShowCurrentlyLoadedToolStripMenuItem.Size = New System.Drawing.Size(318, 34)
+        Me.ShowCurrentlyLoadedToolStripMenuItem.Text = "Show Currently Loaded"
         '
         'ToolStripMenuItem10
         '
@@ -2502,28 +2514,9 @@ Partial Class MainForm
         '
         'ExperimentToolStripMenuItem
         '
-        Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DatabaseToolStripMenuItem, Me.CreateListOfFilesToolStripMenuItem, Me.LoadDatabaseIntoMemoryToolStripMenuItem})
         Me.ExperimentToolStripMenuItem.Name = "ExperimentToolStripMenuItem"
         Me.ExperimentToolStripMenuItem.Size = New System.Drawing.Size(129, 34)
         Me.ExperimentToolStripMenuItem.Text = "Experiment"
-        '
-        'DatabaseToolStripMenuItem
-        '
-        Me.DatabaseToolStripMenuItem.Name = "DatabaseToolStripMenuItem"
-        Me.DatabaseToolStripMenuItem.Size = New System.Drawing.Size(367, 34)
-        Me.DatabaseToolStripMenuItem.Text = "Database"
-        '
-        'CreateListOfFilesToolStripMenuItem
-        '
-        Me.CreateListOfFilesToolStripMenuItem.Name = "CreateListOfFilesToolStripMenuItem"
-        Me.CreateListOfFilesToolStripMenuItem.Size = New System.Drawing.Size(367, 34)
-        Me.CreateListOfFilesToolStripMenuItem.Text = "CreateListOfFiles"
-        '
-        'LoadDatabaseIntoMemoryToolStripMenuItem
-        '
-        Me.LoadDatabaseIntoMemoryToolStripMenuItem.Name = "LoadDatabaseIntoMemoryToolStripMenuItem"
-        Me.LoadDatabaseIntoMemoryToolStripMenuItem.Size = New System.Drawing.Size(367, 34)
-        Me.LoadDatabaseIntoMemoryToolStripMenuItem.Text = "Load Database into Memory"
         '
         'PositionUpdater
         '
@@ -2554,12 +2547,11 @@ Partial Class MainForm
         '
         Me.tmrHighlightCurrent.Interval = 10
         '
-        'ShowCurrentlyLoadedToolStripMenuItem
+        'SaveToolStripMenuItem2
         '
-        Me.ShowCurrentlyLoadedToolStripMenuItem.Enabled = False
-        Me.ShowCurrentlyLoadedToolStripMenuItem.Name = "ShowCurrentlyLoadedToolStripMenuItem"
-        Me.ShowCurrentlyLoadedToolStripMenuItem.Size = New System.Drawing.Size(318, 34)
-        Me.ShowCurrentlyLoadedToolStripMenuItem.Text = "Show Currently Loaded"
+        Me.SaveToolStripMenuItem2.Name = "SaveToolStripMenuItem2"
+        Me.SaveToolStripMenuItem2.Size = New System.Drawing.Size(318, 34)
+        Me.SaveToolStripMenuItem2.Text = "Save"
         '
         'MainForm
         '
@@ -2907,9 +2899,7 @@ Partial Class MainForm
     Friend WithEvents chbPreviewLinks As CheckBox
     Friend WithEvents chbShowAttr As CheckBox
     Friend WithEvents CHBAutoAdvance As CheckBox
-    Friend WithEvents DatabaseToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents tmrHighlightCurrent As Timer
-    Friend WithEvents CreateListOfFilesToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents tvmain2 As Controls.FileSystemTree
     Friend WithEvents ToolStripSeparator15 As ToolStripSeparator
     Friend WithEvents PrependAllFilenamesWithFolderNameToolStripMenuItem As ToolStripMenuItem
@@ -2917,9 +2907,10 @@ Partial Class MainForm
     Friend WithEvents SelectedToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents ShortFilenamesRecursivelyToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents FlattenAllSubfolderToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents LoadDatabaseIntoMemoryToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DatabaseToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents LoadToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CreateNewToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ShowCurrentlyLoadedToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents AppendDatabaseToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents SaveToolStripMenuItem2 As ToolStripMenuItem
 End Class
