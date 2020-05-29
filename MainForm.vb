@@ -2489,7 +2489,11 @@ Friend Class MainForm
         x.DB = DB
         x.FindDuplicates()
         x.Show()
-        x.ShowDuplicates(InputBox("Start from?(Max " & Str(x.AllDuplicates.Count)))
+        Dim start As Int16
+        start = InputBox("Start from?(Max " & Str(x.AllDuplicates.Count),, "0")
+        If start < 0 Or start > x.AllDuplicates.Count Then start = 0
+
+        x.ShowDuplicates(start)
         AddHandler x.HighlightFile, AddressOf OnThumbnailHover
         Exit Sub
 
@@ -3187,6 +3191,8 @@ Friend Class MainForm
     Private Sub AppendDatabaseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AppendDatabaseToolStripMenuItem.Click
         DatabaseLoader(True)
     End Sub
+
+
 #End Region
 
 End Class

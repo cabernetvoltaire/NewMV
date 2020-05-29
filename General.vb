@@ -1348,6 +1348,7 @@ Public Module General
             End Get
         End Property
         Public Size As Long
+        Public Property Mark As Boolean = False
         'Public Thumbnail As New Bitmap(100, 100)
         'Public Function GetThumbnail()
         '    Thumbnail = LoadImage(mFullPath).GetThumbnailImage(100, 100, Nothing, Nothing)
@@ -1467,6 +1468,25 @@ Public Module General
             Next
         End Sub
     End Class
+    Public Function AreSameFile(path As String, qath As String) As Boolean
+        Dim same As Boolean = False
+        Dim pbytes, qbytes As Byte()
+        pbytes = ReadBinary(path, 1000)
+        qbytes = ReadBinary(qath, 1000)
+        Dim k As Integer
+        While k < 1000
+
+            If pbytes(k) = qbytes(k) Then
+                same = True
+            Else
+                same = False
+                Exit While
+            End If
+            k += 1
+        End While
+
+        Return same
+    End Function
 
     Public Function ReadBinary(path As String, size As Long) As Byte()
         Dim bytesRead As Integer

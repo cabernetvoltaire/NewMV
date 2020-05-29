@@ -273,9 +273,6 @@
     <Compile Include="Preferences.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Progress.vb">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="QDatabaseDataSet2.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -394,9 +391,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Preferences.resx">
       <DependentUpon>Preferences.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Progress.resx">
-      <DependentUpon>Progress.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmFullScreen.resx">
       <DependentUpon>frmFullScreen.vb</DependentUpon>

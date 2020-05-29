@@ -747,3 +747,29 @@ Public Class MediaHandler
     End Function
 
 End Class
+Public Class PicGrabber
+    Private Declare Function FindWindow Lib "user32" Alias "FindWindowA" (ByVal lpClassName As String, ByVal lpWindowName As String) As Long
+    Private Declare Function GetWindowRect Lib "user32" (ByVal hwnd As Long, lpRect As RECT) As Long
+    Private Declare Function GetWindowDC Lib "user32" (ByVal hwnd As Long) As Long
+    Private Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal x As Long, ByVal y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
+    Private Declare Function ReleaseDC Lib "user32" (ByVal hwnd As Long, ByVal hdc As Long) As Long
+    Private Structure RECT
+        Dim Left As Long
+        Dim Top As Long
+        Dim Right As Long
+        Dim Bottom As Long
+    End Structure
+    'Private Sub Form_Load()
+    '    Dim hWndWMP As Long, hDCWMP As Long, rc As RECT
+    '    hWndWMP = FindWindow("WMPlayerApp", "Windows Media Player")
+    '    hDCWMP = GetWindowDC(hWndWMP)
+    '    GetWindowRect(hWndWMP, rc)
+    '    BitBlt(hDCWMP, 0, 0, rc.Right - rc.Left, rc.Bottom - rc.Top, hDCWMP, 0, 0)
+    '    ReleaseDC(hWndWMP, hDCWMP)
+    'End Sub
+    Public Player As New AxWindowsMediaPlayer
+    Public Sub GrabScreen()
+
+
+    End Sub
+End Class
