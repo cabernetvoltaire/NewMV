@@ -27,44 +27,33 @@ Public Class OrphanFinder
     ''' </summary>
     ''' <returns></returns>
     Public Property OrphanList() As List(Of String)
-
         Get
             Return mOrphanList
         End Get
         Set(ByVal value As List(Of String))
             mOrphanList = value
             For Each f In mOrphanList
-                If LinkTarget(f) <> "" Then mOrphanTargetPairs.Add(f, LinkTarget(f))
+                If LinkTarget(f) <> "" Then mOrphanTargetPairs.Add(f, TargetFileFromLinkName(f))
             Next
         End Set
     End Property
+
+    Private Function TargetFileFromLinkName(str As String) As String
+        Dim parts() = Split(Path.GetFileName(str), "%")
+        Return parts(0)
+        Exit Function
+    End Function
+
     Private mOrphanTargetPairs As New Dictionary(Of String, String)
     ''' <summary>
     ''' Dictionary containing (new parent,link) pairs
     ''' </summary>
     Private mFoundParents As New Dictionary(Of String, String)
 
-    Public Sub FindOrphans3()
-        If MainForm.DB.Entries.Count = 0 Then
-            MsgBox("Load database first")
-            Exit Sub
-        End If
-        Dim mNewTargets As New Dictionary(Of String, String)
-        For Each p In mOrphanTargetPairs
-            Dim file As String = Path.GetFileName(p.Value)
-            Dim x As New DatabaseEntry
-            x = DB.FindEntry(file)
-            If x IsNot Nothing Then
-                mNewTargets.Add(p.Key, x.FullPath)
-            End If
-        Next
-        mFoundParents = mNewTargets
-
-    End Sub
 
 
     Public Function FindOrphans(Optional Deep As Boolean = False) As Boolean
-        FindOrphans3()
+        Orphanfinder()
         Reunite()
         MsgBox("Reunite finished - " & mFoundParents.Count & " files reunited")
         If mFoundParents.Count > 0 Then
@@ -75,6 +64,20 @@ Public Class OrphanFinder
         mFoundParents.Clear()
     End Function
 
+    Public Sub Orphanfinder()
+
+        Dim mNewTargets As New Dictionary(Of String, String)
+        For Each p In mOrphanTargetPairs
+            Dim file As String = Path.GetFileNameWithoutExtension(p.Value)
+            Dim x As New DatabaseEntry
+            x = DB.FindEntry(file)
+            If x IsNot Nothing Then
+                mNewTargets.Add(p.Key, x.FullPath)
+            End If
+        Next
+        mFoundParents = mNewTargets
+
+    End Sub
 
 
 
@@ -95,13 +98,14 @@ Public Class OrphanFinder
     End Sub
     Public Function ListOfDeadFiles() As List(Of String)
         Dim list As New List(Of String)
+
         For Each m In mOrphanList
             Dim target As String = LinkTarget(m)
             If Not list.Contains(target) Then
                 list.Add(target)
             End If
-
         Next
+
         Return list
     End Function
     Public Sub ListReuniter(ListofFiles As List(Of String))

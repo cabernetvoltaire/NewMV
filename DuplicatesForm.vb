@@ -1,6 +1,9 @@
 ﻿Imports System.Object
+Imports MasaSam.Forms.Sample
+
 Public Class DuplicatesForm
     Private mDB As Database
+    Public DupsThread As Threading.Thread()
     Public Event HighlightFile(sender As Object, e As EventArgs)
     '    Public WithEvents DupsPanels As List(Of DuplicatePanel)
     Public Shared Groupsize As Integer = 50
@@ -14,13 +17,14 @@ Public Class DuplicatesForm
     End Property
     Private mStartIndex As Integer = 0
     Public Property AllDuplicates As New List(Of DuplicateSet)
-    Private Property mPanelDuplicates As New List(Of DuplicateSet)
+    Private Property mDuplicatePanels As New List(Of DuplicatePanel)
+
     Private Sub OnHighlightFile(sender As Object, e As EventArgs)
         RaiseEvent HighlightFile(sender, e)
 
     End Sub
     Public Sub FindDuplicates()
-        mDB.Sort()
+        mDB.Sort(New CompareDBByFilesize)
         Dim CurrentDuplicateSet As New DuplicateSet
         For Each entry In mDB.Entries
 
@@ -29,7 +33,9 @@ Public Class DuplicatesForm
             End If
             If entry.Size = CurrentDuplicateSet.Size Then
 
+
                 CurrentDuplicateSet.Add(entry)
+                PopulateFolderList(CurrentDuplicateSet)
             Else
                 If CurrentDuplicateSet.DSet.Count > 1 Then
                     AllDuplicates.Add(CurrentDuplicateSet)
@@ -41,37 +47,38 @@ Public Class DuplicatesForm
         If AllDuplicates.Count = 0 Then
             MsgBox("No duplicates found")
         Else
-
+            Me.Text = Me.Text & Format("{0} duplicates found", AllDuplicates.Count)
         End If
     End Sub
-    Public Sub ShowDuplicatesO(StartIndex As Integer)
 
-        For j = StartIndex To AllDuplicates.Count - 1
-            Dim panel As New Panel With {.Dock = DockStyle.Bottom}
-            Dim tt As New ToolTip
-            tt.SetToolTip(panel, "Duplicate set " & Str(j))
-            Dim m As DuplicateSet = AllDuplicates.Item(j)
-            mPanelDuplicates.Add(m)
-            For i = 0 To m.DSet.Count - 1
-                Dim path As String = m.DSet(i).FullPath
-                Dim gap As Integer = 10
-                Dim pic As New PictureBox With {.Height = 100, .Width = 100,
-                                 .SizeMode = PictureBoxSizeMode.StretchImage}
-                Try
-                    'pic.Image = m.DSet(i).GetThumbnail
-                    ThumbLoader(m, i, path, pic)
-                    pic.Left = (pic.Width + gap) * i + gap
-                    panel.Controls.Add(pic)
-
-                Catch ex As Exception
-                End Try
-            Next
-            If CheckFileDuplicates(panel) Then
-
-                TableLayoutPanel3.Controls.Add(panel)
+    Private Sub PopulateFolderList(CurrentDuplicateSet As DuplicateSet)
+        For Each e In CurrentDuplicateSet.DSet
+            If ListBox1.Items.Contains(e.Path) Then
             Else
-                panel.Dispose()
+                ListBox1.Items.Add(e.Path)
+            End If
+            If ListBox2.Items.Contains(e.Path) Then
+            Else
+                ListBox2.Items.Add(e.Path)
+            End If
+        Next
+    End Sub
 
+    Public Sub ShowDuplicates(Startindex As Integer)
+        DuplicatesTLP.Controls.Clear()
+
+        For j = Startindex To AllDuplicates.Count - 1
+
+            Dim DupsPanel As New DuplicatePanel
+            AddHandler DupsPanel.Highlightfile, AddressOf OnHighlightFile
+            DupsPanel.Duplicates = AllDuplicates(j)
+            If CheckFileDuplicates(DupsPanel) Then
+                If DupsPanel.Panel.Controls.Count > 0 Then
+                    DuplicatesTLP.Controls.Add(DupsPanel.Panel)
+                    mDuplicatePanels.Add(DupsPanel)
+                End If
+            Else
+                DuplicatesTLP.Controls.Remove(DupsPanel.Panel)
             End If
             If j / Groupsize = Int(j / Groupsize) And j > 0 Then
                 'If MsgBox(j & " duplicates found so far. Continue?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
@@ -83,67 +90,38 @@ Public Class DuplicatesForm
         Next
 
     End Sub
-    Public Sub ShowDuplicates(StartIndex As Integer)
-
-        For j = StartIndex To AllDuplicates.Count - 1
-            Dim x As New DuplicatePanel
-            AddHandler x.Highlightfile, AddressOf OnHighlightfile
-            x.Duplicates = AllDuplicates(j)
-            If CheckFileDuplicates(x) Then
-
-                TableLayoutPanel3.Controls.Add(x.Panel)
-            Else
-                x.Panel.Dispose()
-
-            End If
-            If j / Groupsize = Int(j / Groupsize) And j > 0 Then
-                'If MsgBox(j & " duplicates found so far. Continue?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
-                'Else
-                mStartIndex = j + 1
-                Exit For
-                'End If
-            End If
-        Next
-
-    End Sub
-    '   Private OnHighlight(sender As Object, e As EventArgs) Handles 
-
-    'Private Function CheckThumbnailDuplicates(flp As FlowLayoutPanel) As Boolean
-    '    Dim SomeThumbsSame As Boolean = False
-    '    For i = 0 To flp.Controls.Count - 2
-
-    '        Dim p As PictureBox = DirectCast(flp.Controls(i), PictureBox)
-    '        For j = i + 1 To flp.Controls.Count - 1
-    '            Dim q As PictureBox = DirectCast(flp.Controls(j), PictureBox)
-    '            If AreSameImage(p.Image, q.Image, True) Then
-    '                SomeThumbsSame = True
-    '            End If
-    '        Next
-
-    '    Next
-    '    Return SomeThumbsSame
-    'End Function
-    Private Function CheckFileDuplicates(flp As Panel) As Boolean
-        Dim SomeFilesSame As Boolean = False
-        For i = 0 To flp.Controls.Count - 2
-            Dim path As String = flp.Controls(i).Tag.Fullpath
-            Dim p As New IO.FileInfo(path)
-            If p.Exists Then
-
-                For j = i + 1 To flp.Controls.Count - 1
-                    Dim qath As String = flp.Controls(j).Tag.Fullpath
-                    Dim q As New IO.FileInfo(qath)
-                    If q.Exists Then
-                        If AreSameFile(path, qath) Then
-                            SomeFilesSame = True
-                        End If
+    Public Sub RemoveAllDuplicates()
+        Dim entry As DatabaseEntry
+        Dim fop As New FileOperations
+        For Each d In AllDuplicates
+            Dim k As New KeeperChooser
+            k.DuplicateSet = d
+            entry = k.Keeper
+            If entry IsNot Nothing Then
+                For Each e In d.DSet
+                    If e IsNot entry Then
+                        fop.Files.Add(e.FullPath)
+                        Application.DoEvents()
                     End If
                 Next
             End If
         Next
-        Return SomeFilesSame
+        fop.DeleteFiles()
+    End Sub
 
+    Public Function RemoveCurrentDuplicates()
+
+        Dim fop As New FileOperations
+        AddHandler fop.Filesmoving, AddressOf MainForm.OnFilesMoving
+        For Each m In mDuplicatePanels
+            For Each f In m.Deletees
+                'MsgBox(f.FullPath & " would be deleted.")
+                fop.Files.Add(f.FullPath)
+            Next
+        Next
+        fop.DeleteFiles()
     End Function
+
     Private Function CheckFileDuplicates(flp As DuplicatePanel) As Boolean
         Dim SomeFilesSame As Boolean = False
         For i = 0 To flp.Duplicates.DSet.Count - 2
@@ -207,24 +185,37 @@ Public Class DuplicatesForm
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        ShowDuplicates(mStartIndex)
+        ShowDuplicates(ListBox2.SelectedItem)
+        Button1.Text = "Next group"
     End Sub
 
     Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged
         Groupsize = Val(ComboBox1.SelectedItem)
     End Sub
 
+    Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox1.SelectedIndexChanged
+        ForbiddenPaths.Clear()
+
+        For Each item In ListBox1.SelectedItems
+            ForbiddenPaths.Add(item)
+        Next
+
+    End Sub
+
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        RemoveCurrentDuplicates()
+    End Sub
 
-
-
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        RemoveAllDuplicates()
     End Sub
 End Class
 Public Class DuplicatePanel
     Private mDuplicates As DuplicateSet
 
-    Public Property Panel As New Panel With {.Dock = DockStyle.Bottom, .Height = 120}
-    Private Outliner As New PictureBox With {.BackColor = Color.HotPink}
+    Public Property Panel As New Panel With {.BorderStyle = BorderStyle.Fixed3D, .AutoSize = True, .Height = 120, .BackColor = Color.AliceBlue, .Dock = DockStyle.Left}
+    Private Outliner As New PictureBox With {.BackColor = Color.HotPink, .Visible = False}
+    Public Deletees As New List(Of DatabaseEntry)
     Public Property Tooltip As New ToolTip
 
     Public Event Highlightfile(sender As Object, e As EventArgs)
@@ -243,10 +234,19 @@ Public Class DuplicatePanel
         kp.DuplicateSet = mDuplicates
         For Each m In mDuplicates.DSet
             If m Is kp.Keeper Then
-                OutlineControl(Panel.Controls(mDuplicates.DSet.IndexOf(m)), Outliner)
+                m.Mark = True
+                If mDuplicates.DSet.Count <= Panel.Controls.Count Then
+                    OutlineControl(Panel.Controls(mDuplicates.DSet.IndexOf(m)), Outliner)
+
+                End If
+            Else
+                Deletees.add(m)
+                m.Mark = False
             End If
         Next
     End Sub
+
+
     Private Sub PopulatePanel()
         For i = 0 To mDuplicates.DSet.Count - 1
             Dim path As String = mDuplicates.DSet(i).FullPath
@@ -254,8 +254,8 @@ Public Class DuplicatePanel
             Dim pic As New PictureBox With {.Height = 100, .Width = 100,
                                  .SizeMode = PictureBoxSizeMode.StretchImage}
             Try
-                'pic.Image = m.DSet(i).GetThumbnail
                 ThumbLoader(mDuplicates.DSet(i), path, pic)
+                pic.Top = gap
                 pic.Left = (pic.Width + gap) * i + gap
                 Panel.Controls.Add(pic)
 
@@ -265,7 +265,7 @@ Public Class DuplicatePanel
     End Sub
     Private Sub _Mouseclick(sender As Object, e As MouseEventArgs)
         Dim pic As New PictureBox
-        Dim outliner As New PictureBox With {.BackColor = Color.HotPink}
+        ' Dim outliner As New PictureBox With {.BackColor = Color.HotPink}
         pic = DirectCast(sender, PictureBox)
         OutlineControl(pic, outliner)
         'For Each p In pic.Parent.Controls
@@ -293,7 +293,7 @@ Public Class DuplicatePanel
                 .Image = x
                 .Width = x.Width
             Else
-                .BackColor = Color.HotPink
+                .BackColor = Color.DarkCyan
             End If
             .Tag = m 'Assign the database entry to the picbox
             AddHandler .MouseEnter, AddressOf _Mouseover
@@ -309,7 +309,15 @@ Public Class DuplicateSet
     Public Property Size As Long
 
     Public Sub Add(Entry As DatabaseEntry)
+        'If DSet.Count <> 0 Then
+        '    Dim f As New DatabaseEntry
+        '    f = DSet(0)
+        '    If AreSameFile(f.FullPath, Entry.FullPath) Then
+        '        DSet.Add(Entry)
+        '    End If
+        'Else
         DSet.Add(Entry)
+        'End If
         If DSet.Count = 1 Then Size = Entry.Size
     End Sub
 
@@ -375,14 +383,23 @@ Public Class KeeperChooser
                 Return x2
             End If
         Else
-            'They're on different branches, so choose longest filename again.
-            'Otherwise choose longest filename
-            If Len(x1.Filename) > Len(x2.Filename) Then
+            If ForbiddenPaths.Contains(x1.Path) Then
+                Return x2
+            ElseIf ForbiddenPaths.Contains(x2.Path) Then
                 Return x1
             Else
-                Return x2
+                'They're on different branches, so choose path with greatest number of files.
+                Dim f As New IO.DirectoryInfo(x1.Path)
+                Dim g As New IO.DirectoryInfo(x2.Path)
+                If f.EnumerateFiles.Count > g.EnumerateFiles.Count Then
+                    Return x1
+                Else
+                    Return x2
+                End If
             End If
         End If
+        'Anyway if one of them is forbidden then switch
+
 
     End Function
 

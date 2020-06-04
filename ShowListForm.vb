@@ -20,6 +20,10 @@
         ListBox1.Text = e.Data.GetData(DataFormats.Text).ToString()
     End Sub
 
+    Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox1.SelectedIndexChanged
+        MainForm.HighlightCurrent(ListBox1.SelectedItem)
+    End Sub
+
     Public Property ListofFiles() As List(Of String)
         Get
             Return mListofFiles

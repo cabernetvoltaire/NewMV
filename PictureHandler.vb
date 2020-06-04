@@ -79,7 +79,9 @@
             '    mPicImage = LoadImage(strPath)
             'Else
             Try
-                Dim img As Image = Image.FromFile(strPath)
+                Dim stream As New System.IO.FileStream(strPath, IO.FileMode.Open)
+                Dim img As Image = Image.FromStream(stream)
+                stream.Close()
                 mPicImage = img
                 OrientPic(mPicImage)
                 PicBox.Image = mPicImage

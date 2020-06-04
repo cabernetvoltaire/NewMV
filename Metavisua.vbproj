@@ -188,7 +188,6 @@
     <Compile Include="Dashboard.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Database.vb" />
     <Compile Include="DatabaseShower.Designer.vb">
       <DependentUpon>DatabaseShower.vb</DependentUpon>
     </Compile>
@@ -206,7 +205,7 @@
     <Compile Include="Encryption.vb" />
     <Compile Include="FavouritesMinder.vb" />
     <Compile Include="FileNamesGrouper.vb" />
-    <Compile Include="Colors.vb" />
+    <Compile Include="FileOperations.vb" />
     <Compile Include="FilterHandler.vb" />
     <Compile Include="FilterMove.vb" />
     <Compile Include="FindDuplicates.Designer.vb">

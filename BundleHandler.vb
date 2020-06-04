@@ -129,7 +129,7 @@ Public Class BundleHandler
             If NoOfFiless = 0 And NoOfFolders = 0 Then
                 FSTree.RemoveNode(folder.FullName)
                 folder.Delete()
-                DirectoriesList.Remove(folder.FullName)
+                'DirectoriesList.Remove(folder.FullName)
             End If
 
 

@@ -187,6 +187,10 @@ Partial Class MainForm
         Me.AppendDatabaseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveToolStripMenuItem2 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ShowCurrentlyLoadedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator17 = New System.Windows.Forms.ToolStripSeparator()
+        Me.CreateFromCurrentShowlistToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator16 = New System.Windows.Forms.ToolStripSeparator()
+        Me.PreferencesToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.PreferencesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ResetToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -200,9 +204,7 @@ Partial Class MainForm
         Me.SearchToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RegexSearchToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
-        Me.RemoveToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator14 = New System.Windows.Forms.ToolStripSeparator()
-        Me.PreferencesToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem10 = New System.Windows.Forms.ToolStripMenuItem()
         Me.LinearToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AlphaToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -235,6 +237,7 @@ Partial Class MainForm
         Me.FilesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LettersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FoldersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LinksByPartOfPathToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PromoteFolderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FilterMoveToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.InvertSelectionToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -259,12 +262,9 @@ Partial Class MainForm
         Me.SelectDeadLinksToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SelectAndBundleToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RefreshSelectedLinksToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.SelectedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DisplayedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SelectedDeepToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ListDeadFilesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SelectThenRefreshToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.RefreshAllFilesWithLinksToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator11 = New System.Windows.Forms.ToolStripSeparator()
         Me.SelectNonFavouritsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HideDeadLinksToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -280,6 +280,13 @@ Partial Class MainForm
         Me.ShowlistToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DashboardToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExperimentToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RefreshLinksFromDatabaseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RenamingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem6 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem7 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem8 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem9 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem11 = New System.Windows.Forms.ToolStripMenuItem()
         Me.PositionUpdater = New System.Windows.Forms.Timer(Me.components)
         Me.tmrMovieSlideShow = New System.Windows.Forms.Timer(Me.components)
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
@@ -1706,7 +1713,7 @@ Partial Class MainForm
         'MenuStrip2
         '
         Me.MenuStrip2.ImageScalingSize = New System.Drawing.Size(28, 28)
-        Me.MenuStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem2, Me.ToolStripMenuItem10, Me.HarvestFolderToolStripMenuItem, Me.FullScreenToolStripMenuItem1, Me.OptionsToolStripMenuItem, Me.DuplicatesToolStripMenuItem, Me.ButtonFormToolStripMenuItem, Me.ShowlistToolStripMenuItem, Me.DashboardToolStripMenuItem, Me.ExperimentToolStripMenuItem})
+        Me.MenuStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem2, Me.ToolStripMenuItem10, Me.HarvestFolderToolStripMenuItem, Me.FullScreenToolStripMenuItem1, Me.OptionsToolStripMenuItem, Me.DuplicatesToolStripMenuItem, Me.ButtonFormToolStripMenuItem, Me.ShowlistToolStripMenuItem, Me.DashboardToolStripMenuItem, Me.ExperimentToolStripMenuItem, Me.RenamingToolStripMenuItem})
         Me.MenuStrip2.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip2.Name = "MenuStrip2"
         Me.MenuStrip2.Size = New System.Drawing.Size(3912, 38)
@@ -1715,7 +1722,7 @@ Partial Class MainForm
         '
         'FileToolStripMenuItem2
         '
-        Me.FileToolStripMenuItem2.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem2, Me.ToolStripMenuItem14, Me.DatabaseToolStripMenuItem1, Me.PreferencesToolStripMenuItem, Me.SearchFunctionsToolStripMenuItem, Me.ToolStripSeparator5, Me.RemoveToolStripMenuItem, Me.ToolStripSeparator14, Me.PreferencesToolStripMenuItem1})
+        Me.FileToolStripMenuItem2.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem2, Me.ToolStripMenuItem14, Me.DatabaseToolStripMenuItem1, Me.ToolStripSeparator16, Me.PreferencesToolStripMenuItem1, Me.PreferencesToolStripMenuItem, Me.SearchFunctionsToolStripMenuItem, Me.ToolStripSeparator5, Me.ToolStripSeparator14})
         Me.FileToolStripMenuItem2.Name = "FileToolStripMenuItem2"
         Me.FileToolStripMenuItem2.Size = New System.Drawing.Size(56, 34)
         Me.FileToolStripMenuItem2.Text = "&File"
@@ -1829,7 +1836,7 @@ Partial Class MainForm
         '
         'DatabaseToolStripMenuItem1
         '
-        Me.DatabaseToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CreateNewToolStripMenuItem, Me.LoadToolStripMenuItem, Me.AppendDatabaseToolStripMenuItem, Me.SaveToolStripMenuItem2, Me.ShowCurrentlyLoadedToolStripMenuItem})
+        Me.DatabaseToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CreateNewToolStripMenuItem, Me.LoadToolStripMenuItem, Me.AppendDatabaseToolStripMenuItem, Me.SaveToolStripMenuItem2, Me.ShowCurrentlyLoadedToolStripMenuItem, Me.ToolStripSeparator17, Me.CreateFromCurrentShowlistToolStripMenuItem})
         Me.DatabaseToolStripMenuItem1.Name = "DatabaseToolStripMenuItem1"
         Me.DatabaseToolStripMenuItem1.Size = New System.Drawing.Size(295, 34)
         Me.DatabaseToolStripMenuItem1.Text = "Database"
@@ -1837,33 +1844,55 @@ Partial Class MainForm
         'CreateNewToolStripMenuItem
         '
         Me.CreateNewToolStripMenuItem.Name = "CreateNewToolStripMenuItem"
-        Me.CreateNewToolStripMenuItem.Size = New System.Drawing.Size(318, 34)
+        Me.CreateNewToolStripMenuItem.Size = New System.Drawing.Size(366, 34)
         Me.CreateNewToolStripMenuItem.Text = "New"
         '
         'LoadToolStripMenuItem
         '
         Me.LoadToolStripMenuItem.Name = "LoadToolStripMenuItem"
-        Me.LoadToolStripMenuItem.Size = New System.Drawing.Size(318, 34)
+        Me.LoadToolStripMenuItem.Size = New System.Drawing.Size(366, 34)
         Me.LoadToolStripMenuItem.Text = "Open"
         '
         'AppendDatabaseToolStripMenuItem
         '
         Me.AppendDatabaseToolStripMenuItem.Name = "AppendDatabaseToolStripMenuItem"
-        Me.AppendDatabaseToolStripMenuItem.Size = New System.Drawing.Size(318, 34)
+        Me.AppendDatabaseToolStripMenuItem.Size = New System.Drawing.Size(366, 34)
         Me.AppendDatabaseToolStripMenuItem.Text = "Append"
         '
         'SaveToolStripMenuItem2
         '
         Me.SaveToolStripMenuItem2.Name = "SaveToolStripMenuItem2"
-        Me.SaveToolStripMenuItem2.Size = New System.Drawing.Size(318, 34)
+        Me.SaveToolStripMenuItem2.Size = New System.Drawing.Size(366, 34)
         Me.SaveToolStripMenuItem2.Text = "Save"
         '
         'ShowCurrentlyLoadedToolStripMenuItem
         '
         Me.ShowCurrentlyLoadedToolStripMenuItem.Enabled = False
         Me.ShowCurrentlyLoadedToolStripMenuItem.Name = "ShowCurrentlyLoadedToolStripMenuItem"
-        Me.ShowCurrentlyLoadedToolStripMenuItem.Size = New System.Drawing.Size(318, 34)
+        Me.ShowCurrentlyLoadedToolStripMenuItem.Size = New System.Drawing.Size(366, 34)
         Me.ShowCurrentlyLoadedToolStripMenuItem.Text = "Show Currently Loaded"
+        '
+        'ToolStripSeparator17
+        '
+        Me.ToolStripSeparator17.Name = "ToolStripSeparator17"
+        Me.ToolStripSeparator17.Size = New System.Drawing.Size(363, 6)
+        '
+        'CreateFromCurrentShowlistToolStripMenuItem
+        '
+        Me.CreateFromCurrentShowlistToolStripMenuItem.Name = "CreateFromCurrentShowlistToolStripMenuItem"
+        Me.CreateFromCurrentShowlistToolStripMenuItem.Size = New System.Drawing.Size(366, 34)
+        Me.CreateFromCurrentShowlistToolStripMenuItem.Text = "Create from current showlist"
+        '
+        'ToolStripSeparator16
+        '
+        Me.ToolStripSeparator16.Name = "ToolStripSeparator16"
+        Me.ToolStripSeparator16.Size = New System.Drawing.Size(292, 6)
+        '
+        'PreferencesToolStripMenuItem1
+        '
+        Me.PreferencesToolStripMenuItem1.Name = "PreferencesToolStripMenuItem1"
+        Me.PreferencesToolStripMenuItem1.Size = New System.Drawing.Size(295, 34)
+        Me.PreferencesToolStripMenuItem1.Text = "Preferences"
         '
         'PreferencesToolStripMenuItem
         '
@@ -1946,22 +1975,10 @@ Partial Class MainForm
         Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
         Me.ToolStripSeparator5.Size = New System.Drawing.Size(292, 6)
         '
-        'RemoveToolStripMenuItem
-        '
-        Me.RemoveToolStripMenuItem.Name = "RemoveToolStripMenuItem"
-        Me.RemoveToolStripMenuItem.Size = New System.Drawing.Size(295, 34)
-        Me.RemoveToolStripMenuItem.Text = "Remove ""(#)"""
-        '
         'ToolStripSeparator14
         '
         Me.ToolStripSeparator14.Name = "ToolStripSeparator14"
         Me.ToolStripSeparator14.Size = New System.Drawing.Size(292, 6)
-        '
-        'PreferencesToolStripMenuItem1
-        '
-        Me.PreferencesToolStripMenuItem1.Name = "PreferencesToolStripMenuItem1"
-        Me.PreferencesToolStripMenuItem1.Size = New System.Drawing.Size(295, 34)
-        Me.PreferencesToolStripMenuItem1.Text = "Preferences"
         '
         'ToolStripMenuItem10
         '
@@ -2095,7 +2112,7 @@ Partial Class MainForm
         '
         'GroupToolStripMenuItem
         '
-        Me.GroupToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ByMonthToolStripMenuItem, Me.ByDateToolStripMenuItem, Me.ByYearToolStripMenuItem, Me.ByTimeToolStripMenuItem, Me.BySizeToolStripMenuItem, Me.CalendarToolStripMenuItem, Me.ToolStripSeparator6, Me.ByNameToolStripMenuItem, Me.ByExtToolStripMenuItem, Me.ByLinkFolderToolStripMenuItem, Me.AlphabeticGroupsToolStripMenuItem})
+        Me.GroupToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ByMonthToolStripMenuItem, Me.ByDateToolStripMenuItem, Me.ByYearToolStripMenuItem, Me.ByTimeToolStripMenuItem, Me.BySizeToolStripMenuItem, Me.CalendarToolStripMenuItem, Me.ToolStripSeparator6, Me.ByNameToolStripMenuItem, Me.ByExtToolStripMenuItem, Me.ByLinkFolderToolStripMenuItem, Me.AlphabeticGroupsToolStripMenuItem, Me.LinksByPartOfPathToolStripMenuItem})
         Me.GroupToolStripMenuItem.Name = "GroupToolStripMenuItem"
         Me.GroupToolStripMenuItem.Size = New System.Drawing.Size(387, 34)
         Me.GroupToolStripMenuItem.Tag = "Folder"
@@ -2187,6 +2204,12 @@ Partial Class MainForm
         Me.FoldersToolStripMenuItem.Name = "FoldersToolStripMenuItem"
         Me.FoldersToolStripMenuItem.Size = New System.Drawing.Size(170, 34)
         Me.FoldersToolStripMenuItem.Text = "Folders"
+        '
+        'LinksByPartOfPathToolStripMenuItem
+        '
+        Me.LinksByPartOfPathToolStripMenuItem.Name = "LinksByPartOfPathToolStripMenuItem"
+        Me.LinksByPartOfPathToolStripMenuItem.Size = New System.Drawing.Size(319, 34)
+        Me.LinksByPartOfPathToolStripMenuItem.Text = "Links By Part of Path"
         '
         'PromoteFolderToolStripMenuItem
         '
@@ -2370,53 +2393,32 @@ Partial Class MainForm
         '
         'RefreshSelectedLinksToolStripMenuItem
         '
-        Me.RefreshSelectedLinksToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SelectedToolStripMenuItem, Me.DisplayedToolStripMenuItem, Me.SelectedDeepToolStripMenuItem, Me.ListDeadFilesToolStripMenuItem, Me.SelectThenRefreshToolStripMenuItem, Me.RefreshAllFilesWithLinksToolStripMenuItem})
+        Me.RefreshSelectedLinksToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SelectedDeepToolStripMenuItem, Me.ListDeadFilesToolStripMenuItem, Me.SelectThenRefreshToolStripMenuItem})
         Me.RefreshSelectedLinksToolStripMenuItem.Name = "RefreshSelectedLinksToolStripMenuItem"
         Me.RefreshSelectedLinksToolStripMenuItem.Size = New System.Drawing.Size(473, 34)
         Me.RefreshSelectedLinksToolStripMenuItem.Tag = "File"
         Me.RefreshSelectedLinksToolStripMenuItem.Text = "Refresh Selected Links"
         '
-        'SelectedToolStripMenuItem
-        '
-        Me.SelectedToolStripMenuItem.Name = "SelectedToolStripMenuItem"
-        Me.SelectedToolStripMenuItem.Size = New System.Drawing.Size(340, 34)
-        Me.SelectedToolStripMenuItem.Tag = "File"
-        Me.SelectedToolStripMenuItem.Text = "Selected"
-        '
-        'DisplayedToolStripMenuItem
-        '
-        Me.DisplayedToolStripMenuItem.Name = "DisplayedToolStripMenuItem"
-        Me.DisplayedToolStripMenuItem.Size = New System.Drawing.Size(340, 34)
-        Me.DisplayedToolStripMenuItem.Tag = "File"
-        Me.DisplayedToolStripMenuItem.Text = "Displayed"
-        '
         'SelectedDeepToolStripMenuItem
         '
         Me.SelectedDeepToolStripMenuItem.Name = "SelectedDeepToolStripMenuItem"
-        Me.SelectedDeepToolStripMenuItem.Size = New System.Drawing.Size(340, 34)
+        Me.SelectedDeepToolStripMenuItem.Size = New System.Drawing.Size(286, 34)
         Me.SelectedDeepToolStripMenuItem.Tag = "File"
         Me.SelectedDeepToolStripMenuItem.Text = "Selected (Deep)"
         '
         'ListDeadFilesToolStripMenuItem
         '
         Me.ListDeadFilesToolStripMenuItem.Name = "ListDeadFilesToolStripMenuItem"
-        Me.ListDeadFilesToolStripMenuItem.Size = New System.Drawing.Size(340, 34)
+        Me.ListDeadFilesToolStripMenuItem.Size = New System.Drawing.Size(286, 34)
         Me.ListDeadFilesToolStripMenuItem.Tag = "File"
         Me.ListDeadFilesToolStripMenuItem.Text = "List dead files"
         '
         'SelectThenRefreshToolStripMenuItem
         '
         Me.SelectThenRefreshToolStripMenuItem.Name = "SelectThenRefreshToolStripMenuItem"
-        Me.SelectThenRefreshToolStripMenuItem.Size = New System.Drawing.Size(340, 34)
+        Me.SelectThenRefreshToolStripMenuItem.Size = New System.Drawing.Size(286, 34)
         Me.SelectThenRefreshToolStripMenuItem.Tag = "File"
         Me.SelectThenRefreshToolStripMenuItem.Text = "Select Then Refresh"
-        '
-        'RefreshAllFilesWithLinksToolStripMenuItem
-        '
-        Me.RefreshAllFilesWithLinksToolStripMenuItem.Name = "RefreshAllFilesWithLinksToolStripMenuItem"
-        Me.RefreshAllFilesWithLinksToolStripMenuItem.Size = New System.Drawing.Size(340, 34)
-        Me.RefreshAllFilesWithLinksToolStripMenuItem.Tag = "File"
-        Me.RefreshAllFilesWithLinksToolStripMenuItem.Text = "Refresh all files with Links"
         '
         'ToolStripSeparator11
         '
@@ -2513,9 +2515,58 @@ Partial Class MainForm
         '
         'ExperimentToolStripMenuItem
         '
+        Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RefreshLinksFromDatabaseToolStripMenuItem})
         Me.ExperimentToolStripMenuItem.Name = "ExperimentToolStripMenuItem"
         Me.ExperimentToolStripMenuItem.Size = New System.Drawing.Size(129, 34)
         Me.ExperimentToolStripMenuItem.Text = "Experiment"
+        '
+        'RefreshLinksFromDatabaseToolStripMenuItem
+        '
+        Me.RefreshLinksFromDatabaseToolStripMenuItem.Name = "RefreshLinksFromDatabaseToolStripMenuItem"
+        Me.RefreshLinksFromDatabaseToolStripMenuItem.Size = New System.Drawing.Size(371, 34)
+        Me.RefreshLinksFromDatabaseToolStripMenuItem.Text = "Refresh Links From Database"
+        '
+        'RenamingToolStripMenuItem
+        '
+        Me.RenamingToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem6, Me.ToolStripMenuItem7})
+        Me.RenamingToolStripMenuItem.Name = "RenamingToolStripMenuItem"
+        Me.RenamingToolStripMenuItem.Size = New System.Drawing.Size(118, 34)
+        Me.RenamingToolStripMenuItem.Text = "Renaming"
+        '
+        'ToolStripMenuItem6
+        '
+        Me.ToolStripMenuItem6.Name = "ToolStripMenuItem6"
+        Me.ToolStripMenuItem6.Size = New System.Drawing.Size(473, 34)
+        Me.ToolStripMenuItem6.Text = "Remove ""(#)"""
+        '
+        'ToolStripMenuItem7
+        '
+        Me.ToolStripMenuItem7.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem8, Me.ToolStripMenuItem9, Me.ToolStripMenuItem11})
+        Me.ToolStripMenuItem7.Name = "ToolStripMenuItem7"
+        Me.ToolStripMenuItem7.Size = New System.Drawing.Size(473, 34)
+        Me.ToolStripMenuItem7.Tag = "File"
+        Me.ToolStripMenuItem7.Text = "Prepend All Filenames with FolderName"
+        '
+        'ToolStripMenuItem8
+        '
+        Me.ToolStripMenuItem8.Name = "ToolStripMenuItem8"
+        Me.ToolStripMenuItem8.Size = New System.Drawing.Size(364, 34)
+        Me.ToolStripMenuItem8.Tag = "File"
+        Me.ToolStripMenuItem8.Text = "Recursively"
+        '
+        'ToolStripMenuItem9
+        '
+        Me.ToolStripMenuItem9.Name = "ToolStripMenuItem9"
+        Me.ToolStripMenuItem9.Size = New System.Drawing.Size(364, 34)
+        Me.ToolStripMenuItem9.Tag = "File"
+        Me.ToolStripMenuItem9.Text = "Selected"
+        '
+        'ToolStripMenuItem11
+        '
+        Me.ToolStripMenuItem11.Name = "ToolStripMenuItem11"
+        Me.ToolStripMenuItem11.Size = New System.Drawing.Size(364, 34)
+        Me.ToolStripMenuItem11.Tag = "File"
+        Me.ToolStripMenuItem11.Text = "Short Filenames, Recursively"
         '
         'PositionUpdater
         '
@@ -2821,11 +2872,8 @@ Partial Class MainForm
     Friend WithEvents ToolStripSeparator12 As ToolStripSeparator
     Friend WithEvents AutoButton As ToolStripMenuItem
     Friend WithEvents Response As Timer
-    Friend WithEvents DisplayedToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents SelectedToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ForceFavouritesReloadToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ForceDirectoriesReloadToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents RemoveToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents HideDeadLinksToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents InvertSelectionToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents TBFractionAbsolute As ToolStripStatusLabel
@@ -2848,7 +2896,6 @@ Partial Class MainForm
     Friend WithEvents ToolStripSeparator13 As ToolStripSeparator
     Friend WithEvents tmrProgressBar As Timer
     Friend WithEvents SelectAndBundleToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents RefreshAllFilesWithLinksToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents MovieScanToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents tmrJumpRandom As Timer
     Friend WithEvents ResetButtonsToolStripMenuItem As ToolStripMenuItem
@@ -2905,4 +2952,15 @@ Partial Class MainForm
     Friend WithEvents ShowCurrentlyLoadedToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents AppendDatabaseToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SaveToolStripMenuItem2 As ToolStripMenuItem
+    Friend WithEvents RefreshLinksFromDatabaseToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents LinksByPartOfPathToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator16 As ToolStripSeparator
+    Friend WithEvents RenamingToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem6 As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem7 As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem8 As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem9 As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem11 As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator17 As ToolStripSeparator
+    Friend WithEvents CreateFromCurrentShowlistToolStripMenuItem As ToolStripMenuItem
 End Class

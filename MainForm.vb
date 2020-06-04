@@ -30,6 +30,7 @@ Friend Class MainForm
     Public WithEvents X As New OrphanFinder
     Public WithEvents VT As New VideoThumbnailer
     Public WithEvents FKH As FunctionKeyHandler
+    Public WithEvents FOP As FileOperations
 
     Public Splash As New SplashScreen1
 
@@ -51,6 +52,10 @@ Friend Class MainForm
         "Auto Trail in progress" & vbCrLf & "Change core speed change with slider"}
 
 #Region "Event Responders"
+    Public Sub OnFilesMoving(sender As Object, e As EventArgs)
+        MSFiles.CancelURL()
+    End Sub
+
     Public Sub OnThumbnailHover(sender As Object, e As EventArgs)
         If TypeOf (sender) Is PictureBox Then
             Dim de As DatabaseEntry=DirectCast(sender.tag, DatabaseEntry)
@@ -79,9 +84,7 @@ Friend Class MainForm
 
         End If
     End Sub
-    Public Sub OnParentNotFound(sender As Object, e As EventArgs) Handles X.ParentNotFound, Op.ParentNotFound
-        '  lbxReport.Items.Add("Not found")
-    End Sub
+
     Public Sub OnRandomChanged() Handles Random.RandomChanged
         FBH.Random = Random
         If Random.All Then
@@ -434,8 +437,10 @@ Friend Class MainForm
         Else
             Dim e = New DirectoryInfo(CurrentFolder)
             '  FillFileBox(lbxFiles, e, False)
+            ' Dim t1 As New Thread(Sub()
             FBH.DirectoryPath = e.FullName
             FBH.SetNamed(Media.MediaPath)
+            '                     End Sub)
         End If
 
 
@@ -487,9 +492,7 @@ Friend Class MainForm
         Return e
     End Function
     Private Sub Background(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles BackgroundWorker1.DoWork
-        Dim x As FilesMover
-        x = e.Argument
-        x.MoveFiles()
+
     End Sub
     Private Sub BackgroundFinished() Handles BackgroundWorker1.RunWorkerCompleted
         MsgBox("Files moved")
@@ -513,7 +516,6 @@ Friend Class MainForm
     End Sub
     Public Sub GoFullScreen(blnGo As Boolean)
         FullScreen.Changing = True
-        MSFiles.ForceLoad = True
         'TogglePause()
         'Media.Speed.Paused = True
         If blnGo Then
@@ -545,7 +547,6 @@ Friend Class MainForm
         End If
         FullScreen.Changing = False
         blnFullScreen = Not blnFullScreen
-        MSFiles.ForceLoad = False
     End Sub
     Private Sub SplitterPlace(i As Decimal)
         ctrMainFrame.SplitterDistance = Me.Width * i
@@ -2276,26 +2277,19 @@ Friend Class MainForm
     Private Sub ReUniteFavesLinks()
         Dim s As List(Of String)
         s = ListfromSelectedInListbox(CType(FocusControl, ListBox))
-        X.OrphanList = s
+        Op.OrphanList = s
+        Op.DB = DB
         ProgressBarOn(s.Count)
-        T = New Thread(New ThreadStart(Sub() X.FindOrphans())) With {
+        T = New Thread(New ThreadStart(Sub() Op.FindOrphans())) With {
             .IsBackground = True
         }
         T.SetApartmentState(ApartmentState.STA)
-
         T.Start()
         lbxFiles.SelectionMode = SelectionMode.One
-        'While T.IsAlive
-        '    ProgressIncrement(1)
-        'End While
-        '        X.FindOrphans()
         ProgressBarOff()
         UpdatePlayOrder(FBH)
     End Sub
-    Private Sub OnOrphanTest(sender As Object, e As EventArgs) Handles X.NewOrphanTesting
-        ProgressIncrement(1)
 
-    End Sub
     Public Sub ReportAction(Msg As String)
         Console.WriteLine(Msg)
     End Sub
@@ -2342,7 +2336,7 @@ Friend Class MainForm
     End Sub
 
 
-    Private Sub ReclaimDeadLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectedToolStripMenuItem.Click
+    Private Sub ReclaimDeadLinksToolStripMenuItem_Click(sender As Object, e As EventArgs)
         ReUniteFavesLinks()
 
     End Sub
@@ -2484,40 +2478,30 @@ Friend Class MainForm
     End Sub
 
     Private Sub DuplicatesToolStripMenuItem1_Click_1(sender As Object, e As EventArgs) Handles DuplicatesToolStripMenuItem1.Click
+        T = New Thread(New ThreadStart(Sub() StartDuplicatesForm()))
+
+        T.IsBackground = True
+        T.SetApartmentState(ApartmentState.STA)
+        T.Start()
+        While T.IsAlive
+            Thread.Sleep(0)
+        End While
+
+        Exit Sub
+
+
+    End Sub
+
+    Private Sub StartDuplicatesForm()
         Dim x As New DuplicatesForm
 
         x.DB = DB
         x.FindDuplicates()
         x.Show()
-        Dim start As Int16
-        start = InputBox("Start from?(Max " & Str(x.AllDuplicates.Count),, "0")
-        If start < 0 Or start > x.AllDuplicates.Count Then start = 0
 
-        x.ShowDuplicates(start)
+
         AddHandler x.HighlightFile, AddressOf OnThumbnailHover
-        Exit Sub
-
-        With FindDuplicates
-
-            If FocusControl Is lbxShowList Then
-                .List = LBH.ItemList
-            Else
-
-                .List = FBH.ItemList
-
-
-            End If
-            If .DuplicatesCount > 0 Then
-                .ThumbnailHeight = 150
-                .SetBounds(-1920, 0, 750, 900)
-                .Show()
-            Else
-                MsgBox("No duplicates found.")
-            End If
-        End With
     End Sub
-
-
 
     Private Sub ResetToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetToolStripMenuItem.Click
         PreferencesReset(True)
@@ -2593,19 +2577,31 @@ Friend Class MainForm
     End Sub
 
     Private Sub RefreshSelectedLinks(sender As Object)
+        If DB.Entries.Count = 0 Then
+            MsgBox("Load database first")
+            Exit Sub
+        End If
+
         ProgressBarOn(100)
         Dim op2 As New OrphanFinder
         Dim lbx As New ListBox
         Dim files As New List(Of String)
+        Dim found As Boolean
         lbx = FocusControl
-
         For Each m In lbx.SelectedItems
             files.Add(m)
             ProgressIncrement(1)
         Next
         op2.DB = DB
         op2.OrphanList = files
-        If op2.FindOrphans() Then FBH.FillBox()
+        T = New Thread(New ThreadStart(Sub() op2.FindOrphans())) With {
+            .IsBackground = True
+        }
+        T.SetApartmentState(ApartmentState.STA)
+
+        T.Start()
+
+        '        If op2.FindOrphans() Then FBH.FillBox()
         ProgressBarOff()
     End Sub
 
@@ -2671,7 +2667,7 @@ Friend Class MainForm
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub DisplayedToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DisplayedToolStripMenuItem.Click
+    Private Sub DisplayedToolStripMenuItem_Click(sender As Object, e As EventArgs)
         AllFaveMinder.RedirectShortCutList(lbxFiles.SelectedItem, AllfromListbox(lbxShowList))
     End Sub
 
@@ -2689,11 +2685,11 @@ Friend Class MainForm
 
     Private Sub ForceDirectoriesReloadToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ForceDirectoriesReloadToolStripMenuItem.Click
         If MsgBox("Reload directories list? Could take a while!", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
-            DirectoriesList = GetDirectoriesList(Rootpath, True)
+            'DirectoriesList = GetDirectoriesList(Rootpath, True)
         End If
     End Sub
 
-    Private Sub RemoveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RemoveToolStripMenuItem.Click
+    Private Sub RemoveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem6.Click
         If FocusControl Is LBH.ListBox Then
             RemoveBrackets(LBH.ItemList)
         Else
@@ -2837,7 +2833,7 @@ Friend Class MainForm
 
     End Sub
 
-    Private Sub RefreshAllFilesWithLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RefreshAllFilesWithLinksToolStripMenuItem.Click
+    Private Sub RefreshAllFilesWithLinksToolStripMenuItem_Click(sender As Object, e As EventArgs)
         SelectDeadLinks(FocusControl)
         InvertSelectionToolStripMenuItem_Click(sender, e)
         RefreshLinks(ListfromSelectedInListbox(FocusControl))
@@ -3019,9 +3015,6 @@ Friend Class MainForm
         tmrHighlightCurrent.Enabled = False
     End Sub
 
-    Private Sub CreateListOfFilesToolStripMenuItem_Click(sender As Object, e As EventArgs)
-        CreateDatabaseOfFiles("Q:\Files.txt", CurrentFolder)
-    End Sub
 
     Private Sub PrependAllFilenamesWithFolderNameToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PrependAllFilenamesWithFolderNameToolStripMenuItem.Click
         MSFiles.CancelURL()
@@ -3072,7 +3065,9 @@ Friend Class MainForm
         T.IsBackground = True
         T.SetApartmentState(ApartmentState.STA)
         T.Start()
-        T.Join()
+        While T.IsAlive
+            Thread.Sleep(0)
+        End While
         FBH.Refresh()
     End Sub
 
@@ -3101,6 +3096,7 @@ Friend Class MainForm
             ent.Size = x(2)
             DB.AddEntry(ent)
             ProgressIncrement(1)
+            Application.DoEvents()
         Next
         'DB.Sort()
         ShowCurrentlyLoadedToolStripMenuItem.Enabled = True
@@ -3169,7 +3165,7 @@ Friend Class MainForm
 
         If filename <> "" Then
             LoadDatabase(filename, Append)
-            MsgBox(filename & " has been loaded.")
+            ShowDatabase(DB)
         End If
     End Sub
 
@@ -3190,6 +3186,62 @@ Friend Class MainForm
 
     Private Sub AppendDatabaseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AppendDatabaseToolStripMenuItem.Click
         DatabaseLoader(True)
+    End Sub
+
+    Private Sub RefreshLinksFromDatabaseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RefreshLinksFromDatabaseToolStripMenuItem.Click
+        If DB.Entries.Count = 0 Then Exit Sub
+        RefreshAllDatabaseLinks()
+    End Sub
+
+    Private Sub RefreshAllDatabaseLinks()
+        For Each m In DB.Entries
+            Dim x As List(Of String) = AllFaveMinder.GetLinksOf(m.FullPath)
+            If x.Count <> 0 Then Op.ReuniteWithFile(x, m.FullPath)
+        Next
+    End Sub
+
+    Private Sub LinksByPartOfPathToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LinksByPartOfPathToolStripMenuItem.Click
+        Dim x As New GroupByLinkFolders()
+        x.Folder = CurrentFolder
+        x.Files = FBH.SelectedItemsList
+        x.MoveFiles(2)
+    End Sub
+
+    Private Sub ToolStripMenuItem6_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem6.Click
+
+    End Sub
+
+    Private Sub CreateFromCurrentShowlistToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateFromCurrentShowlistToolStripMenuItem.Click
+        If ShowListVisible Then
+            DB.Entries.Clear()
+            Dim list As New List(Of String)
+            list = LBH.ItemList
+            Dim x As New FilterHandler With {.State = CurrentFilterState.State}
+            x.FileList = list
+            list = x.FileList
+            For Each file In list
+                Try
+                    Dim f As New FileInfo(file)
+                    Dim entry As New DatabaseEntry
+                    entry.Filename = f.Name
+                    entry.Path = f.FullName.Replace(f.Name, "")
+                    entry.Size = f.Length
+                    DB.Entries.Add(entry)
+                    Application.DoEvents()
+
+                Catch ex As Exception
+
+                End Try
+            Next
+            ShowCurrentlyLoadedToolStripMenuItem.Enabled = True
+            'Filter them
+            'Then create database list of those files
+        End If
+
+    End Sub
+
+    Private Sub SaveToolStripMenuItem2_Click(sender As Object, e As EventArgs) Handles SaveToolStripMenuItem2.Click
+        SaveDatabaseFileName("")
     End Sub
 
 

@@ -163,6 +163,7 @@ Class DateMove
 
         RaiseEvent FilesMoved(Nothing, Nothing)
     End Sub
+
     Public Sub FilterByAlpha(FolderName As String, Optional Files As Boolean = False, Optional Folders As Boolean = False, Optional Letters As Boolean = False)
         Dim s As New IO.DirectoryInfo(FolderName)
         If Letters Then
@@ -248,4 +249,38 @@ Class DateMove
 
     'End Sub
 End Class
+Public Class GroupByLinkFolders
+    Private Property mFolder As IO.DirectoryInfo
+    Public Property Folder As String
+        Set(value As String)
+            mFolder = New IO.DirectoryInfo(value)
+        End Set
+        Get
+            Return mFolder.FullName
+        End Get
+    End Property
 
+    Public Files As List(Of String)
+
+    Public Sub MoveFiles(PathPart As Byte)
+        For Each f In Files
+            If FindType(f) = Filetype.Link Then
+                Dim parts() As String = Split(LinkTarget(f), "\")
+                If parts.Length >= PathPart Then
+                    'Create directory of parts(pathpart) if it doesn't already exist
+                    'Move f into that directory
+                    Dim file As New IO.FileInfo(f)
+                    file.MoveTo(CreateDirectory(parts(PathPart)).FullName & "\" & file.Name)
+                End If
+            Else
+
+            End If
+        Next
+
+    End Sub
+
+    Private Function CreateDirectory(v As String) As IO.DirectoryInfo
+        Dim fol As New IO.DirectoryInfo(Folder)
+        Return fol.CreateSubdirectory(v)
+    End Function
+End Class

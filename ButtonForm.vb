@@ -29,20 +29,16 @@ Public Class ButtonForm
         ' Add any initialization after the InitializeComponent() call.
         handler.Tooltip = Me.ToolTip1
         handler.ActualButtons = {Button1, Button2, Button3a, Button4, Button5, Button6, Button7, Button8a}
+        handler.Labels = {Label1, Label2, Label3, Label4, Label5, Label6, Label7, Label8}
     End Sub
     Private Sub ButtonForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Exit Sub
         ' FocusOnMain()
         handler.LoadButtonSet(LoadButtonFileName(ButtonFilePath))
         ' buttons = handler.buttons
         handler.buttons.CurrentLetter = LetterNumberFromAscii(Asc("A"))
         handler.TranscribeButtons(buttons.CurrentRow)
-        AddHandler Me.KeyDown, AddressOf MainForm.HandleKeys
-        For Each m In handler.ActualButtons
-            '            AddHandler m.Click, AddressOf MainForm.HandleFunctionKeyDown
+        ' AddHandler Me.KeyDown, AddressOf MainForm.HandleKeys
 
-
-        Next
     End Sub
     Private Sub FocusOnMain()
         With MainForm
@@ -71,7 +67,8 @@ Public Class ButtonForm
                     If s <> "" Then
                         CurrentFolder = s
                     Else
-                        Exit Sub
+                        buttons.CurrentRow.Buttons(e.KeyCode - Keys.F5).Path = CurrentFolder
+                        handler.TranscribeButtons(buttons.CurrentRow)
                     End If
                     MainForm.tvMain2.SelectedFolder = CurrentFolder
                 End If
@@ -113,19 +110,13 @@ Public Class ButtonForm
 
                 End If
 
-                MainForm.Main_KeyDown(sender, e)
+                'MainForm.Main_KeyDown(sender, e)
                 e.Handled = True
             Case Else
                 MainForm.Main_KeyDown(sender, e)
 
         End Select
     End Sub
-    'Private Sub OnLetterChanged(letter As Integer, count As Integer) Handles handler.buttons.LetterChanged
-    '    lblAlpha.Text = Chr(AsciifromLetterNumber(letter))
-    '    TranscribeButtons(buttons.CurrentRow)
-    '    pbrButtons.Maximum = buttons.RowIndexCount
-    '    pbrButtons.Value = buttons.RowIndex + 1
-    'End Sub
 
 
 End Class

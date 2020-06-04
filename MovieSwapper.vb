@@ -29,18 +29,6 @@ Public Class MediaSwapper
 
     Public Event MediaPlaying(sender As Object, e As EventArgs)
     Public Event MediaNotFound(sender As Object, e As EventArgs)
-    Private Property mForceLoad As Boolean
-    Public Property ForceLoad As Boolean
-        Set(value As Boolean)
-            For Each m In MediaHandlers
-                m.Forceload = value
-            Next
-            mForceLoad = value
-        End Set
-        Get
-            Return mForceload
-        End Get
-    End Property
 
     Public Property NextItem As String
     Public Property CurrentItem As String

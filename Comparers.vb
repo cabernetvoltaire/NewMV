@@ -23,8 +23,37 @@ Public Class MyComparer
 
 
     End Class
+Public Class CompareDBByFilename
+    Implements Generic.IComparer(Of DatabaseEntry)
 
-    Public Class CompareByFilesize
+    Public Function Compare(x As DatabaseEntry, y As DatabaseEntry) As Integer Implements IComparer(Of DatabaseEntry).Compare
+        If x.Filename = y.Filename Then
+            Return 0
+        ElseIf x.Filename < y.Filename Then
+            Return 1
+        Else
+            Return -1
+        End If
+
+
+    End Function
+End Class
+Public Class CompareDBByFilesize
+    Implements Generic.IComparer(Of DatabaseEntry)
+
+    Public Function Compare(x As DatabaseEntry, y As DatabaseEntry) As Integer Implements IComparer(Of DatabaseEntry).Compare
+        If x.Size = y.Size Then
+            Return 0
+        ElseIf x.Size < y.Size Then
+            Return 1
+        Else
+            Return -1
+        End If
+
+
+    End Function
+End Class
+Public Class CompareByFilesize
         Implements Generic.IComparer(Of String)
 
         Public Function Compare(x As String, y As String) As Integer Implements IComparer(Of String).Compare

@@ -4,10 +4,11 @@
     Public Sub New()
         Dim S As String = "ABCDEFGH"
         For i = 0 To 7
-            Buttons(i) = New MVButton
-            Buttons(i).FaceText = "f" & Str(i + 5)
-            Buttons(i).Label = S(i)
-            Buttons(i).Position = i
+            Buttons(i) = New MVButton With {
+                .FaceText = "f" & Str(i + 5),
+                .Label = S(i),
+                .Position = i
+            }
         Next
 
         'Current = False
@@ -16,11 +17,12 @@
     Public Sub New(letter As Integer)
         Dim S As String = "ABCDEFGH"
         For i = 0 To 7
-            Buttons(i) = New MVButton
-            Buttons(i).FaceText = "f" & Str(i + 5)
-            Buttons(i).Label = S(i)
-            Buttons(i).Letter = letter
-            Buttons(i).Position = i
+            Buttons(i) = New MVButton With {
+                .FaceText = "f" & Str(i + 5),
+                .Label = S(i),
+                .Letter = letter,
+                .Position = i
+            }
         Next
         mLetter = letter
         'Current = False

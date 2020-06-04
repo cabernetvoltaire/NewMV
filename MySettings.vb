@@ -223,15 +223,15 @@ Friend Module Mysettings
                         Case "Directories List" 'Drive
                             If value = "" Then value = PrefsPath & "Directories.txt"
 
-                            DirectoriesListFile = value
-                            Dim ff As New IO.FileInfo(value)
-                            If ff.Exists = False Then
-                                DirectoriesList = GetDirectoriesList(Rootpath, True)
-                            Else
-                                DirectoriesList = GetDirectoriesList(value)
+                            'DirectoriesListFile = value
+                            'Dim ff As New IO.FileInfo(value)
+                            'If ff.Exists = False Then
+                            '    DirectoriesList = GetDirectoriesList(Rootpath, True)
+                            'Else
+                            '    DirectoriesList = GetDirectoriesList(value)
 
 
-                            End If
+                            'End If
                             DriveString = GetDriveString(value)
                         Case "GlobalFaves" 'Drive
                             Dim ff As New IO.DirectoryInfo(value)

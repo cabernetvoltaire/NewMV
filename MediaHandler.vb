@@ -198,7 +198,7 @@ Public Class MediaHandler
                     If mType = Filetype.Link Then
                         mIsLink = True
                         mLinkPath = LinkTarget(f.FullName)
-                        If mLinkPath = "" Then mLinkPath = mMediaPath
+                        If mLinkPath = "" Or mLinkPath.Contains(vbNullChar) Then mLinkPath = mMediaPath
                     Else
                         mIsLink = False
                         mLinkPath = ""
@@ -225,6 +225,7 @@ Public Class MediaHandler
     Public Function GetMarkersFromLinkList() As List(Of Long)
         Dim List As New List(Of String)
         Dim markerslist As New List(Of Long)
+
         If mIsLink Then
             List = AllFaveMinder.GetLinksOf(mLinkPath)
 
@@ -607,7 +608,6 @@ Public Class MediaHandler
     End Sub
     Function DisposeMovie() As Integer
         mPlayer.close()
-        mPlayer.currentPlaylist.clear()
         Return 0
     End Function
     Public Sub CancelMedia()
@@ -769,7 +769,8 @@ Public Class PicGrabber
     'End Sub
     Public Player As New AxWindowsMediaPlayer
     Public Sub GrabScreen()
-
+        Dim x As New Bitmap(100, 100)
+        '        x = Player.DrawToBitmap(x, New Rectangle With {.Height = 1000, .Width = 100, .Location = New Point(0, 0)})
 
     End Sub
 End Class

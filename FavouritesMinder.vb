@@ -130,6 +130,7 @@
 
     Public Function GetLinksOf(Path As String) As List(Of String)
 
+
         ' Exit Function
         Dim finfo As New IO.FileInfo(Path)
         Dim list As New List(Of String)
@@ -137,7 +138,7 @@
             list = mFavesList.FindAll(Function(x) InStr(x, "\" & finfo.Name) <> 0)
         End If
         Linklist = list
-        Return List
+        Return list
     End Function
     Public Property OkToDelete As Boolean = True
 End Class

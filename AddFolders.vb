@@ -16,7 +16,7 @@ Public Class AddFolders
         For Each l In TextBox1.Lines
             Dim s As String = Folder & "\" & l
             IO.Directory.CreateDirectory(s)
-            DirectoriesList.Add(s)
+            'DirectoriesList.Add(s)
         Next
         MainForm.tvMain2.RefreshTree(CurrentFolder)
     End Sub

@@ -99,7 +99,7 @@ Friend Module FileHandling
             MainForm.LBH.FillBox()
         End If
         MainForm.FBH.FillBox()
-        DeleteEmptyFolders(New IO.DirectoryInfo(CurrentFolder), True)
+        'DeleteEmptyFolders(New IO.DirectoryInfo(CurrentFolder), True)
         If lbx1.Items.Count <> 0 Then
             Dim index = Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0)
             MainForm.FBH.SetIndex(index, True)
@@ -169,7 +169,7 @@ Friend Module FileHandling
 
         If Dest = "" Then
             Dim SourceDir As New DirectoryInfo(Dir)
-            DirectoriesList.Remove(SourceDir.FullName)
+            'DirectoriesList.Remove(SourceDir.FullName)
             For Each d In SourceDir.EnumerateDirectories("*", SearchOption.AllDirectories)
                 MoveDirectoryContents(d, True)
             Next
@@ -179,8 +179,8 @@ Friend Module FileHandling
 
             Dim TargetDir As New DirectoryInfo(Dest)
             Dim SourceDir As New DirectoryInfo(Dir)
-            DirectoriesList.Remove(SourceDir.FullName)
-            DirectoriesList.Add(TargetDir.FullName)
+            'DirectoriesList.Remove(SourceDir.FullName)
+            'DirectoriesList.Add(TargetDir.FullName)
 
             'Make target subdirectories.
             MoveDirectoryContents(TargetDir, SourceDir, SourceDir, True)
@@ -241,8 +241,8 @@ Friend Module FileHandling
     '    Next
     'End Sub
     Public Sub MoveFilesNew(files As List(Of String), strDest As String, Optional Folder As Boolean = False)
-        Dim x As New FilesMover With {.Files = files, .DestinationFolder = New DirectoryInfo(strDest)}
-        MainForm.BackgroundWorker1.RunWorkerAsync(x)
+        Dim x As New FileOperations With {.Files = files, .DestinationFolder = New DirectoryInfo(strDest)}
+        x.MoveFiles()
     End Sub
 
 
@@ -294,9 +294,7 @@ Friend Module FileHandling
 
     End Sub
 
-    Private Sub Finishedmoving()
 
-    End Sub
     'Public Sub MoveFiles(file As String, strDest As String, lbx1 As ListBox, Optional Folder As Boolean = False)
     '    Dim files As New List(Of String)
     '    files.Add(file)
@@ -469,7 +467,7 @@ Friend Module FileHandling
         If blnCreate Then
             Try
                 IO.Directory.CreateDirectory(s)
-                DirectoriesList.Add(s)
+                'DirectoriesList.Add(s)
                 tv.RefreshTree(strDest)
             Catch ex As IO.DirectoryNotFoundException
             End Try
@@ -614,9 +612,13 @@ Friend Module FileHandling
         End If
     End Sub
     Public Async Function DeleteEmptyFolders(d As DirectoryInfo, blnRecurse As Boolean) As Task(Of Boolean)
-        Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
-        Await x.RemoveEmptyFolders(x.Path, blnRecurse)
+        Dim x As New FileOperations
+        x.CurrentFolder = New IO.DirectoryInfo(CurrentFolder)
+        x.RemoveEmptySubfolders()
         Return True
+        'Dim x As New BundleHandler(MainForm.tvmain2, MainForm.lbxFiles, d.FullName)
+        'Await x.RemoveEmptyFolders(x.Path, blnRecurse)
+        'Return True
 
     End Function
 
@@ -642,27 +644,3 @@ Friend Module FileHandling
     End Sub
 
 End Module
-Public Class FilesMover
-    Property Files As New List(Of String)
-    Private mDestinationFolder As DirectoryInfo
-    Public Property DestinationFolder() As DirectoryInfo
-        Get
-            Return mDestinationFolder
-        End Get
-        Set(ByVal value As DirectoryInfo)
-            If value.Exists Then
-                mDestinationFolder = value
-            Else
-                Throw New Exception("Folder does not exist")
-            End If
-        End Set
-    End Property
-
-    Public Sub MoveFiles()
-        For Each f In Files
-            Dim file As New FileInfo(f)
-            file.MoveTo(DestinationFolder.FullName)
-        Next
-    End Sub
-
-End Class

@@ -391,14 +391,14 @@ Module ButtonHandling
                     End If
 
                 Else
-                    Dim m = DirectoriesList.Find(Function(x) x.Contains(s))
-                    If m IsNot Nothing Then
-                        strButtonCaptions(i, iCurrentAlpha, 1) = s
-                        strButtonFilePath(i, iCurrentAlpha, 1) = m
-                    Else
-                        lblDest(i).ForeColor = Color.Gray
+                    'Dim m = DirectoriesList.Find(Function(x) x.Contains(s))
+                    'If m IsNot Nothing Then
+                    '    strButtonCaptions(i, iCurrentAlpha, 1) = s
+                    '    strButtonFilePath(i, iCurrentAlpha, 1) = m
+                    'Else
+                    lblDest(i).ForeColor = Color.Gray
 
-                    End If
+                    'End If
 
                 End If
 

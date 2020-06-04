@@ -6,6 +6,7 @@ Imports System.Threading
 Imports Microsoft.IShellDispatch6
 
 Public Module General
+    Public Property ForbiddenPaths As New List(Of String)
     Public Enum ExifOrientations As Byte
         Unknown = 0
         TopLeft = 1
@@ -35,7 +36,7 @@ Public Module General
     Public DebugOn As Boolean = True
     Public t As Threading.Thread
     Public CurrentFolder As String
-    Public DirectoriesList As New List(Of String)
+    ' Public DirectoriesList As New List(Of String)
 
     Public Encrypted As Boolean = False
     Public WithEvents Encrypter As New Encryption("Spunky")
@@ -197,6 +198,7 @@ Public Module General
     ''' <param name="str"></param>
     ''' <returns></returns>
     Public Function LinkTarget(str As String) As String
+
         Dim xl As New IO.FileInfo(str)
         If xl.Extension = LinkExt Then
             Return NewLinkTarget(str)
@@ -227,7 +229,9 @@ Public Module General
     ''' <param name="str"></param>
     ''' <returns></returns>
     Public Function NewLinkTarget(str As String) As String
-
+        'Dim parts() = Split(Path.GetFileName(str), "%")
+        'Return parts(0)
+        'Exit Function
         Try
             Dim items As New List(Of String)
             items = ReadListfromFile(str, False)
@@ -500,12 +504,7 @@ Public Module General
         'End Try
 
     End Sub
-    Public Sub TransferURLS(MS1 As MediaSwapper, MS2 As MediaSwapper)
-        MS1.Media1 = MS2.Media1
-        MS1.Media2 = MS2.Media2
-        MS1.Media3 = MS2.Media3
-        MS1.ListIndex = MS2.ListIndex
-    End Sub
+
     Public Function TimeOperation(blnStart As Boolean) As TimeSpan
         Static StartTime As Date
         If blnStart Then
@@ -933,10 +932,11 @@ Public Module General
                 Return MyImage
             Catch ex As System.ArgumentException
                 FileStream1.Close()
-                ' FileStream1.Dispose()
+                FileStream1.Dispose()
                 Return Nothing
             End Try
         Catch ex As Exception
+
             Return Nothing
         End Try
 
@@ -1260,6 +1260,7 @@ Public Module General
         ctl.Parent.Controls.Add(outliner)
         Dim r As Rectangle = ctl.Bounds
         outliner.SetBounds(r.Left - 5, r.Top - 5, r.Width + 10, r.Height + 10)
+        outliner.Visible = True
     End Sub
     ''' <summary>
     ''' Returns all subfolders of path which have the same name as name
@@ -1364,6 +1365,7 @@ Public Module General
 
             End If
         End Function
+
     End Class
     Public Class Database
         Public Entries As New List(Of DatabaseEntry)
@@ -1377,19 +1379,22 @@ Public Module General
 
 
         Public Sub AddEntry(entry As DatabaseEntry)
-            Entries.Add(entry)
-            mItemCount += 1
+            Dim f As New FileInfo(entry.FullPath)
+            If f.Exists Then
+                Entries.Add(entry)
+                mItemCount += 1
+            End If
         End Sub
-        Private mSorted As Boolean
-        Public Sub Sort()
-            Entries.Sort()
-
+        Private mSorted As Boolean = False
+        Public Sub Sort(Optional comparer As IComparer(Of DatabaseEntry) = Nothing)
+            Entries.Sort(comparer)
+            mSorted = True
         End Sub
         Public Function FindEntry(filename As String) As DatabaseEntry
-            If Not mSorted Then Sort()
+            If Not mSorted Then Sort(New CompareDBByFilename)
 
             Dim n As New List(Of DatabaseEntry)
-            n = Entries.FindAll(Function(x) x.Filename.Equals(filename))
+            n = Entries.FindAll(Function(x) x.Filename.StartsWith(filename))
             Select Case n.Count
                 Case 0
                     n = Entries.FindAll(Function(x) x.Filename.Contains(Path.GetFileNameWithoutExtension(filename)))
@@ -1401,6 +1406,7 @@ Public Module General
                 Case 1
                     Return n(0)
                 Case Else
+                    Return n(0)
                     'Decide which one to return
             End Select
 
@@ -1471,8 +1477,8 @@ Public Module General
     Public Function AreSameFile(path As String, qath As String) As Boolean
         Dim same As Boolean = False
         Dim pbytes, qbytes As Byte()
-        pbytes = ReadBinary(path, 1000)
-        qbytes = ReadBinary(qath, 1000)
+        pbytes = ReadBinary(path, 1000, 5000)
+        qbytes = ReadBinary(qath, 1000, 5000)
         Dim k As Integer
         While k < 1000
 
@@ -1488,17 +1494,17 @@ Public Module General
         Return same
     End Function
 
-    Public Function ReadBinary(path As String, size As Long) As Byte()
-        Dim bytesRead As Integer
+    Public Function ReadBinary(path As String, size As Long, start As Long) As Byte()
+        Dim bytesRead As Long
         Dim bytes(size) As Byte
-        Using strm As New FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+        Using strm As New FileStream(path, FileMode.Open, FileAccess.Read)
             Using rdr As New BinaryReader(strm)
                 'Read integer and byte vaules from the file
-                Dim i As Integer = rdr.ReadInt32()
-                Dim l As Long = rdr.ReadInt64()
-                Dim b As Byte = rdr.ReadByte()
+                'Dim i As Integer = rdr.ReadInt32()
+                'Dim l As Long = rdr.ReadInt64()
+                'Dim b As Byte = rdr.ReadByte()
 
-                'Read 100 bytes from the file
+                'Read size bytes from the file
                 bytesRead = rdr.Read(bytes, 0, size)
 
             End Using
