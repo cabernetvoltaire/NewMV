@@ -47,7 +47,7 @@ Public Class DuplicatesForm
         If AllDuplicates.Count = 0 Then
             MsgBox("No duplicates found")
         Else
-            Me.Text = Me.Text & Format("{0} duplicates found", AllDuplicates.Count)
+            Me.Text = Me.Text & Format(" {0} duplicates found", AllDuplicates.Count)
         End If
     End Sub
 
@@ -75,6 +75,7 @@ Public Class DuplicatesForm
             If CheckFileDuplicates(DupsPanel) Then
                 If DupsPanel.Panel.Controls.Count > 0 Then
                     DuplicatesTLP.Controls.Add(DupsPanel.Panel)
+                    DupsPanel.Panel.Controls.Add(New Label With {.Text = "Duplicate No. " & Str(j)})
                     mDuplicatePanels.Add(DupsPanel)
                 End If
             Else
@@ -163,10 +164,14 @@ Public Class DuplicatesForm
     End Sub
 
     Private Sub _Mouseclick(sender As Object, e As MouseEventArgs)
-        Dim pic As New PictureBox
-        Dim outliner As New PictureBox With {.BackColor = Color.HotPink}
-        pic = DirectCast(sender, PictureBox)
-        OutlineControl(pic, outliner)
+        If e.Button = MouseButtons.Left Then
+
+            Dim pic As New PictureBox
+            Dim outliner As New PictureBox With {.BackColor = Color.HotPink}
+            pic = DirectCast(sender, PictureBox)
+            OutlineControl(pic, outliner)
+        End If
+
         'For Each p In pic.Parent.Controls
         '    p = DirectCast(sender, PictureBox)
         '    pic.BorderStyle = BorderStyle.None
@@ -190,7 +195,14 @@ Public Class DuplicatesForm
     End Sub
 
     Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged
-        Groupsize = Val(ComboBox1.SelectedItem)
+        Select Case ComboBox1.SelectedIndex
+            Case 0, 1, 2, 3
+                Groupsize = Val(ComboBox1.SelectedItem)
+            Case Else
+                Groupsize = AllDuplicates.Count - 1
+        End Select
+
+
     End Sub
 
     Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox1.SelectedIndexChanged
@@ -215,8 +227,10 @@ Public Class DuplicatePanel
 
     Public Property Panel As New Panel With {.BorderStyle = BorderStyle.Fixed3D, .AutoSize = True, .Height = 120, .BackColor = Color.AliceBlue, .Dock = DockStyle.Left}
     Private Outliner As New PictureBox With {.BackColor = Color.HotPink, .Visible = False}
+    Private Exclude As Boolean = False
     Public Deletees As New List(Of DatabaseEntry)
     Public Property Tooltip As New ToolTip
+
 
     Public Event Highlightfile(sender As Object, e As EventArgs)
     Public Property Duplicates() As DuplicateSet
@@ -225,10 +239,20 @@ Public Class DuplicatePanel
         End Get
         Set(ByVal value As DuplicateSet)
             mDuplicates = value
+            AddHandler Panel.MouseClick, AddressOf PanelClicked
             PopulatePanel()
             IdentifyChoice()
         End Set
     End Property
+
+    Private Sub PanelClicked(sender As Object, e As MouseEventArgs)
+        If e.Button = MouseButtons.Right Then
+            Exclude = True
+            Panel.BackColor = Color.Chocolate
+
+        End If
+    End Sub
+
     Private Sub IdentifyChoice()
         Dim kp As New KeeperChooser
         kp.DuplicateSet = mDuplicates
@@ -240,7 +264,7 @@ Public Class DuplicatePanel
 
                 End If
             Else
-                Deletees.add(m)
+                Deletees.Add(m)
                 m.Mark = False
             End If
         Next
@@ -262,6 +286,7 @@ Public Class DuplicatePanel
             Catch ex As Exception
             End Try
         Next
+
     End Sub
     Private Sub _Mouseclick(sender As Object, e As MouseEventArgs)
         Dim pic As New PictureBox
@@ -309,15 +334,7 @@ Public Class DuplicateSet
     Public Property Size As Long
 
     Public Sub Add(Entry As DatabaseEntry)
-        'If DSet.Count <> 0 Then
-        '    Dim f As New DatabaseEntry
-        '    f = DSet(0)
-        '    If AreSameFile(f.FullPath, Entry.FullPath) Then
-        '        DSet.Add(Entry)
-        '    End If
-        'Else
         DSet.Add(Entry)
-        'End If
         If DSet.Count = 1 Then Size = Entry.Size
     End Sub
 

@@ -88,9 +88,12 @@ Public Class TextAnalyzer
 
         End Select
         Dim returnstring As String = ""
-        For Each p In paras
-            returnstring = returnstring & vbCrLf & vbCrLf & p
-        Next
+        If paras.Count < 1000 Then
+
+            For Each p In paras
+                returnstring = returnstring & vbCrLf & vbCrLf & p
+            Next
+        End If
         Return returnstring
     End Function
     ''' <summary>

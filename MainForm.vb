@@ -2478,6 +2478,8 @@ Friend Class MainForm
     End Sub
 
     Private Sub DuplicatesToolStripMenuItem1_Click_1(sender As Object, e As EventArgs) Handles DuplicatesToolStripMenuItem1.Click
+        StartDuplicatesForm()
+        Exit Sub
         T = New Thread(New ThreadStart(Sub() StartDuplicatesForm()))
 
         T.IsBackground = True
@@ -2487,7 +2489,6 @@ Friend Class MainForm
             Thread.Sleep(0)
         End While
 
-        Exit Sub
 
 
     End Sub
@@ -3098,9 +3099,9 @@ Friend Class MainForm
             ProgressIncrement(1)
             Application.DoEvents()
         Next
+        ProgressBarOff()
         'DB.Sort()
         ShowCurrentlyLoadedToolStripMenuItem.Enabled = True
-        ProgressBarOff()
     End Sub
 
     Private Sub OnFBHIncrease(sender As Object, e As EventArgs) Handles FBH.ListBoxIncreased
@@ -3178,9 +3179,12 @@ Friend Class MainForm
     End Sub
 
     Private Sub ShowDatabase(dB As Database)
+        ProgressBarOn(100)
         Dim form As New DatabaseShower With {.MDB = dB, .Text = .MDB.Name & " " & .MDB.ItemCount & " files loaded"}
         form.LoadEntries(dB)
         form.Show()
+        ProgressBarOff()
+
         'Throw New NotImplementedException()
     End Sub
 

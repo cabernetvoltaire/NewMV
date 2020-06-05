@@ -91,7 +91,7 @@ Partial Class DuplicatesForm
         Me.ComboBox1.DisplayMember = "10"
         Me.ComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBox1.FormattingEnabled = True
-        Me.ComboBox1.Items.AddRange(New Object() {"10", "50", "100", "200"})
+        Me.ComboBox1.Items.AddRange(New Object() {"10", "50", "100", "200", "All"})
         Me.ComboBox1.Location = New System.Drawing.Point(103, 3)
         Me.ComboBox1.Name = "ComboBox1"
         Me.ComboBox1.Size = New System.Drawing.Size(94, 32)

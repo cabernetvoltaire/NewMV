@@ -699,8 +699,14 @@ Public Class MediaHandler
         If Speed.Paused Then
             'Don't want to change if media paused.
         Else
-            mPlayPosition = mPlayer.Ctlcontrols.currentPosition 'TODO Buggering up startpoint?
-            mDuration = mPlayer.currentMedia.duration
+
+            Try
+                mPlayPosition = mPlayer.Ctlcontrols.currentPosition 'TODO Buggering up startpoint?
+                mDuration = mPlayer.currentMedia.duration
+
+            Catch ex As Exception
+
+            End Try
         End If
 
     End Sub

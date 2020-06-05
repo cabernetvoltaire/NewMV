@@ -75,22 +75,22 @@
     Public Sub GetImage(strPath As String)
         If strPath = "" Then
         Else
-            'If Not strPath.EndsWith(".gif") Then
-            '    mPicImage = LoadImage(strPath)
-            'Else
-            Try
-                Dim stream As New System.IO.FileStream(strPath, IO.FileMode.Open)
-                Dim img As Image = Image.FromStream(stream)
-                stream.Close()
-                mPicImage = img
-                OrientPic(mPicImage)
-                PicBox.Image = mPicImage
-                PicBox.Tag = strPath
-                'tb.SetToolTip(PicBox, strPath)
-            Catch ex As Exception
-                mPicImage = Nothing
-            End Try
-            'End If
+            If strPath.EndsWith(".gif") Then
+                mPicImage = LoadImage(strPath)
+            Else
+                Try
+                    Dim stream As New System.IO.FileStream(strPath, IO.FileMode.Open)
+                    Dim img As Image = Image.FromStream(stream)
+                    stream.Close()
+                    mPicImage = img
+                    OrientPic(mPicImage)
+                    PicBox.Image = mPicImage
+                    PicBox.Tag = strPath
+                    tb.SetToolTip(PicBox, strPath)
+                Catch ex As Exception
+                    mPicImage = Nothing
+                End Try
+            End If
             'tb.AutoPopDelay = 1
             'PicBoxContainer.Controls.Add(MouseZone)
             'MouseZone.Width = PicBoxContainer.Width / 2

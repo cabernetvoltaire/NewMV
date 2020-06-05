@@ -1498,17 +1498,15 @@ Public Module General
         Dim bytesRead As Long
         Dim bytes(size) As Byte
         Using strm As New FileStream(path, FileMode.Open, FileAccess.Read)
+            strm.Position = start
             Using rdr As New BinaryReader(strm)
-                'Read integer and byte vaules from the file
-                'Dim i As Integer = rdr.ReadInt32()
-                'Dim l As Long = rdr.ReadInt64()
-                'Dim b As Byte = rdr.ReadByte()
 
-                'Read size bytes from the file
                 bytesRead = rdr.Read(bytes, 0, size)
+
 
             End Using
         End Using
         Return bytes
+        Exit Function
     End Function
 End Module

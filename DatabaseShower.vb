@@ -13,6 +13,7 @@
             dgv.Rows(i).Cells(0).Value = entry.Filename
             dgv.Rows(i).Cells(1).Value = entry.Path
             dgv.Rows(i).Cells(2).Value = entry.Size
+            Application.DoEvents()
             i += 1
         Next
         Me.Text = String.Format("{0} files out of {1}", SubDB.Entries.Count, DB.Entries.Count)
