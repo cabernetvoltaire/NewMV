@@ -1128,7 +1128,7 @@ Friend Class MainForm
         'End If
         If strPath = CurrentFolder Then
         Else
-            MSFiles.CancelURL()
+            ' MSFiles.CancelURL()
 
             If Not LastFolder.Contains(CurrentFolder) Then
                 LastFolder.Push(CurrentFolder)

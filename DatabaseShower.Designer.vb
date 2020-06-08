@@ -27,10 +27,14 @@ Partial Class DatabaseShower
         Me.Column1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column3 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ListBox1 = New System.Windows.Forms.ListBox()
-        Me.TextBox1 = New System.Windows.Forms.TextBox()
+        Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
+        Me.FinderTextBox = New System.Windows.Forms.TextBox()
+        Me.btnAnalyzeDups = New System.Windows.Forms.Button()
+        Me.FlowLayoutPanel2 = New System.Windows.Forms.FlowLayoutPanel()
         Me.TableLayoutPanel1.SuspendLayout()
         CType(Me.dgv, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.FlowLayoutPanel1.SuspendLayout()
+        Me.FlowLayoutPanel2.SuspendLayout()
         Me.SuspendLayout()
         '
         'TableLayoutPanel1
@@ -39,14 +43,14 @@ Partial Class DatabaseShower
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.TableLayoutPanel1.Controls.Add(Me.dgv, 0, 1)
-        Me.TableLayoutPanel1.Controls.Add(Me.ListBox1, 0, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.TextBox1, 1, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.FlowLayoutPanel1, 0, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.FlowLayoutPanel2, 1, 0)
         Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 2
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 80.0!))
         Me.TableLayoutPanel1.Size = New System.Drawing.Size(1635, 892)
         Me.TableLayoutPanel1.TabIndex = 1
         '
@@ -59,10 +63,10 @@ Partial Class DatabaseShower
         Me.TableLayoutPanel1.SetColumnSpan(Me.dgv, 2)
         Me.dgv.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgv.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically
-        Me.dgv.Location = New System.Drawing.Point(3, 449)
+        Me.dgv.Location = New System.Drawing.Point(3, 181)
         Me.dgv.Name = "dgv"
         Me.dgv.RowTemplate.Height = 31
-        Me.dgv.Size = New System.Drawing.Size(1629, 440)
+        Me.dgv.Size = New System.Drawing.Size(1629, 708)
         Me.dgv.TabIndex = 0
         '
         'Column1
@@ -83,22 +87,40 @@ Partial Class DatabaseShower
         Me.Column3.Name = "Column3"
         Me.Column3.ReadOnly = True
         '
-        'ListBox1
+        'FlowLayoutPanel1
         '
-        Me.ListBox1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ListBox1.FormattingEnabled = True
-        Me.ListBox1.ItemHeight = 24
-        Me.ListBox1.Location = New System.Drawing.Point(3, 3)
-        Me.ListBox1.Name = "ListBox1"
-        Me.ListBox1.Size = New System.Drawing.Size(811, 440)
-        Me.ListBox1.TabIndex = 1
+        Me.FlowLayoutPanel1.Controls.Add(Me.FinderTextBox)
+        Me.FlowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(3, 3)
+        Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(811, 172)
+        Me.FlowLayoutPanel1.TabIndex = 3
         '
-        'TextBox1
+        'FinderTextBox
         '
-        Me.TextBox1.Location = New System.Drawing.Point(820, 3)
-        Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(401, 29)
-        Me.TextBox1.TabIndex = 2
+        Me.FinderTextBox.Dock = System.Windows.Forms.DockStyle.Top
+        Me.FinderTextBox.Location = New System.Drawing.Point(3, 3)
+        Me.FinderTextBox.Name = "FinderTextBox"
+        Me.FinderTextBox.Size = New System.Drawing.Size(401, 29)
+        Me.FinderTextBox.TabIndex = 2
+        '
+        'btnAnalyzeDups
+        '
+        Me.btnAnalyzeDups.Location = New System.Drawing.Point(3, 3)
+        Me.btnAnalyzeDups.Name = "btnAnalyzeDups"
+        Me.btnAnalyzeDups.Size = New System.Drawing.Size(410, 32)
+        Me.btnAnalyzeDups.TabIndex = 3
+        Me.btnAnalyzeDups.Text = "Analyze Duplicates in this database"
+        Me.btnAnalyzeDups.UseVisualStyleBackColor = True
+        '
+        'FlowLayoutPanel2
+        '
+        Me.FlowLayoutPanel2.Controls.Add(Me.btnAnalyzeDups)
+        Me.FlowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.FlowLayoutPanel2.Location = New System.Drawing.Point(820, 3)
+        Me.FlowLayoutPanel2.Name = "FlowLayoutPanel2"
+        Me.FlowLayoutPanel2.Size = New System.Drawing.Size(812, 172)
+        Me.FlowLayoutPanel2.TabIndex = 4
         '
         'DatabaseShower
         '
@@ -110,8 +132,10 @@ Partial Class DatabaseShower
         Me.Name = "DatabaseShower"
         Me.Text = "DatabaseShower"
         Me.TableLayoutPanel1.ResumeLayout(False)
-        Me.TableLayoutPanel1.PerformLayout()
         CType(Me.dgv, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.FlowLayoutPanel1.ResumeLayout(False)
+        Me.FlowLayoutPanel1.PerformLayout()
+        Me.FlowLayoutPanel2.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -121,6 +145,8 @@ Partial Class DatabaseShower
     Friend WithEvents Column1 As DataGridViewTextBoxColumn
     Friend WithEvents Column2 As DataGridViewTextBoxColumn
     Friend WithEvents Column3 As DataGridViewTextBoxColumn
-    Friend WithEvents ListBox1 As ListBox
-    Friend WithEvents TextBox1 As TextBox
+    Friend WithEvents FinderTextBox As TextBox
+    Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
+    Friend WithEvents FlowLayoutPanel2 As FlowLayoutPanel
+    Friend WithEvents btnAnalyzeDups As Button
 End Class

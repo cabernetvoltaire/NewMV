@@ -31,17 +31,13 @@
         Select Case e.KeyCode
             Case Keys.Down, Keys.Up
             Case Else
-                If TextBox1.Focused Then
+                If FinderTextBox.Focused Then
                 Else
                     MainForm.Main_KeyDown(sender, e)
                 End If
         End Select
     End Sub
 
-    Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox1.SelectedIndexChanged
-        UpdateFilter(ListBox1.SelectedItem)
-
-    End Sub
 
     Private Sub UpdateFilter(Search As String)
         SubDB.Entries.Clear()
@@ -50,9 +46,9 @@
     End Sub
 
 
-    Private Sub TextBox1_KeyUp(sender As Object, e As KeyEventArgs) Handles TextBox1.KeyUp
+    Private Sub TextBox1_KeyUp(sender As Object, e As KeyEventArgs) Handles FinderTextBox.KeyUp
         If e.KeyCode = Keys.Return Then
-            FindEntry(TextBox1.Text)
+            FindEntry(FinderTextBox.Text)
         End If
     End Sub
 
@@ -63,13 +59,6 @@
         'Throw New NotImplementedException()
     End Sub
 
-    Private Sub TextBox1_TextChanged(sender As Object, e As EventArgs) Handles TextBox1.TextChanged
-
-    End Sub
-
-    Private Sub TextBox1_GotFocus(sender As Object, e As EventArgs) Handles TextBox1.GotFocus
-
-    End Sub
 
     Private Sub DatabaseShower_Load(sender As Object, e As EventArgs) Handles Me.Load
         dgv.Sort(dgv.Columns(0), System.ComponentModel.ListSortDirection.Ascending)
@@ -81,4 +70,9 @@
 
     End Sub
 
+    Private Sub btnAnalyzeDups_Click(sender As Object, e As EventArgs) Handles btnAnalyzeDups.Click
+        Dim x As New DuplicatesForm
+        x.DB = MDB
+        x.Show()
+    End Sub
 End Class
