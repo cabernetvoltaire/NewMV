@@ -25,7 +25,7 @@
 #Region "Methods"
     Friend Sub Assign()
         ButtonRow.Buttons(KeyNumber).Path = mCurrentPath
-        KeyAssignmentsStore(ButtonFilePath)
+        'KeyAssignmentsStore(ButtonFilePath)
     End Sub
 
     Friend Sub Switch()

@@ -150,9 +150,12 @@
 
         Else
             If Up Then
-                AbsoluteJump = AbsoluteJump * 1.1
+                AbsoluteJump = AbsoluteJump + 1
             Else
-                AbsoluteJump = AbsoluteJump * 0.9
+                If AbsoluteJump > 2 Then
+                    AbsoluteJump = AbsoluteJump - 1
+
+                End If
             End If
         End If
     End Sub

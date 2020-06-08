@@ -14,6 +14,16 @@
         'Current = False
         'Letter = "A"
     End Sub
+    Public ReadOnly Property Active As Boolean
+        Get
+            Dim mActive As Boolean = False
+            For i = 0 To 7
+                If Not mActive Then mActive = Not Buttons(i).Empty
+            Next
+            Return mActive
+        End Get
+    End Property
+
     Public Sub New(letter As Integer)
         Dim S As String = "ABCDEFGH"
         For i = 0 To 7
@@ -51,6 +61,8 @@
             mLetter = value
         End Set
     End Property
+
+
     Public Function GetFirstFree() As Byte
         For i = 0 To 7
             '  Report(Buttons(i).Path, 1)

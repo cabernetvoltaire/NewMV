@@ -107,7 +107,7 @@ Public Class FolderSelect
     End Sub
 
     Private Sub btnAssign_Click(sender As Object, e As EventArgs) Handles btnAssign.Click
-        AssignButton(ButtonNumber, Alpha, 1, ChosenFolder, True)
+        MainForm.BH.AssignButton(ButtonNumber, Alpha, 1, ChosenFolder, True)
         'Me.Close()
     End Sub
     Private Sub Label1_DoubleClick(sender As Object, e As EventArgs) Handles Label1.DoubleClick

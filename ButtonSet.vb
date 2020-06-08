@@ -1,8 +1,9 @@
 ﻿
 Public Class ButtonSet
     Public WithEvents CurrentSet As New List(Of ButtonRow)
-    Public Event LetterChanged(l As Keys, count As Integer)
+    Public Event LetterChanged(sender As Object, e As EventArgs)
     Public Event NewSetThisLetter(index As Integer, total As Integer)
+
     Private alph As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
     Private mRowIndex As Integer
     Public Property RowIndex() As Integer
@@ -44,22 +45,19 @@ Public Class ButtonSet
     ''' The current letter, as an integer
     ''' </summary>
     ''' <returns></returns>
+
     Public Property CurrentLetter() As Integer
         Get
             Return mCurrentLetter
         End Get
         Set(ByVal value As Integer)
-            Dim b = mCurrentLetter
-            If b <> value Then
-                mCurrentLetter = value
-                mCurrentRow = CurrentSet.Find(Function(x) x.Letter = value)
+
+            mCurrentLetter = value
+            mCurrentRow = CurrentSet.Find(Function(x) x.Letter = value)
                 Dim tl As List(Of ButtonRow) = Nothing
                 mRowIndex = 0
                 CountRowIndices(value, tl, mRowIndexCount)
-                RaiseEvent LetterChanged(value, mRowIndexCount)
-            Else
-                '                NextRow(mCurrentLetter)
-            End If
+            RaiseEvent LetterChanged(Me, Nothing)
 
         End Set
     End Property
@@ -80,8 +78,8 @@ Public Class ButtonSet
         mRowIndex = x.IndexOf(mCurrentRow)
         mRowIndex = (mRowIndex + 1) Mod count
         mCurrentRow = x(mRowIndex)
-        RaiseEvent LetterChanged(mCurrentLetter, count)
-        CurrentRow = mCurrentRow
+        RaiseEvent LetterChanged(Me, Nothing)
+
         Return mCurrentRow
     End Function
 
@@ -102,7 +100,7 @@ Public Class ButtonSet
         For Each row In x
             i = row.GetFirstFree
             If i < 8 Then
-                CurrentRow = row
+                mCurrentRow = row
                 Exit For
             End If
         Next
@@ -110,10 +108,10 @@ Public Class ButtonSet
             InsertRow(letter)
             i = 0
         End If
-        CurrentRow.Buttons(i).Position = i
-        CurrentRow.Buttons(i).Letter = letter
+        mCurrentRow.Buttons(i).Position = i
+        mCurrentRow.Buttons(i).Letter = letter
 
-        Return CurrentRow.Buttons(i)
+        Return mCurrentRow.Buttons(i)
     End Function
     Public Sub New()
         Initialise()
@@ -125,7 +123,7 @@ Public Class ButtonSet
             Rows(i).Letter = LetterNumberFromAscii(Asc(alph(i)))
             CurrentSet.Add(Rows(i))
         Next
-        CurrentRow = CurrentSet(0)
+        mCurrentRow = CurrentSet(0)
     End Sub
 
     Public Sub Clear()
@@ -146,7 +144,7 @@ Public Class ButtonSet
         Else
             CurrentSet.Insert(index, mCurrentRow)
         End If
-        CurrentRow = mCurrentRow
+
         mRowIndexCount = mRowIndexCount + 1
     End Sub
     Private Function LetterFromNumber(Num As Integer) As Char

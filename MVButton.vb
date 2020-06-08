@@ -1,7 +1,7 @@
 ﻿Imports System.IO
 Public Class MVButton
-    Inherits Button
-    Public Event LabelChanged(ByVal label As String)
+    'Inherits Button
+    Public Event ButtonChanged(sender As Object, e As EventArgs)
     Private mPath As String
     Public Sub New()
         mPath = ""
@@ -16,7 +16,14 @@ Public Class MVButton
             Return mPath
         End Get
         Set(ByVal value As String)
-            If value <> mPath And value <> "" Then
+            If value = "" Then
+                'Label = m.Name
+                Empty = True
+                mColour = Color.Gray
+                Active = False
+
+            Else
+
                 Dim m As New IO.DirectoryInfo(value)
                 If m.Exists Then
                     mPath = value
@@ -24,9 +31,13 @@ Public Class MVButton
                     Empty = False
                     Active = True
                 Else
+                    'Label = m.Name
+                    Empty = True
+                    mColour = Color.Gray
                     Active = False
                 End If
             End If
+            RaiseEvent ButtonChanged(Me, Nothing)
         End Set
     End Property
     ''' <summary>
@@ -50,8 +61,10 @@ Public Class MVButton
             Return mlblText
         End Get
         Set(ByVal value As String)
-            If value <> mlblText Then RaiseEvent LabelChanged(value)
-            mlblText = value
+            If value <> mlblText Then
+                mlblText = value
+                RaiseEvent ButtonChanged(Me, Nothing)
+            End If
 
         End Set
     End Property
@@ -102,6 +115,8 @@ Public Class MVButton
         mlblText = ""
         mColour = Color.Black
         Active = False
+        RaiseEvent ButtonChanged(Me, Nothing)
+
     End Sub
 
 End Class

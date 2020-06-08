@@ -374,6 +374,20 @@ Public Module General
         Return path
 
     End Function
+    Public Function SaveButtonFileName(path As String) As String
+        If path = "" Then
+            With New SaveFileDialog
+                .DefaultExt = "msb"
+                .Filter = "Metavisua button files|*.msb|All files|*.*"
+
+                If .ShowDialog() = System.Windows.Forms.DialogResult.OK Then
+                    path = .FileName
+                End If
+            End With
+        End If
+        Return path
+
+    End Function
     Public Function LoadDatabaseFileName(path As String) As String
         If path = "" Then
             With New OpenFileDialog

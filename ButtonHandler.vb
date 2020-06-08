@@ -1,9 +1,14 @@
 ﻿Imports System.IO
 Public Class ButtonHandler
     Public WithEvents buttons As New ButtonSet
+    Public RowProgressBar As New ProgressBar
     Public ActualButtons(8) As Button
+    Public Autobuttons As Boolean
     Public Labels(8) As Label
     Public Tooltip As ToolTip
+    Public ButtonfilePath As String
+    Public NMS As New StateHandler
+    Public Event ButtonFileChanged(sender As Object, e As EventArgs)
     Public Sub LoadButtonSet(Optional filename As String = "")
 
         Dim path As String
@@ -34,38 +39,67 @@ Public Class ButtonHandler
 
             End If
         Next
-
+        ButtonfilePath = path
+        RaiseEvent ButtonFileChanged(Me, Nothing)
 
     End Sub
-    Public Sub SaveButtonSet(Optional filename As String = "")
+    Public Sub SaveButtonSet(Optional filename As String = "", Optional NewFile As Boolean = False)
+        If NewFile Then buttons.Clear()
+
         Dim path As String
         If filename = "" Then
-            path = LoadButtonFileName("")
+            path = SaveButtonFileName("")
         Else
             path = filename
         End If
         If path = "" Then Exit Sub
         'Get the file path
         Dim output As New List(Of String)
+
         For Each r In buttons.CurrentSet
             For Each b In r.Buttons
                 output.Add(String.Format("{0}|{1}|{2}|{3}", b.Position, b.Letter, b.Path, b.Label))
             Next
-
-
         Next
         WriteListToFile(output, path, True)
+        If ButtonfilePath <> path Then
+            ButtonfilePath = path
+            RaiseEvent ButtonFileChanged(Me, Nothing)
+        End If
+    End Sub
 
+    Public Sub UpdateButtonAppearance()
+        For Each btn In buttons.CurrentRow.Buttons
+            If My.Computer.FileSystem.DirectoryExists(btn.Path) Then
+                If NMS.State = StateHandler.StateOptions.Move Xor CtrlDown Then
+                    btn.Colour = Color.Red
+                ElseIf ShiftDown Then
+                    btn.Colour = Color.Blue
+                Else
+                    btn.Colour = Color.Black
+                End If
+            Else
+                btn.Colour = Color.Gray
+            End If
+        Next
     End Sub
     Private Sub AddLoadedButtonToSet(btn As MVButton)
         With buttons
+            'Switch to appropriate row
             buttons.CurrentLetter = btn.Letter
-            buttons.CurrentSet(btn.Letter).Current = True
-            btn.FaceText = buttons.CurrentRow.Buttons(btn.Position).FaceText
-            If Not buttons.CurrentRow.Buttons(btn.Position).Empty Then
+            buttons.CurrentRow = buttons.CurrentSet.FindLast(Function(x) x.Letter = btn.Letter) 'If there is another row with this btn.Letter, need to find it.
+            'btn.FaceText = buttons.CurrentRow.Buttons(btn.Position).FaceText
+            'If this row is full, insert one.
+            If buttons.CurrentRow.GetFirstFree = 8 Then
                 buttons.InsertRow(btn.Letter)
             End If
-            buttons.CurrentRow.Buttons(btn.Position) = btn
+            'Put the button in its correct place, or, if not possible in the first free space. 
+            If buttons.CurrentRow.Buttons(btn.Position).Empty Then
+                buttons.CurrentRow.Buttons(btn.Position) = btn
+            Else
+                buttons.CurrentRow.Buttons(buttons.CurrentRow.GetFirstFree) = btn
+
+            End If
 
         End With
     End Sub
@@ -73,23 +107,24 @@ Public Class ButtonHandler
     ''' Assigns all subdirectories linearly to btnset
     ''' </summary>
     ''' <param name="e"></param>
-    ''' <param name="btnset"></param>
-    Public Sub AssignLinear(e As DirectoryInfo, btnset As ButtonSet)
+    ''' <param name="buttons"></param>
+    Public Sub AssignLinear(e As DirectoryInfo)
         Dim i = 0
         For Each d In e.EnumerateDirectories("*", SearchOption.TopDirectoryOnly)
-            Dim btn As MVButton = btnset.CurrentRow.Buttons(i)
+            Dim btn As MVButton = buttons.CurrentRow.Buttons(i)
             If Not btn.Empty Then
-                btnset.InsertRow(btnset.CurrentLetter)
+                buttons.InsertRow(buttons.CurrentLetter)
             End If
-            btnset.CurrentRow.Buttons(i).Path = d.FullName
+            buttons.CurrentRow.Buttons(i).Path = d.FullName
             i = (i + 1) Mod 8
         Next
     End Sub
-    Public Sub AssignAlphabetical(e As DirectoryInfo, btnset As ButtonSet)
-        btnset.Clear()
+    Public Sub AssignAlphabetical(e As DirectoryInfo)
+        buttons.Clear()
         Dim i = 0
         Dim lst As New Dictionary(Of String, String)
-        For Each d In e.EnumerateDirectories("*", SearchOption.AllDirectories)
+        For Each dx In GenerateSafeFolderList(e.FullName)
+            Dim d As New DirectoryInfo(dx)
             lst.Add(d.FullName, d.Name)
         Next
         lst = lst.OrderBy(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(x) x.Value)
@@ -97,9 +132,9 @@ Public Class ButtonHandler
 
             Dim m As Char = UCase(d.Value(0))
             m = UCase(m)
-            btnset.CurrentLetter = LetterNumberFromAscii(Asc(m))
+            buttons.CurrentLetter = LetterNumberFromAscii(Asc(m))
             Dim btn As MVButton
-            btn = btnset.FirstFree(btnset.CurrentLetter)
+            btn = buttons.FirstFree(buttons.CurrentLetter)
             btn.Path = d.Key
         Next
     End Sub
@@ -131,7 +166,7 @@ Public Class ButtonHandler
         'dlist.Reverse
         '   dlist.Reverse
 
-        Dim n(nletts) As Integer
+        '  Dim n(nletts) As Integer
 
         For Each dx In dlist
             Dim di As IO.DirectoryInfo
@@ -150,7 +185,7 @@ Public Class ButtonHandler
 
         ButtonFilePath = Buttonfolder & "\" & d.Name & ".msb"
 
-        KeyAssignmentsStore(ButtonFilePath)
+        SaveButtonSet(ButtonFilePath)
 
     End Sub
     Public Sub AssignButton(ByVal ButtonNumber As Byte, ByVal ButtonLetter As Integer, ByVal Layer As Byte, ByVal Path As String, Optional Store As Boolean = False)
@@ -168,13 +203,14 @@ Public Class ButtonHandler
         End With
 
     End Sub
-    Public Sub TranscribeButtons(m As ButtonRow)
+    Public Sub SwitchRow(m As ButtonRow)
         For i = 0 To 7
             ActualButtons(i).Text = m.Buttons(i).FaceText
             Labels(i).Text = m.Buttons(i).Label
-            Labels(i).ForeColor = m.Buttons(i).Colour
             Tooltip.SetToolTip(ActualButtons(i), buttons.CurrentRow.Buttons(i).Path)
-        Next
 
+        Next
+        RowProgressBar.Maximum = buttons.RowIndexCount
+        RowProgressBar.Value = buttons.RowIndex + 1
     End Sub
 End Class

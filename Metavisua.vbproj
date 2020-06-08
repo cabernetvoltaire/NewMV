@@ -252,9 +252,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MovieSwapper.vb" />
-    <Compile Include="MVButton.vb">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="MVButton.vb" />
     <Compile Include="My Project\Class1.vb" />
     <Compile Include="NextFile.vb" />
     <Compile Include="OrphanFinder.vb" />
@@ -314,7 +312,6 @@
     <Compile Include="KeyHandling.vb" />
     <Compile Include="FileHandling.vb" />
     <Compile Include="General.vb" />
-    <Compile Include="ButtonHandling.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -281,10 +281,6 @@ Friend Module FileHandling
         t.Start()
 
         Static i As Byte
-        With buttons
-            .CurrentSet.Last.Buttons(i).Path = strDest
-            i = (i + 1) Mod 8
-        End With
 
 
         GC.Collect()

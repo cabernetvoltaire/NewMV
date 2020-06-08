@@ -76,7 +76,8 @@
         If strPath = "" Then
         Else
             If strPath.EndsWith(".gif") Then
-                mPicImage = LoadImage(strPath)
+                mPicBox.ImageLocation = strPath
+                '                mPicImage = Imagelocation(strPath)
             Else
                 Try
                     Dim stream As New System.IO.FileStream(strPath, IO.FileMode.Open)

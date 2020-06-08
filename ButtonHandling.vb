@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 
 Module ButtonHandling
+    Public BH As New ButtonHandler
     Public buttons As New ButtonSet
     Public AutoButtons As Boolean = False
     Public nletts As Int16 = 36
@@ -19,33 +20,42 @@ Module ButtonHandling
 
     Public lblDest() As Label = {MainForm.lbl1, MainForm.lbl2, MainForm.lbl3, MainForm.lbl4, MainForm.lbl5, MainForm.lbl6, MainForm.lbl7, MainForm.lbl8}
     Public Sub Buttons_Load()
+        ' BH.LoadButtonSet()
+        Exit Sub
         buttons.CurrentLetter = LetterNumberFromAscii(Asc("A"))
         For i As Byte = 0 To 7
             lblDest(i).Font = New Font(lblDest(i).Font, FontStyle.Bold)
         Next
         ' blnButtonsLoaded = True
-        InitialiseButtons()
+        'InitialiseButtons()
     End Sub
 
-    Public Sub InitialiseButtons()
-        For i As Byte = 0 To 7
-            With btnDest(i)
-                .Text = buttons.CurrentRow.Buttons(i).FaceText
-                'AddHandler .Click, AddressOf ButtonClick
-                AddHandler .MouseDown, AddressOf ShowPreview
-                'AddHandler .MouseLeave, AddressOf hidePreview
-                '  AddHandler .MouseHover, AddressOf ChangePreviewMedia
+    'Public Sub InitialiseButtons()
+    '    BH.TranscribeButtons(BH.buttons.CurrentRow)
+    '    Exit Sub
+    '    For i As Byte = 0 To 7
+    '        With btnDest(i)
+    '            .Text = buttons.CurrentRow.Buttons(i).FaceText
+    '            'AddHandler .Click, AddressOf ButtonClick
+    '            AddHandler .MouseDown, AddressOf ShowPreview
+    '            'AddHandler .MouseLeave, AddressOf hidePreview
+    '            '  AddHandler .MouseHover, AddressOf ChangePreviewMedia
 
-            End With
+    '        End With
 
-            lblDest(i).Font = New Font(lblDest(i).Font, FontStyle.Bold)
-            lblDest(i).Text = buttons.CurrentRow.Buttons(i).Label
-        Next
-    End Sub
+    '        lblDest(i).Font = New Font(lblDest(i).Font, FontStyle.Bold)
+    '        lblDest(i).Text = buttons.CurrentRow.Buttons(i).Label
+    '    Next
+    'End Sub
 
 
     Private Sub ShowPreview(Sender As Object, e As MouseEventArgs)
-        ' Exit Sub
+
+        ShowPreview()
+
+
+        Exit Sub
+
         Dim index As Byte = Val(Sender.Name.ToString(3))
 
         ' Exit Sub
@@ -81,6 +91,10 @@ Module ButtonHandling
 
     End Sub
 
+    Private Sub ShowPreview()
+        Throw New NotImplementedException()
+    End Sub
+
     Private Sub PlaceFolderSelectSubForm(Sender As Object)
         Dim control As Control = CType(Sender, Control)
         Dim startpoint As Point
@@ -98,6 +112,8 @@ Module ButtonHandling
     ''' Assigns all the buttons in a generation, beneath sPath, to the letter iAlpha
     ''' </summary>
     Public Sub AssignLinear(sPath As String, iAlpha As Integer, blnNext As Boolean)
+        BH.AssignLinear(New DirectoryInfo(sPath), BH.buttons)
+        Exit Sub
         If AutoButtons Then
         Else
             If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
@@ -127,6 +143,9 @@ Module ButtonHandling
 
     End Sub
     Public Sub AssignAlphabetic(blntest As Boolean)
+        BH.AssignAlphabetical(New DirectoryInfo(CurrentFolder), BH.buttons)
+        Exit Sub
+
         If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
 
         Dim dlist As New List(Of String)
@@ -160,138 +179,30 @@ Module ButtonHandling
         AutoButtons = Not AutoButtons
 
     End Sub
-    Public Sub AssignSize(Start As String)
-        If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
-        Dim dlist As New SortedList(Of String, DirectoryInfo)
-        Dim plist As New SortedList(Of Integer, DirectoryInfo)
-        Dim exclude As String = ""
-        exclude = InputBox("String to exclude from folders?", "")
-        Dim d As New DirectoryInfo(Start)
-        For Each di In d.EnumerateDirectories
-            If InStr(di.Name, exclude) = 0 Then
-                plist.Add(GetDirSize(di.Name, 0), di)
-            End If
-        Next
+    'Public Sub AssignSize(Start As String)
 
-    End Sub
-
-
-
-    Public Sub AssignTree(strStart As String)
-        If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
-
-        Dim dlist As New SortedList(Of String, DirectoryInfo)
-        Dim plist As New SortedList(Of String, DirectoryInfo)
-        Dim exclude As String = ""
-        exclude = InputBox("String to exclude from folders?", "")
-        Dim d As New DirectoryInfo(strStart)
-        For Each di In d.EnumerateDirectories
-            If exclude = "" Or InStr(di.Name, exclude) = 0 Then
-                'MsgBox(di.Name & "is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###.#"))
-                dlist.Add(di.Name, di)
-            End If
-
-        Next
-        Dim i As Int16 = 0
-
-
-
-        Dim n(nletts) As Integer
-        While i < 8 AndAlso (n(0) < 8 OrElse n(1) < 8 OrElse n(2) < 8 OrElse n(3) < 8 OrElse n(4) < 8 OrElse n(5) < 8 OrElse n(6) < 8 OrElse n(7) < 8 OrElse n(8) < 8 OrElse n(9) < 8 OrElse n(10) < 8 OrElse n(11) < 8 OrElse n(12) < 8 OrElse n(1) < 8 OrElse n(13) < 8 OrElse n(14) < 8 OrElse n(15) < 8 OrElse n(17) < 8 OrElse n(18) < 8 OrElse n(19) < 8 OrElse n(20) < 8 OrElse n(21) < 8 OrElse n(22) < 8 OrElse n(23) < 8 OrElse n(24) < 8)
-
-            For Each di In dlist.Values
-                Dim l As String = UCase(di.Name(0))
-                Dim ButtonNumber As Int16 = LetterNumberFromAscii(Asc(l))
-                If ButtonNumber >= 0 AndAlso ButtonNumber < nletts Then
-                    If exclude <> "" AndAlso InStr(di.Name, exclude) <> 0 Then
-                    Else
-                        If n(ButtonNumber) < 8 Then
-                            AssignButton(n(ButtonNumber), ButtonNumber, 1, di.FullName)
-                            n(ButtonNumber) += 1
-                        End If
-                    End If
-                End If
-
-
-            Next
-
-            plist = FindNextTier(dlist)
-            dlist = plist
-            i += 1
-        End While
-
-
-        KeyAssignmentsStore(ButtonFilePath)
-    End Sub
-    'Public Sub AssignTreeNew(StartingFolder As String, SizeMagnitude As Byte)
     '    If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
-
+    '    Dim dlist As New SortedList(Of String, DirectoryInfo)
+    '    Dim plist As New SortedList(Of Integer, DirectoryInfo)
     '    Dim exclude As String = ""
     '    exclude = InputBox("String to exclude from folders?", "")
-    '    ClearCurrentButtons()
-    '    Dim d As New DirectoryInfo(StartingFolder)
-
-    '    Dim icomp As New MyComparer
-    '    Dim dlist As New SortedList(Of Long, DirectoryInfo)(icomp)
-    '    Dim subfolders As Boolean = (MsgBox("Include subfolders in count?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes)
-
-    '    For Each di In d.EnumerateDirectories("*", searchOption:=IO.SearchOption.AllDirectories)
-
-    '        Dim disize = GetDirSize(di.FullName, 0, Not subfolders)
-    '        If (exclude = "" Or Not di.Name.Contains(exclude)) And disize > 10 ^ SizeMagnitude Then
-    '            'MsgBox(di.Name & " is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###.#"))
-    '            While dlist.Keys.Contains(disize)
-    '                disize += 1
-    '            End While
-    '            dlist.Add(disize, di)
+    '    Dim d As New DirectoryInfo(Start)
+    '    For Each di In d.EnumerateDirectories
+    '        If InStr(di.Name, exclude) = 0 Then
+    '            plist.Add(GetDirSize(di.Name, 0), di)
     '        End If
-
     '    Next
-    '    Dim i As Int16 = 0
-    '    'dlist.Reverse
-    '    '   dlist.Reverse
-
-    '    Dim n(nletts) As Integer
-
-    '    For Each dx In dlist
-    '        Dim di As IO.DirectoryInfo
-    '        di = dx.Value
-    '        Dim l As String = UCase(di.Name(0))
-    '        Dim ButtonNumber As Integer = LetterNumberFromAscii(Asc(l))
-    '        buttons.CurrentLetter = ButtonNumber
-    '        Dim firstbtn As New MVButton()
-    '        firstbtn.Letter = ButtonNumber
-    '        firstbtn.Position = buttons.CurrentRow.GetFirstFree()
-    '        firstbtn.Path = di.FullName
-    '        If firstbtn.Position < 8 Then AssignButton(firstbtn.Position, firstbtn.Letter, 1, di.FullName)
-
-
-    '    Next
-
-    '    ButtonFilePath = Buttonfolder & "\" & d.Name & ".msb"
-
-    '    KeyAssignmentsStore(ButtonFilePath)
 
     'End Sub
-    Public Function FindNextTier(tier As SortedList(Of String, DirectoryInfo)) As SortedList(Of String, DirectoryInfo)
-        Dim i As Int16 = 0
-        Dim nexttier As New SortedList(Of String, DirectoryInfo)
-        For Each d In tier.Values
-            Try
-                For Each di In d.EnumerateDirectories
-                    nexttier.Add(di.Name + Str(i), di)
-                    i += 1
 
-                Next
-            Catch ex As Exception
-                Continue For
-            End Try
-        Next
-        Return nexttier
-    End Function
+
+
 
 
     Public Sub AssignButton(ByVal ButtonNumber As Byte, ByVal ButtonLetter As Integer, ByVal Layer As Byte, ByVal Path As String, Optional Store As Boolean = False)
+        BH.AssignButton(ButtonNumber, ButtonLetter, Layer, Path, Store)
+        Exit Sub
+
         Dim f As New DirectoryInfo(Path)
         'Static AskAgain As Boolean
         'If strVisibleButtons(i) <> "" And NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
@@ -321,38 +232,19 @@ Module ButtonHandling
         End If
     End Sub
 
-    Public Sub AssignButton(i As Byte, Path As String, ask As Boolean)
-        Dim f As New DirectoryInfo(Path)
-        With buttons.CurrentRow.Buttons(i)
-            If .Path <> "" And ask Then
-                If Not MsgBox("Replace button assignment for F" & i + 5 & " with " & f.Name & "?", MsgBoxStyle.YesNoCancel) = MsgBoxResult.Yes Then Exit Sub
-            End If
-            .Path = Path
-            .Label = f.Name
-        End With
-    End Sub
-    Public Sub AssignSpecialButton(Letter As Char, path As String)
-        'Exit Sub
-        'Dim f As New DirectoryInfo(path)
-        'Dim oldletter As Integer
-        'oldletter = AsciifromLetterNumber(iCurrentAlpha)
-        ''        buttons.CurrentLetter = buttons.CurrentSet.Count - 1
-        '' buttons.FirstFree(LetterNumberFromAscii(Asc(Letter))).Path = path
-        ''AssignButton(buttonnumber, 35, 0, path)
-        'ChangeButtonLetter(New KeyEventArgs(Keys.D0))
-        'AssignButton(0, iCurrentAlpha, 0, path, True)
-        'ChangeButtonLetter(New KeyEventArgs(oldletter))
-        ''       buttons.CurrentLetter = oldletter
-    End Sub
 
     Public Sub ChangeButtonLetter(e As KeyEventArgs)
+        BH.buttons.CurrentLetter = LetterNumberFromAscii(e.KeyCode)
+        MainForm.lblAlpha.Text = Asc(e.KeyCode)
+        Exit Sub
 
-        MainForm.lblAlpha.Text = e.KeyCode.ToString
         iCurrentAlpha = LetterNumberFromAscii(e.KeyCode)
         UpdateButtonAppearance()
 
     End Sub
     Public Sub SaveButtonlist()
+        BH.SaveButtonSet("")
+        Exit Sub
         KeyAssignmentsStore("")
     End Sub
 
@@ -361,7 +253,8 @@ Module ButtonHandling
     ''' This is for when we hold down CTRL or SHIFT and the appearance of the buttons schanges. 
     ''' </summary>
     Public Sub UpdateButtonAppearance()
-        MainForm.lblAlpha.Text = Chr(AsciifromLetterNumber(iCurrentAlpha)).ToString
+
+        MainForm.lblAlpha.Text = Chr(AsciifromLetterNumber(iCurrentAlpha))
         For i = 0 To 7
             'buttons.CurrentRow.Buttons(i).Path = strButtonFilePath(i, iCurrentAlpha, 1)
             Try
@@ -408,25 +301,8 @@ Module ButtonHandling
             End If
         Next
     End Sub
-
-    'Public Sub InitialiseButtons(row As ButtonRow)
-    '    For i As Byte = 0 To 7
-    '        With btnDest(i)
-    '            .Text = "F" & Str(i + 5)
-
-    '            AddHandler .Click, AddressOf ButtonClick
-    '        End With
-
-    '        lblDest(i).Text = row.Row(i).Label
-    '    Next
-    'End Sub
-    Private Sub ButtonClick(sender As Object, e As MouseEventArgs)
-        FolderSelect.Show()
-        '   showPreview(sender, e)
-    End Sub
     Public Function Autoload(Foldername As String) As String
         'If directory name exists as buttonfile, then load button file (optionally)
-
         'Check for button file
 
         Dim f As New IO.DirectoryInfo(Buttonfolder)
@@ -434,7 +310,7 @@ Module ButtonHandling
         Static lastasked As String
         If file.Exists Then ';And file.FullName <> lastasked Then
             '     If MsgBox("Do you want to load the buttons?", MsgBoxStyle.YesNoCancel) = MsgBoxResult.Yes Then
-            KeyAssignmentsRestore(file.FullName)
+            BH.LoadButtonSet(file.FullName)
             Foldername = file.Name
             '     End If
             lastasked = file.FullName
@@ -445,8 +321,9 @@ Module ButtonHandling
         'Load it (optionally)
     End Function
     Public Sub NewButtonList()
-        ClearCurrentButtons(buttons)
-
+        BH.buttons.Clear()
+        BH.SaveButtonSet("")
+        Exit Sub
         SaveButtonlist()
 
     End Sub
@@ -464,7 +341,8 @@ Module ButtonHandling
         b.Clear()
     End Sub
     Public Sub KeyAssignmentsRestore(Optional filename As String = "")
-
+        BH.LoadButtonSet(filename)
+        Exit Sub
         Dim intIndex, intLetter As Integer
         Dim path As String
         If filename = "" Then
@@ -506,6 +384,8 @@ Module ButtonHandling
         MainForm.UpdateFileInfo()
     End Sub
     Public Sub KeyAssignmentsStore(path As String)
+        BH.SaveButtonSet(path)
+        Exit Sub
         Dim intLoop As Integer
         Dim iLetter As Integer
         Dim Okay As Boolean

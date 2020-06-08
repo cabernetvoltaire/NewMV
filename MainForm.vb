@@ -31,7 +31,7 @@ Friend Class MainForm
     Public WithEvents VT As New VideoThumbnailer
     Public WithEvents FKH As FunctionKeyHandler
     Public WithEvents FOP As FileOperations
-
+    Public WithEvents BH As New ButtonHandler With {.RowProgressBar = ProgressBar1}
     Public Splash As New SplashScreen1
 
     ' Public WithEvents Response As New Timer
@@ -39,7 +39,7 @@ Friend Class MainForm
     Public DraggedFolder As String
     Public CurrentFileList As New List(Of String)
     Public T As Thread
-    Public FirstButtons As New ButtonForm
+    ' Public FirstButtons As New ButtonForm
     Public bmp As Bitmap
     Public ScrubberProportion As Decimal = 0.97
 
@@ -52,13 +52,20 @@ Friend Class MainForm
         "Auto Trail in progress" & vbCrLf & "Change core speed change with slider"}
 
 #Region "Event Responders"
+    Public Sub OnLetterChanged(sender As Object, e As EventArgs)
+        lblAlpha.Text = Chr(AsciifromLetterNumber(BH.buttons.CurrentLetter))
+    End Sub
+    Public Sub OnButtonFileChanged(sender As Object, e As EventArgs) Handles BH.ButtonFileChanged
+        tbButton.Text = "BUTTONFILE: " & BH.ButtonfilePath
+
+    End Sub
     Public Sub OnFilesMoving(sender As Object, e As EventArgs)
         MSFiles.CancelURL()
     End Sub
 
     Public Sub OnThumbnailHover(sender As Object, e As EventArgs)
         If TypeOf (sender) Is PictureBox Then
-            Dim de As DatabaseEntry=DirectCast(sender.tag, DatabaseEntry)
+            Dim de As DatabaseEntry = DirectCast(sender.tag, DatabaseEntry)
             HighlightCurrent(sender.tag.fullpath)
         End If
     End Sub
@@ -352,6 +359,7 @@ Friend Class MainForm
         StoreList(Showlist, path)
     End Sub
     Public Function LoadButtonList() As String
+        'ButtonHandling.BH = BH
         Dim path As String = ""
         With OpenFileDialog1
             .DefaultExt = "msb"
@@ -552,11 +560,12 @@ Friend Class MainForm
         ctrMainFrame.SplitterDistance = Me.Width * i
     End Sub
     Private Sub ToggleButtons()
-        Buttons_Load()
+        BH.SwitchRow(BH.buttons.CurrentRow)
         blnButtonsLoaded = Not blnButtonsLoaded
         ctrPicAndButtons.Panel2Collapsed = Not blnButtonsLoaded
-        UpdateButtonAppearance()
+        BH.UpdateButtonAppearance()
     End Sub
+
     Public Sub AdvanceFile(blnForward As Boolean, Optional Random As Boolean = False)
         Dim LBHH As New ListBoxHandler()
         If CtrlDown Then
@@ -707,12 +716,10 @@ Friend Class MainForm
     End Function
 
     Public Sub HandleKeys(sender As Object, e As KeyEventArgs)
-
+        'Principal key handling
         Me.Cursor = Cursors.WaitCursor
-        'MsgBox(e.KeyCode.ToString)
         Dim nke As New Keys
         nke = NumKeyEquivalent(e)
-        '  If nke <> Keys.None Then
 
         Select Case e.KeyCode
 #Region "Function Keys"
@@ -725,7 +732,7 @@ Friend Class MainForm
                     Application.Exit()
                 End If
             Case Keys.F5, Keys.F6, Keys.F7, Keys.F8, Keys.F9, Keys.F10, Keys.F11, Keys.F12
-                HandleFunctionKeyDown(sender, e)
+                RespondToKey(Me, e)
                 e.SuppressKeyPress = True
 
             Case KeyDelete
@@ -736,19 +743,21 @@ Friend Class MainForm
 
             Case Keys.Enter
                 If e.Control Then
-
+                    'Find selected file in filetree/list (finds source of a link, rather than the link)
                     If Media.IsLink Then
+                        'A link finds the actual file
                         tmrUpdateFileList.Enabled = False
                         CurrentFilterState.State = FilterHandler.FilterState.All
                         HighlightCurrent(Media.LinkPath)
                     ElseIf FocusControl Is lbxShowList Then
+                        'If focus control is the Showlist
                         CurrentFilterState.State = FilterHandler.FilterState.All
                         HighlightCurrent(Media.MediaPath)
                     Else
                         'Get link file
                         'Highlight 
                         If Media.Markers.Count > 0 Then
-
+                            'CTRL is held - highlight the link for this file.
                             Dim s As String = AllFaveMinder.GetLinksOf(Media.MediaPath)(Media.LinkCounter)
                             CurrentFilterState.State = FilterHandler.FilterState.All
                             HighlightCurrent(s)
@@ -756,19 +765,24 @@ Friend Class MainForm
                         End If
                     End If
                 Else
+                    'General press return refreshes tree.
                     tvmain2.RefreshTree(CurrentFolder)
                 End If
             Case Keys.A To Keys.Z, Keys.D0 To Keys.D9
-                If Not e.Control Then
-                    ChangeButtonLetter(e)
-                Else
-                    Select Case e.KeyCode
-                        Case Keys.I
-                            AddFolders.Show()
-                            AddFolders.Folder = CurrentFolder
-                            tvmain2.RefreshTree(CurrentFolder)
-                    End Select
-                End If
+                RespondToKey(Me, e)
+                ''Switch letter to alphanumeric
+                'If Not e.Control Then
+                '    BH.buttons.CurrentLetter = Asc(e.KeyCode)
+                'Else
+                '    'Ctrl held
+                '    Select Case e.KeyCode
+                '        'Add folder
+                '        Case Keys.I
+                '            AddFolders.Show()
+                '            AddFolders.Folder = CurrentFolder
+                '            tvmain2.RefreshTree(CurrentFolder)
+                '    End Select
+                'End If
 #End Region
 
 #Region "Control Keys"
@@ -1114,6 +1128,8 @@ Friend Class MainForm
         'End If
         If strPath = CurrentFolder Then
         Else
+            MSFiles.CancelURL()
+
             If Not LastFolder.Contains(CurrentFolder) Then
                 LastFolder.Push(CurrentFolder)
 
@@ -1126,9 +1142,9 @@ Friend Class MainForm
             ReDim FBCShown(0)
             NofShown = 0
 
-            If AutoButtons Then
-                AssignLinear(CurrentFolder, LetterNumberFromAscii(Asc("0")), True)
-                ChangeButtonLetter(New KeyEventArgs(Keys.D0))
+            If BH.Autobuttons Then
+                BH.AssignLinear(New DirectoryInfo(CurrentFolder))
+                BH.buttons.CurrentLetter = Asc(Keys.D0)
             End If
             '   My.Computer.Registry.CurrentUser.SetValue("File", Media.MediaPath)
         End If
@@ -1245,19 +1261,25 @@ Friend Class MainForm
     End Sub
 
     Private Sub InitialiseButtons()
-        ButtonHandling.Buttons_Load()
-        If ButtonFilePath = "" Then Exit Sub
-        Try
-            KeyAssignmentsRestore(ButtonFilePath)
+        BH.Tooltip = Me.ToolTip1
+        BH.ActualButtons = {btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8}
+        BH.Labels = {lbl1, lbl2, lbl3, lbl4, lbl5, lbl6, lbl7, lbl8}
+        BH.LoadButtonSet(LoadButtonFileName(ButtonFilePath))
+        AddHandler BH.buttons.LetterChanged, AddressOf OnLetterChanged
+        BH.buttons.CurrentLetter = iCurrentAlpha
+        BH.RowProgressBar = ProgressBar1
+        BH.SwitchRow(BH.buttons.CurrentRow)
+        'Try
+        '    KeyAssignmentsRestore(ButtonFilePath)
 
-        Catch ex As FileNotFoundException
-            ctrPicAndButtons.Panel2Collapsed = True
-            Exit Try
-        Catch ex As DirectoryNotFoundException
-            ctrPicAndButtons.Panel2Collapsed = True
+        'Catch ex As FileNotFoundException
+        '    ctrPicAndButtons.Panel2Collapsed = True
+        '    Exit Try
+        'Catch ex As DirectoryNotFoundException
+        '    ctrPicAndButtons.Panel2Collapsed = True
 
-            Exit Try
-        End Try
+        '    Exit Try
+        'End Try
     End Sub
 
     'Private Sub InitialiseButtons()
@@ -1330,7 +1352,7 @@ Friend Class MainForm
         ShiftDown = e.Shift
         CtrlDown = e.Control
         AltDown = e.Alt
-        UpdateButtonAppearance()
+        BH.UpdateButtonAppearance()
         HandleKeys(sender, e)
         If e.KeyCode = KeyBackUndo Then
             e.SuppressKeyPress = True
@@ -1351,7 +1373,7 @@ Friend Class MainForm
 
         If e.KeyData <> (Keys.F4 Or AltDown) Then
             Try
-                UpdateButtonAppearance()
+                BH.UpdateButtonAppearance()
             Catch ex As Exception
 
             End Try
@@ -1531,7 +1553,7 @@ Friend Class MainForm
 
 
     Private Sub ButtonListToolStripMenuItem1_Click(sender As Object, e As EventArgs)
-        SaveButtonlist()
+        BH.SaveButtonSet()
     End Sub
 
     Private Sub tmrUpdateForm_Tick(sender As Object, e As EventArgs) Handles tmrUpdateForm.Tick
@@ -1608,7 +1630,6 @@ Friend Class MainForm
         tbRandom.Text = "ORDER:" & UCase(PlayOrder.Description)
         tbShowfile.Text = "SHOWFILE: " & LBH.ListBox.Tag
         '   tbSpeed.Text = tbSpeed.Text = "SPEED (" & PlaybackSpeed & "fps)"
-        tbButton.Text = "BUTTONFILE: " & ButtonFilePath
         TBFractionAbsolute.Text = "Fraction: " & Str(SP.FractionalJump) & "ths Absolute:" & Str(SP.AbsoluteJump) & "s"
 
         '  tbZoom.Text = iZoomFactor
@@ -1660,7 +1681,73 @@ Friend Class MainForm
     End Sub
 
     Private Sub LinearToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LinearToolStripMenuItem.Click
-        AssignLinear(CurrentFolder, iCurrentAlpha, True)
+        BH.AssignLinear(New DirectoryInfo(CurrentFolder))
+    End Sub
+    Private Sub RespondToKey(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        Select Case e.KeyCode
+            Case Keys.F5, Keys.F6, Keys.F7, Keys.F8, Keys.F9, Keys.F10, Keys.F11, Keys.F12
+                Debug.Print(e.KeyCode.ToString)
+                If e.Shift AndAlso e.Alt AndAlso e.Control Then
+                    'Universal assign button.
+                    BH.buttons.CurrentRow.Buttons(e.KeyCode - Keys.F5).Path = CurrentFolder
+                    BH.SwitchRow(BH.buttons.CurrentRow)
+
+                ElseIf e.Shift Then
+                    HandleFunctionKeyDown(sender, e)
+                Else
+
+                    Dim s As String = BH.buttons.CurrentRow.Buttons(e.KeyCode - Keys.F5).Path
+                    If s <> "" Then
+                        CurrentFolder = s
+                    Else
+                        BH.buttons.CurrentRow.Buttons(e.KeyCode - Keys.F5).Path = CurrentFolder
+                        BH.SwitchRow(BH.buttons.CurrentRow)
+                    End If
+                    tvmain2.SelectedFolder = CurrentFolder
+                End If
+
+            Case Keys.A To Keys.Z, Keys.D0 To Keys.D9
+                If e.Control AndAlso e.Alt Then
+                    BH.buttons.CurrentLetter = BH.buttons.CurrentLetter
+
+                    Select Case e.KeyCode
+                        Case Keys.L
+                            BH.AssignLinear(New DirectoryInfo(CurrentFolder))
+                        Case Keys.A
+                            BH.AssignAlphabetical(New DirectoryInfo(CurrentFolder))
+                        Case Keys.T
+                            BH.AssignTreeNew(CurrentFolder, 5)
+                    End Select
+                End If
+
+                If e.Control AndAlso Not e.Alt Then
+
+                    Select Case e.KeyCode
+                        Case Keys.L
+                            BH.LoadButtonSet(LoadButtonFileName(""))
+                        Case Keys.S
+                            BH.SaveButtonSet()
+                    End Select
+                Else
+                    If BH.buttons.CurrentLetter = LetterNumberFromAscii(e.KeyCode) Then
+                        BH.buttons.NextRow(LetterNumberFromAscii(e.KeyCode))
+                    Else
+                        BH.buttons.CurrentLetter = LetterNumberFromAscii(e.KeyCode)
+                    End If
+                    lblAlpha.Text = Chr(AsciifromLetterNumber(BH.buttons.CurrentLetter))
+                    BH.SwitchRow(BH.buttons.CurrentRow)
+                    '.Maximum = buttons.RowIndexCount
+                    'pbrButtons.Value = buttons.RowIndex + 1
+                    'OnLetterChanged(buttons.CurrentLetter, buttons.RowIndex)
+
+                End If
+
+                'Main_KeyDown(sender, e)
+                e.Handled = True
+            Case Else
+                '   Main_KeyDown(sender, e)
+
+        End Select
     End Sub
     Public Sub HandleFunctionKeyDown(sender As Object, e As KeyEventArgs)
 
@@ -1669,12 +1756,12 @@ Friend Class MainForm
         '  CancelDisplay() 'Need to cancel display to prevent 'already in use' problems when moving files or deleting them. 
         If (e.Shift And e.Control And e.Alt) Or strVisibleButtons(i) = "" Then
             'Assign button
-            AssignButton(i, iCurrentAlpha, 1, CurrentFolder, True) 'Just assign in all modes when all three control buttons held
+            BH.AssignButton(i, iCurrentAlpha, 1, CurrentFolder, True) 'Just assign in all modes when all three control buttons held
             'Always update the button file. 
             If My.Computer.FileSystem.FileExists(ButtonFilePath) Then
-                KeyAssignmentsStore(ButtonFilePath)
+                BH.SaveButtonSet(ButtonFilePath)
             Else
-                SaveButtonlist()
+                BH.SaveButtonSet()
             End If
             Exit Sub
         End If
@@ -1799,13 +1886,14 @@ Friend Class MainForm
     End Sub
 
     Private Sub SaveListToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles SaveButtonFileToolStripMenuItem.Click
-        SaveButtonlist()
+        BH.SaveButtonSet()
+
     End Sub
 
     Private Sub loadbuttonfiletoolstripmenuitem_Click(sender As Object, e As EventArgs) Handles LoadButtonFileToolStripMenuItem.Click
 
         ButtonFilePath = LoadButtonList()
-        KeyAssignmentsRestore(ButtonFilePath)
+        BH.LoadButtonSet(ButtonFilePath)
         AddToButtonFilesList(ButtonFilePath)
     End Sub
 
@@ -1815,7 +1903,8 @@ Friend Class MainForm
     End Sub
 
     Private Sub NewListToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NewToolStripMenuItem.Click
-        NewButtonList()
+        BH.buttons.Clear()
+        BH.SaveButtonSet()
     End Sub
 
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -1829,7 +1918,7 @@ Friend Class MainForm
     Private Sub ToggleMove()
         NavigateMoveState.ToggleState()
 
-        UpdateButtonAppearance()
+        BH.UpdateButtonAppearance()
     End Sub
 
     Private Async Sub BurstFolderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BurstFolderToolStripMenuItem.Click
@@ -1844,6 +1933,7 @@ Friend Class MainForm
         tmrUpdateFileList.Enabled = False
         'PreferencesSave()
         lbxGroups.Items.Clear()
+        MSFiles.CancelURL()
         CurrentFolder = e.Directory.FullName
         ' FBH.DirectoryPath = CurrentFolder
         tmrUpdateFileList.Enabled = True
@@ -1928,8 +2018,8 @@ Friend Class MainForm
 
 
     Private Sub AlphabeticToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlphaToolStripMenuItem.Click
-        AssignAlphabetic(True)
-        SaveButtonlist()
+        BH.AssignAlphabetical(New DirectoryInfo(CurrentFolder))
+        BH.SaveButtonSet()
     End Sub
 
 
@@ -2377,13 +2467,14 @@ Friend Class MainForm
 
             Dim x As New ShowListForm
             x.Show()
+
             x.ListofFiles = FBH.ItemList
         End If
     End Sub
 
 
     Private Sub ButtonFormToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ButtonFormToolStripMenuItem.Click
-        Dim x As New ButtonForm
+        Dim x As New ButtonForm With {.ButtonFilePath = ButtonFilePath}
         x.Show()
         x.handler.buttons.CurrentLetter = iCurrentAlpha
 
@@ -2434,7 +2525,25 @@ Friend Class MainForm
     'Private Sub ChangedTree() Handles tvMain2.DirectorySelected
     '    ChangeFolder(tvMain2.SelectedFolder)
     'End Sub
+    Public Function Autoload(Foldername As String) As String
+        'If directory name exists as buttonfile, then load button file (optionally)
+        'Check for button file
 
+        Dim f As New IO.DirectoryInfo(Buttonfolder)
+        Dim file As New IO.FileInfo(f.FullName & "\" & Foldername & ".msb")
+        Static lastasked As String
+        If file.Exists Then ';And file.FullName <> lastasked Then
+            '     If MsgBox("Do you want to load the buttons?", MsgBoxStyle.YesNoCancel) = MsgBoxResult.Yes Then
+            BH.LoadButtonSet(file.FullName)
+            Foldername = file.Name
+            '     End If
+            lastasked = file.FullName
+        Else
+            Foldername = ""
+        End If
+        Return Foldername
+        'Load it (optionally)
+    End Function
 
     Private Sub ToolStripMenuItem8_Click(sender As Object, e As EventArgs) Handles CalendarToolStripMenuItem.Click
         DM.FilterByCalendar(New DirectoryInfo(CurrentFolder))
@@ -2656,7 +2765,7 @@ Friend Class MainForm
 
 
     Private Sub ToolStripTextBox1_Click_1(sender As Object, e As EventArgs) Handles AutoButton.Click
-        AutoButtonsToggle()
+        BH.Autobuttons = Not BH.Autobuttons
 
     End Sub
 
@@ -2770,7 +2879,8 @@ Friend Class MainForm
     End Sub
 
     Private Sub NewButtonFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NewButtonFileToolStripMenuItem.Click
-        NewButtonList()
+        BH.buttons.Clear()
+        BH.SaveButtonSet()
     End Sub
 
     Private Sub SelectedDeepToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectedDeepToolStripMenuItem.Click
