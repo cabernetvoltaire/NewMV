@@ -1,14 +1,32 @@
 ﻿Imports System.IO
+Imports System.Threading
 Public Class ButtonHandler
     Public WithEvents buttons As New ButtonSet
     Public RowProgressBar As New ProgressBar
     Public ActualButtons(8) As Button
     Public Autobuttons As Boolean
     Public Labels(8) As Label
+    Public LetterLabel As Label
     Public Tooltip As ToolTip
     Public ButtonfilePath As String
     Public NMS As New StateHandler
+
     Public Event ButtonFileChanged(sender As Object, e As EventArgs)
+    Public Event LetterChanged(sender As Object, e As EventArgs)
+
+    Private mAlpha As String
+    Public Property Alpha() As String
+        Get
+            Return mAlpha
+        End Get
+        Set(ByVal value As String)
+            mAlpha = value
+            buttons.CurrentLetter = mAlpha
+        End Set
+    End Property
+    Sub OnLetterChanged(sender As Object, e As EventArgs) Handles buttons.LetterChanged
+        RaiseEvent LetterChanged(sender,e)
+    End Sub
     Public Sub LoadButtonSet(Optional filename As String = "")
 
         Dim path As String
@@ -23,6 +41,23 @@ Public Class ButtonHandler
 
         Dim btnList As New List(Of String)
         btnList = ReadListfromFile(path, True)
+        LoadListIn(btnList)
+        'Dim t = New Thread(New ThreadStart(Sub() LoadListIn(btnList)))
+        't.IsBackground = True
+        't.SetApartmentState(ApartmentState.STA)
+        't.Start()
+        'While t.IsAlive
+        '    Thread.Sleep(100)
+        'End While
+        ButtonfilePath = path
+        RaiseEvent ButtonFileChanged(Me, Nothing)
+
+    End Sub
+
+    Public Sub New()
+
+    End Sub
+    Private Sub LoadListIn(btnList As List(Of String))
         Dim subs As String()
         For Each s In btnList
             subs = s.Split("|")
@@ -35,14 +70,13 @@ Public Class ButtonHandler
                 m.Letter = (subs(1))
                 m.Path = (subs(2))
                 m.Label = (subs(3))
+
                 AddLoadedButtonToSet(m)
 
             End If
         Next
-        ButtonfilePath = path
-        RaiseEvent ButtonFileChanged(Me, Nothing)
-
     End Sub
+
     Public Sub SaveButtonSet(Optional filename As String = "", Optional NewFile As Boolean = False)
         If NewFile Then buttons.Clear()
 
@@ -82,6 +116,7 @@ Public Class ButtonHandler
                 btn.Colour = Color.Gray
             End If
         Next
+        LetterLabel.Text = Chr(AsciifromLetterNumber(buttons.CurrentRow.Letter))
     End Sub
     Private Sub AddLoadedButtonToSet(btn As MVButton)
         With buttons

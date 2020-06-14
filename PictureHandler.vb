@@ -144,7 +144,7 @@
         Else
             blnSecondScreen = False
         End If
-        MainForm.GoFullScreen(blnFullScreen)
+        FormMain.GoFullScreen(blnFullScreen)
 
     End Sub
     Public Sub Mousewheel(sender As Object, e As MouseEventArgs) Handles mPicBox.MouseWheel
@@ -156,7 +156,7 @@
 
         If WheelScroll Then 'State = Screenstate.Fitted Then
             'RaiseEvent AdvanceFile(sender, e)
-            MainForm.AdvanceFile(e.Delta < 0, RandomNext)
+            FormMain.AdvanceFile(e.Delta < 0, RandomNext)
             'MainForm.tmrSlideShow.Enabled = False 'Break slideshow if scrolled
             'Dim img As Image = Me.GetImage(Media.MediaPath)
         Else

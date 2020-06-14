@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{AE2A260B-7821-4E97-A843-D96814954527}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>MasaSam.Forms.Sample.MainForm</StartupObject>
+    <StartupObject>MasaSam.Forms.Sample.FormMain</StartupObject>
     <RootNamespace>MasaSam.Forms.Sample</RootNamespace>
     <AssemblyName>Metavisua</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -171,10 +171,16 @@
     </Compile>
     <Compile Include="AutoTrailer.vb" />
     <Compile Include="BundleHandler.vb" />
-    <Compile Include="ButtonForm.Designer.vb">
-      <DependentUpon>ButtonForm.vb</DependentUpon>
+    <Compile Include="Form6.Designer.vb">
+      <DependentUpon>Form6.vb</DependentUpon>
     </Compile>
-    <Compile Include="ButtonForm.vb">
+    <Compile Include="Form6.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormButton.Designer.vb">
+      <DependentUpon>FormButton.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FormButton.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ButtonHandler.vb" />
@@ -188,18 +194,17 @@
     <Compile Include="Dashboard.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DatabaseShower.Designer.vb">
-      <DependentUpon>DatabaseShower.vb</DependentUpon>
+    <Compile Include="FormDatabaseShower.Designer.vb">
+      <DependentUpon>FormDatabaseShower.vb</DependentUpon>
     </Compile>
-    <Compile Include="DatabaseShower.vb">
+    <Compile Include="FormDatabaseShower.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="DateMove.vb" />
-    <Compile Include="Duplicates.vb" />
-    <Compile Include="DuplicatesForm.Designer.vb">
-      <DependentUpon>DuplicatesForm.vb</DependentUpon>
+    <Compile Include="FormDuplicates.Designer.vb">
+      <DependentUpon>FormDuplicates.vb</DependentUpon>
     </Compile>
-    <Compile Include="DuplicatesForm.vb">
+    <Compile Include="FormDuplicates.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Encryption.vb" />
@@ -208,16 +213,10 @@
     <Compile Include="FileOperations.vb" />
     <Compile Include="FilterHandler.vb" />
     <Compile Include="FilterMove.vb" />
-    <Compile Include="FindDuplicates.Designer.vb">
-      <DependentUpon>FindDuplicates.vb</DependentUpon>
+    <Compile Include="FormFolderSelect.Designer.vb">
+      <DependentUpon>FormFolderSelect.vb</DependentUpon>
     </Compile>
-    <Compile Include="FindDuplicates.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FolderSelect.Designer.vb">
-      <DependentUpon>FolderSelect.vb</DependentUpon>
-    </Compile>
-    <Compile Include="FolderSelect.vb">
+    <Compile Include="FormFolderSelect.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form3.Designer.vb">
@@ -278,10 +277,10 @@
     <Compile Include="RandomHandler.vb" />
     <Compile Include="Settings.vb" />
     <Compile Include="Shortcuts.vb" />
-    <Compile Include="ShowListForm.Designer.vb">
-      <DependentUpon>ShowListForm.vb</DependentUpon>
+    <Compile Include="FormShowList.Designer.vb">
+      <DependentUpon>FormShowList.vb</DependentUpon>
     </Compile>
-    <Compile Include="ShowListForm.vb">
+    <Compile Include="FormShowList.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="SortHandler.vb" />
@@ -296,17 +295,17 @@
     <Compile Include="StartPointHandler.vb" />
     <Compile Include="StartUp.vb" />
     <Compile Include="StateHandler.vb" />
-    <Compile Include="frmFullScreen.Designer.vb">
-      <DependentUpon>frmFullScreen.vb</DependentUpon>
+    <Compile Include="FormFullScreen.Designer.vb">
+      <DependentUpon>FormFullScreen.vb</DependentUpon>
     </Compile>
-    <Compile Include="frmFullScreen.vb">
+    <Compile Include="FormFullScreen.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.vb">
+    <Compile Include="FormMain.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.vb">
-      <DependentUpon>MainForm.vb</DependentUpon>
+    <Compile Include="FormMain.Designer.vb">
+      <DependentUpon>FormMain.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="KeyHandling.vb" />
@@ -350,24 +349,23 @@
     <EmbeddedResource Include="Attributes.resx">
       <DependentUpon>Attributes.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ButtonForm.resx">
-      <DependentUpon>ButtonForm.vb</DependentUpon>
+    <EmbeddedResource Include="Form6.resx">
+      <DependentUpon>Form6.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormButton.resx">
+      <DependentUpon>FormButton.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dashboard.resx">
       <DependentUpon>Dashboard.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DatabaseShower.resx">
-      <DependentUpon>DatabaseShower.vb</DependentUpon>
+    <EmbeddedResource Include="FormDatabaseShower.resx">
+      <DependentUpon>FormDatabaseShower.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DuplicatesForm.resx">
-      <DependentUpon>DuplicatesForm.vb</DependentUpon>
+    <EmbeddedResource Include="FormDuplicates.resx">
+      <DependentUpon>FormDuplicates.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FindDuplicates.resx">
-      <DependentUpon>FindDuplicates.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FolderSelect.resx">
-      <DependentUpon>FolderSelect.vb</DependentUpon>
+    <EmbeddedResource Include="FormFolderSelect.resx">
+      <DependentUpon>FormFolderSelect.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Form3.resx">
@@ -388,12 +386,12 @@
     <EmbeddedResource Include="Preferences.resx">
       <DependentUpon>Preferences.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmFullScreen.resx">
-      <DependentUpon>frmFullScreen.vb</DependentUpon>
+    <EmbeddedResource Include="FormFullScreen.resx">
+      <DependentUpon>FormFullScreen.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.vb</DependentUpon>
+    <EmbeddedResource Include="FormMain.resx">
+      <DependentUpon>FormMain.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -402,8 +400,8 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="ShowListForm.resx">
-      <DependentUpon>ShowListForm.vb</DependentUpon>
+    <EmbeddedResource Include="FormShowList.resx">
+      <DependentUpon>FormShowList.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SplashScreen1.resx">
       <DependentUpon>SplashScreen1.vb</DependentUpon>

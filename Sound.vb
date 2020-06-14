@@ -61,7 +61,7 @@
 
     End Sub
     Private Sub OnSpeedChange() Handles SPH.SpeedChanged
-        SoundPlayer.settings.rate = MainForm.SP.FrameRate
+        SoundPlayer.settings.rate = FormMain.SP.FrameRate
 
         'SoundPlayer.settings.rate = SPH.FrameRate / 30
     End Sub

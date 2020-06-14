@@ -257,7 +257,7 @@
         '    End If
     End Sub
     Private Sub FinishEdit(sender As Object, e As EventArgs) Handles mText.LostFocus
-        MainForm.KeyPreview = True
+        FormMain.KeyPreview = True
         mText.Hide()
         mEditing = False
         If mText.Text <> mListbox.SelectedItem Then
@@ -274,7 +274,7 @@
 
     End Sub
     Private Sub EditItem()
-        MainForm.KeyPreview = False
+        FormMain.KeyPreview = False
         mEditing = True
         Dim rect As Rectangle = mListbox.GetItemRectangle(mListbox.SelectedIndex)
         mText.Parent = mListbox

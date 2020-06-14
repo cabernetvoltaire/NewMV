@@ -90,7 +90,7 @@ Public Class GroupingForm
                 End If
             Next
         Next
-        MainForm.tvMain2.RefreshTree(Me.FolderPath)
+        FormMain.tvMain2.RefreshTree(Me.FolderPath)
         Me.Close()
     End Sub
 

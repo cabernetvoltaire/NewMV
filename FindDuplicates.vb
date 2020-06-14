@@ -165,7 +165,7 @@ Public Class FindDuplicates
     Private Sub Previewover(sender As Object, e As MouseEventArgs)
         ToolTipDups.SetToolTip(sender, sender.tag)
         Media.MediaPath = sender.tag
-        MainForm.lbxFiles.SelectionMode = SelectionMode.One
+        FormMain.lbxFiles.SelectionMode = SelectionMode.One
         '  MainForm.tmrPicLoad.Enabled = True
     End Sub
 

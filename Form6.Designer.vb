@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class ShowListForm
+Partial Class Form6
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -22,34 +22,17 @@ Partial Class ShowListForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.ListBox1 = New System.Windows.Forms.ListBox()
         Me.SuspendLayout()
         '
-        'ListBox1
+        'Form6
         '
-        Me.ListBox1.AllowDrop = True
-        Me.ListBox1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ListBox1.FormattingEnabled = True
-        Me.ListBox1.ItemHeight = 20
-        Me.ListBox1.Location = New System.Drawing.Point(0, 0)
-        Me.ListBox1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
-        Me.ListBox1.Name = "ListBox1"
-        Me.ListBox1.Size = New System.Drawing.Size(655, 375)
-        Me.ListBox1.TabIndex = 0
-        '
-        'ShowListForm
-        '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(11.0!, 24.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(655, 375)
-        Me.Controls.Add(Me.ListBox1)
-        Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
-        Me.Name = "ShowListForm"
-        Me.Text = "List"
+        Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.IsMdiContainer = True
+        Me.Name = "Form6"
+        Me.Text = "Form6"
         Me.ResumeLayout(False)
 
     End Sub
-
-    Friend WithEvents ListBox1 As ListBox
 End Class

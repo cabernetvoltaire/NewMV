@@ -1,7 +1,7 @@
 ﻿Imports System.Object
 Imports MasaSam.Forms.Sample
 
-Public Class DuplicatesForm
+Public Class FormDuplicates
     Private mDB As Database
     Public DupsThread As Threading.Thread()
     Public Event HighlightFile(sender As Object, e As EventArgs)
@@ -113,7 +113,7 @@ Public Class DuplicatesForm
     Public Function RemoveCurrentDuplicates()
 
         Dim fop As New FileOperations
-        AddHandler fop.Filesmoving, AddressOf MainForm.OnFilesMoving
+        AddHandler fop.Filesmoving, AddressOf FormMain.OnFilesMoving
         For Each m In mDuplicatePanels
             For Each f In m.Deletees
                 'MsgBox(f.FullPath & " would be deleted.")

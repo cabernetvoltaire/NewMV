@@ -132,7 +132,7 @@ Public Module General
         End If
         Handler.New_Create_ShortCut(Bookmark)
 
-        If DestinationDirectory = CurrentFolder And Update Then MainForm.UpdatePlayOrder(MainForm.FBH)
+        If DestinationDirectory = CurrentFolder And Update Then FormMain.UpdatePlayOrder(FormMain.FBH)
     End Sub
     Public Sub ConvertLink(OldLinkPath As String)
         Dim bk As Long
@@ -348,17 +348,17 @@ Public Module General
         End Try
     End Sub
 
-    Public Sub FolderChooser(Message As String, DefaultFolderName As String)
-        Dim x As New FolderSelect
+    Public Sub FolderChooser(sender As Object, e As MouseEventArgs)
+        Dim x As New FormFolderSelect
 
         x.Show()
-        x.Text = Message
+        x.Text = "Choose folder"
         If CurrentFolder <> "" Then
             x.Folder = CurrentFolder
         Else
             x.Folder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
         End If
-        x.TextBox1.Text = DefaultFolderName
+        x.TextBox1.Text = x.Folder
     End Sub
     Public Function LoadButtonFileName(path As String) As String
         If path = "" Then
@@ -593,7 +593,7 @@ Public Module General
             End If
 
         Next
-        MainForm.FillShowbox(MainForm.lbxShowList, 0, s)
+        FormMain.FillShowbox(FormMain.lbxShowList, 0, s)
         Return s
     End Function
     Public Sub WriteListToFile(list As List(Of String), filepath As String, Encrypted As Boolean)
@@ -620,7 +620,7 @@ Public Module General
             If Encrypted Then
                 line = Encrypter.DecryptData(line)
             End If
-
+            ' Application.DoEvents()
             list.Add(line)
         Loop
 
@@ -628,6 +628,8 @@ Public Module General
         Return list
     End Function
     Friend Sub CreateDatabaseOfFiles(Path As String, Filename As String)
+        Dim exclude As String = ""
+        exclude = LCase(InputBox("String to exclude from folders?", ""))
         With My.Computer.FileSystem
             Dim list As New List(Of String)
             Dim dirs As New List(Of String)
@@ -647,8 +649,12 @@ Public Module General
                 paths = x.FileList
                 For Each file In paths
                     Try
+
                         Dim f As New FileInfo(file)
-                        list.Add(f.Name & vbTab & f.FullName.Replace(f.Name, "") & vbTab & f.Length & vbTab & f.CreationTime)
+                        If LCase(file).Contains(exclude) Then
+                        Else
+                            list.Add(f.Name & vbTab & f.FullName.Replace(f.Name, "") & vbTab & f.Length & vbTab & f.CreationTime)
+                        End If
 
                     Catch ex As Exception
 
@@ -722,7 +728,7 @@ Public Module General
         s = s & "Duration: " & sh.Duration & vbCrLf & "Percentage:" & sh.Percentage & vbCrLf & " Absolute:" & sh.Absolute & vbCrLf & " Startpoint:" & sh.StartPoint & vbCrLf & " Player:" & Media.Player.Name
         s = s & vbCrLf & sh.Description
         Debug.Print(s)
-        MainForm.lblNavigateState.Text = s
+        FormMain.lblNavigateState.Text = s
     End Sub
     Public Sub ReportTime(str As String)
         Debug.Print(Int(Now().Second) & "." & Int(Now().Millisecond) & " " & str)
@@ -744,7 +750,7 @@ Public Module General
                 Return Filetype.Movie
             ElseIf InStr(PICEXTENSIONS, strExt) <> 0 Then
                 Return Filetype.Pic
-            ElseIf InStr(LCase(".txt.prn.sty.doc.csv.html"), lcase(strExt)) <> 0 Then
+            ElseIf InStr(LCase(".txt.prn.sty.doc.csv.html"), LCase(strExt)) <> 0 Then
                 Return Filetype.Doc
             Else
                 Return Filetype.Unknown
@@ -763,7 +769,7 @@ Public Module General
         If d.Parent Is Nothing Then
         Else
 
-            MainForm.WatchStart(d.Parent.FullName)
+            FormMain.WatchStart(d.Parent.FullName)
         End If
 
 
@@ -1523,4 +1529,11 @@ Public Module General
         Return bytes
         Exit Function
     End Function
+    Public Sub ButtonClicked(sender As Object, e As MouseEventArgs)
+        'If e.Button = MouseButtons.Right Then
+        FolderChooser(sender, e)
+        ' Else
+
+        'End If
+    End Sub
 End Module

@@ -86,7 +86,7 @@
             CurrentFavesPath = s & "\Favourites\"
             ButtonFilePath = Media.MediaPath
         End With
-        With MainForm
+        With FormMain
             .ctrFileBoxes.SplitterDistance = .ctrFileBoxes.Height / 4
             .ctrMainFrame.SplitterDistance = .ctrFileBoxes.Width / 2
 

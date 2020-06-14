@@ -15,7 +15,7 @@
     End Sub
     Private Sub ButtonPress(sender As Object, e As EventArgs)
         sender.backcolor = Color.AntiqueWhite
-        MainForm.HandleKeys(sender, New KeyEventArgs(sender.tag))
+        FormMain.HandleKeys(sender, New KeyEventArgs(sender.tag))
         sender.backcolor = Color.Black
     End Sub
     Private Sub LoadButtons()
@@ -109,6 +109,6 @@
     End Sub
 
     Private Sub Dashboard_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
-        MainForm.HandleKeys(sender, e)
+        FormMain.HandleKeys(sender, e)
     End Sub
 End Class

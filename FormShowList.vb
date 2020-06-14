@@ -1,8 +1,8 @@
-﻿Public Class ShowListForm
+﻿Public Class FormShowList
     Dim LBH As New ListBoxHandler()
 
     Public Sub ShowListForm_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
-        MainForm.Main_KeyDown(sender, e)
+        FormMain.Main_KeyDown(sender, e)
         e.SuppressKeyPress = True
         'Me.Show()
     End Sub
@@ -21,7 +21,7 @@
     End Sub
 
     Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox1.SelectedIndexChanged
-        MainForm.HighlightCurrent(ListBox1.SelectedItem)
+        FormMain.HighlightCurrent(ListBox1.SelectedItem)
     End Sub
 
     Public Property ListofFiles() As List(Of String)

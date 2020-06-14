@@ -103,35 +103,35 @@ Friend Module Mysettings
         With PrefsList
 
             .Add("LastTimeSuccessful" & "$" & LastTimeSuccessful)
-            .Add("VertSplit" & "$" & MainForm.ctrFileBoxes.SplitterDistance)
-            .Add("HorSplit" & "$" & MainForm.ctrMainFrame.SplitterDistance)
+            .Add("VertSplit" & "$" & FormMain.ctrFileBoxes.SplitterDistance)
+            .Add("HorSplit" & "$" & FormMain.ctrMainFrame.SplitterDistance)
             .Add("File" & "$" & Media.MediaPath)
-            .Add("Filter" & "$" & MainForm.CurrentFilterState.State)
-            .Add("SortOrder" & "$" & MainForm.PlayOrder.State)
+            .Add("Filter" & "$" & FormMain.CurrentFilterState.State)
+            .Add("SortOrder" & "$" & FormMain.PlayOrder.State)
             .Add("StartPoint" & "$" & Media.SPT.State)
-            .Add("State" & "$" & MainForm.NavigateMoveState.State)
+            .Add("State" & "$" & FormMain.NavigateMoveState.State)
             .Add("LastButtonFile" & "$" & ButtonFilePath)
             .Add("LastAlpha" & "$" & iCurrentAlpha)
             .Add("Favourites" & "$" & CurrentFavesPath)
-            .Add("PreviewLinks" & "$" & MainForm.chbPreviewLinks.Checked)
+            .Add("PreviewLinks" & "$" & FormMain.chbPreviewLinks.Checked)
             .Add("RootScanPath" & "$" & Rootpath)
             .Add("Directories List" & "$" & DirectoriesListFile) 'DirectoriesListFile)
             .Add("GlobalFaves" & "$" & GlobalFavesPath)
-            .Add("RandomNextFile" & "$" & MainForm.chbNextFile.Checked)
-            .Add("RandomOnDirectoryChange" & "$" & MainForm.chbOnDir.Checked)
-            .Add("RandomAutoTrail" & "$" & MainForm.chbAutoTrail.Checked)
-            .Add("RandomAutoLoadButtons" & "$" & MainForm.chbLoadButtonFiles.Checked)
-            .Add("OptionsShowAttr" & "$" & MainForm.chbShowAttr.Checked)
-            .Add("OptionsPreviewLinks" & "$" & MainForm.chbPreviewLinks.Checked)
-            .Add("OptionsEncrypt" & "$" & MainForm.chbEncrypt.Checked)
-            .Add("OptionsAutoAdvance" & "$" & MainForm.CHBAutoAdvance.Checked)
-            .Add("OptionsSeparate" & "$" & MainForm.chbSeparate.Checked)
+            .Add("RandomNextFile" & "$" & FormMain.chbNextFile.Checked)
+            .Add("RandomOnDirectoryChange" & "$" & FormMain.chbOnDir.Checked)
+            .Add("RandomAutoTrail" & "$" & FormMain.chbAutoTrail.Checked)
+            .Add("RandomAutoLoadButtons" & "$" & FormMain.chbLoadButtonFiles.Checked)
+            .Add("OptionsShowAttr" & "$" & FormMain.chbShowAttr.Checked)
+            .Add("OptionsPreviewLinks" & "$" & FormMain.chbPreviewLinks.Checked)
+            .Add("OptionsEncrypt" & "$" & FormMain.chbEncrypt.Checked)
+            .Add("OptionsAutoAdvance" & "$" & FormMain.CHBAutoAdvance.Checked)
+            .Add("OptionsSeparate" & "$" & FormMain.chbSeparate.Checked)
             .Add("ThumbnailDestination" & "$" & ThumbDestination)
             .Add("ButtonFolder" & "$" & Buttonfolder)
-            .Add("FractionalJump" & "$" & MainForm.SP.FractionalJump)
-            .Add("AbsoluteJump" & "$" & MainForm.SP.AbsoluteJump)
-            .Add("Speed" & "$" & MainForm.SP.Speed)
-            .Add("Navmode" & "$" & MainForm.NavigateMoveState.State)
+            .Add("FractionalJump" & "$" & FormMain.SP.FractionalJump)
+            .Add("AbsoluteJump" & "$" & FormMain.SP.AbsoluteJump)
+            .Add("Speed" & "$" & FormMain.SP.Speed)
+            .Add("Navmode" & "$" & FormMain.NavigateMoveState.State)
 
         End With
 
@@ -169,7 +169,7 @@ Friend Module Mysettings
         Next
         If f.Exists Then
             prefslist = ReadListfromFile(f.FullName, False)
-            MainForm.ctrPicAndButtons.SplitterDistance = 8.7 * MainForm.ctrPicAndButtons.Height / 10
+            FormMain.ctrPicAndButtons.SplitterDistance = 8.7 * FormMain.ctrPicAndButtons.Height / 10
             For Each s In prefslist
                 If InStr(s, "$") <> 0 Then
 
@@ -179,9 +179,9 @@ Friend Module Mysettings
                         Case "LastTimeSuccessful"
                             LastTimeSuccessful = value
                         Case "VertSplit"
-                            MainForm.ctrFileBoxes.SplitterDistance = value
+                            FormMain.ctrFileBoxes.SplitterDistance = value
                         Case "HorSplit"
-                            MainForm.ctrMainFrame.SplitterDistance = value
+                            FormMain.ctrMainFrame.SplitterDistance = value
                         Case "File" 'Drive
                             If LastTimeSuccessful Then
                                 Dim st As String = value 'TODO: Don't load if last time unsuccessful
@@ -191,17 +191,17 @@ Friend Module Mysettings
                             End If
                         Case "Filter"
                             If value = "" Then value = 0
-                            MainForm.CurrentFilterState.State = value
+                            FormMain.CurrentFilterState.State = value
 
                         Case "SortOrder"
                             If value = "" Then value = 0
-                            MainForm.PlayOrder.State = value
+                            FormMain.PlayOrder.State = value
                         Case "StartPoint"
                             If value = "" Then value = 0
                             Media.SPT.State = value
                         Case "State"
                             If value = "" Then value = 0
-                            MainForm.NavigateMoveState.State = value
+                            FormMain.NavigateMoveState.State = value
                         Case "LastButtonFile" 'Drive
                             If value = "" Then value = LoadButtonFileName("")
                             ButtonFilePath = value
@@ -215,7 +215,7 @@ Friend Module Mysettings
                             DriveString = GetDriveString(value)
                         Case "PreviewLinks"
                             If value = "" Then value = False
-                            MainForm.chbPreviewLinks.Checked = value
+                            FormMain.chbPreviewLinks.Checked = value
                         Case "RootScanPath" 'Drive
                             If value = "" Then value = BrowseToFolder("Choose root scanning path", PrefsPath)
                             Rootpath = value
@@ -242,38 +242,38 @@ Friend Module Mysettings
                             DriveString = GetDriveString(value)
                         Case "AutoLoadButtons"
                             If value = "" Then value = False
-                            MainForm.chbLoadButtonFiles.Checked = value
+                            FormMain.chbLoadButtonFiles.Checked = value
 
                         Case "RandomNextFile"
                             If value = "" Then value = False
 
-                            MainForm.chbNextFile.Checked = value
+                            FormMain.chbNextFile.Checked = value
                         Case "RandomOnDirectoryChange"
                             If value = "" Then value = False
-                            MainForm.chbOnDir.Checked = value
+                            FormMain.chbOnDir.Checked = value
                         Case "RandomAutoTrail"
                             Exit Select
                             value = False 'TODO causing load problems when omitted
                             If value = "" Then value = False
-                            MainForm.chbAutoTrail.Checked = value
+                            FormMain.chbAutoTrail.Checked = value
                         Case "RandomAutoLoadButtons"
                             If value = "" Then value = False
-                            MainForm.chbLoadButtonFiles.Checked = value
+                            FormMain.chbLoadButtonFiles.Checked = value
                         Case "OptionsShowAttr"
                             If value = "" Then value = False
-                            MainForm.chbShowAttr.Checked = value
+                            FormMain.chbShowAttr.Checked = value
                         Case "OptionsPreviewLinks"
                             If value = "" Then value = False
-                            MainForm.chbPreviewLinks.Checked = value
+                            FormMain.chbPreviewLinks.Checked = value
                         Case "OptionsEncrypt"
                             If value = "" Then value = False
-                            MainForm.chbEncrypt.Checked = value
+                            FormMain.chbEncrypt.Checked = value
                         Case "OptionsAutoAdvance"
                             If value = "" Then value = False
-                            MainForm.CHBAutoAdvance.Checked = value
+                            FormMain.CHBAutoAdvance.Checked = value
                         Case "OptionsSeparate"
                             If value = "" Then value = False
-                            MainForm.chbSeparate.Checked = value
+                            FormMain.chbSeparate.Checked = value
 
                         Case "ThumbnailDestination" 'Drive
                             If value = "" Then value = BrowseToFolder("Choose Thumbnail Destination", PrefsPath)
@@ -285,13 +285,13 @@ Friend Module Mysettings
                             Buttonfolder = value
                             DriveString = GetDriveString(value)
                         Case "AbsoluteJump"
-                            MainForm.SP.AbsoluteJump = value
+                            FormMain.SP.AbsoluteJump = value
                         Case "FractionalJump"
-                            MainForm.SP.FractionalJump = value
+                            FormMain.SP.FractionalJump = value
                         Case "Speed"
-                            MainForm.SP.Speed = value
+                            FormMain.SP.Speed = value
                         Case "Navstate"
-                            MainForm.NavigateMoveState.State = value
+                            FormMain.NavigateMoveState.State = value
                     End Select
 
                 End If
@@ -299,7 +299,7 @@ Friend Module Mysettings
         Else
             PreferencesReset(False)
         End If
-        MainForm.tssMoveCopy.Text = CurrentFolder
+        FormMain.tssMoveCopy.Text = CurrentFolder
         'MsgBox(DriveString)
     End Sub
     Private Function GetDriveString(path As String) As String
@@ -329,7 +329,7 @@ Friend Module Mysettings
             CurrentFolder = s
             Dim fol As New IO.DirectoryInfo(s)
         End With
-        With MainForm
+        With FormMain
             .ctrFileBoxes.SplitterDistance = .ctrFileBoxes.Height / 4
             .ctrMainFrame.SplitterDistance = .ctrFileBoxes.Width * 0.75
             .ctrPicAndButtons.SplitterDistance = .ctrMainFrame.Height * 8 / 9

@@ -18,7 +18,7 @@ Public Class AddFolders
             IO.Directory.CreateDirectory(s)
             'DirectoriesList.Add(s)
         Next
-        MainForm.tvMain2.RefreshTree(CurrentFolder)
+        FormMain.tvMain2.RefreshTree(CurrentFolder)
     End Sub
 
     Private Sub AddFolders_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing

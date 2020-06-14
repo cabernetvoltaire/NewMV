@@ -1,7 +1,8 @@
-﻿Public Class DatabaseShower
+﻿Public Class FormDatabaseShower
     Public MDB As New Database
     Private SubDB As New Database
     Private Filenames As New List(Of String)
+    Public Name As String
     Public Sub LoadEntries(DB As Database)
 
         dgv.ColumnCount = 3
@@ -16,14 +17,14 @@
             Application.DoEvents()
             i += 1
         Next
-        Me.Text = String.Format("{0} files out of {1}", SubDB.Entries.Count, DB.Entries.Count)
+        Me.Text = MDB.Name & " " & String.Format("{0} files out of {1}", SubDB.Entries.Count, DB.Entries.Count)
     End Sub
 
     Private Sub dgv_RowEnter(sender As Object, e As DataGridViewCellEventArgs) Handles dgv.RowEnter
         Dim j = e.RowIndex
         If j >= 0 Then
             Dim s = dgv.Rows(j).Cells(1).Value & dgv.Rows(j).Cells(0).Value
-            If j > 0 Then MainForm.HighlightCurrent(s)
+            If j > 0 Then FormMain.HighlightCurrent(s)
         End If
     End Sub
 
@@ -33,7 +34,7 @@
             Case Else
                 If FinderTextBox.Focused Then
                 Else
-                    MainForm.Main_KeyDown(sender, e)
+                    FormMain.Main_KeyDown(sender, e)
                 End If
         End Select
     End Sub
@@ -66,13 +67,14 @@
     End Sub
 
     Private Sub DatabaseShower_GotFocus(sender As Object, e As EventArgs) Handles Me.Enter
-        MainForm.DB = MDB
+        FormMain.DB = MDB
 
     End Sub
 
     Private Sub btnAnalyzeDups_Click(sender As Object, e As EventArgs) Handles btnAnalyzeDups.Click
-        Dim x As New DuplicatesForm
+        Dim x As New FormDuplicates
         x.DB = MDB
+        x.FindDuplicates()
         x.Show()
     End Sub
 End Class

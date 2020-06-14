@@ -550,7 +550,7 @@ Public Class MediaHandler
             End If
 
         End Try
-        MainForm.ctrPicAndButtons.Panel1.Controls.Add(Textbox)
+        FormMain.ctrPicAndButtons.Panel1.Controls.Add(Textbox)
     End Sub
     Private Sub HandleMovie(URL As String)
         ' BreakExecution()
@@ -607,7 +607,13 @@ Public Class MediaHandler
         End Select
     End Sub
     Function DisposeMovie() As Integer
-        mPlayer.close()
+
+        Try
+            mPlayer.close()
+
+        Catch ex As Exception
+
+        End Try
         Return 0
     End Function
     Public Sub CancelMedia()
@@ -641,8 +647,6 @@ Public Class MediaHandler
                     mPlayer.Ctlcontrols.play()
 
                 Catch ex As Exception
-                    LastTimeSuccessful = False
-                    PreferencesSave()
                 End Try
 
             Case WMPLib.WMPPlayState.wmppsMediaEnded
@@ -714,7 +718,7 @@ Public Class MediaHandler
         'Keeps resetting the position until ready to play.
         'mPlayer.Ctlcontrols.currentPosition = mPlayPosition
         MediaJumpToMarker()
-        MainForm.DrawScrubberMarks()
+        FormMain.DrawScrubberMarks()
     End Sub
 
     Private Sub ResetPositionCanceller_Tick(sender As Object, e As EventArgs) Handles ResetPositionCanceller.Tick

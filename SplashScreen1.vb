@@ -35,7 +35,7 @@
         Copyright.Text = My.Application.Info.Copyright
         Me.BringToFront()
 
-        MainForm.Show()
+        FormMain.Show()
     End Sub
 
 End Class

@@ -2,7 +2,7 @@
 Imports AxWMPLib
 Imports MasaSam.Forms.Controls
 
-Public Class FolderSelect
+Public Class FormFolderSelect
     Private PreMH As New MediaHandler("PreMH")
 
     Public Property Alpha() As Int16
@@ -107,7 +107,7 @@ Public Class FolderSelect
     End Sub
 
     Private Sub btnAssign_Click(sender As Object, e As EventArgs) Handles btnAssign.Click
-        MainForm.BH.AssignButton(ButtonNumber, Alpha, 1, ChosenFolder, True)
+        FormMain.BH.AssignButton(ButtonNumber, Alpha, 1, ChosenFolder, True)
         'Me.Close()
     End Sub
     Private Sub Label1_DoubleClick(sender As Object, e As EventArgs) Handles Label1.DoubleClick

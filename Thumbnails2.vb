@@ -82,10 +82,10 @@
         Dim pb = DirectCast(sender, PictureBox)
 
         ToolTip1.SetToolTip(pb, pb.Tag)
-        MainForm.ControlSetFocus(MainForm.lbxFiles)
-        MainForm.Random.OnDirChange = False
-        MainForm.HighlightCurrent(pb.Tag)
-        MainForm.lbxFiles.SelectionMode = SelectionMode.One
+        FormMain.ControlSetFocus(FormMain.lbxFiles)
+        FormMain.Random.OnDirChange = False
+        FormMain.HighlightCurrent(pb.Tag)
+        FormMain.lbxFiles.SelectionMode = SelectionMode.One
         Me.Activate()
         'MainForm.tmrPicLoad.Enabled = True
 
@@ -95,7 +95,7 @@
             Dim pb = DirectCast(sender, PictureBox)
             pb.Visible = False
             pb.Enabled = False
-            MainForm.HandleKeys(MainForm, New KeyEventArgs(KeyDelete))
+            FormMain.HandleKeys(FormMain, New KeyEventArgs(KeyDelete))
         End If
     End Sub
     Public Function ThumbnailCallback() As Boolean
@@ -219,7 +219,7 @@
 
 
     Private Sub Thumbnails_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
-        MainForm.HandleKeys(sender, e)
+        FormMain.HandleKeys(sender, e)
     End Sub
 
 

@@ -5,16 +5,16 @@ Friend Module FileHandling
 
     '  Public WithEvents StartPoint As New StartPointHandler
 
-    Public CurrentfilterState As FilterHandler = MainForm.CurrentFilterState
-    Public Random As RandomHandler = MainForm.Random
-    Public NavigateMoveState As StateHandler = MainForm.NavigateMoveState
+    Public CurrentfilterState As FilterHandler = FormMain.CurrentFilterState
+    Public Random As RandomHandler = FormMain.Random
+    Public NavigateMoveState As StateHandler = FormMain.NavigateMoveState
     ' Public FP As New FilePump
     Public Event FolderMoved(Path As String)
     Public Event FileMoved(Files As List(Of String), lbx As ListBox)
 
     Public WithEvents t As Thread
     Public WithEvents Media As New MediaHandler("Media")
-    Public WithEvents MSFiles As New MediaSwapper(MainForm.MainWMP1, MainForm.MainWMP2, MainForm.MainWMP3, MainForm.PictureBox1, MainForm.PictureBox2, MainForm.PictureBox3)
+    Public WithEvents MSFiles As New MediaSwapper(FormMain.MainWMP1, FormMain.MainWMP2, FormMain.MainWMP3, FormMain.PictureBox1, FormMain.PictureBox2, FormMain.PictureBox3)
     Public AllFaveMinder As New FavouritesMinder("Q:\Favourites")
     Public FaveMinder As New FavouritesMinder("Q:\Favourites")
 
@@ -23,18 +23,18 @@ Friend Module FileHandling
 
     End Sub
     Public Sub OnMediaFinished(sender As Object, e As EventArgs) Handles Media.MediaFinished
-        MainForm.AdvanceFile(True, MainForm.Random.NextSelect)
+        FormMain.AdvanceFile(True, FormMain.Random.NextSelect)
         'Media.Playing= False
     End Sub
     '  Public WithEvents SndH As New SoundController
 
 
     Public Sub OnMediaStartChanged(sender As Object, e As EventArgs) Handles Media.StartChanged
-        MainForm.OnStartChanged(sender, e)
+        FormMain.OnStartChanged(sender, e)
 
     End Sub
     Public Sub OnMediaSpeedChanged(sender As Object, e As EventArgs) Handles Media.SpeedChanged
-        MainForm.OnSpeedChange(sender, e)
+        FormMain.OnSpeedChange(sender, e)
     End Sub
     'Friend Sub SetDataformEntry()
     '    If Media.IsLink Then
@@ -47,18 +47,18 @@ Friend Module FileHandling
     Public Sub OnMediaShown(sender As Object, e As EventArgs) Handles MSFiles.MediaShown
 
         Media = sender
-        MainForm.UpdateFileInfo()
+        FormMain.UpdateFileInfo()
         'If DatabaseForm.Visible Then SetDataformEntry()
 
         If Media.MediaType = Filetype.Movie Then
-            MainForm.PopulateLinkList(sender)
+            FormMain.PopulateLinkList(sender)
         End If
         'If Media.MediaType = Filetype.Doc Then
         '    MainForm.TextBox1 = Media.Textbox
         '    MainForm.TextBox1.Dock = DockStyle.Fill
         'End If
         Media.SetLink(0)
-        With MainForm
+        With FormMain
             .AT.Counter = Media.Markers.Count
             .Att.DestinationLabel = .lblAttributes
             If Not .tmrSlideShow.Enabled And .chbShowAttr.Checked Then
@@ -69,10 +69,8 @@ Friend Module FileHandling
             End If
         End With
         If sender.MediaPath <> "" Then
-            LastTimeSuccessful = True
-            PreferencesSave()
         End If
-        If ShiftDown Then MainForm.HighlightCurrent(Media.LinkPath) 'Used for links only, to go to original file
+        If ShiftDown Then FormMain.HighlightCurrent(Media.LinkPath) 'Used for links only, to go to original file
 
 
     End Sub
@@ -92,17 +90,17 @@ Friend Module FileHandling
                 Case StateHandler.StateOptions.MoveLeavingLink
                     ReplaceListboxItem(lbx1, ind, f)
                     lbx1.SelectedItem = lbx1.Items(ind)
-                    MainForm.UpdatePlayOrder(MainForm.FBH)
+                    FormMain.UpdatePlayOrder(FormMain.FBH)
             End Select
         Next
         If ShowListVisible Then
-            MainForm.LBH.FillBox()
+            FormMain.LBH.FillBox()
         End If
-        MainForm.FBH.FillBox()
+        FormMain.FBH.FillBox()
         'DeleteEmptyFolders(New IO.DirectoryInfo(CurrentFolder), True)
         If lbx1.Items.Count <> 0 Then
             Dim index = Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0)
-            MainForm.FBH.SetIndex(index, True)
+            FormMain.FBH.SetIndex(index, True)
             '            lbx1.SetSelected(0,)
             'lbx1.SetSelected(index, True)
         End If
@@ -266,13 +264,13 @@ Friend Module FileHandling
         Dim s As String = strDest 'if strDest is empty then delete
 
         If files.Count > 0 And strDest <> "" Then
-            If Not blnSuppressCreate Then s = CreateNewDirectory(MainForm.tvMain2, strDest, True) 'Attention
+            If Not blnSuppressCreate Then s = CreateNewDirectory(FormMain.tvmain2, strDest, True) 'Attention
 
         End If
         Select Case NavigateMoveState.State
             Case StateHandler.StateOptions.Copy, StateHandler.StateOptions.CopyLink
             Case Else
-                MainForm.CancelDisplay(False)
+                FormMain.CancelDisplay(False)
         End Select
 
         t = New Thread(New ThreadStart(Sub() MovingFiles(files, strDest, s)))
@@ -286,7 +284,7 @@ Friend Module FileHandling
         GC.Collect()
         't.Join()
 
-        RaiseEvent FileMoved(files, MainForm.FBH.ListBox)
+        RaiseEvent FileMoved(files, FormMain.FBH.ListBox)
 
     End Sub
 
@@ -477,22 +475,22 @@ Friend Module FileHandling
 
         s = InputBox("Only include files containing? (Leave empty to add all)")
         If s = "" Then s = "*"
-        MainForm.Cursor = Cursors.WaitCursor
-        MainForm.ProgressBarOn(1000)
+        FormMain.Cursor = Cursors.WaitCursor
+        FormMain.ProgressBarOn(1000)
         list = GetFileFromEachFolder(d, s, Random.OnDirChange)
-        MainForm.Cursor = Cursors.Default
-        MainForm.ProgressBarOff()
+        FormMain.Cursor = Cursors.Default
+        FormMain.ProgressBarOff()
     End Sub
     Public Function AddFilesToCollection(extensions As String, blnRecurse As Boolean) As List(Of String)
         Dim s As String
         Dim d As New DirectoryInfo(CurrentFolder)
         Dim List As New List(Of String)
         s = InputBox("Only include files containing? (Leave empty to add all)")
-        MainForm.Cursor = Cursors.WaitCursor
-        MainForm.ProgressBarOn(1000)
+        FormMain.Cursor = Cursors.WaitCursor
+        FormMain.ProgressBarOn(1000)
         List = FindAllFilesBelow(d, List, extensions, False, s, blnRecurse, blnChooseOne)
-        MainForm.Cursor = Cursors.Default
-        MainForm.ProgressBarOff()
+        FormMain.Cursor = Cursors.Default
+        FormMain.ProgressBarOff()
         Return List
     End Function
 
@@ -619,13 +617,13 @@ Friend Module FileHandling
     End Function
 
     Public Async Function HarvestBelow(d As DirectoryInfo) As Task
-        Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
+        Dim x As New BundleHandler(FormMain.tvmain2, FormMain.lbxFiles, d.FullName)
         Await x.HarvestFolder(d)
 
     End Function
 
     Public Async Function BurstFolder(d As DirectoryInfo) As Task
-        Dim x As New BundleHandler(MainForm.tvMain2, MainForm.lbxFiles, d.FullName)
+        Dim x As New BundleHandler(FormMain.tvmain2, FormMain.lbxFiles, d.FullName)
 
 
         Await x.Burst(d) 'Needs Attention
