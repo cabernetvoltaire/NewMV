@@ -3,7 +3,7 @@ Imports System.Threading
 Public Class ButtonHandler
     Public WithEvents buttons As New ButtonSet
     Public RowProgressBar As New ProgressBar
-    Public ActualButtons(8) As Button
+
     Public Autobuttons As Boolean
     Public Labels(8) As Label
     Public LetterLabel As Label
@@ -15,6 +15,8 @@ Public Class ButtonHandler
     Public Event LetterChanged(sender As Object, e As EventArgs)
 
     Private mAlpha As String
+    Public ActualButtons(8) As Button
+
     Public Property Alpha() As String
         Get
             Return mAlpha
@@ -243,9 +245,14 @@ Public Class ButtonHandler
             ActualButtons(i).Text = m.Buttons(i).FaceText
             Labels(i).Text = m.Buttons(i).Label
             Tooltip.SetToolTip(ActualButtons(i), buttons.CurrentRow.Buttons(i).Path)
-
         Next
         RowProgressBar.Maximum = buttons.RowIndexCount
         RowProgressBar.Value = buttons.RowIndex + 1
+    End Sub
+    Public Sub InitialiseActualButtons()
+        For i = 0 To 7
+            ActualButtons(i).Tag = i
+            AddHandler ActualButtons(i).MouseClick, AddressOf FolderChooser
+        Next
     End Sub
 End Class

@@ -350,14 +350,16 @@ Public Module General
 
     Public Sub FolderChooser(sender As Object, e As MouseEventArgs)
         Dim x As New FormFolderSelect
+        x.BH = sender.findform.BH
+        x.ButtonNumber = sender.tag
 
         x.Show()
         x.Text = "Choose folder"
-        If CurrentFolder <> "" Then
-            x.Folder = CurrentFolder
-        Else
-            x.Folder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
-        End If
+        'If CurrentFolder <> "" Then
+        '    x.Folder = CurrentFolder
+        'Else
+        '    x.Folder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
+        'End If
         x.TextBox1.Text = x.Folder
     End Sub
     Public Function LoadButtonFileName(path As String) As String

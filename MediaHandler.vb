@@ -37,7 +37,7 @@ Public Class MediaHandler
     Public WithEvents SPT As New StartPointHandler
     Public WithEvents Speed As New SpeedHandler
     Public DisplayerName As String
-    Public Forceload As Boolean
+
     Public Autotrail As Boolean
     Public Playing As Boolean
     Public DontLoad As Boolean

@@ -2,13 +2,13 @@
 Public Class FormButton
 
     Public WithEvents buttons As New ButtonSet
-    Public WithEvents handler As New ButtonHandler()
+    Public WithEvents BH As New ButtonHandler()
 
     Public ButtonFilePath As String
     Private ofd As New OpenFileDialog
     Private sfd As New SaveFileDialog
     Public Sub OnLetterChanged(sender As Object, e As EventArgs)
-        handler.LetterLabel.Text = Chr(AsciifromLetterNumber(buttons.CurrentLetter))
+        BH.LetterLabel.Text = Chr(AsciifromLetterNumber(buttons.CurrentLetter))
         RefreshAppearance()
 
         UpdateLabelColours()
@@ -18,7 +18,7 @@ Public Class FormButton
         UpdateTinyButtons()
 
         UpdateLabelColours()
-        handler.UpdateButtonAppearance()
+        BH.UpdateButtonAppearance()
         ' handler.SaveButtonSet(handler.ButtonfilePath)
     End Sub
 
@@ -27,11 +27,11 @@ Public Class FormButton
         ' This call is required by the designer.
         InitializeComponent()
         ' Add any initialization after the InitializeComponent() call.
-        handler.Tooltip = Me.ToolTip1
+        BH.Tooltip = Me.ToolTip1
 
-        handler.Labels = {Label1, Label2, Label3, Label4, Label5, Label6, Label7, Label8}
-        handler.RowProgressBar = pbrButtons
-        handler.LetterLabel = lblAlpha
+        BH.Labels = {Label1, Label2, Label3, Label4, Label5, Label6, Label7, Label8}
+        BH.RowProgressBar = pbrButtons
+        BH.LetterLabel = lblAlpha
         RefreshAppearance()
 
     End Sub
@@ -77,18 +77,19 @@ Public Class FormButton
     Private Sub ChangeLetter(sender As Object, e As MouseEventArgs)
         sender = DirectCast(sender, Button)
         buttons.CurrentLetter = sender.tag
-        handler.SwitchRow(buttons.CurrentRow)
+        BH.SwitchRow(buttons.CurrentRow)
         RefreshAppearance()
     End Sub
 
     Private Sub ButtonForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' FocusOnMain()
-        handler.ActualButtons = {Button1, Button2, Button3a, Button4, Button5, Button6, Button7, Button8a}
-        handler.LoadButtonSet(LoadButtonFileName(ButtonFilePath))
-        buttons = handler.buttons
+        BH.ActualButtons = {Button1, Button2, Button3a, Button4, Button5, Button6, Button7, Button8a}
+        BH.InitialiseActualButtons()
+        BH.LoadButtonSet(LoadButtonFileName(ButtonFilePath))
+        buttons = BH.buttons
         buttons.CurrentLetter = iCurrentAlpha
-        handler.SwitchRow(buttons.CurrentRow)
-        Me.Text = handler.ButtonfilePath & " - " & buttons.CurrentSet.Count & " button rows. Use alpha keys to change letter, function keys to access."
+        BH.SwitchRow(buttons.CurrentRow)
+        Me.Text = BH.ButtonfilePath & " - " & buttons.CurrentSet.Count & " button rows. Use alpha keys to change letter, function keys to access."
         DrawTinyButtons()
         UpdateLabelColours()
         ' AddHandler Me.KeyDown, AddressOf MainForm.HandleKeys
@@ -99,14 +100,14 @@ Public Class FormButton
 
     Private Sub UpdateLabelColours()
         For i = 0 To 7
-            handler.Labels(i).ForeColor = buttons.CurrentRow.Buttons(i).Colour
+            BH.Labels(i).ForeColor = buttons.CurrentRow.Buttons(i).Colour
             'make font bold
         Next
         'Throw New NotImplementedException()
     End Sub
 
-    Private Sub OnButtonFileChanged(sender As Object, e As EventArgs) Handles handler.ButtonFileChanged
-        Me.Text = handler.ButtonfilePath & " - " & buttons.CurrentSet.Count & " button rows."
+    Private Sub OnButtonFileChanged(sender As Object, e As EventArgs) Handles BH.ButtonFileChanged
+        Me.Text = BH.ButtonfilePath & " - " & buttons.CurrentSet.Count & " button rows."
         UpdateTinyButtons()
     End Sub
 

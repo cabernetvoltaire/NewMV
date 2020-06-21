@@ -160,13 +160,13 @@ Public Class MediaSwapper
             'End Select
         End If
     End Sub
+
     ''' <summary>
     ''' Loads the files into the Media Handler and sets it going, but doesn't release the pause (reset). 
     ''' </summary>
     ''' <param name="MH"></param>
     ''' <param name="path"></param>
     ''' <returns></returns>
-
 
     Private Function Prepare(ByRef MH As MediaHandler, path As String) As Boolean
         Report("PREPARE: " & MH.Player.Name & " with " & path)

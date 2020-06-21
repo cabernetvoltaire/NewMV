@@ -4,7 +4,7 @@ Imports MasaSam.Forms.Controls
 
 Public Class FormFolderSelect
     Private PreMH As New MediaHandler("PreMH")
-
+    Public BH As New ButtonHandler
     Public Property Alpha() As Int16
     Private newButtonNumber As Byte
     Public KeepDisplaying As Boolean = True
@@ -14,6 +14,7 @@ Public Class FormFolderSelect
         End Get
         Set(ByVal value As Byte)
             newButtonNumber = value
+            Folder = BH.buttons.CurrentRow.Buttons(value).Path
         End Set
     End Property
     Public Property Showing As Boolean = True
@@ -27,11 +28,11 @@ Public Class FormFolderSelect
 
 
             newFolder = value
+
             Label1.Text = value
             If value <> "" Then
 
                 PlayMedia(value)
-                '    fst1_Paint(Me, Nothing)
             End If
         End Set
     End Property

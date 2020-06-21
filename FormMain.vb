@@ -1364,9 +1364,11 @@ Friend Class FormMain
     Private Sub InitialiseButtons()
         BH.Tooltip = Me.ToolTip1
         BH.ActualButtons = {btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8}
+        BH.InitialiseActualButtons()
         BH.Labels = {lbl1, lbl2, lbl3, lbl4, lbl5, lbl6, lbl7, lbl8}
         BH.LetterLabel = lblAlpha
         BH.LoadButtonSet(LoadButtonFileName(ButtonFilePath))
+
         'AddHandler BH.buttons.LetterChanged, AddressOf OnLetterChanged
         BH.buttons.CurrentLetter = iCurrentAlpha
         BH.RowProgressBar = ProgressBar1
@@ -2591,13 +2593,13 @@ Friend Class FormMain
         Dim x As New FormButton With {
                         .ButtonFilePath = fname
                     }
-        x.handler.Alpha = iCurrentAlpha
+        x.BH.Alpha = iCurrentAlpha
         AddHandler x.KeyDown, AddressOf HandleKeys
 
         x.Show()
         x.Top = Me.Height * 0.8
         Return x
-        x.handler.SaveButtonSet(fname)
+        x.BH.SaveButtonSet(fname)
     End Function
 
     Private Sub ToolStripMenuItem8_Click(sender As Object, e As EventArgs) Handles CalendarToolStripMenuItem.Click
@@ -3446,12 +3448,9 @@ Friend Class FormMain
 
 
     Private Sub ButtonFormToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ButtonFormToolStripMenuItem.Click
-        SpawnButtonForm(New FileInfo(ButtonFilePath)).handler.buttons.CurrentLetter = iCurrentAlpha
+        SpawnButtonForm(New FileInfo(ButtonFilePath)).BH.buttons.CurrentLetter = iCurrentAlpha
     End Sub
 
-    Private Sub btn1_Click(sender As Object, e As EventArgs) Handles btn1.Click
-
-    End Sub
 
 
 
