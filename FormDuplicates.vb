@@ -1,10 +1,7 @@
-﻿Imports System.Object
-Imports MasaSam.Forms.Sample
-
-Public Class FormDuplicates
+﻿Public Class FormDuplicates
     Private mDB As Database
     Public DupsThread As Threading.Thread()
-    Public Event HighlightFile(sender As Object, e As EventArgs)
+    Public Event FileHighlighted(sender As Object, e As EventArgs)
     '    Public WithEvents DupsPanels As List(Of DuplicatePanel)
     Public Shared Groupsize As Integer = 50
     Public Property DB() As Database
@@ -20,7 +17,8 @@ Public Class FormDuplicates
     Private Property mDuplicatePanels As New List(Of DuplicatePanel)
 
     Private Sub OnHighlightFile(sender As Object, e As EventArgs)
-        RaiseEvent HighlightFile(sender, e)
+        FormMain.HighlightCurrent(sender.Tag.Fullpath)
+        'RaiseEvent FileHighlighted(sender, e)
 
     End Sub
     Public Sub FindDuplicates()
@@ -110,7 +108,7 @@ Public Class FormDuplicates
         fop.DeleteFiles()
     End Sub
 
-    Public Function RemoveCurrentDuplicates()
+    Public Sub RemoveCurrentDuplicates()
 
         Dim fop As New FileOperations
         AddHandler fop.Filesmoving, AddressOf FormMain.OnFilesMoving
@@ -121,7 +119,7 @@ Public Class FormDuplicates
             Next
         Next
         fop.DeleteFiles()
-    End Function
+    End Sub
 
     Private Function CheckFileDuplicates(flp As DuplicatePanel) As Boolean
         Dim SomeFilesSame As Boolean = False
@@ -145,49 +143,6 @@ Public Class FormDuplicates
 
     End Function
 
-    Private Sub ThumbLoader(m As DuplicateSet, i As Integer, path As String, pic As PictureBox)
-        With pic
-            If FindType(path) = Filetype.Pic Or FindType(path) = Filetype.Gif Then
-                .Image = Image.FromFile(path)
-                Dim x As New Bitmap(.Image, 100 * .Image.Width / .Image.Height, 100)
-                .Image.Dispose()
-                .Image = x
-                .Width = x.Width
-            Else
-                .BackColor = Color.HotPink
-            End If
-            .Tag = m.DSet(i) 'Assign the database entry to the picbox
-            AddHandler .MouseEnter, AddressOf _Mouseover
-            AddHandler .MouseClick, AddressOf _Mouseclick
-
-        End With
-    End Sub
-
-    Private Sub _Mouseclick(sender As Object, e As MouseEventArgs)
-        If e.Button = MouseButtons.Left Then
-
-            Dim pic As New PictureBox
-            Dim outliner As New PictureBox With {.BackColor = Color.HotPink}
-            pic = DirectCast(sender, PictureBox)
-            OutlineControl(pic, outliner)
-        End If
-
-        'For Each p In pic.Parent.Controls
-        '    p = DirectCast(sender, PictureBox)
-        '    pic.BorderStyle = BorderStyle.None
-        'Next
-        'pic.BorderStyle = BorderStyle.Fixed3D
-    End Sub
-
-    Private Sub _Mouseover(sender As Object, e As EventArgs)
-        Dim tt As New ToolTip
-        Dim pb = DirectCast(sender, PictureBox)
-        Dim ds = DirectCast(pb.Tag, DatabaseEntry)
-        Dim size As String = Format(ds.Size, "###,###,###")
-        tt.SetToolTip(pb, ds.Filename & "(" & size & ")" & vbCrLf & ds.Path)
-
-        RaiseEvent HighlightFile(pb, Nothing)
-    End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         ShowDuplicates(ListBox2.SelectedItem)
@@ -307,7 +262,7 @@ Public Class DuplicatePanel
         Dim size As String = Format(ds.Size, "###,###,###")
         tt.SetToolTip(pb, ds.Filename & "(" & size & ")" & vbCrLf & ds.Path)
 
-        RaiseEvent Highlightfile(pb, Nothing)
+        RaiseEvent Highlightfile(sender, e)
     End Sub
     Private Sub ThumbLoader(m As DatabaseEntry, path As String, pic As PictureBox)
         With pic

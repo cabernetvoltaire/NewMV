@@ -67,7 +67,7 @@ Friend Class FormMain
     Public Sub OnThumbnailHover(sender As Object, e As EventArgs)
         If TypeOf (sender) Is PictureBox Then
             Dim de As DatabaseEntry = DirectCast(sender.tag, DatabaseEntry)
-            HighlightCurrent(sender.tag.fullpath)
+            HighlightCurrent(de.FullPath)
         End If
     End Sub
     Public Sub OnItemChanged(sender As Object, e As EventArgs) Handles FBH.ListItemChanged
@@ -542,6 +542,7 @@ Friend Class FormMain
             'Media.Player.Size = screen.Bounds.Size
             TogglePause()
             FullScreen.FSFiles = MSFiles
+            FullScreen.FSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
             FullScreen.Show()
             ' TogglePause()
         Else
@@ -962,6 +963,7 @@ Friend Class FormMain
                 End If
 
             Case KeyCycleFilter 'Cycle through listbox filters
+                'Same button used for fullscreen
                 If e.Alt Then
                     If ShiftDown Then
                         blnSecondScreen = True
@@ -1779,8 +1781,14 @@ Friend Class FormMain
         End If
     End Sub
 
-    Private Sub LinearToolStripMenuItem_Click(sender As Object, e As EventArgs)
+    Private Sub LinearToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LinearToolStripMenuItem.Click
         BH.AssignLinear(New DirectoryInfo(CurrentFolder))
+    End Sub
+    Private Sub AlphaToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlphaToolStripMenuItem.Click
+        BH.AssignAlphabetical(New DirectoryInfo(CurrentFolder))
+    End Sub
+    Private Sub TreeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TreeToolStripMenuItem.Click
+        BH.AssignTreeNew(CurrentFolder, 5)
     End Sub
     Private Sub RespondToKey(sender As Object, e As KeyEventArgs)
         Dim mBH As New ButtonHandler
@@ -1814,25 +1822,29 @@ Friend Class FormMain
 
             Case Keys.A To Keys.Z, Keys.D0 To Keys.D9
                 If e.Control AndAlso e.Alt Then
-                    mBH.buttons.CurrentLetter = mBH.buttons.CurrentLetter
+                    If mBH IsNot BH Then
+                        mBH.buttons.CurrentLetter = mBH.buttons.CurrentLetter
 
-                    Select Case e.KeyCode
-                        Case Keys.L
-                            mBH.AssignLinear(New DirectoryInfo(CurrentFolder))
-                        Case Keys.A
-                            mBH.AssignAlphabetical(New DirectoryInfo(CurrentFolder))
-                        Case Keys.T
-                            mBH.AssignTreeNew(CurrentFolder, 5)
-                    End Select
+                        Select Case e.KeyCode
+                            Case Keys.L
+                                mBH.AssignLinear(New DirectoryInfo(CurrentFolder))
+                            Case Keys.A
+                                mBH.AssignAlphabetical(New DirectoryInfo(CurrentFolder))
+                            Case Keys.T
+                                mBH.AssignTreeNew(CurrentFolder, 5)
+                        End Select
+                    End If
+
                 ElseIf e.Control Then
-                    Select Case e.KeyCode
-                        Case Keys.L
-                            mBH.LoadButtonSet(LoadButtonFileName(""))
-                        Case Keys.S
-                            mBH.SaveButtonSet()
-                    End Select
-                Else
-                    If mBH.buttons.CurrentLetter = LetterNumberFromAscii(e.KeyCode) Then
+                        'Select Case e.KeyCode
+                        '    Case Keys.L
+                        '        mBH.LoadButtonSet(LoadButtonFileName(""))
+                        '    Case Keys.S
+                        '        mBH.SaveButtonSet()
+                        'End Select
+                    Else
+                        'Advance row, or change letter
+                        If mBH.buttons.CurrentLetter = LetterNumberFromAscii(e.KeyCode) Then
                         mBH.buttons.NextRow(LetterNumberFromAscii(e.KeyCode))
                     Else
                         mBH.buttons.CurrentLetter = LetterNumberFromAscii(e.KeyCode)
@@ -1916,7 +1928,7 @@ Friend Class FormMain
 
     End Sub
 
-    Private Sub loadbuttonfiletoolstripmenuitem_Click(sender As Object, e As EventArgs) Handles LoadButtonFileToolStripMenuItem.Click
+    Private Sub Loadbuttonfiletoolstripmenuitem_Click(sender As Object, e As EventArgs) Handles LoadButtonFileToolStripMenuItem.Click
 
         ButtonFilePath = LoadButtonList()
         BH.LoadButtonSet(ButtonFilePath)
@@ -2281,7 +2293,7 @@ Friend Class FormMain
         Random.StartPointFlag = Not Random.StartPointFlag
     End Sub
 
-    Private Sub BundleToolStripMenuItem_Click_1(sender As Object, e As EventArgs) Handles BundleToolStripMenuItem.Click
+    Private Sub BundleToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BundleToolStripMenuItem.Click
         If FocusControl IsNot tvmain2 Then
             BundleFiles(FocusControl, CurrentFolder)
         End If
@@ -2488,7 +2500,7 @@ Friend Class FormMain
     End Sub
 
 
-    Private Sub ShowlistToolStripMenuItem_Click_1(sender As Object, e As EventArgs) Handles ShowlistToolStripMenuItem.Click
+    Private Sub ShowlistToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ShowlistToolStripMenuItem.Click
         If FocusControl Is lbxShowList Then
 
             Dim x As New FormShowList
@@ -2499,10 +2511,7 @@ Friend Class FormMain
     End Sub
 
 
-    Private Sub ButtonFormToolStripMenuItem_Click(sender As Object, e As EventArgs)
 
-
-    End Sub
 
 
     Private Sub ToolStripMenuItem2_Click(sender As Object, e As EventArgs) Handles ByMonthToolStripMenuItem.Click
@@ -2573,8 +2582,14 @@ Friend Class FormMain
     End Function
 
     Private Function SpawnButtonForm(file As FileInfo) As FormButton
+        Dim fname As String
+        If file Is Nothing Then
+            fname = SaveButtonFileName("")
+        Else
+            fname = file.FullName
+        End If
         Dim x As New FormButton With {
-                        .ButtonFilePath = file.FullName
+                        .ButtonFilePath = fname
                     }
         x.handler.Alpha = iCurrentAlpha
         AddHandler x.KeyDown, AddressOf HandleKeys
@@ -2582,6 +2597,7 @@ Friend Class FormMain
         x.Show()
         x.Top = Me.Height * 0.8
         Return x
+        x.handler.SaveButtonSet(fname)
     End Function
 
     Private Sub ToolStripMenuItem8_Click(sender As Object, e As EventArgs) Handles CalendarToolStripMenuItem.Click
@@ -2625,7 +2641,7 @@ Friend Class FormMain
         Dashboard.Show()
     End Sub
 
-    Private Sub DuplicatesToolStripMenuItem1_Click_1(sender As Object, e As EventArgs) Handles DuplicatesToolStripMenuItem1.Click
+    Private Sub DuplicatesToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles DuplicatesToolStripMenuItem1.Click
         StartDuplicatesForm()
         Exit Sub
         T = New Thread(New ThreadStart(Sub() StartDuplicatesForm()))
@@ -2646,7 +2662,7 @@ Friend Class FormMain
 
         x.DB = DB
         x.FindDuplicates()
-        AddHandler x.HighlightFile, AddressOf OnThumbnailHover
+        AddHandler x.FileHighlighted, AddressOf OnThumbnailHover
         x.Show()
 
 
@@ -2803,7 +2819,7 @@ Friend Class FormMain
 
 
 
-    Private Sub ToolStripTextBox1_Click_1(sender As Object, e As EventArgs)
+    Private Sub ToolStripTextBox1_Click(sender As Object, e As EventArgs)
         BH.Autobuttons = Not BH.Autobuttons
 
     End Sub
@@ -2918,8 +2934,13 @@ Friend Class FormMain
     End Sub
 
     Private Sub NewButtonFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NewButtonFileToolStripMenuItem.Click
-        BH.buttons.Clear()
-        BH.SaveButtonSet()
+        If Me.Focused Then
+            BH.buttons.Clear()
+            BH.SaveButtonSet()
+        Else
+            SpawnButtonForm(Nothing)
+        End If
+
     End Sub
 
     Private Sub SelectedDeepToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectedDeepToolStripMenuItem.Click
@@ -3028,7 +3049,7 @@ Friend Class FormMain
         JumpRandom(False)
     End Sub
 
-    Private Sub ResetButtonsToolStripMenuItem_Click(sender As Object, e As EventArgs)
+    Private Sub ResetButtonsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetButtonsToolStripMenuItem.Click
         CBXButtonFiles.SelectedItem = "Watch.msb" 'TODO Make general
 
     End Sub
@@ -3254,6 +3275,7 @@ Friend Class FormMain
                 ent.Filename = x(0)
                 ent.Path = x(1)
                 ent.Size = x(2)
+                ent.Dt = x(3)
                 DB.AddEntry(ent)
                 ProgressIncrement(1)
 
@@ -3310,7 +3332,7 @@ Friend Class FormMain
         'Create Database from current folder
         If filename <> "" Then
             ProgressBarOn(1000)
-            CreateDatabaseOfFiles(CurrentFolder, filename)
+            CreateDatabase(CurrentFolder, filename)
             ProgressBarOff()
             MsgBox(filename & " has been created.")
         End If
@@ -3344,12 +3366,20 @@ Friend Class FormMain
 
     Private Sub ShowDatabase(dB As Database)
         ProgressBarOn(100)
-        Dim form As New FormDatabaseShower With {.MDB = dB, .Text = .MDB.Name & " " & .MDB.ItemCount & " files loaded"}
-        form.LoadEntries(dB)
-        form.Show()
+        ShowDBThread(dB)
+        'Dim t = New Thread(New ThreadStart(Sub() ShowDBThread(dB)))
+        't.IsBackground = True
+        't.SetApartmentState(ApartmentState.STA)
+        't.Start()
         ProgressBarOff()
 
         'Throw New NotImplementedException()
+    End Sub
+
+    Private Shared Sub ShowDBThread(dB As Database)
+        Dim form As New FormDatabaseShower With {.MDB = dB, .Text = .MDB.Name & " " & .MDB.ItemCount & " files loaded"}
+        form.LoadEntries(dB)
+        form.Show()
     End Sub
 
     Private Sub AppendDatabaseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AppendDatabaseToolStripMenuItem.Click
@@ -3412,21 +3442,17 @@ Friend Class FormMain
         SaveDatabaseFileName("")
     End Sub
 
-    Private Sub ToolStripMenuItem8_Click_1(sender As Object, e As EventArgs)
 
-    End Sub
 
-    Private Sub ResetButtonsToolStripMenuItem_Click_1(sender As Object, e As EventArgs) Handles ResetButtonsToolStripMenuItem.Click
 
-    End Sub
-
-    Private Sub ButtonFormToolStripMenuItem_Click_1(sender As Object, e As EventArgs) Handles ButtonFormToolStripMenuItem.Click
+    Private Sub ButtonFormToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ButtonFormToolStripMenuItem.Click
         SpawnButtonForm(New FileInfo(ButtonFilePath)).handler.buttons.CurrentLetter = iCurrentAlpha
     End Sub
 
     Private Sub btn1_Click(sender As Object, e As EventArgs) Handles btn1.Click
 
     End Sub
+
 
 
 #End Region

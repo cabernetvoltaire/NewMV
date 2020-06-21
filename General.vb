@@ -3,9 +3,9 @@ Imports System.IO
 Imports System.Drawing.Imaging
 Imports System.Media
 Imports System.Threading
-Imports Microsoft.IShellDispatch6
 
 Public Module General
+
     Public Property ForbiddenPaths As New List(Of String)
     Public Enum ExifOrientations As Byte
         Unknown = 0
@@ -627,7 +627,7 @@ Public Module General
         fs.Close()
         Return list
     End Function
-    Friend Sub CreateDatabaseOfFiles(Path As String, Filename As String)
+    Friend Sub CreateDatabase(Path As String, Filename As String)
         Dim exclude As String = ""
         exclude = LCase(InputBox("String to exclude from folders?", ""))
         With My.Computer.FileSystem
@@ -635,7 +635,7 @@ Public Module General
             Dim dirs As New List(Of String)
 
             dirs = GenerateSafeFolderList(Path)
-
+            dirs.Add(Path)
             '            list.Add("Name" & vbTab & "Path" & vbTab & "Size in bytes" & vbTab & "Date")
             For Each d In dirs
                 Dim dir As New DirectoryInfo(d)
@@ -651,9 +651,9 @@ Public Module General
                     Try
 
                         Dim f As New FileInfo(file)
-                        If LCase(file).Contains(exclude) Then
+                        If exclude <> "" And LCase(file).Contains(exclude) Then
                         Else
-                            list.Add(f.Name & vbTab & f.FullName.Replace(f.Name, "") & vbTab & f.Length & vbTab & f.CreationTime)
+                            list.Add(f.Name & vbTab & f.FullName.Replace(f.Name, "") & vbTab & f.Length & vbTab & GetDate(f))
                         End If
 
                     Catch ex As Exception
@@ -1144,6 +1144,7 @@ Public Module General
 
 
     Friend Function FolderPathFromPath(path As String) As String
+
         Dim parts() = path.Split("\")
         Dim s As String
 
@@ -1308,14 +1309,15 @@ Public Module General
 
 
     End Sub
-    Friend Function FlattenAllSubFolders(fol As IO.DirectoryInfo)
+    Friend Sub FlattenAllSubFolders(fol As IO.DirectoryInfo)
         For Each f In fol.GetDirectories("*", SearchOption.AllDirectories)
             If f.Parent.FullName <> fol.FullName Then
                 MoveFolder(f.FullName, fol.FullName)
             End If
         Next
 
-    End Function
+    End Sub
+
     Public Class FoldersAndTheirMatches
         Private Property _Folder As IO.DirectoryInfo
         WriteOnly Property Folder As IO.DirectoryInfo
@@ -1369,6 +1371,8 @@ Public Module General
             End Get
         End Property
         Public Size As Long
+        Public Dt As DateTime
+
         Public Property Mark As Boolean = False
         'Public Thumbnail As New Bitmap(100, 100)
         'Public Function GetThumbnail()

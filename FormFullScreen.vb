@@ -17,7 +17,6 @@ Public Class FullScreen
             mFSFiles.Media2.Player.uiMode = "none"
             mFSFiles.Media3.Player.uiMode = "none"
             mFSFiles.ListIndex = FileHandling.MSFiles.ListIndex
-
         End Set
     End Property
     Private Sub FullScreen_Shown(sender As Object, e As EventArgs) Handles Me.Shown

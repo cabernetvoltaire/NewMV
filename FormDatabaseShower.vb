@@ -1,11 +1,17 @@
-﻿Public Class FormDatabaseShower
+﻿Imports System.Threading
+Public Class FormDatabaseShower
     Public MDB As New Database
     Private SubDB As New Database
     Private Filenames As New List(Of String)
-    Public Name As String
+
     Public Sub LoadEntries(DB As Database)
 
-        dgv.ColumnCount = 3
+        LoadEntriesThread(DB)
+        Me.Text = MDB.Name & " " & String.Format("{0} files out of {1}", SubDB.Entries.Count, DB.Entries.Count)
+    End Sub
+
+    Private Sub LoadEntriesThread(DB As Database)
+        dgv.ColumnCount = 4
         dgv.RowCount = DB.Entries.Count
 
         Dim i = 0
@@ -14,10 +20,10 @@
             dgv.Rows(i).Cells(0).Value = entry.Filename
             dgv.Rows(i).Cells(1).Value = entry.Path
             dgv.Rows(i).Cells(2).Value = entry.Size
+            dgv.Rows(i).Cells(3).Value = entry.Dt
             Application.DoEvents()
             i += 1
         Next
-        Me.Text = MDB.Name & " " & String.Format("{0} files out of {1}", SubDB.Entries.Count, DB.Entries.Count)
     End Sub
 
     Private Sub dgv_RowEnter(sender As Object, e As DataGridViewCellEventArgs) Handles dgv.RowEnter

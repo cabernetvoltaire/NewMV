@@ -38,9 +38,10 @@ Public Class MediaHandler
     Public WithEvents Speed As New SpeedHandler
     Public DisplayerName As String
     Public Forceload As Boolean
-    Public DontLoad As Boolean
     Public Autotrail As Boolean
     Public Playing As Boolean
+    Public DontLoad As Boolean
+
     Private mLoop As Boolean = False
     Private mType As Filetype
     Public Name As String = Me.Name
@@ -191,6 +192,7 @@ Public Class MediaHandler
                 mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
                 RaiseEvent MediaChanged(Me, New EventArgs)
             Else
+
                 mMediaPath = value
                 mType = FindType(value)
                 Dim f As New IO.FileInfo(value)
@@ -483,16 +485,13 @@ Public Class MediaHandler
             Else
                 mPlayPosition = m.StartPoint
             End If
-            m = Nothing
 
         End If
         If mPlayPosition > mDuration Then
             Report(mPlayPosition & "Over-reach" & mDuration, 0, False)
         Else
             mPlayer.Ctlcontrols.currentPosition = mPlayPosition
-            'Sound.Ctlcontrols.currentPosition = mPlayPosition
         End If
-        '        Report(Me.MediaPath & vbCrLf & Format(mMarkers.Count) & " markers" & vbCrLf & "Start point state is:" & StartPoint.Descriptions(StartPoint.State) & vbCrLf & " and has been set to " & StartPoint.StartPoint & "(" & mPlayPosition & ") " & vbCrLf & "with a duration of " & StartPoint.Duration, 1)
 
     End Sub
     Public Sub LoadMedia()
