@@ -56,7 +56,8 @@ Public Class FormFolderSelect
             ' med.Bookmark = med.Duration * Rnd()
             PreMH.Player = PreviewWMP
             PreMH.Player.settings.mute = True
-            PreMH.Picture = PictureBox1
+            PreMH.PicHandler.SetState(PictureHandler.Screenstate.Fitted)
+            PreMH.PicHandler.PicBox = PictureBox1
             PreMH.SPT.State = StartPointHandler.StartTypes.Random
             PreMH.MediaPath = f.FullName
             If PreMH.MediaType = Filetype.Movie Or PreMH.MediaType = Filetype.Pic Then
@@ -109,6 +110,9 @@ Public Class FormFolderSelect
 
     Private Sub btnAssign_Click(sender As Object, e As EventArgs) Handles btnAssign.Click
         FormMain.BH.AssignButton(ButtonNumber, Alpha, 1, ChosenFolder, True)
+        If Not My.Computer.FileSystem.DirectoryExists(Folder) Then
+            CreateNewDirectory(fst1, Folder, False)
+        End If
         'Me.Close()
     End Sub
     Private Sub Label1_DoubleClick(sender As Object, e As EventArgs) Handles Label1.DoubleClick
@@ -117,9 +121,7 @@ Public Class FormFolderSelect
 
     Private Sub FolderSelect_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
         changepic.Enabled = False
-        If Not My.Computer.FileSystem.DirectoryExists(Folder) Then
-            CreateNewDirectory(fst1, Folder, False)
-        End If
+
         IsLoaded = False
     End Sub
     Private Sub fst1_Paint(sender As Object, e As PaintEventArgs) Handles fst1.Paint
@@ -138,11 +140,11 @@ Public Class FormFolderSelect
     '    IsLoaded = True
     'End Sub
     Private WithEvents changepic As New Timer With {
-        .Interval = 1500,
-        .Enabled = True
+        .Interval = 3000,
+        .Enabled = False
     }
 
-    Private Sub UpdatePic() Handles changepic.Tick
+    Public Sub UpdatePic() Handles changepic.Tick
         ChangeMedia()
         '        changepic.Enabled = False
     End Sub

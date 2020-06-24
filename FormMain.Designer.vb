@@ -1681,9 +1681,8 @@ Partial Class FormMain
         Me.InstructionLabel2.Location = New System.Drawing.Point(3162, 0)
         Me.InstructionLabel2.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.InstructionLabel2.Name = "InstructionLabel2"
-        Me.InstructionLabel2.Size = New System.Drawing.Size(233, 32)
+        Me.InstructionLabel2.Size = New System.Drawing.Size(0, 32)
         Me.InstructionLabel2.TabIndex = 56
-        Me.InstructionLabel2.Text = "InstructionLabel2"
         '
         'tmrUpdateFileList
         '

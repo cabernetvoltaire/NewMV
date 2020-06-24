@@ -269,11 +269,6 @@
     <Compile Include="Preferences.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="QDatabaseDataSet2.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>QDatabaseDataSet2.xsd</DependentUpon>
-    </Compile>
     <Compile Include="RandomHandler.vb" />
     <Compile Include="Settings.vb" />
     <Compile Include="Shortcuts.vb" />
@@ -548,26 +543,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="QDatabaseDataSet2.xsc">
-      <DependentUpon>QDatabaseDataSet2.xsd</DependentUpon>
-    </None>
-    <None Include="QDatabaseDataSet2.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>QDatabaseDataSet2.Designer.vb</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="QDatabaseDataSet2.xss">
-      <DependentUpon>QDatabaseDataSet2.xsd</DependentUpon>
-    </None>
     <None Include="Resources\Untitled-1 copy1.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\FileAccess_Alpha_frmMain_Icon1.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="FIlterHandler.cs" />
     <Content Include="Resources\Key_empty_Small.png" />
     <Content Include="Resources\MVSplash.PNG" />
+    <Content Include="ThumbCreator.cs" />
     <None Include="Resources\Key_empty_Small1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />

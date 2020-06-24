@@ -40,7 +40,6 @@ Friend Class FormMain
     Public CurrentFileList As New List(Of String)
     Public T As Thread
     ' Public FirstButtons As New ButtonForm
-    Public bmp As Bitmap
     Public ScrubberProportion As Decimal = 0.97
 
     Public Marks As New MarkPlacement
@@ -54,7 +53,7 @@ Friend Class FormMain
 #Region "Event Responders"
     Public Sub OnLetterChanged(sender As Object, e As EventArgs) Handles BH.LetterChanged
         BH.LetterLabel.Text = Chr(AsciifromLetterNumber(BH.buttons.CurrentLetter))
-        iCurrentAlpha = BH.buttons.CurrentLetter
+        iCurrentAlpha = BH.Alpha
     End Sub
     Public Sub OnButtonFileChanged(sender As Object, e As EventArgs) Handles BH.ButtonFileChanged
         tbButton.Text = "BUTTONFILE: " & BH.ButtonfilePath
@@ -151,7 +150,7 @@ Friend Class FormMain
 
         Select Case s(s.Length - 1)
             Case "StateHandler"
-                lblNavigateState.Text = NavigateMoveState.Instructions
+                ChangeLabel(lblNavigateState, NavigateMoveState.Instructions)
                 tbState.Text = UCase(NavigateMoveState.Description)
                 SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
 
@@ -569,6 +568,7 @@ Friend Class FormMain
     End Sub
 
     Public Sub AdvanceFile(blnForward As Boolean, Optional Random As Boolean = False)
+        LastGoodFile = Media.MediaPath
         Dim LBHH As New ListBoxHandler()
         If CtrlDown Then
             LBHH = LBH
@@ -576,8 +576,6 @@ Friend Class FormMain
             LBHH = FBH
         End If
         LBHH.ListBox.SelectionMode = SelectionMode.One
-        Dim count = LBHH.ItemList.Count
-        ReDim Preserve FBCShown(count)
         MSFiles.RandomNext = Random
         If Random Then
             LBHH.ListBox.SelectedItem = MSFiles.NextItem
@@ -585,12 +583,6 @@ Friend Class FormMain
             LBHH.IncrementIndex(blnForward)
         End If
 
-        NofShown += 1
-        If NofShown >= count Then 'Re-sets when all shown. Quite nice. 
-            ReDim FBCShown(count)
-            NofShown = 0
-        End If
-        ' GC.Collect()
 
 
     End Sub
@@ -1034,7 +1026,7 @@ Friend Class FormMain
         'Exit Sub
         Dim mBH As New ButtonHandler
         If TypeOf (sender) Is FormButton Then
-            mBH = sender.handler
+            mBH = sender.BH
         Else
             mBH = BH
         End If
@@ -1054,6 +1046,9 @@ Friend Class FormMain
                 mBH.SaveButtonSet()
             End If
             Exit Sub
+        ElseIf e.Alt Then
+            Autoload(mBH.buttons.CurrentRow.Buttons(i).Label, True)
+            Exit Sub
         End If
 
         If s <> StateHandler.StateOptions.Navigate Then
@@ -1070,6 +1065,7 @@ Friend Class FormMain
                 'Move Folder
                 If path <> "" Then
                     MovingFolder(tvmain2.SelectedFolder, path)
+                    mBH.SwapPath(path, tvmain2.SelectedFolder)
                 End If
             Else
                 If path <> "" Then
@@ -1099,6 +1095,7 @@ Friend Class FormMain
                 If path <> "" Then
                     MoveFiles(ListfromSelectedInListbox(lbxFiles), path)
                 End If
+
             ElseIf e.Alt Then
                 Autoload(mBH.buttons.CurrentRow.Buttons(i).Label, True)
             Else
@@ -1260,6 +1257,8 @@ Friend Class FormMain
     End Sub
 
     Public HighlightPath As String
+    Friend Shared LastGoodFile As String
+
     Friend Sub HighlightCurrent(strPath As String)
         HighlightPath = strPath
         tmrHighlightCurrent.Enabled = True
@@ -1345,7 +1344,7 @@ Friend Class FormMain
         AddHandler FileHandling.FileMoved, AddressOf OnFilesMoved
 
         InitialiseButtons()
-        BH.Alpha = iCurrentAlpha
+
         NavigateMoveState.State = StateHandler.StateOptions.Navigate
         OnRandomChanged()
         ControlSetFocus(lbxFiles)
@@ -1370,7 +1369,7 @@ Friend Class FormMain
         BH.LoadButtonSet(LoadButtonFileName(ButtonFilePath))
 
         'AddHandler BH.buttons.LetterChanged, AddressOf OnLetterChanged
-        BH.buttons.CurrentLetter = iCurrentAlpha
+        BH.Alpha = iCurrentAlpha
         BH.RowProgressBar = ProgressBar1
         BH.SwitchRow(BH.buttons.CurrentRow)
         'Try
@@ -1795,32 +1794,32 @@ Friend Class FormMain
     Private Sub RespondToKey(sender As Object, e As KeyEventArgs)
         Dim mBH As New ButtonHandler
         If TypeOf (sender) Is FormButton Then
-            mBH = sender.handler
+            mBH = sender.bh
         Else
             mBH = BH
         End If
         Select Case e.KeyCode
 
-            Case Keys.F5, Keys.F6, Keys.F7, Keys.F8, Keys.F9, Keys.F10, Keys.F11, Keys.F12
-                Debug.Print(e.KeyCode.ToString)
-                If e.Shift AndAlso e.Alt AndAlso e.Control Then
-                    'Universal assign button.
-                    mBH.buttons.CurrentRow.Buttons(e.KeyCode - Keys.F5).Path = CurrentFolder
-                    mBH.SwitchRow(mBH.buttons.CurrentRow)
+            'Case Keys.F5, Keys.F6, Keys.F7, Keys.F8, Keys.F9, Keys.F10, Keys.F11, Keys.F12
+            '    Debug.Print(e.KeyCode.ToString)
+            '    If e.Shift AndAlso e.Alt AndAlso e.Control Then
+            '        'Universal assign button.
+            '        mBH.buttons.CurrentRow.Buttons(e.KeyCode - Keys.F5).Path = CurrentFolder
+            '        mBH.SwitchRow(mBH.buttons.CurrentRow)
 
-                ElseIf e.Shift Then
-                    HandleFunctionKeyDown(sender, e)
-                Else
+            '    ElseIf e.Shift Then
+            '        HandleFunctionKeyDown(sender, e)
+            '    Else
 
-                    Dim s As String = mBH.buttons.CurrentRow.Buttons(e.KeyCode - Keys.F5).Path
-                    If s <> "" Then
-                        CurrentFolder = s
-                    Else
-                        mBH.buttons.CurrentRow.Buttons(e.KeyCode - Keys.F5).Path = CurrentFolder
-                        mBH.SwitchRow(mBH.buttons.CurrentRow)
-                    End If
-                    tvmain2.SelectedFolder = CurrentFolder
-                End If
+            '        Dim s As String = mBH.buttons.CurrentRow.Buttons(e.KeyCode - Keys.F5).Path
+            '        If s <> "" Then
+            '            CurrentFolder = s
+            '        Else
+            '            mBH.buttons.CurrentRow.Buttons(e.KeyCode - Keys.F5).Path = CurrentFolder
+            '            mBH.SwitchRow(mBH.buttons.CurrentRow)
+            '        End If
+            '        tvmain2.SelectedFolder = CurrentFolder
+            '    End If
 
             Case Keys.A To Keys.Z, Keys.D0 To Keys.D9
                 If e.Control AndAlso e.Alt Then
@@ -1833,18 +1832,23 @@ Friend Class FormMain
                             Case Keys.A
                                 mBH.AssignAlphabetical(New DirectoryInfo(CurrentFolder))
                             Case Keys.T
-                                mBH.AssignTreeNew(CurrentFolder, 5)
+                                mBH.AssignTreeNew(CurrentFolder, Val(InputBox("Size Magnitude")))
                         End Select
                     End If
 
                 ElseIf e.Control Then
-                        'Select Case e.KeyCode
-                        '    Case Keys.L
-                        '        mBH.LoadButtonSet(LoadButtonFileName(""))
-                        '    Case Keys.S
-                        '        mBH.SaveButtonSet()
-                        'End Select
-                    Else
+                    If e.KeyCode = Keys.I Then
+                        AddFolders.Show()
+                        AddFolders.Folder = CurrentFolder
+                        tvmain2.RefreshTree(CurrentFolder)
+                    End If
+                    'Select Case e.KeyCode
+                    '    Case Keys.L
+                    '        mBH.LoadButtonSet(LoadButtonFileName(""))
+                    '    Case Keys.S
+                    '        mBH.SaveButtonSet()
+                    'End Select
+                Else
                         'Advance row, or change letter
                         If mBH.buttons.CurrentLetter = LetterNumberFromAscii(e.KeyCode) Then
                         mBH.buttons.NextRow(LetterNumberFromAscii(e.KeyCode))
@@ -1890,7 +1894,7 @@ Friend Class FormMain
 
     Private Async Sub HarvestFoldersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HarvestFoldersToolStripMenuItem.Click
         Await HarvestBelow(New DirectoryInfo(CurrentFolder))
-        'tvMain2.RefreshTree(CurrentFolder)
+        tvmain2.RefreshTree(CurrentFolder)
         'Dim x As New BundleHandler(tvMain2, lbxFiles, CurrentFolder)
 
     End Sub

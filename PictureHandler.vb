@@ -227,7 +227,12 @@
     '    PlacePic()
 
     'End Sub
-
+    ''' <summary>
+    ''' Sets the screenstate, docking style. 
+    ''' Sstate is a screenstate
+    ''' </summary>
+    ''' <param name="Sstate"></param>
+    ''' <returns></returns>
     Public Function SetState(Sstate As Byte) As Byte
         ' Exit Sub
         'Sets the screenstate, docking style. Changes the sizemode of pbx

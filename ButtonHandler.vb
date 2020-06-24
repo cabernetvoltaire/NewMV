@@ -10,9 +10,10 @@ Public Class ButtonHandler
     Public Tooltip As ToolTip
     Public ButtonfilePath As String
     Public NMS As New StateHandler
-
+    Private mFSOpen As Boolean = False
     Public Event ButtonFileChanged(sender As Object, e As EventArgs)
     Public Event LetterChanged(sender As Object, e As EventArgs)
+    Public Event ButtonsAltered(sender As Object, e As EventArgs)
 
     Private mAlpha As String
     Public ActualButtons(8) As Button
@@ -200,27 +201,31 @@ Public Class ButtonHandler
 
         Next
         Dim i As Int16 = 0
-        'dlist.Reverse
-        '   dlist.Reverse
+        For Each de In dlist
 
-        '  Dim n(nletts) As Integer
-
-        For Each dx In dlist
-            Dim di As IO.DirectoryInfo
-            di = dx.Value
-            Dim l As String = UCase(di.Name(0))
-            Dim ButtonNumber As Integer = LetterNumberFromAscii(Asc(l))
-            buttons.CurrentLetter = ButtonNumber
-            Dim firstbtn As New MVButton()
-            firstbtn.Letter = ButtonNumber
-            firstbtn.Position = buttons.CurrentRow.GetFirstFree()
-            firstbtn.Path = di.FullName
-            If firstbtn.Position < 8 Then AssignButton(firstbtn.Position, firstbtn.Letter, 1, di.FullName)
-
-
+            Dim m As Char = UCase(de.Value.Name(0))
+            m = UCase(m)
+            buttons.CurrentLetter = LetterNumberFromAscii(Asc(m))
+            Dim btn As MVButton
+            btn = buttons.FirstFree(buttons.CurrentLetter)
+            btn.Path = de.Value.FullName
         Next
+        'For Each dx In dlist
+        '    Dim di As IO.DirectoryInfo
+        '    di = dx.Value
+        '    Dim l As String = UCase(di.Name(0))
+        '    Dim ButtonNumber As Integer = LetterNumberFromAscii(Asc(l))
+        '    buttons.CurrentLetter = ButtonNumber
+        '    Dim firstbtn As New MVButton()
+        '    firstbtn.Letter = ButtonNumber
+        '    firstbtn.Position = buttons.CurrentRow.GetFirstFree()
+        '    firstbtn.Path = di.FullName
+        '    If firstbtn.Position < 8 Then AssignButton(firstbtn.Position, firstbtn.Letter, 1, di.FullName)
 
-        ButtonFilePath = Buttonfolder & "\" & d.Name & ".msb"
+
+        'Next
+
+        ButtonfilePath = Buttonfolder & "\" & d.Name & ".msb"
 
         SaveButtonSet(ButtonFilePath)
 
@@ -234,6 +239,7 @@ Public Class ButtonHandler
                 .Label = f.Name
                 .Position = ButtonNumber
                 .Letter = ButtonLetter
+                RaiseEvent ButtonsAltered(Me, Nothing)
             Catch ex As Exception
 
             End Try
@@ -252,7 +258,67 @@ Public Class ButtonHandler
     Public Sub InitialiseActualButtons()
         For i = 0 To 7
             ActualButtons(i).Tag = i
-            AddHandler ActualButtons(i).MouseClick, AddressOf FolderChooser
+            '            AddHandler ActualButtons(i).MouseClick, AddressOf ShowPreview
+            AddHandler ActualButtons(i).MouseHover, AddressOf ShowPreview
+            AddHandler ActualButtons(i).MouseLeave, AddressOf HideFS
+            AddHandler ActualButtons(i).MouseMove, AddressOf ChangeFS
+
+
         Next
     End Sub
+    Private Sub ChangeFS(sender As Object, e As MouseEventArgs)
+        Static mousepos As Point
+        If Math.Abs(mousepos.X - e.X) > sender.width / 30 Then
+            For Each f In Application.OpenForms
+                If f.name = "FS" Then
+                    f.UPdatePic
+                    mousepos = e.Location
+                    Exit For
+                End If
+            Next
+        End If
+
+    End Sub
+    Private Sub HideFS(Sender As Object, e As EventArgs)
+
+        For Each f In Application.OpenForms
+            If f.name = "FS" Then
+                f.close
+                Exit For
+            End If
+        Next
+    End Sub
+
+    Public Sub ShowPreview(Sender As Object, e As EventArgs)
+        Dim folderselect As New FormFolderSelect With {.Name = "FS"}
+
+        ' Exit Sub
+        Dim index As Byte = Val(Sender.tag)
+
+        folderselect.ButtonNumber = index
+        folderselect.Alpha = iCurrentAlpha
+        Dim s As String = buttons.CurrentRow.Buttons(index).Path
+        If s = "" Then s = CurrentFolder
+        folderselect.Folder = s
+        Dim control As Control = CType(Sender, Control)
+        Dim startpoint As Point
+        startpoint.X = control.Left
+        startpoint.Y = control.Top
+        startpoint = control.PointToScreen(startpoint)
+        folderselect.Show()
+        folderselect.BringToFront()
+        folderselect.Left = startpoint.X - folderselect.Width / 2
+        folderselect.Top = startpoint.Y - folderselect.Height + control.Height / 10
+    End Sub
+    Public Sub SwapPath(Oldpath As String, Newpath As String)
+        Dim changed As Boolean = False
+        For Each r In buttons.CurrentSet
+            For Each b In r.Buttons
+                If b.Path = Oldpath Then b.Path = Newpath
+                changed = True
+            Next
+        Next
+        SaveButtonSet(ButtonfilePath)
+    End Sub
+
 End Class

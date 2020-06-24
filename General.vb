@@ -483,8 +483,7 @@ Public Module General
 #End Region
 
 
-
-
+#Region "Metadata Functions"
     Public Sub ExtractMetaData(theImage As Image)
 
         ' Try
@@ -520,16 +519,7 @@ Public Module General
         'End Try
 
     End Sub
-
-    Public Function TimeOperation(blnStart As Boolean) As TimeSpan
-        Static StartTime As Date
-        If blnStart Then
-            StartTime = Now
-            Return Now - StartTime
-        Else
-            Return Now - StartTime
-        End If
-    End Function
+#End Region
 #Region "List functions"
 
     ''' <summary>
@@ -598,6 +588,8 @@ Public Module General
         FormMain.FillShowbox(FormMain.lbxShowList, 0, s)
         Return s
     End Function
+#Region "File Access Functions"
+
     Public Sub WriteListToFile(list As List(Of String), filepath As String, Encrypted As Boolean)
         Dim fs As New StreamWriter(New FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
 
@@ -629,6 +621,9 @@ Public Module General
         fs.Close()
         Return list
     End Function
+#End Region
+#Region "Database Functions"
+
     Friend Sub CreateDatabase(Path As String, Filename As String)
         Dim exclude As String = ""
         exclude = LCase(InputBox("String to exclude from folders?", ""))
@@ -669,6 +664,7 @@ Public Module General
             WriteListToFile(list, Filename, Encrypted)
         End With
     End Sub
+#End Region
     Public Function GetFileFromEachFolder(d As DirectoryInfo, s As String, Optional Random As Boolean = True) As List(Of String)
 
         Dim x As New List(Of String)
@@ -688,12 +684,6 @@ Public Module General
         Next
         Return x
     End Function
-    Private Sub CopyList(list As List(Of String), list2 As SortedList(Of Date, String))
-        list.Clear()
-        For Each m As KeyValuePair(Of Date, String) In list2
-            list.Add(m.Value)
-        Next
-    End Sub
 #End Region
 
 #Region "Debugging functions"
@@ -735,6 +725,15 @@ Public Module General
     Public Sub ReportTime(str As String)
         Debug.Print(Int(Now().Second) & "." & Int(Now().Millisecond) & " " & str)
     End Sub
+    Public Function TimeOperation(blnStart As Boolean) As TimeSpan
+        Static StartTime As Date
+        If blnStart Then
+            StartTime = Now
+            Return Now - StartTime
+        Else
+            Return Now - StartTime
+        End If
+    End Function
 #End Region
 
     Public Function FindType(file As String) As Filetype
@@ -1271,14 +1270,7 @@ Public Module General
     Friend Sub AddToolTip(ctl As Control, tp As ToolTip, text As String)
         tp.SetToolTip(ctl, text)
     End Sub
-    Friend Sub UpdateLabel(lbl As Label, TextToAdd As String)
-        If lbl.Text.Contains(TextToAdd) Then
-            lbl.Text = lbl.Text.Replace(vbCrLf & TextToAdd, "")
-        Else
-            lbl.Text = lbl.Text & vbCrLf & TextToAdd
-        End If
 
-    End Sub
     Friend Sub OutlineControl(ctl As Control, ByRef outliner As PictureBox)
         ctl.Parent.Controls.Add(outliner)
         Dim r As Rectangle = ctl.Bounds
@@ -1411,6 +1403,11 @@ Public Module General
                 mItemCount += 1
             End If
         End Sub
+        Public Sub ConvertDB()
+            For Each e In Entries
+
+            Next
+        End Sub
         Private mSorted As Boolean = False
         Public Sub Sort(Optional comparer As IComparer(Of DatabaseEntry) = Nothing)
             Entries.Sort(comparer)
@@ -1535,11 +1532,21 @@ Public Module General
         Return bytes
         Exit Function
     End Function
-    Public Sub ButtonClicked(sender As Object, e As MouseEventArgs)
-        'If e.Button = MouseButtons.Right Then
-        FolderChooser(sender, e)
-        ' Else
 
-        'End If
+    Public Sub ChangeLabel(lbl As Label, Text As String)
+        lbl.Text = Text
+
+    End Sub
+    Public Sub AppendLabel(lbl As Label, Text As String)
+        lbl.Text = lbl.Text & vbCrLf & Text
+
+    End Sub
+    Friend Sub UpdateLabel(lbl As Label, TextToAdd As String)
+        If lbl.Text.Contains(TextToAdd) Then
+            lbl.Text = lbl.Text.Replace(vbCrLf & TextToAdd, "")
+        Else
+            lbl.Text = lbl.Text & vbCrLf & TextToAdd
+        End If
+
     End Sub
 End Module

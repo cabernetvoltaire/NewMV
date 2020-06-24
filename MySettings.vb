@@ -105,7 +105,12 @@ Friend Module Mysettings
             .Add("LastTimeSuccessful" & "$" & LastTimeSuccessful)
             .Add("VertSplit" & "$" & FormMain.ctrFileBoxes.SplitterDistance)
             .Add("HorSplit" & "$" & FormMain.ctrMainFrame.SplitterDistance)
-            .Add("File" & "$" & Media.MediaPath)
+            If LastTimeSuccessful Then
+                .Add("File" & "$" & Media.MediaPath)
+            Else
+                .Add("File" & "$" & FormMain.LastGoodFile)
+
+            End If
             .Add("Filter" & "$" & FormMain.CurrentFilterState.State)
             .Add("SortOrder" & "$" & FormMain.PlayOrder.State)
             .Add("StartPoint" & "$" & Media.SPT.State)
@@ -183,12 +188,10 @@ Friend Module Mysettings
                         Case "HorSplit"
                             FormMain.ctrMainFrame.SplitterDistance = value
                         Case "File" 'Drive
-                            If LastTimeSuccessful Then
-                                Dim st As String = value 'TODO: Don't load if last time unsuccessful
-                                If st = "" Then st = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
-                                Media.MediaPath = st
-                                DriveString = GetDriveString(st)
-                            End If
+
+                            Media.MediaPath = value
+                            DriveString = GetDriveString(value)
+
                         Case "Filter"
                             If value = "" Then value = 0
                             FormMain.CurrentFilterState.State = value
