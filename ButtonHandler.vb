@@ -27,8 +27,12 @@ Public Class ButtonHandler
             buttons.CurrentLetter = mAlpha
         End Set
     End Property
+    Private Sub OnButtonsAltered(sender As Object, e As EventArgs) Handles Me.ButtonsAltered
+        SaveButtonSet(ButtonfilePath)
+        SwitchRow(buttons.CurrentRow)
+    End Sub
     Sub OnLetterChanged(sender As Object, e As EventArgs) Handles buttons.LetterChanged
-        RaiseEvent LetterChanged(sender,e)
+        RaiseEvent LetterChanged(sender, e)
     End Sub
     Public Sub LoadButtonSet(Optional filename As String = "")
 
@@ -79,7 +83,11 @@ Public Class ButtonHandler
             End If
         Next
     End Sub
-
+    ''' <summary>
+    ''' Saves current button set to file.
+    ''' </summary>
+    ''' <param name="filename"> Filename to save under </param>
+    ''' <param name="NewFile"> Option to force new file </param>
     Public Sub SaveButtonSet(Optional filename As String = "", Optional NewFile As Boolean = False)
         If NewFile Then buttons.Clear()
 
@@ -156,6 +164,7 @@ Public Class ButtonHandler
             buttons.CurrentRow.Buttons(i).Path = d.FullName
             i = (i + 1) Mod 8
         Next
+        RaiseEvent ButtonsAltered(Me, Nothing)
     End Sub
     Public Sub AssignAlphabetical(e As DirectoryInfo)
         buttons.Clear()
@@ -175,6 +184,8 @@ Public Class ButtonHandler
             btn = buttons.FirstFree(buttons.CurrentLetter)
             btn.Path = d.Key
         Next
+        RaiseEvent ButtonsAltered(Me, Nothing)
+
     End Sub
 
     Public Sub AssignTreeNew(StartingFolder As String, SizeMagnitude As Byte)
@@ -224,13 +235,11 @@ Public Class ButtonHandler
 
 
         'Next
+        RaiseEvent ButtonsAltered(Me, Nothing)
 
-        ButtonfilePath = Buttonfolder & "\" & d.Name & ".msb"
-
-        SaveButtonSet(ButtonFilePath)
 
     End Sub
-    Public Sub AssignButton(ByVal ButtonNumber As Byte, ByVal ButtonLetter As Integer, ByVal Layer As Byte, ByVal Path As String, Optional Store As Boolean = False)
+    Public Sub AssignButton(ByVal ButtonNumber As Byte, ByVal Path As String)
         Dim f As New DirectoryInfo(Path)
 
         With buttons.CurrentRow.Buttons(ButtonNumber)
@@ -238,7 +247,7 @@ Public Class ButtonHandler
                 .Path = Path
                 .Label = f.Name
                 .Position = ButtonNumber
-                .Letter = ButtonLetter
+                .Letter = buttons.CurrentRow.Letter
                 RaiseEvent ButtonsAltered(Me, Nothing)
             Catch ex As Exception
 
@@ -255,6 +264,10 @@ Public Class ButtonHandler
         RowProgressBar.Maximum = buttons.RowIndexCount
         RowProgressBar.Value = buttons.RowIndex + 1
     End Sub
+    Friend Sub RefreshButtons()
+        SwitchRow(buttons.CurrentRow)
+    End Sub
+
     Public Sub InitialiseActualButtons()
         For i = 0 To 7
             ActualButtons(i).Tag = i

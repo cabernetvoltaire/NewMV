@@ -427,6 +427,8 @@ Friend Class FormMain
                 MoveFolder(FolderName, "")
                 tvw.Traverse(False)
                 tvw.RemoveNode(FolderName)
+                BH.SwapPath(FolderName, "")
+                BH.RefreshButtons()
             End If
         End If
         Exit Sub
@@ -1030,24 +1032,19 @@ Friend Class FormMain
         Else
             mBH = BH
         End If
-        Dim i As Byte = e.KeyCode - Keys.F5
+        Dim buttonnumber As Byte = e.KeyCode - Keys.F5
         Dim s As StateHandler.StateOptions = NavigateMoveState.State
         '  CancelDisplay() 'Need to cancel display to prevent 'already in use' problems when moving files or deleting them. 
-        Dim path = mBH.buttons.CurrentRow.Buttons(i).Path
+        Dim path = mBH.buttons.CurrentRow.Buttons(buttonnumber).Path
 
         'Just assign in all modes when all three control buttons held
         If (e.Shift And e.Control And e.Alt) Then
             'Assign button
-            mBH.AssignButton(i, iCurrentAlpha, 1, CurrentFolder, True)
-            'Always update the button file. 
-            If My.Computer.FileSystem.FileExists(ButtonFilePath) Then
-                mBH.SaveButtonSet(ButtonFilePath)
-            Else
-                mBH.SaveButtonSet()
-            End If
+            mBH.AssignButton(buttonnumber, CurrentFolder)
+
             Exit Sub
         ElseIf e.Alt Then
-            Autoload(mBH.buttons.CurrentRow.Buttons(i).Label, True)
+            Autoload(mBH.buttons.CurrentRow.Buttons(buttonnumber).Label, True)
             Exit Sub
         End If
 
@@ -1097,7 +1094,7 @@ Friend Class FormMain
                 End If
 
             ElseIf e.Alt Then
-                Autoload(mBH.buttons.CurrentRow.Buttons(i).Label, True)
+                Autoload(mBH.buttons.CurrentRow.Buttons(buttonnumber).Label, True)
             Else
 
                 'SWITCH folder
@@ -3453,6 +3450,10 @@ Friend Class FormMain
 
     Private Sub ButtonFormToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ButtonFormToolStripMenuItem.Click
         SpawnButtonForm(New FileInfo(ButtonFilePath)).BH.buttons.CurrentLetter = iCurrentAlpha
+    End Sub
+
+    Public Sub DatabaseExperimentToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DatabaseExperimentToolStripMenuItem.Click
+        Form4.Show()
     End Sub
 
 

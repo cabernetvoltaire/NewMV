@@ -22,66 +22,56 @@ Partial Class StartpointTester
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.FileName = New System.Windows.Forms.Label()
-        Me.Duration = New System.Windows.Forms.Label()
-        Me.State = New System.Windows.Forms.Label()
-        Me.Startpoint = New System.Windows.Forms.Label()
+        Me.components = New System.ComponentModel.Container()
+        Me.DataGridView1 = New System.Windows.Forms.DataGridView()
+        Me.MVDataSet = New MasaSam.Forms.Sample.MVDataSet()
+        Me.MVDataSetBindingSource = New System.Windows.Forms.BindingSource(Me.components)
+        CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.MVDataSet, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.MVDataSetBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'FileName
+        'DataGridView1
         '
-        Me.FileName.AutoSize = True
-        Me.FileName.Location = New System.Drawing.Point(44, 27)
-        Me.FileName.Name = "FileName"
-        Me.FileName.Size = New System.Drawing.Size(57, 20)
-        Me.FileName.TabIndex = 0
-        Me.FileName.Text = "Label1"
+        Me.DataGridView1.AllowUserToDeleteRows = False
+        Me.DataGridView1.AutoGenerateColumns = False
+        Me.DataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.DataGridView1.DataSource = Me.MVDataSetBindingSource
+        Me.DataGridView1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.DataGridView1.Location = New System.Drawing.Point(0, 0)
+        Me.DataGridView1.Name = "DataGridView1"
+        Me.DataGridView1.ReadOnly = True
+        Me.DataGridView1.RowTemplate.Height = 31
+        Me.DataGridView1.Size = New System.Drawing.Size(1937, 554)
+        Me.DataGridView1.TabIndex = 0
         '
-        'Duration
+        'MVDataSet
         '
-        Me.Duration.AutoSize = True
-        Me.Duration.Location = New System.Drawing.Point(44, 72)
-        Me.Duration.Name = "Duration"
-        Me.Duration.Size = New System.Drawing.Size(57, 20)
-        Me.Duration.TabIndex = 1
-        Me.Duration.Text = "Label1"
+        Me.MVDataSet.DataSetName = "MVDataSet"
+        Me.MVDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema
         '
-        'State
+        'MVDataSetBindingSource
         '
-        Me.State.AutoSize = True
-        Me.State.Location = New System.Drawing.Point(44, 119)
-        Me.State.Name = "State"
-        Me.State.Size = New System.Drawing.Size(57, 20)
-        Me.State.TabIndex = 2
-        Me.State.Text = "Label1"
+        Me.MVDataSetBindingSource.DataSource = Me.MVDataSet
+        Me.MVDataSetBindingSource.Position = 0
         '
-        'Startpoint
+        'StartpointTester
         '
-        Me.Startpoint.AutoSize = True
-        Me.Startpoint.Location = New System.Drawing.Point(44, 162)
-        Me.Startpoint.Name = "Startpoint"
-        Me.Startpoint.Size = New System.Drawing.Size(57, 20)
-        Me.Startpoint.TabIndex = 3
-        Me.Startpoint.Text = "Label1"
-        '
-        'Form3
-        '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(11.0!, 24.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1585, 462)
-        Me.Controls.Add(Me.Startpoint)
-        Me.Controls.Add(Me.State)
-        Me.Controls.Add(Me.Duration)
-        Me.Controls.Add(Me.FileName)
-        Me.Name = "Form3"
+        Me.ClientSize = New System.Drawing.Size(1937, 554)
+        Me.Controls.Add(Me.DataGridView1)
+        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Name = "StartpointTester"
         Me.Text = "Form3"
+        CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.MVDataSet, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.MVDataSetBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
 
-    Friend WithEvents FileName As Label
-    Friend WithEvents Duration As Label
-    Friend WithEvents State As Label
-    Friend WithEvents Startpoint As Label
+    Friend WithEvents DataGridView1 As DataGridView
+    Friend WithEvents MVDataSetBindingSource As BindingSource
+    Friend WithEvents MVDataSet As MVDataSet
 End Class

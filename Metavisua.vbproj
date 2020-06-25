@@ -252,6 +252,11 @@
     </Compile>
     <Compile Include="MovieSwapper.vb" />
     <Compile Include="MVButton.vb" />
+    <Compile Include="MVDataSet3.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MVDataSet3.xsd</DependentUpon>
+    </Compile>
     <Compile Include="My Project\Class1.vb" />
     <Compile Include="NextFile.vb" />
     <Compile Include="OrphanFinder.vb" />
@@ -410,6 +415,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Metavisua_TemporaryKey.pfx" />
+    <None Include="MVDataSet3.xsc">
+      <DependentUpon>MVDataSet3.xsd</DependentUpon>
+    </None>
+    <None Include="MVDataSet3.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>MVDataSet3.Designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="MVDataSet3.xss">
+      <DependentUpon>MVDataSet3.xsd</DependentUpon>
+    </None>
     <None Include="My Project\app.manifest">
       <SubType>Designer</SubType>
     </None>
@@ -549,6 +565,9 @@
     <None Include="Resources\FileAccess_Alpha_frmMain_Icon1.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="MV.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Key_empty_Small.png" />
     <Content Include="Resources\MVSplash.PNG" />
     <Content Include="ThumbCreator.cs" />

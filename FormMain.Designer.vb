@@ -292,6 +292,7 @@ Partial Class FormMain
         Me.tmrProgressBar = New System.Windows.Forms.Timer(Me.components)
         Me.tmrJumpRandom = New System.Windows.Forms.Timer(Me.components)
         Me.tmrHighlightCurrent = New System.Windows.Forms.Timer(Me.components)
+        Me.DatabaseExperimentToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.FullPanel.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -2519,7 +2520,7 @@ Partial Class FormMain
         '
         'ExperimentToolStripMenuItem
         '
-        Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RefreshLinksFromDatabaseToolStripMenuItem})
+        Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RefreshLinksFromDatabaseToolStripMenuItem, Me.DatabaseExperimentToolStripMenuItem})
         Me.ExperimentToolStripMenuItem.Name = "ExperimentToolStripMenuItem"
         Me.ExperimentToolStripMenuItem.Size = New System.Drawing.Size(129, 34)
         Me.ExperimentToolStripMenuItem.Text = "Experiment"
@@ -2600,6 +2601,12 @@ Partial Class FormMain
         'tmrHighlightCurrent
         '
         Me.tmrHighlightCurrent.Interval = 10
+        '
+        'DatabaseExperimentToolStripMenuItem
+        '
+        Me.DatabaseExperimentToolStripMenuItem.Name = "DatabaseExperimentToolStripMenuItem"
+        Me.DatabaseExperimentToolStripMenuItem.Size = New System.Drawing.Size(371, 34)
+        Me.DatabaseExperimentToolStripMenuItem.Text = "Database Experiment"
         '
         'FormMain
         '
@@ -2964,4 +2971,5 @@ Partial Class FormMain
     Friend WithEvents RecursivelyToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SelectedToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents ShortFilenamesRecursivelyToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents DatabaseExperimentToolStripMenuItem As ToolStripMenuItem
 End Class

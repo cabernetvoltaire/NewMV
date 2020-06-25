@@ -307,7 +307,7 @@ Friend Module Mysettings
     End Sub
     Private Function GetDriveString(path As String) As String
         'Adds drive of path if not already present
-
+        If path = "" Then path = "CDEF"
         If InStr(DriveString, path(0)) <> 0 Then
         Else
             DriveString = DriveString & path(0)

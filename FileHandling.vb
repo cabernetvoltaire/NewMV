@@ -422,7 +422,7 @@ Friend Module FileHandling
 
             Next
         Catch ex As Exception
-            MsgBox(ex.Message)
+            'MsgBox(ex.Message)
         End Try
 
         'RaiseEvent FileMoved(files, MainForm.lbxFiles)

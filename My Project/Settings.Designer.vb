@@ -108,6 +108,26 @@ Namespace My
                 Return CType(Me("Database1ConnectionString"),String)
             End Get
         End Property
+        
+        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\MV.mdb")>  _
+        Public ReadOnly Property MVConnectionString() As String
+            Get
+                Return CType(Me("MVConnectionString"),String)
+            End Get
+        End Property
+        
+        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=""D:\My Documents\MV.mdb""")>  _
+        Public ReadOnly Property MVConnectionString1() As String
+            Get
+                Return CType(Me("MVConnectionString1"),String)
+            End Get
+        End Property
     End Class
 End Namespace
 

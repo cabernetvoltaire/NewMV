@@ -109,7 +109,7 @@ Public Class FormFolderSelect
     End Sub
 
     Private Sub btnAssign_Click(sender As Object, e As EventArgs) Handles btnAssign.Click
-        FormMain.BH.AssignButton(ButtonNumber, Alpha, 1, ChosenFolder, True)
+        FormMain.BH.AssignButton(ButtonNumber, ChosenFolder)
         If Not My.Computer.FileSystem.DirectoryExists(Folder) Then
             CreateNewDirectory(fst1, Folder, False)
         End If
