@@ -134,6 +134,7 @@
                 mPicBox.Cursor = Cursors.Arrow
             Else
                 mPicBox.Cursor = Cursors.Cross
+
             End If
         End If
 
@@ -266,6 +267,7 @@
                     mPicBox.Top = PicBoxContainer.Top
                 End If
                 mPicBox.SizeMode = PictureBoxSizeMode.Zoom
+
                 '  mWheelScroll = False
                 'PlacePic(mPicBox)
         End Select
@@ -316,6 +318,7 @@
             Else
                 mState = SetState(PictureHandler.Screenstate.Fitted)
                 WheelScroll = True
+                mPicBox.Cursor = Cursors.Arrow
                 RaiseEvent StateChanged(Me, Nothing)
             End If
         End If

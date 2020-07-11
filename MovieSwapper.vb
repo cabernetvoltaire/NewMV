@@ -328,7 +328,7 @@ Public Class MediaSwapper
 
     End Sub
     Public Sub ZoomPics(Pic As PictureHandler)
-        If Pic.State = PictureHandler.Screenstate.Fitted Then
+        If Pic.State = PictureHandler.Screenstate.Fitted And Not Pic.WheelScroll Then
             For Each m In MediaHandlers
                 m.PicHandler.SetState(Pic.State)
             Next

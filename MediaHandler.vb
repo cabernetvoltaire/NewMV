@@ -638,12 +638,10 @@ Public Class MediaHandler
 #End Region
 
 #Region "Event Handlers"
-    Public Sub OnPicZoomed(sender As Object, e As EventArgs) Handles PicHandler.ZoomChange
+    Public Sub OnPicZoomed(sender As Object, e As EventArgs) Handles PicHandler.ZoomChange, PicHandler.StateChanged
         RaiseEvent Zoomchanged(sender, e)
     End Sub
-    Public Sub OnPicStateChange(sender As Object, e As EventArgs) Handles PicHandler.StateChanged
-        RaiseEvent Zoomchanged(sender, e)
-    End Sub
+
     Private Sub Uhoh() Handles mPlayer.ErrorEvent
 
         'MsgBox("Error in MediaPlayer")
