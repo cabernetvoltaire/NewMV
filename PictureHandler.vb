@@ -272,8 +272,23 @@
         ' PicTest.Label1.Text = "Picture State:" & ScreenStateDescriptions(State) & " Zoom factor: " & ZoomFactor
         Return Sstate
     End Function
+    Public Sub SetZoom(Percentage As Integer)
+        ' Exit Sub
+        mState = SetState(Screenstate.Zoomed)
+        Dim oldzoom As Integer = mZoomfactor
+        mZoomfactor = Percentage
+        Dim factor As Decimal = mZoomfactor / oldzoom
+        mPicBox.Width = mPicBox.Width * factor
 
-    Public Sub ZoomPicture(blnEnlarge As Boolean, Percentage As Decimal)
+        mPicBox.Left = mPicBox.Left - (ePicMousePoint.X - mPicBox.Left) * (factor - 1)
+        mPicBox.Top = mPicBox.Top - (ePicMousePoint.Y - mPicBox.Top) * (factor - 1)
+        mPicBox.Height = mPicBox.Height * factor
+        ' RaiseEvent ZoomChange(Me, Nothing)
+
+    End Sub
+
+
+    Public Sub ZoomPicture(blnEnlarge As Boolean, Percentage As Integer)
         mState = SetState(Screenstate.Zoomed)
         Dim Enlargement As Decimal = 1 + Percentage / 100
         Dim Reduction As Decimal = 1 - Percentage / 100

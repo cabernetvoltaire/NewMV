@@ -19,7 +19,7 @@ Friend Module FileHandling
     Public FaveMinder As New FavouritesMinder("Q:\Favourites")
 
     Public Sub OnZoomChanged(sender As Object, e As EventArgs) Handles Media.Zoomchanged
-        MSFiles.ZoomPics(Media.PicHandler.ZoomFactor)
+        MSFiles.ZoomPics(sender)
 
     End Sub
     Public Sub OnMediaFinished(sender As Object, e As EventArgs) Handles Media.MediaFinished

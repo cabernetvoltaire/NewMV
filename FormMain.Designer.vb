@@ -278,6 +278,7 @@ Partial Class FormMain
         Me.DashboardToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExperimentToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RefreshLinksFromDatabaseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DatabaseExperimentToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RenamingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem6 = New System.Windows.Forms.ToolStripMenuItem()
         Me.PrependAllFilenamesWithFolderNameToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -292,7 +293,6 @@ Partial Class FormMain
         Me.tmrProgressBar = New System.Windows.Forms.Timer(Me.components)
         Me.tmrJumpRandom = New System.Windows.Forms.Timer(Me.components)
         Me.tmrHighlightCurrent = New System.Windows.Forms.Timer(Me.components)
-        Me.DatabaseExperimentToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.FullPanel.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -2531,6 +2531,12 @@ Partial Class FormMain
         Me.RefreshLinksFromDatabaseToolStripMenuItem.Size = New System.Drawing.Size(371, 34)
         Me.RefreshLinksFromDatabaseToolStripMenuItem.Text = "Refresh Links From Database"
         '
+        'DatabaseExperimentToolStripMenuItem
+        '
+        Me.DatabaseExperimentToolStripMenuItem.Name = "DatabaseExperimentToolStripMenuItem"
+        Me.DatabaseExperimentToolStripMenuItem.Size = New System.Drawing.Size(371, 34)
+        Me.DatabaseExperimentToolStripMenuItem.Text = "Database Experiment"
+        '
         'RenamingToolStripMenuItem
         '
         Me.RenamingToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem6, Me.PrependAllFilenamesWithFolderNameToolStripMenuItem})
@@ -2601,12 +2607,6 @@ Partial Class FormMain
         'tmrHighlightCurrent
         '
         Me.tmrHighlightCurrent.Interval = 10
-        '
-        'DatabaseExperimentToolStripMenuItem
-        '
-        Me.DatabaseExperimentToolStripMenuItem.Name = "DatabaseExperimentToolStripMenuItem"
-        Me.DatabaseExperimentToolStripMenuItem.Size = New System.Drawing.Size(371, 34)
-        Me.DatabaseExperimentToolStripMenuItem.Text = "Database Experiment"
         '
         'FormMain
         '

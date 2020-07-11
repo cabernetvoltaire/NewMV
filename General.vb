@@ -253,7 +253,12 @@ Public Module General
         End Try
 
     End Function
-    Public Function GenerateSafeFolderList(ByVal folder As String) _
+    ''' <summary>
+    ''' Get all folders beneath folder, which are safe.
+    ''' </summary>
+    ''' <param name="folder"></param>
+    ''' <returns></returns>
+    Public Function GenerateSafeFolderList(ByVal folder As String, Optional TopOnly As Boolean = False) _
             As List(Of String)
 
         ' -------------------------------------------
@@ -276,20 +281,39 @@ Public Module General
                 Dim Dir As String = Dirs.Pop
 
                 Try
-                    For Each D As String In System.IO.Directory.GetDirectories(Dir)
-                        ' Do not include any that are either system or hidden
+                    If TopOnly Then
 
-                        Dim dirInfo As New System.IO.DirectoryInfo(D)
-                        If (((dirInfo.Attributes And System.IO.FileAttributes.Hidden) = 0) AndAlso
+                        For Each D As String In System.IO.Directory.GetDirectories(Dir, "*", SearchOption.TopDirectoryOnly)
+                            ' Do not include any that are either system or hidden
+
+                            Dim dirInfo As New System.IO.DirectoryInfo(D)
+                            If (((dirInfo.Attributes And System.IO.FileAttributes.Hidden) = 0) AndAlso
                                 ((dirInfo.Attributes And System.IO.FileAttributes.System) = 0)) Then
 
-                            If Not retVal.Contains(D) Then
-                                retVal.Add(D)
+                                If Not retVal.Contains(D) Then
+                                    retVal.Add(D)
+                                End If
                             End If
-                        End If
 
-                        Dirs.Push(D)
-                    Next
+                            Dirs.Push(D)
+                        Next
+                    Else
+
+                        For Each D As String In System.IO.Directory.GetDirectories(Dir, "*", SearchOption.AllDirectories)
+                            ' Do not include any that are either system or hidden
+
+                            Dim dirInfo As New System.IO.DirectoryInfo(D)
+                            If (((dirInfo.Attributes And System.IO.FileAttributes.Hidden) = 0) AndAlso
+                                ((dirInfo.Attributes And System.IO.FileAttributes.System) = 0)) Then
+
+                                If Not retVal.Contains(D) Then
+                                    retVal.Add(D)
+                                End If
+                            End If
+
+                            Dirs.Push(D)
+                        Next
+                    End If
 
                 Catch ex As Exception
 
@@ -546,11 +570,17 @@ Public Module General
             list.Add(m.Value)
         Next
     End Sub
-    Public Function ListfromSelectedInListbox(lbx As ListBox) As List(Of String)
+    Public Function ListfromSelectedInListbox(lbx As ListBox, Optional All As Boolean = False) As List(Of String)
         Dim s As New List(Of String)
-        For Each l In lbx.SelectedItems
-            s.Add(l)
-        Next
+        If All Then
+            For Each l In lbx.Items
+                s.Add(l)
+            Next
+        Else
+            For Each l In lbx.SelectedItems
+                s.Add(l)
+            Next
+        End If
         Return s
     End Function
 
@@ -681,6 +711,14 @@ Public Module General
 
                 End If
             End If
+        Next
+        Return x
+    End Function
+    Public Function GetAllFolders(d As DirectoryInfo, s As String, Optional Random As Boolean = True) As List(Of String)
+
+        Dim x As New List(Of String)
+        For Each Di In d.EnumerateDirectories(s, SearchOption.AllDirectories)
+            x.Add(Di.FullName)
         Next
         Return x
     End Function
@@ -1549,4 +1587,12 @@ Public Module General
         End If
 
     End Sub
+    Friend Function ListFromDatabase(DB As Database) As List(Of String)
+        Dim s As New List(Of String)
+        For Each e In DB.Entries
+            s.Add(e.FullPath)
+        Next
+        Return s
+
+    End Function
 End Module

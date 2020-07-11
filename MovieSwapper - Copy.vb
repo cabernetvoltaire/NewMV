@@ -1,31 +1,28 @@
 ﻿Imports AxWMPLib
-Public Class MediaSwapper
+Public Class NewMediaSwapper
 
     Public WithEvents NextF As New NextFile
-    Public WithEvents Media1 As New MediaHandler("mMedia1")
-    Public WithEvents Media2 As New MediaHandler("mMedia2")
-    Public WithEvents Media3 As New MediaHandler("mMedia3")
-    Public MediaHandlers As New List(Of MediaHandler) From {Media1, Media2, Media3}
-
+    Private Property mMediaHandlers As New List(Of MediaHandler)
+    Public Property MediaHandlers As List(Of MediaHandler)
+        Set(value As List(Of MediaHandler))
+            mMediaHandlers = value
+        End Set
+        Get
+            Return mMediaHandlers
+        End Get
+    End Property
 
     Private Outliner As New PictureBox With {.BackColor = Color.HotPink}
-    Private WithEvents PauseAll As New Timer With {.Interval = 3000, .Enabled = False}
     Private mRandomNext As Boolean = False
     Public WriteOnly Property RandomNext As Boolean
         Set(value As Boolean)
             mRandomNext = value
-            For Each m In MediaHandlers
-                m.PicHandler.RandomNext = value
-            Next
         End Set
-
     End Property
 
     Private mFileList As New List(Of String) '
     Private mListIndex As Integer
-    Private mListbox As New ListBox
     Private mListcount As Integer
-    Public CurrentURLS As New List(Of String)
 
     Public Event MediaPlaying(sender As Object, e As EventArgs)
     Public Event MediaNotFound(sender As Object, e As EventArgs)
@@ -35,83 +32,12 @@ Public Class MediaSwapper
     Public Property PreviousItem As String
     Public Event MediaShown(sender As Object, e As EventArgs)
 #Region "Properties"
-
-    ''' <summary>
-    ''' Assigns the listbox which this Media Swapper controls
-    ''' </summary>
-    ''' <returns></returns>
-    Public Property Listbox() As ListBox
-        Get
-            Return mListbox
-        End Get
-        Set(ByVal value As ListBox)
-            mListbox = value
-
-            NextF.Listbox = value
-
-            For Each m In mListbox.Items
-                mFileList.Add(m)
-            Next
-            ' NextF.List = mFileList
-            GetNext()
-        End Set
-    End Property
-    Private Sub GetNext()
-        If mRandomNext Then
-            NextItem = NextF.RandomItem
-        Else
-            NextItem = NextF.NextItem
-        End If
-    End Sub
-
-
-    ''' <summary>
-    ''' Sets the listindex to make the currently shown medium.
-    ''' </summary>
-    ''' <returns></returns>
-    Public Property ListIndex() As Integer
-        Get
-            Return mListIndex
-        End Get
-        Set(ByVal value As Integer)
-            If value < 0 Then Exit Property
-            mListIndex = value
-
-            NextF.CurrentIndex = value
-            SetIndex(value)
-
-        End Set
-    End Property
-    Public Sub New(ByRef MP1 As AxWindowsMediaPlayer, ByRef MP2 As AxWindowsMediaPlayer, ByRef MP3 As AxWindowsMediaPlayer, ByRef PB1 As PictureBox, ByRef PB2 As PictureBox, ByRef PB3 As PictureBox)
-
-        AssignPlayers(MP1, MP2, MP3)
-        AssignPictures(PB1, PB2, PB3)
-
-    End Sub
-    Public Sub New()
-
+    Public Sub New(MHList As List(Of MediaHandler))
+        mMediaHandlers = MHList
     End Sub
 #End Region
 #Region "Methods"
 
-    Public Sub AssignPictures(ByRef PB1 As PictureBox, ByRef PB2 As PictureBox, ByRef PB3 As PictureBox)
-        Media1.PicHandler.PicBox = PB1
-        Media2.PicHandler.PicBox = PB2
-        Media3.PicHandler.PicBox = PB3
-        Media3.Picture = PB3
-        Media2.Picture = PB2
-        Media1.Picture = PB1
-
-
-    End Sub
-    Public Sub AssignPlayers(ByVal MP1 As AxWindowsMediaPlayer, ByVal MP2 As AxWindowsMediaPlayer, ByVal MP3 As AxWindowsMediaPlayer)
-
-        Media1.Player = MP1
-        Media2.Player = MP2
-        Media3.Player = MP3
-
-
-    End Sub
     ''' <summary>
     ''' Loads the media marked index, and puts the previous and next files into the other two media handlers
     ''' </summary>
@@ -182,7 +108,6 @@ Public Class MediaSwapper
 
         End Select
         'NB Duration is not loaded by this point. 
-        CurrentURLS.Add(path)
         MH.IsCurrent = False
     End Function
 
@@ -192,55 +117,9 @@ Public Class MediaSwapper
 
         Prepare(ThisMH, CurrentItem)
         ThisMH.IsCurrent = True
-
-        Select Case ThisMH.MediaType
-            Case Filetype.Movie
-
-                If separate Then OutlineControl(ThisMH.Player, Outliner)
-                ShowPlayer(ThisMH)
-            Case Filetype.Pic
-                If separate Then OutlineControl(ThisMH.Picture, Outliner)
-                ShowPicture(ThisMH)
-            Case Filetype.Doc
-                If separate Then OutlineControl(ThisMH.Picture, Outliner)
-                ShowTextFile(ThisMH)
-        End Select
+        ThisMH.Activate()
         Prepare(PrevMH, PreviousItem)
         Prepare(NextMH, NextItem)
-    End Sub
-    Private Sub ShowPicture(ByRef MHX As MediaHandler)
-        MuteAll()
-        ' HideMedias(MHX)
-        MHX.Picture.Visible = True
-        MHX.Picture.BringToFront()
-        RaiseEvent MediaShown(MHX, Nothing)
-
-    End Sub
-    Private Sub ShowTextFile(ByRef MHX As MediaHandler)
-        MuteAll()
-        ' HideMedias(MHX)
-
-        MHX.Visible = False
-        MHX.Textbox.BringToFront()
-        MHX.Textbox.Visible = True
-        RaiseEvent MediaShown(MHX, Nothing)
-
-    End Sub
-    Private Sub ShowPlayer(ByRef MHX As MediaHandler)
-        MuteAll()
-        '  HideMedias(MHX)
-
-        ResetPositionsAgain()
-        MHX.PlaceResetter(False) 'Starts the video playing
-        MHX.Visible = False
-        With MHX.Player
-            .Visible = True
-            .BringToFront()
-            .settings.mute = Muted
-            RaiseEvent MediaShown(MHX, Nothing)
-        End With
-
-
     End Sub
     Public Sub SetStartStates(ByRef SH As StartPointHandler)
         For Each m In MediaHandlers
@@ -327,16 +206,19 @@ Public Class MediaSwapper
         Media3.Speed.Paused = True
 
     End Sub
-    Public Sub ZoomPics(Pic As PictureHandler)
-        If Pic.State = PictureHandler.Screenstate.Fitted Then
-            For Each m In MediaHandlers
-                m.PicHandler.SetState(Pic.State)
-            Next
-        Else
-            For Each m In MediaHandlers
-                m.PicHandler.SetZoom(Pic.ZoomFactor)
-            Next
-        End If
+    Public Sub SetPicState(state As Byte)
+        For Each m In MediaHandlers
+            If m.PicHandler.State <> state Then
+                m.PicHandler.SetState(state)
+
+            End If
+        Next
+
+    End Sub
+    Public Sub ZoomPics(zoomfactor As Integer)
+        For Each m In MediaHandlers
+            m.PicHandler.ZoomFactor = zoomfactor
+        Next
     End Sub
     'Public Sub DockMedias(separated As Boolean)
     '    If separated Then

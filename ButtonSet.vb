@@ -66,7 +66,7 @@ Public Class ButtonSet
     ''' Does nothing if only one such row.
     ''' </summary>
     ''' <param name="letter"></param>
-    Public Function NextRow(letter As Integer) As ButtonRow
+    Public Function NextRow(letter As Integer, Optional Backward As Boolean = False) As ButtonRow
         Dim x As List(Of ButtonRow) = Nothing
         Dim count As Integer = Nothing
         CountRowIndices(letter, x, count)
@@ -76,7 +76,15 @@ Public Class ButtonSet
             Exit Function
         End If
         mRowIndex = x.IndexOf(mCurrentRow)
-        mRowIndex = (mRowIndex + 1) Mod count
+        If Backward Then
+            If mRowIndex = 0 Then
+                mRowIndex = count - 1
+            Else
+                mRowIndex = (mRowIndex - 1) Mod count
+            End If
+        Else
+            mRowIndex = (mRowIndex + 1) Mod count
+        End If
         mCurrentRow = x(mRowIndex)
         RaiseEvent LetterChanged(Me, Nothing)
 

@@ -22,9 +22,9 @@ Public Class FullScreen
     End Property
     Private Sub FullScreen_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         mFSFiles.DockMedias(General.separate)
-        AddHandler FSPB1.MouseDown, AddressOf fullScreenPicBox_MouseDown
-        AddHandler FSPB2.MouseDown, AddressOf fullScreenPicBox_MouseDown
-        AddHandler FSPB3.MouseDown, AddressOf fullScreenPicBox_MouseDown
+        'AddHandler FSPB1.MouseDown, AddressOf fullScreenPicBox_MouseDown
+        'AddHandler FSPB2.MouseDown, AddressOf fullScreenPicBox_MouseDown
+        'AddHandler FSPB3.MouseDown, AddressOf fullScreenPicBox_MouseDown
     End Sub
 
 
@@ -59,15 +59,15 @@ Public Class FullScreen
 
     End Sub
 
-    Private Sub fullScreenPicBox_MouseDown(sender As Object, e As MouseEventArgs)
-        Select Case e.Button
-            Case MouseButtons.XButton1, MouseButtons.XButton2
-                FormMain.AdvanceFile(e.Button = MouseButtons.XButton1)
-                e = Nothing
+    'Private Sub fullScreenPicBox_MouseDown(sender As Object, e As MouseEventArgs)
+    '    Select Case e.Button
+    '        Case MouseButtons.XButton1, MouseButtons.XButton2
+    '            FormMain.AdvanceFile(e.Button = MouseButtons.XButton1)
+    '            e = Nothing
 
-            Case Else
-                'PicClick(FSPB1)
-        End Select
-    End Sub
+    '        Case Else
+    '            'PicClick(FSPB1)
+    '    End Select
+    'End Sub
 
 End Class

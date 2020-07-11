@@ -170,7 +170,8 @@ Public Class ButtonHandler
         buttons.Clear()
         Dim i = 0
         Dim lst As New Dictionary(Of String, String)
-        For Each dx In GenerateSafeFolderList(e.FullName)
+        'For Each dx In GenerateSafeFolderList(e.FullName)
+        For Each dx In GetAllFolders(e, "*")
             Dim d As New DirectoryInfo(dx)
             lst.Add(d.FullName, d.Name)
         Next
@@ -199,18 +200,7 @@ Public Class ButtonHandler
         Dim icomp As New MyComparer
         Dim dlist As New SortedList(Of Long, DirectoryInfo)(icomp)
 
-        For Each di In d.EnumerateDirectories("*", searchOption:=IO.SearchOption.AllDirectories)
-
-            Dim disize = GetDirSize(di.FullName, 0, True)
-            If (exclude = "" Or Not di.Name.Contains(exclude)) And disize > 10 ^ SizeMagnitude Then
-                'MsgBox(di.Name & " is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###.#"))
-                While dlist.Keys.Contains(disize)
-                    disize += 1
-                End While
-                dlist.Add(disize, di)
-            End If
-
-        Next
+        CreateListOfLargeDirectories(SizeMagnitude, exclude, d, dlist)
         Dim i As Int16 = 0
         For Each de In dlist
 
@@ -239,6 +229,54 @@ Public Class ButtonHandler
 
 
     End Sub
+    ''' <summary>
+    ''' Creates a dlist of directories whose size is larger than 10^SizeMagnitude under d
+    ''' </summary>
+    ''' <param name="SizeMagnitude"></param>
+    ''' <param name="exclude"></param>
+    ''' <param name="d"></param>
+    ''' <param name="dlist"></param>
+    Private Shared Sub CreateListOfLargeDirectories(SizeMagnitude As Byte, exclude As String, d As DirectoryInfo, dlist As SortedList(Of Long, DirectoryInfo))
+        Dim dirlist As New List(Of String)
+        dirlist = GenerateSafeFolderList(d.FullName, True)
+        For Each x In dirlist
+            Dim di As New DirectoryInfo(x)
+            Dim disize = GetDirSize(di.FullName, 0, False)
+            If (exclude = "" Or Not di.Name.Contains(exclude)) And disize > 10 ^ SizeMagnitude Then
+                'MsgBox(di.Name & " is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###.#"))
+                While dlist.Keys.Contains(disize)
+                    disize += 1
+                End While
+                dlist.Add(disize, di)
+                CreateListOfLargeDirectories(SizeMagnitude, exclude, di, dlist)
+            End If
+
+        Next
+    End Sub
+    ''' <summary>
+    ''' Creates a dlist of directories whose depth is smaller than depth.
+    ''' </summary>
+    ''' <param name="Depth"></param>
+    ''' <param name="exclude"></param>
+    ''' <param name="d"></param>
+    ''' <param name="dlist"></param>
+    Private Shared Sub CreateListOfShallowDirectories(Depth As Byte, exclude As String, d As DirectoryInfo, dlist As SortedList(Of Long, DirectoryInfo))
+        Dim dirlist As New List(Of String)
+        dirlist = GenerateSafeFolderList(d.FullName, True)
+        For Each x In dirlist
+            Dim di As New DirectoryInfo(x)
+
+            'If (exclude = "" Or Not di.Name.Contains(exclude)) And countofcharsin(x) <= Depth Then
+            '    'MsgBox(di.Name & " is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###.#"))
+            '    While dlist.Keys.Contains(disize)
+            '        disize += 1
+            '    End While
+            '    dlist.Add(disize, di)
+            '    CreateListOfLargeDirectories(Depth, exclude, di, dlist)
+            'End If
+
+        Next
+    End Sub
     Public Sub AssignButton(ByVal ButtonNumber As Byte, ByVal Path As String)
         Dim f As New DirectoryInfo(Path)
 
@@ -255,7 +293,7 @@ Public Class ButtonHandler
         End With
 
     End Sub
-    Public Sub SwitchRow(m As ButtonRow)
+    Public Sub SwitchRow(m As ButtonRow, Optional Backwards As Boolean = False)
         For i = 0 To 7
             ActualButtons(i).Text = m.Buttons(i).FaceText
             Labels(i).Text = m.Buttons(i).Label
@@ -296,23 +334,26 @@ Public Class ButtonHandler
 
         For Each f In Application.OpenForms
             If f.name = "FS" Then
-                f.close
+                f.hide
+
                 Exit For
             End If
         Next
     End Sub
 
     Public Sub ShowPreview(Sender As Object, e As EventArgs)
-        Dim folderselect As New FormFolderSelect With {.Name = "FS"}
-
-        ' Exit Sub
-        Dim index As Byte = Val(Sender.tag)
-
-        folderselect.ButtonNumber = index
-        folderselect.Alpha = iCurrentAlpha
-        Dim s As String = buttons.CurrentRow.Buttons(index).Path
-        If s = "" Then s = CurrentFolder
-        folderselect.Folder = s
+        Dim folderselect As FormFolderSelect
+        If mFSOpen Then
+            For Each f In Application.OpenForms
+                If f.name = "FS" Then
+                    folderselect = AssignFolderSelect(Sender, f)
+                    f.show
+                    Exit For
+                End If
+            Next
+        Else
+            folderselect = SpawnFolderSelect(Sender)
+        End If
         Dim control As Control = CType(Sender, Control)
         Dim startpoint As Point
         startpoint.X = control.Left
@@ -323,6 +364,27 @@ Public Class ButtonHandler
         folderselect.Left = startpoint.X - folderselect.Width / 2
         folderselect.Top = startpoint.Y - folderselect.Height + control.Height / 10
     End Sub
+
+    Private Function SpawnFolderSelect(Sender As Object) As FormFolderSelect
+        Dim folderselect As New FormFolderSelect With {.Name = "FS"}
+
+        ' Exit Sub
+        folderselect = AssignFolderSelect(Sender, folderselect)
+        mFSOpen = True
+        Return folderselect
+    End Function
+
+    Private Function AssignFolderSelect(Sender As Object, folderselect As FormFolderSelect) As FormFolderSelect
+        Dim index As Byte = Val(Sender.tag)
+
+        folderselect.ButtonNumber = index
+        folderselect.Alpha = iCurrentAlpha
+        Dim s As String = buttons.CurrentRow.Buttons(index).Path
+        If s = "" Then s = CurrentFolder
+        folderselect.Folder = s
+        Return folderselect
+    End Function
+
     Public Sub SwapPath(Oldpath As String, Newpath As String)
         Dim changed As Boolean = False
         For Each r In buttons.CurrentSet

@@ -30,7 +30,10 @@ Public Class FormDatabaseShower
         Dim j = e.RowIndex
         If j >= 0 Then
             Dim s = dgv.Rows(j).Cells(1).Value & dgv.Rows(j).Cells(0).Value
+
+
             If j > 0 Then FormMain.HighlightCurrent(s)
+
         End If
     End Sub
 
@@ -72,9 +75,9 @@ Public Class FormDatabaseShower
 
     End Sub
 
-    Private Sub DatabaseShower_GotFocus(sender As Object, e As EventArgs) Handles Me.Enter
+    Private Sub DatabaseShower_GotFocus(sender As Object, e As EventArgs) Handles Me.GotFocus
         FormMain.DB = MDB
-
+        ' MSFiles.NextF.List = ListFromDatabase(MDB)
     End Sub
 
     Private Sub btnAnalyzeDups_Click(sender As Object, e As EventArgs) Handles btnAnalyzeDups.Click

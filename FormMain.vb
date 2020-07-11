@@ -1024,8 +1024,7 @@ Friend Class FormMain
         '    Response.Enabled = False
     End Sub
     Public Sub HandleFunctionKeyDown(sender As Object, e As KeyEventArgs)
-        'RespondToKey(sender, e)
-        'Exit Sub
+
         Dim mBH As New ButtonHandler
         If TypeOf (sender) Is FormButton Then
             mBH = sender.BH
@@ -1061,8 +1060,10 @@ Friend Class FormMain
             ElseIf e.Shift Then
                 'Move Folder
                 If path <> "" Then
-                    MovingFolder(tvmain2.SelectedFolder, path)
-                    mBH.SwapPath(path, tvmain2.SelectedFolder)
+                    Dim source As String = tvmain2.SelectedFolder
+                    MovingFolder(source, path)
+                    Dim xx As String = System.IO.Path.GetFileName(source)
+                    mBH.SwapPath(source, path & "\" & xx)
                 End If
             Else
                 If path <> "" Then
@@ -1786,7 +1787,7 @@ Friend Class FormMain
         BH.AssignAlphabetical(New DirectoryInfo(CurrentFolder))
     End Sub
     Private Sub TreeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TreeToolStripMenuItem.Click
-        BH.AssignTreeNew(CurrentFolder, 5)
+        BH.AssignTreeNew(CurrentFolder, Val(InputBox("Size Magnitude")))
     End Sub
     Private Sub RespondToKey(sender As Object, e As KeyEventArgs)
         Dim mBH As New ButtonHandler
@@ -1846,9 +1847,10 @@ Friend Class FormMain
                     '        mBH.SaveButtonSet()
                     'End Select
                 Else
-                        'Advance row, or change letter
-                        If mBH.buttons.CurrentLetter = LetterNumberFromAscii(e.KeyCode) Then
-                        mBH.buttons.NextRow(LetterNumberFromAscii(e.KeyCode))
+                    'Advance row, or change letter
+                    If mBH.buttons.CurrentLetter = LetterNumberFromAscii(e.KeyCode) Then
+
+                        mBH.buttons.NextRow(LetterNumberFromAscii(e.KeyCode), e.Alt)
                     Else
                         mBH.buttons.CurrentLetter = LetterNumberFromAscii(e.KeyCode)
                     End If
@@ -3023,7 +3025,7 @@ Friend Class FormMain
             End If
         Next
         If Not found Then
-            Autoload(Path.GetFileNameWithoutExtension(CBXButtonFiles.SelectedItem), True)
+            Autoload(Path.GetFileNameWithoutExtension(CBXButtonFiles.SelectedItem), False)
         End If
     End Sub
 
@@ -3454,6 +3456,7 @@ Friend Class FormMain
 
     Public Sub DatabaseExperimentToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DatabaseExperimentToolStripMenuItem.Click
         Form4.Show()
+        AddHandler Form4.KeyDown, AddressOf HandleKeys
     End Sub
 
 

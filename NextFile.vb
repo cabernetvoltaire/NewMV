@@ -8,10 +8,11 @@
         End Get
         Set(ByVal value As ListBox)
             mListbox = value
+            List = ListfromSelectedInListbox(mListbox)
             mListCount = mListbox.Items.Count
         End Set
     End Property
-
+    Public Property List As List(Of String)
     Public Property CurrentItem As String
     Public Property Forwards As Boolean = True
     Private mCurrentIndex As Integer
@@ -22,7 +23,11 @@
         Set(ByVal value As Integer)
             mCurrentIndex = value
             If value >= 0 And value < mListCount Then
-                CurrentItem = mListbox.Items(mCurrentIndex)
+                If mListbox IsNot Nothing Then
+                    CurrentItem = mListbox.Items(mCurrentIndex)
+                Else
+                    CurrentItem = List(mCurrentIndex)
+                End If
             End If
 
         End Set

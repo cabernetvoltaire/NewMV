@@ -332,6 +332,15 @@ Public Class MediaHandler
         Return path
 
     End Function
+    Public Function Activate()
+        Select Case Me.MediaType
+            Case Filetype.Movie
+
+            Case Filetype.Link
+            Case Filetype.Doc
+
+        End Select
+    End Function
     Private Property mlinkcounter As Integer
 #Region "Linkhandling"
 
@@ -632,6 +641,9 @@ Public Class MediaHandler
     Public Sub OnPicZoomed(sender As Object, e As EventArgs) Handles PicHandler.ZoomChange
         RaiseEvent Zoomchanged(sender, e)
     End Sub
+    Public Sub OnPicStateChange(sender As Object, e As EventArgs) Handles PicHandler.StateChanged
+        RaiseEvent Zoomchanged(sender, e)
+    End Sub
     Private Sub Uhoh() Handles mPlayer.ErrorEvent
 
         'MsgBox("Error in MediaPlayer")
@@ -778,8 +790,8 @@ Public Class PicGrabber
     'End Sub
     Public Player As New AxWindowsMediaPlayer
     Public Sub GrabScreen()
-        Dim x As New Bitmap(100, 100)
-        '        x = Player.DrawToBitmap(x, New Rectangle With {.Height = 1000, .Width = 100, .Location = New Point(0, 0)})
-
+        Using x As New Bitmap(100, 100)
+            '        x = Player.DrawToBitmap(x, New Rectangle With {.Height = 1000, .Width = 100, .Location = New Point(0, 0)})
+        End Using
     End Sub
 End Class
