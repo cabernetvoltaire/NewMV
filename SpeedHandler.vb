@@ -1,5 +1,5 @@
 ﻿Public Class SpeedHandler
-    Public Intervals() As Integer = {1000, 300, 200}
+    Public Intervals() As Integer = {1000, 300, 10}
     Public FrameRates() As Byte = {5, 15, 20}
     Public Event SpeedChanged(sender As Object, e As EventArgs)
     Private mSlideshow As Boolean = False

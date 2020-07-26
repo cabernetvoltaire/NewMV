@@ -209,7 +209,7 @@ Public Class MediaSwapper
         Prepare(NextMH, NextItem)
     End Sub
     Private Sub ShowPicture(ByRef MHX As MediaHandler)
-        MuteAll()
+        MuteAll(True)
         ' HideMedias(MHX)
         MHX.Picture.Visible = True
         MHX.Picture.BringToFront()
@@ -217,7 +217,7 @@ Public Class MediaSwapper
 
     End Sub
     Private Sub ShowTextFile(ByRef MHX As MediaHandler)
-        MuteAll()
+        MuteAll(True)
         ' HideMedias(MHX)
 
         MHX.Visible = False
@@ -227,7 +227,7 @@ Public Class MediaSwapper
 
     End Sub
     Private Sub ShowPlayer(ByRef MHX As MediaHandler)
-        MuteAll()
+        MuteAll(True)
         '  HideMedias(MHX)
 
         ResetPositionsAgain()
@@ -294,9 +294,9 @@ Public Class MediaSwapper
         Next
     End Sub
 
-    Public Sub MuteAll()
+    Public Sub MuteAll(SoundOff As Boolean)
         For Each m In MediaHandlers
-            m.Player.settings.mute = True
+            m.Player.settings.mute = SoundOff
         Next
 
     End Sub
@@ -328,9 +328,9 @@ Public Class MediaSwapper
 
     End Sub
     Public Sub ZoomPics(Pic As PictureHandler)
-        If Pic.State = PictureHandler.Screenstate.Fitted And Not Pic.WheelScroll Then
+        If Pic.State = PictureHandler.Screenstate.Fitted And Not Pic.WheelAdvance Then
             For Each m In MediaHandlers
-                m.PicHandler.SetState(Pic.State)
+                m.PicHandler.SetState(PictureHandler.Screenstate.Fitted)
             Next
         Else
             For Each m In MediaHandlers

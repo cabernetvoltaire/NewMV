@@ -62,7 +62,9 @@
                         .Tag = f
 
                         AddHandler .MouseEnter, AddressOf pb_Mouseover
-                        AddHandler .MouseDoubleClick, AddressOf pb_Click
+                        AddHandler .MouseDoubleClick, AddressOf pb_DoubleClick
+                        AddHandler .MouseClick, AddressOf pb_Click
+
                         '.Refresh()
                     End With
                 End If
@@ -74,6 +76,13 @@
         Next
         Return i
     End Function
+
+    Private Sub pb_Click(sender As Object, e As MouseEventArgs)
+        If FormMain.lbxFiles.SelectionMode <> SelectionMode.MultiSimple Then FormMain.lbxFiles.SelectionMode = SelectionMode.MultiSimple
+        FormMain.lbxFiles.SelectedItems.Add(sender.tag)
+
+        '        Throw New NotImplementedException()
+    End Sub
 
     Private Sub flp_Mouseover(sender As Object, e As EventArgs)
         ToolTip1.SetToolTip(sender, sender.name)
@@ -90,7 +99,7 @@
         'MainForm.tmrPicLoad.Enabled = True
 
     End Sub
-    Private Sub pb_Click(sender As Object, e As MouseEventArgs)
+    Private Sub pb_DoubleClick(sender As Object, e As MouseEventArgs)
         If MsgBox("Delete file?", MsgBoxStyle.YesNo, "Metavisua") = MsgBoxResult.Yes Then
             Dim pb = DirectCast(sender, PictureBox)
             pb.Visible = False

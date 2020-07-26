@@ -21,6 +21,11 @@ Friend Module FileHandling
     Public Sub OnZoomChanged(sender As Object, e As EventArgs) Handles Media.Zoomchanged
         MSFiles.ZoomPics(sender)
 
+        If Media.PicHandler.State = PictureHandler.Screenstate.Fitted Then
+            FormMain.tbZoom.Text = "Fitted"
+        Else
+            FormMain.tbZoom.Text = "Zoom: " & Str(Media.PicHandler.ZoomFactor) & "%"
+        End If
     End Sub
     Public Sub OnMediaFinished(sender As Object, e As EventArgs) Handles Media.MediaFinished
         FormMain.AdvanceFile(True, FormMain.Random.NextSelect)

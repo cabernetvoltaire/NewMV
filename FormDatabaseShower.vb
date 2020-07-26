@@ -58,14 +58,20 @@ Public Class FormDatabaseShower
 
     Private Sub TextBox1_KeyUp(sender As Object, e As KeyEventArgs) Handles FinderTextBox.KeyUp
         If e.KeyCode = Keys.Return Then
-            FindEntry(FinderTextBox.Text)
+            UpdateFilter(FinderTextBox.Text)
         End If
     End Sub
 
     Private Sub FindEntry(text As String)
         'MDB.Sort(New CompareDBByFilename)
-        Dim i As Integer = Filenames.BinarySearch(text)
-        dgv.Rows(Math.Abs(i)).Selected = True
+        For Each r In dgv.Rows
+            If r.cells(0).value.contains(text) Then
+                r.selected = True
+            Else
+                r.selected = False
+            End If
+
+        Next
         'Throw New NotImplementedException()
     End Sub
 
@@ -85,5 +91,9 @@ Public Class FormDatabaseShower
         x.DB = MDB
         x.FindDuplicates()
         x.Show()
+    End Sub
+
+    Private Sub FinderTextBox_TextChanged(sender As Object, e As EventArgs) Handles FinderTextBox.TextChanged
+
     End Sub
 End Class

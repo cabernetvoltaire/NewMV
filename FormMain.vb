@@ -571,6 +571,7 @@ Friend Class FormMain
 
     Public Sub AdvanceFile(blnForward As Boolean, Optional Random As Boolean = False)
         LastGoodFile = Media.MediaPath
+        PreferencesSave()
         Dim LBHH As New ListBoxHandler()
         If CtrlDown Then
             LBHH = LBH
@@ -894,13 +895,14 @@ Friend Class FormMain
 
             Case KeyMuteToggle
                 Muted = Not Muted
-                If Muted Then
-                    Media.Player.settings.mute = False
-                    SwitchSound(False)
-                Else
+                MSFiles.MuteAll(Muted)
+                'If Muted Then
+                '    Media.Player.settings.mute = False
+                '    SwitchSound(False)
+                'Else
 
-                    MSFiles.MuteAll()
-                End If
+                '    MSFiles.MuteAll()
+                'End If
                 '                Media.Player.settings.mute = Not Media.Player.settings.mute
                 e.SuppressKeyPress = True
 
@@ -1016,7 +1018,10 @@ Friend Class FormMain
                     chbSlideShow.Checked = tmrSlideShow.Enabled
 
                 End If
-
+            Case Keys.Home
+                If e.Control Then FBH.SetFirst(True)
+            Case Keys.End
+                If e.Control Then FBH.SetIndex(FBH.ItemList.Count - 1)
         End Select
         '   End If
         Me.Cursor = Cursors.Default
@@ -1733,7 +1738,6 @@ Friend Class FormMain
         '   tbSpeed.Text = tbSpeed.Text = "SPEED (" & PlaybackSpeed & "fps)"
         TBFractionAbsolute.Text = "Fraction: " & Str(SP.FractionalJump) & "ths Absolute:" & Str(SP.AbsoluteJump) & "s"
 
-        '  tbZoom.Text = iZoomFactor
         If Random.StartPointFlag Then
             tbStartpoint.Text = "START:RANDOM"
         Else
@@ -3079,7 +3083,7 @@ Friend Class FormMain
         tmrJumpRandom.Interval = tbScanRate.Value
     End Sub
     Private Sub MainForm_Mousewheel(sender As Object, e As MouseEventArgs) Handles Me.MouseWheel
-        If Media.PicHandler.WheelScroll And Media.MediaType = Filetype.Movie Then
+        If Media.PicHandler.WheelAdvance And Media.MediaType = Filetype.Movie Then
             AdvanceFile(e.Delta < 0, Random.NextSelect)
         End If
 
@@ -3402,6 +3406,26 @@ Friend Class FormMain
             If x.Count <> 0 Then Op.ReuniteWithFile(x, m.FullPath)
         Next
     End Sub
+    Private Sub RefreshLinksOnPathNameFromDatabase(ListofLinks As List(Of String))
+        DB.Sort()
+        Dim entry As New List(Of DatabaseEntry)
+        For Each link In ListofLinks
+            Dim Filename As String = Path.GetFileNameWithoutExtension(Split(link, "%")(0))
+            entry = DB.FindPartEntry(Filename)
+            If entry.Count = 1 Then
+                Dim x As New ShortcutHandler()
+                x.ReAssign(entry(0).FullPath, link)
+            End If
+        Next
+
+    End Sub
+
+    Private Function GetFileNameFromLinkName(Link As String) As String
+        Dim s() As String
+        s = Link.Split("%")
+        Return s(0)
+        '        Throw New NotImplementedException()
+    End Function
 
     Private Sub LinksByPartOfPathToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LinksByPartOfPathToolStripMenuItem.Click
         Dim x As New GroupByLinkFolders()
@@ -3457,6 +3481,28 @@ Friend Class FormMain
     Public Sub DatabaseExperimentToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DatabaseExperimentToolStripMenuItem.Click
         Form4.Show()
         AddHandler Form4.KeyDown, AddressOf HandleKeys
+    End Sub
+
+    Private Sub RefreshSelectedFromLinkNameToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RefreshSelectedFromLinkNameToolStripMenuItem.Click
+        Dim x As List(Of String) = FBH.SelectedItemsList
+        RefreshLinksOnPathNameFromDatabase(x)
+    End Sub
+
+    Private Sub SelectAllWrongLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectAllWrongLinksToolStripMenuItem.Click
+        Dim list As New List(Of String)
+        FBH.ListBox.SelectionMode = SelectionMode.MultiExtended
+        'For each link in folder
+        'Select if link doesn't point to named file
+        For Each f In FBH.ItemList
+            Dim file As New IO.FileInfo(f)
+            If file.Extension = LinkExt Then
+                If LinkTargetContainsNameFile(file.FullName) Then
+                Else
+                    list.Add(f)
+                End If
+            End If
+        Next
+        FBH.SelectItems = list
     End Sub
 
 

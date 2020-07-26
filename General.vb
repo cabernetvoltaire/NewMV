@@ -222,7 +222,20 @@ Public Module General
         End Try
 
     End Function
-
+    ''' <summary>
+    ''' Returns true if target contains filename contained in its name
+    ''' </summary>
+    ''' <param name="LinkPath"></param>
+    ''' <returns></returns>
+    Public Function LinkTargetContainsNameFile(LinkPath As String) As Boolean
+        Dim LinkTarget As String = NewLinkTarget(LinkPath)
+        Dim Filename As String = Path.GetFileName(Split(LinkPath, "%")(0))
+        If Filename = Path.GetFileName(LinkTarget) Then
+            Return True
+        Else
+            Return False
+        End If
+    End Function
     ''' <summary>
     ''' Returns the path of the link defined in str
     ''' </summary>

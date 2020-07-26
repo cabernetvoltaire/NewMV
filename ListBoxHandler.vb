@@ -206,9 +206,9 @@
             SetIndex(i)
         End If
     End Sub
-    Public Sub SetFirst()
+    Public Sub SetFirst(Optional ForceFirst As Boolean = False)
         If ListBox.Items.Count > 0 Then
-            If Random.OnDirChange Then
+            If Random.OnDirChange And Not ForceFirst Then
                 ListBox.SelectedIndex = Rnd() * (ListBox.Items.Count - 1)
             Else
                 ListBox.SelectedIndex = 0

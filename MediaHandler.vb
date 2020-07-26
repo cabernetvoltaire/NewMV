@@ -532,13 +532,13 @@ Public Class MediaHandler
         End Select
         Try
 
-            If mIsLink Then
-                MetaDirectory = MetadataExtractor.ImageMetadataReader.ReadMetadata(mLinkPath)
-            Else
+            'If mIsLink Then
+            '    MetaDirectory = MetadataExtractor.ImageMetadataReader.ReadMetadata(mLinkPath)
+            'Else
 
-                MetaDirectory = MetadataExtractor.ImageMetadataReader.ReadMetadata(mMediaPath)
+            '    MetaDirectory = MetadataExtractor.ImageMetadataReader.ReadMetadata(mMediaPath)
 
-            End If
+            'End If
 
         Catch ex As Exception
 

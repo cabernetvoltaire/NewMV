@@ -29,8 +29,8 @@ Partial Class FormDatabaseShower
         Me.Column3 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
         Me.FinderTextBox = New System.Windows.Forms.TextBox()
-        Me.btnAnalyzeDups = New System.Windows.Forms.Button()
         Me.FlowLayoutPanel2 = New System.Windows.Forms.FlowLayoutPanel()
+        Me.btnAnalyzeDups = New System.Windows.Forms.Button()
         Me.TableLayoutPanel1.SuspendLayout()
         CType(Me.dgv, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.FlowLayoutPanel1.SuspendLayout()
@@ -104,15 +104,6 @@ Partial Class FormDatabaseShower
         Me.FinderTextBox.Size = New System.Drawing.Size(401, 29)
         Me.FinderTextBox.TabIndex = 2
         '
-        'btnAnalyzeDups
-        '
-        Me.btnAnalyzeDups.Location = New System.Drawing.Point(3, 3)
-        Me.btnAnalyzeDups.Name = "btnAnalyzeDups"
-        Me.btnAnalyzeDups.Size = New System.Drawing.Size(410, 32)
-        Me.btnAnalyzeDups.TabIndex = 3
-        Me.btnAnalyzeDups.Text = "Analyze Duplicates in this database"
-        Me.btnAnalyzeDups.UseVisualStyleBackColor = True
-        '
         'FlowLayoutPanel2
         '
         Me.FlowLayoutPanel2.Controls.Add(Me.btnAnalyzeDups)
@@ -122,14 +113,23 @@ Partial Class FormDatabaseShower
         Me.FlowLayoutPanel2.Size = New System.Drawing.Size(812, 172)
         Me.FlowLayoutPanel2.TabIndex = 4
         '
-        'DatabaseShower
+        'btnAnalyzeDups
+        '
+        Me.btnAnalyzeDups.Location = New System.Drawing.Point(3, 3)
+        Me.btnAnalyzeDups.Name = "btnAnalyzeDups"
+        Me.btnAnalyzeDups.Size = New System.Drawing.Size(410, 32)
+        Me.btnAnalyzeDups.TabIndex = 3
+        Me.btnAnalyzeDups.Text = "Analyze Duplicates in this database"
+        Me.btnAnalyzeDups.UseVisualStyleBackColor = True
+        '
+        'FormDatabaseShower
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(11.0!, 24.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1635, 892)
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.KeyPreview = True
-        Me.Name = "DatabaseShower"
+        Me.Name = "FormDatabaseShower"
         Me.Text = "DatabaseShower"
         Me.TableLayoutPanel1.ResumeLayout(False)
         CType(Me.dgv, System.ComponentModel.ISupportInitialize).EndInit()

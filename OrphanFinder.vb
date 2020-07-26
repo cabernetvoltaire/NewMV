@@ -92,7 +92,7 @@ Public Class OrphanFinder
                 mn = Replace(m.Key, s, "")
             End If
             Dim f As New IO.FileInfo(m.Value)
-            If f.Exists = True Then mSHandler.ReAssign_ShortCutPath(m.Value, mn)
+            If f.Exists = True Then mSHandler.ReAssign(m.Value, mn)
         Next
 
     End Sub

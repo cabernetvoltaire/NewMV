@@ -17,7 +17,7 @@
         End Set
     End Property
     Private mPicImage As Image
-    Public Property WheelScroll As Boolean = True
+    Public Property WheelAdvance As Boolean = True
     Public Property TextOutput As String
     Public Property PicBoxContainer As New Control
     Private Property mZoomfactor As Integer = 100
@@ -129,8 +129,8 @@
     End Sub
     Public Sub PicClick(sender As Object, e As MouseEventArgs) Handles mPicBox.Click
         If e.Button = MouseButtons.Left Then
-            WheelScroll = Not WheelScroll
-            If WheelScroll Then
+            WheelAdvance = Not WheelAdvance
+            If WheelAdvance Then
                 mPicBox.Cursor = Cursors.Arrow
             Else
                 mPicBox.Cursor = Cursors.Cross
@@ -155,13 +155,13 @@
         ePicMousePoint.X = ePicMousePoint.X + mPicBox.Left
         ePicMousePoint.Y = ePicMousePoint.Y + mPicBox.Top
 
-        If WheelScroll Then 'State = Screenstate.Fitted Then
+        If WheelAdvance Then 'State = Screenstate.Fitted Then
             'RaiseEvent AdvanceFile(sender, e)
             FormMain.AdvanceFile(e.Delta < 0, RandomNext)
             'MainForm.tmrSlideShow.Enabled = False 'Break slideshow if scrolled
             'Dim img As Image = Me.GetImage(Media.MediaPath)
         Else
-            ZoomPicture(e.Delta > 0, 15)
+            ZoomPicture(e.Delta > 0, 5)
         End If
 
     End Sub
@@ -317,7 +317,7 @@
                 RaiseEvent ZoomChange(Me, Nothing)
             Else
                 mState = SetState(PictureHandler.Screenstate.Fitted)
-                WheelScroll = True
+                WheelAdvance = True
                 mPicBox.Cursor = Cursors.Arrow
                 RaiseEvent StateChanged(Me, Nothing)
             End If
