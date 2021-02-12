@@ -5,7 +5,6 @@ Imports System.IO
 Imports AxWMPLib
 Imports System.Threading
 Imports MasaSam.Forms.Controls
-Imports MasaSam.Forms.Sample
 
 Friend Class FormMain
     Public DB As New Database

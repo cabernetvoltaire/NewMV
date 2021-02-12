@@ -81,7 +81,7 @@
     <ManifestKeyFile>Metavisua_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -116,18 +116,20 @@
     <Reference Include="ExifLib, Version=1.7.0.0, Culture=neutral, PublicKeyToken=30284005913968db, processorArchitecture=MSIL">
       <HintPath>packages\ExifLib.1.7.0.0\lib\net45\ExifLib.dll</HintPath>
     </Reference>
-    <Reference Include="Interop.Dsofile">
-      <HintPath>C:\DsoFile\Demo\Interop.Dsofile.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="MasaSam.Forms.Controls, Version=1.0.6487.35861, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="MasaSam.Forms.Controls">
       <HintPath>..\MasaSam.Forms.Controls\bin\Debug\MasaSam.Forms.Controls.dll</HintPath>
     </Reference>
     <Reference Include="MetadataExtractor.StrongName, Version=2.3.1.0, Culture=neutral, PublicKeyToken=b66b5ccaf776c301, processorArchitecture=MSIL">
       <HintPath>packages\MetadataExtractor.StrongName.2.3.1\lib\net45\MetadataExtractor.StrongName.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="msdatasrc1">
+      <HintPath>C:\Program Files (x86)\Microsoft.NET\Primary Interop Assemblies\msdatasrc.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -136,6 +138,7 @@
     <Reference Include="System.Deployment" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web.Services" />
@@ -153,7 +156,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Import Include="AxWMPLib" />
     <Import Include="Microsoft.VisualBasic" />
+    <Import Include="MSDATASRC" />
     <Import Include="System" />
     <Import Include="System.Collections" />
     <Import Include="System.Collections.Generic" />
@@ -272,12 +277,6 @@
     <Compile Include="My Project\Class1.vb" />
     <Compile Include="NextFile.vb" />
     <Compile Include="OrphanFinder.vb" />
-    <Compile Include="PicTest.Designer.vb">
-      <DependentUpon>PicTest.vb</DependentUpon>
-    </Compile>
-    <Compile Include="PicTest.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="PictureHandler.vb" />
     <Compile Include="PlayListHandler.vb" />
     <Compile Include="Preferences.Designer.vb">
@@ -392,9 +391,6 @@
     <EmbeddedResource Include="MetaData.resx">
       <DependentUpon>MetaData.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PicTest.resx">
-      <DependentUpon>PicTest.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Preferences.resx">
       <DependentUpon>Preferences.vb</DependentUpon>
     </EmbeddedResource>
@@ -454,15 +450,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="AXVLC">
-      <Guid>{DF2BBE39-40A8-433B-A279-073F48DA94B6}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <COMReference Include="AxWMPLib">
       <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
       <VersionMajor>1</VersionMajor>
@@ -498,15 +485,6 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-    <COMReference Include="MSDataGridLib">
-      <Guid>{CDE57A40-8B86-11D0-B3C6-00A0C90AEA82}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <COMReference Include="MSDATASRC">
       <Guid>{7C0FFAB0-CD84-11D0-949A-00A0C91110ED}</Guid>
       <VersionMajor>1</VersionMajor>
@@ -522,15 +500,6 @@
       <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="StdFormat">
-      <Guid>{6B263850-900B-11D0-9484-00A0C91110ED}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
@@ -587,6 +556,9 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Fakes\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

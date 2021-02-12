@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports System.Threading
 Imports MasaSam.Forms.Controls
+
 Friend Module FileHandling
 
     '  Public WithEvents StartPoint As New StartPointHandler
