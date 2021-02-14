@@ -28,7 +28,7 @@ Friend Class FormMain
     Public WithEvents AT As New AutoTrailer
     Public WithEvents X As New OrphanFinder
     Public WithEvents VT As New VideoThumbnailer
-    Public WithEvents FKH As FunctionKeyHandler
+
     Public WithEvents FOP As FileOperations
     Public WithEvents BH As New ButtonHandler With {.RowProgressBar = ProgressBar1}
     Public Splash As New SplashScreen1
@@ -2942,7 +2942,7 @@ Friend Class FormMain
     End Sub
 
     Private Sub NewButtonFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NewButtonFileToolStripMenuItem.Click
-        If Me.Focused Then
+        If Me Is ActiveForm Then
             BH.buttons.Clear()
             BH.SaveButtonSet()
         Else
@@ -2952,7 +2952,7 @@ Friend Class FormMain
     End Sub
 
     Private Sub SelectedDeepToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectedDeepToolStripMenuItem.Click
-
+        MsgBox("Does Nothing")
     End Sub
 
     Private Sub ListDeadFilesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ListDeadFilesToolStripMenuItem.Click

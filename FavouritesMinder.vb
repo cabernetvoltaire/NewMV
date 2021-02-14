@@ -62,16 +62,6 @@
 
         End If
     End Sub
-    ''' <summary>
-    ''' Runs through all files in f, and redirects their targets
-    ''' </summary>
-    ''' <param name="f"></param>
-    'Public Sub CheckFiles(f As List(Of String))
-    '    For Each m In f
-    '        Dim k As New IO.FileInfo(m)
-    '        Check(k, mDestPath)
-    '    Next
-    'End Sub
 
     Public Sub RedirectShortCutList(destination As String, shortcuts As List(Of String))
         ReallocateShortCuts(destination, shortcuts)

@@ -245,7 +245,6 @@
     <Compile Include="Form4.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FunctionKeyHandler.vb" />
     <Compile Include="Grouper.vb" />
     <Compile Include="GroupingForm.Designer.vb">
       <DependentUpon>GroupingForm.vb</DependentUpon>
@@ -528,7 +527,7 @@
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
   <ItemGroup>

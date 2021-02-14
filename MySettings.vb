@@ -4,6 +4,8 @@ Friend Module Mysettings
     Public FirstLoad As Boolean = False
     Public PFocus As Byte = CtrlFocus.Tree
     Public IncludeRemovables As Boolean = False
+    Public Settings As New List(Of Setting)
+
 #Region "Literals"
     Public Property ZoneSize As Decimal = 0.4
     Public Const OrientationId As Integer = &H112
@@ -151,6 +153,82 @@ Friend Module Mysettings
 
 
     End Sub
+    Public Sub PreferencesSaveNew()
+        'With Settings
+        '    '        
+        '    '    "Horizontal split position",
+        '    '    ,
+        '    '   
+        '    '    ,
+        '    '    "Current navigate/move state",
+        '    '    ,
+        '    '    "Current alphabet button",
+        '    '    "Current favourites location",
+        '    '    "Preview links?",
+        '    '    "Root scan path",
+        '    '    "Directories list:",
+        '    '    "Global favourites directory",
+        '    '    "Choose next file at random",
+        '    '    "Always choose random file on directory change",
+        '    '    "Auto trail mode",
+        '    '"Auto load button sets",
+        '    '"Show attributes",
+        '    '"Preview links",
+        '    '"Encrypt text files",
+        '    '"Auto advance",
+        '    '"Directory containing thumbnails",
+        '    '"Directory containing button files"
+
+        '    .Add(New Setting("Last close successful", LastTimeSuccessful, False))
+        '    .Add(New Setting("Vertical Split position", FormMain.ctrFileBoxes.SplitterDistance, FormMain.ctrFileBoxes.Height / 4))
+        '    .Add(New Setting("Horizontal split position", FormMain.ctrMainFrame.SplitterDistance, FormMain.ctrFileBoxes.Width * 0.75))
+        '    If LastTimeSuccessful Then
+        '        .Add(New Setting("Last file loaded", Media.MediaPath, ""))
+        '    Else
+        '        .Add(New Setting("Last file loaded", FormMain.LastGoodFile, ""))
+        '    End If
+        '    .Add(New Setting("Current filter state", FormMain.CurrentFilterState.State, 0))
+        '    .Add(New Setting("Current sort order", FormMain.PlayOrder.State, 0))
+        '    .Add(New Setting("Current start point state", Media.SPT.State, 0))
+        '    .Add(New Setting("Current navigate/move state", FormMain.NavigateMoveState.State, 0))
+        '    .Add(New Setting("Last button file loaded", ButtonFilePath,))
+        '    .Add(New Setting("Current alphabet button", iCurrentAlpha,))
+        '    .Add(New Setting("Favourites", CurrentFavesPath,))
+        '    .Add(New Setting("PreviewLinks", FormMain.chbPreviewLinks.Checked,))
+        '    .Add(New Setting("RootScanPath", Rootpath,))
+        '    .Add(New Setting("Directories List", DirectoriesListFile,)) 'DirectoriesListFile,))
+        '    .Add(New Setting("GlobalFaves", GlobalFavesPath,))
+        '    .Add(New Setting("RandomNextFile", FormMain.chbNextFile.Checked,))
+        '    .Add(New Setting("RandomOnDirectoryChange", FormMain.chbOnDir.Checked,))
+        '    .Add(New Setting("RandomAutoTrail", FormMain.chbAutoTrail.Checked,))
+        '    .Add(New Setting("RandomAutoLoadButtons", FormMain.chbLoadButtonFiles.Checked,))
+        '    .Add(New Setting("OptionsShowAttr", FormMain.chbShowAttr.Checked,))
+        '    .Add(New Setting("OptionsPreviewLinks", FormMain.chbPreviewLinks.Checked,))
+        '    .Add(New Setting("OptionsEncrypt", FormMain.chbEncrypt.Checked,))
+        '    .Add(New Setting("OptionsAutoAdvance", FormMain.CHBAutoAdvance.Checked,))
+        '    .Add(New Setting("OptionsSeparate", FormMain.chbSeparate.Checked,))
+        '    .Add(New Setting("ThumbnailDestination", ThumbDestination,))
+        '    .Add(New Setting("ButtonFolder", Buttonfolder,))
+        '    .Add(New Setting("FractionalJump", FormMain.SP.FractionalJump,))
+        '    .Add(New Setting("AbsoluteJump", FormMain.SP.AbsoluteJump,))
+        '    .Add(New Setting("Speed", FormMain.SP.Speed,))
+        '    .Add(New Setting("Navmode", FormMain.NavigateMoveState.State,))
+
+        'End With
+
+        ''    Dim f As New IO.FileInfo(PrefsFilePath)
+        ''    If f.Exists = False Then
+        ''    Else
+        ''        f.Delete()
+        ''        ' PrefsFilePath = PrefsFilePath.Replace(".", Str(Int(Rnd() * 1000)) & ".")
+        ''    End If
+
+        ''    WriteListToFile(PrefsList, PrefsFilePath, False)
+
+
+    End Sub
+
+
 
 
     Public Sub PreferencesGet()
@@ -165,13 +243,21 @@ Friend Module Mysettings
         If prefs.Exists = False Then
             InitialiseFolders()
         End If
+        If prefs.GetFiles.Count > 1 Then
 
-        For Each m In prefs.GetFiles
-            Dim drives As String = DrivesScan()
-            If m.CreationTimeUtc > f.CreationTimeUtc AndAlso m.FullName.Contains(drives + "MV") Then
-                f = m
+            For Each m In prefs.GetFiles
+                Dim drives As String = DrivesScan()
+                If m.CreationTimeUtc > f.CreationTimeUtc AndAlso m.FullName.Contains(drives + "MV") Then
+                    f = m
+                End If
+
+            Next
+        Else
+            If prefs.GetFiles.Count = 1 Then
+                f = prefs.GetFiles.First
             End If
-        Next
+        End If
+
         If f.Exists Then
             prefslist = ReadListfromFile(f.FullName, False)
             FormMain.ctrPicAndButtons.SplitterDistance = 8.7 * FormMain.ctrPicAndButtons.Height / 10
@@ -299,7 +385,8 @@ Friend Module Mysettings
 
                 End If
             Next
-        Else
+        Else 'No relevant prefs file found.
+
             PreferencesReset(False)
         End If
         FormMain.tssMoveCopy.Text = CurrentFolder
@@ -406,6 +493,29 @@ Friend Module Mysettings
         Next
         Return drivestring
     End Function
+    Public Class Setting
 
+        Public Sub New(Descriptor, Value, DefaultValue)
+        End Sub
+        Public Sub New()
+
+        End Sub
+
+        Property Descriptor As String
+        Private _Value As Object
+        Property Value As Object
+            Get
+                Return _Value
+            End Get
+            Set
+                _Value = Value
+            End Set
+        End Property
+
+        Property DefaultValue
+
+
+    End Class
 
 End Module
+

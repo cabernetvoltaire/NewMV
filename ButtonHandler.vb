@@ -3,7 +3,7 @@ Imports System.Threading
 Public Class ButtonHandler
     Public WithEvents buttons As New ButtonSet
     Public RowProgressBar As New ProgressBar
-
+    Public LoadEmptyDirectories As Boolean = False
     Public Autobuttons As Boolean
     Public Labels(8) As Label
     Public LetterLabel As Label
@@ -77,8 +77,18 @@ Public Class ButtonHandler
                 m.Letter = (subs(1))
                 m.Path = (subs(2))
                 m.Label = (subs(3))
+                If LoadEmptyDirectories Then
+                    AddLoadedButtonToSet(m)
+                Else
+                    If m.Path = "" Then
+                    Else
 
-                AddLoadedButtonToSet(m)
+                        Dim x As New IO.DirectoryInfo(m.Path)
+                        If x.EnumerateFiles.Count <> 0 Then
+                            AddLoadedButtonToSet(m)
+                        End If
+                    End If
+                End If
 
             End If
         Next
@@ -265,15 +275,6 @@ Public Class ButtonHandler
         dirlist = GenerateSafeFolderList(d.FullName, True)
         For Each x In dirlist
             Dim di As New DirectoryInfo(x)
-
-            'If (exclude = "" Or Not di.Name.Contains(exclude)) And countofcharsin(x) <= Depth Then
-            '    'MsgBox(di.Name & " is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###.#"))
-            '    While dlist.Keys.Contains(disize)
-            '        disize += 1
-            '    End While
-            '    dlist.Add(disize, di)
-            '    CreateListOfLargeDirectories(Depth, exclude, di, dlist)
-            'End If
 
         Next
     End Sub
