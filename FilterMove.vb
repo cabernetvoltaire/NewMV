@@ -38,7 +38,6 @@ Class FilterMove
                         Dim list As New List(Of String)
                         list.Add(f.FullName)
                         MoveFiles(list, d.FullName)
-                        '  My.Computer.FileSystem.MoveFile(f.FullName, d.FullName & "\" & f.Name)
                         s.Refresh()
                         Debug.Print("Moving " & f.FullName & vbCrLf & "to " & d.FullName)
 

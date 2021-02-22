@@ -30,7 +30,7 @@ Public Module General
 
 
     Public VIDEOEXTENSIONS = ".divx.vob.webm.avi.flv.mov.m4p.mpeg.f4v.mpg.m4a.m4v.mkv.mp4.rm.ram.wmv.wav.mp3.3gp"
-    Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif.jfif"
+    Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif.jfif.webp"
     Public DirectoriesListFile
     Public separate As Boolean = False
     Public DebugOn As Boolean = True
@@ -727,7 +727,7 @@ Public Module General
         Next
         Return x
     End Function
-    Public Function GetAllFolders(d As DirectoryInfo, s As String, Optional Random As Boolean = True) As List(Of String)
+    Public Function GetAllFolders(d As DirectoryInfo, s As String) As List(Of String)
 
         Dim x As New List(Of String)
         For Each Di In d.EnumerateDirectories(s, SearchOption.AllDirectories)
@@ -1129,7 +1129,12 @@ Public Module General
         End If
 
     End Function
-
+    Public Function GetFileNameFromLinkName(Link As String) As String
+        Dim s() As String
+        s = Link.Split("%")
+        Return s(0)
+        '        Throw New NotImplementedException()
+    End Function
     Public Function AdvanceArrayIndexModular(a As Array, i As Integer, Forward As Boolean)
         If Forward Then
             i = (i + 1) Mod a.Length
@@ -1198,7 +1203,7 @@ Public Module General
     Friend Function FolderPathFromPath(path As String) As String
 
         Dim parts() = path.Split("\")
-        Dim s As String
+        Dim s As String = ""
 
         For i = 0 To parts.Length - 2
             s = s + parts(i) & "\"
@@ -1477,8 +1482,6 @@ Public Module General
                     Else
 
                     End If
-                Case 1
-                    Return n(0)
                 Case Else
                     Return n(0)
                     'Decide which one to return
@@ -1608,4 +1611,15 @@ Public Module General
         Return s
 
     End Function
+    Friend Function PassFilename() As String
+        Dim TheFileName As String = ""
+        Dim Vars As String()
+        Vars = Environment.GetCommandLineArgs
+        If Vars.Length > 1 Then
+            TheFileName = Environment.GetCommandLineArgs(1)
+
+        End If
+        Return TheFileName
+    End Function
+
 End Module

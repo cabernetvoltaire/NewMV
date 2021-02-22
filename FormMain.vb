@@ -528,7 +528,7 @@ Friend Class FormMain
         'TogglePause()
         'Media.Speed.Paused = True
         If blnGo Then
-            Dim s As String = Media.MediaPath
+            'Dim s As String = Media.MediaPath
             Dim screen As Screen
             If blnSecondScreen Then
                 screen = Screen.AllScreens(1)
@@ -541,9 +541,9 @@ Friend Class FormMain
             CancelDisplay(False)
             'Media.Player.Size = screen.Bounds.Size
             TogglePause()
+            FullScreen.Show()
             FullScreen.FSFiles = MSFiles
             FullScreen.FSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
-            FullScreen.Show()
             ' TogglePause()
         Else
             '            SplitterPlace(0.25)
@@ -1359,7 +1359,10 @@ Friend Class FormMain
         FBH.ListBox = lbxFiles
         LBH.ListBox = lbxShowList
         '   DatabaseForm.Show()
-
+        Dim ff As String = PassFilename()
+        If ff.EndsWith(".msl") Then
+            LoadShowList(ff)
+        End If
     End Sub
 
     Private Sub InitialiseButtons()
@@ -1790,7 +1793,7 @@ Friend Class FormMain
         BH.AssignAlphabetical(New DirectoryInfo(CurrentFolder))
     End Sub
     Private Sub TreeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TreeToolStripMenuItem.Click
-        BH.AssignTreeNew(CurrentFolder, Val(InputBox("Size Magnitude")))
+        BH.AssignTreeNew(CurrentFolder, Val(InputBox("Depth")))
     End Sub
     Private Sub RespondToKey(sender As Object, e As KeyEventArgs)
         Dim mBH As New ButtonHandler
@@ -3419,12 +3422,7 @@ Friend Class FormMain
 
     End Sub
 
-    Private Function GetFileNameFromLinkName(Link As String) As String
-        Dim s() As String
-        s = Link.Split("%")
-        Return s(0)
-        '        Throw New NotImplementedException()
-    End Function
+
 
     Private Sub LinksByPartOfPathToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LinksByPartOfPathToolStripMenuItem.Click
         Dim x As New GroupByLinkFolders()

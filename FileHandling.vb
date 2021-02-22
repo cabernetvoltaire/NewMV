@@ -255,7 +255,7 @@ Friend Module FileHandling
     ''' </summary>
     ''' <param name="files"></param>
     ''' <param name="strDest"></param>
-    ''' <param name="lbx1"></param>
+
     Public Sub MoveFiles(files As List(Of String), strDest As String, Optional Folder As Boolean = False)
         'Dim Fileundo As New Undo
         'With Fileundo
@@ -284,7 +284,7 @@ Friend Module FileHandling
         t.SetApartmentState(ApartmentState.STA)
         t.Start()
 
-        Static i As Byte
+
 
 
         GC.Collect()
@@ -370,7 +370,7 @@ Friend Module FileHandling
 
 
                                         Catch ex As Exception
-                                            MsgBox(ex.Message)
+                                            'MsgBox(ex.Message)
 
                                         End Try
                                     End If
@@ -616,9 +616,6 @@ Friend Module FileHandling
         x.CurrentFolder = New IO.DirectoryInfo(CurrentFolder)
         x.RemoveEmptySubfolders()
         Return True
-        'Dim x As New BundleHandler(MainForm.tvmain2, MainForm.lbxFiles, d.FullName)
-        'Await x.RemoveEmptyFolders(x.Path, blnRecurse)
-        'Return True
 
     End Function
 

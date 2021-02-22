@@ -685,7 +685,7 @@ Partial Class FormMain
         Me.lbxFiles.ItemHeight = 20
         Me.lbxFiles.Items.AddRange(New Object() {"If there is nothing showing here, check your filter"})
         Me.lbxFiles.Location = New System.Drawing.Point(0, 0)
-        Me.lbxFiles.Margin = New System.Windows.Forms.Padding(5, 5, 5, 5)
+        Me.lbxFiles.Margin = New System.Windows.Forms.Padding(5)
         Me.lbxFiles.Name = "lbxFiles"
         Me.lbxFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
         Me.lbxFiles.Size = New System.Drawing.Size(678, 306)
@@ -1194,7 +1194,7 @@ Partial Class FormMain
         Me.ProgressBar1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ProgressBar1.ForeColor = System.Drawing.Color.Green
         Me.ProgressBar1.Location = New System.Drawing.Point(2, 222)
-        Me.ProgressBar1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.ProgressBar1.Margin = New System.Windows.Forms.Padding(2)
         Me.ProgressBar1.Name = "ProgressBar1"
         Me.ProgressBar1.Size = New System.Drawing.Size(311, 51)
         Me.ProgressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous
@@ -1531,6 +1531,7 @@ Partial Class FormMain
         Me.tbAutoTrail.Name = "tbAutoTrail"
         Me.tbAutoTrail.Size = New System.Drawing.Size(367, 69)
         Me.tbAutoTrail.TabIndex = 8
+        Me.tbAutoTrail.TabStop = False
         Me.tbAutoTrail.TickFrequency = 10
         Me.tbAutoTrail.TickStyle = System.Windows.Forms.TickStyle.None
         Me.tbAutoTrail.Value = 1
@@ -1545,6 +1546,7 @@ Partial Class FormMain
         Me.tbScanRate.Size = New System.Drawing.Size(367, 69)
         Me.tbScanRate.SmallChange = 10
         Me.tbScanRate.TabIndex = 7
+        Me.tbScanRate.TabStop = False
         Me.tbScanRate.TickFrequency = 50
         Me.tbScanRate.Value = 200
         '
@@ -1558,6 +1560,7 @@ Partial Class FormMain
         Me.tbMovieSlideShowSpeed.Size = New System.Drawing.Size(367, 69)
         Me.tbMovieSlideShowSpeed.SmallChange = 10
         Me.tbMovieSlideShowSpeed.TabIndex = 9
+        Me.tbMovieSlideShowSpeed.TabStop = False
         Me.tbMovieSlideShowSpeed.TickFrequency = 1000
         Me.tbMovieSlideShowSpeed.Value = 4000
         '
@@ -1568,6 +1571,7 @@ Partial Class FormMain
         Me.chbScan.Name = "chbScan"
         Me.chbScan.Size = New System.Drawing.Size(117, 24)
         Me.chbScan.TabIndex = 1
+        Me.chbScan.TabStop = False
         Me.chbScan.Text = "Movie Scan"
         Me.chbScan.UseVisualStyleBackColor = True
         '
@@ -1588,6 +1592,7 @@ Partial Class FormMain
         Me.chbSlideShow.Name = "chbSlideShow"
         Me.chbSlideShow.Size = New System.Drawing.Size(159, 24)
         Me.chbSlideShow.TabIndex = 0
+        Me.chbSlideShow.TabStop = False
         Me.chbSlideShow.Text = "Movie Slide Show"
         Me.chbSlideShow.UseVisualStyleBackColor = True
         '
@@ -2565,7 +2570,7 @@ Partial Class FormMain
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.IsMdiContainer = True
         Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(5, 5, 5, 5)
+        Me.Margin = New System.Windows.Forms.Padding(5)
         Me.Name = "FormMain"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds
         Me.Text = "Metavisua"

@@ -16,12 +16,12 @@ Public Class FullScreen
             mFSFiles.Media1.Player.uiMode = "none"
             mFSFiles.Media2.Player.uiMode = "none"
             mFSFiles.Media3.Player.uiMode = "none"
-            mFSFiles.ListIndex = FileHandling.MSFiles.ListIndex
+            mFSFiles.ListIndex = MSFiles.ListIndex
 
         End Set
     End Property
     Private Sub FullScreen_Shown(sender As Object, e As EventArgs) Handles Me.Shown
-        mFSFiles.DockMedias(General.separate)
+        mFSFiles.DockMedias(separate)
         'AddHandler FSPB1.MouseDown, AddressOf fullScreenPicBox_MouseDown
         'AddHandler FSPB2.MouseDown, AddressOf fullScreenPicBox_MouseDown
         'AddHandler FSPB3.MouseDown, AddressOf fullScreenPicBox_MouseDown
@@ -59,15 +59,6 @@ Public Class FullScreen
 
     End Sub
 
-    'Private Sub fullScreenPicBox_MouseDown(sender As Object, e As MouseEventArgs)
-    '    Select Case e.Button
-    '        Case MouseButtons.XButton1, MouseButtons.XButton2
-    '            FormMain.AdvanceFile(e.Button = MouseButtons.XButton1)
-    '            e = Nothing
 
-    '        Case Else
-    '            'PicClick(FSPB1)
-    '    End Select
-    'End Sub
 
 End Class

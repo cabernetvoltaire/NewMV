@@ -9,7 +9,7 @@ Friend Module Mysettings
 #Region "Literals"
     Public Property ZoneSize As Decimal = 0.4
     Public Const OrientationId As Integer = &H112
-    Public iSSpeeds() As Integer = {1000, 300, 200}
+    Public iSSpeeds() As Integer = {1000, 300, 1}
     Public iPlaybackSpeed() As Integer = {3, 15, 45}
     Public PlaybackSpeed As Double = 30
     Public Autozoomrate As Decimal = 0.4
@@ -148,73 +148,73 @@ Friend Module Mysettings
             f.Delete()
             ' PrefsFilePath = PrefsFilePath.Replace(".", Str(Int(Rnd() * 1000)) & ".")
         End If
-
+        PrefsFilePath = PrefsPath & "\" & DrivesScan() & "MVPrefs.txt"
         WriteListToFile(PrefsList, PrefsFilePath, False)
 
 
     End Sub
     Public Sub PreferencesSaveNew()
-        'With Settings
-        '    '        
-        '    '    "Horizontal split position",
-        '    '    ,
-        '    '   
-        '    '    ,
-        '    '    "Current navigate/move state",
-        '    '    ,
-        '    '    "Current alphabet button",
-        '    '    "Current favourites location",
-        '    '    "Preview links?",
-        '    '    "Root scan path",
-        '    '    "Directories list:",
-        '    '    "Global favourites directory",
-        '    '    "Choose next file at random",
-        '    '    "Always choose random file on directory change",
-        '    '    "Auto trail mode",
-        '    '"Auto load button sets",
-        '    '"Show attributes",
-        '    '"Preview links",
-        '    '"Encrypt text files",
-        '    '"Auto advance",
-        '    '"Directory containing thumbnails",
-        '    '"Directory containing button files"
+        With Settings
+            '        
+            '    "Horizontal split position",
+            '    ,
+            '   
+            '    ,
+            '    "Current navigate/move state",
+            '    ,
+            '    "Current alphabet button",
+            '    "Current favourites location",
+            '    "Preview links?",
+            '    "Root scan path",
+            '    "Directories list:",
+            '    "Global favourites directory",
+            '    "Choose next file at random",
+            '    "Always choose random file on directory change",
+            '    "Auto trail mode",
+            '"Auto load button sets",
+            '"Show attributes",
+            '"Preview links",
+            '"Encrypt text files",
+            '"Auto advance",
+            '"Directory containing thumbnails",
+            '"Directory containing button files"
 
-        '    .Add(New Setting("Last close successful", LastTimeSuccessful, False))
-        '    .Add(New Setting("Vertical Split position", FormMain.ctrFileBoxes.SplitterDistance, FormMain.ctrFileBoxes.Height / 4))
-        '    .Add(New Setting("Horizontal split position", FormMain.ctrMainFrame.SplitterDistance, FormMain.ctrFileBoxes.Width * 0.75))
-        '    If LastTimeSuccessful Then
-        '        .Add(New Setting("Last file loaded", Media.MediaPath, ""))
-        '    Else
-        '        .Add(New Setting("Last file loaded", FormMain.LastGoodFile, ""))
-        '    End If
-        '    .Add(New Setting("Current filter state", FormMain.CurrentFilterState.State, 0))
-        '    .Add(New Setting("Current sort order", FormMain.PlayOrder.State, 0))
-        '    .Add(New Setting("Current start point state", Media.SPT.State, 0))
-        '    .Add(New Setting("Current navigate/move state", FormMain.NavigateMoveState.State, 0))
-        '    .Add(New Setting("Last button file loaded", ButtonFilePath,))
-        '    .Add(New Setting("Current alphabet button", iCurrentAlpha,))
-        '    .Add(New Setting("Favourites", CurrentFavesPath,))
-        '    .Add(New Setting("PreviewLinks", FormMain.chbPreviewLinks.Checked,))
-        '    .Add(New Setting("RootScanPath", Rootpath,))
-        '    .Add(New Setting("Directories List", DirectoriesListFile,)) 'DirectoriesListFile,))
-        '    .Add(New Setting("GlobalFaves", GlobalFavesPath,))
-        '    .Add(New Setting("RandomNextFile", FormMain.chbNextFile.Checked,))
-        '    .Add(New Setting("RandomOnDirectoryChange", FormMain.chbOnDir.Checked,))
-        '    .Add(New Setting("RandomAutoTrail", FormMain.chbAutoTrail.Checked,))
-        '    .Add(New Setting("RandomAutoLoadButtons", FormMain.chbLoadButtonFiles.Checked,))
-        '    .Add(New Setting("OptionsShowAttr", FormMain.chbShowAttr.Checked,))
-        '    .Add(New Setting("OptionsPreviewLinks", FormMain.chbPreviewLinks.Checked,))
-        '    .Add(New Setting("OptionsEncrypt", FormMain.chbEncrypt.Checked,))
-        '    .Add(New Setting("OptionsAutoAdvance", FormMain.CHBAutoAdvance.Checked,))
-        '    .Add(New Setting("OptionsSeparate", FormMain.chbSeparate.Checked,))
-        '    .Add(New Setting("ThumbnailDestination", ThumbDestination,))
-        '    .Add(New Setting("ButtonFolder", Buttonfolder,))
-        '    .Add(New Setting("FractionalJump", FormMain.SP.FractionalJump,))
-        '    .Add(New Setting("AbsoluteJump", FormMain.SP.AbsoluteJump,))
-        '    .Add(New Setting("Speed", FormMain.SP.Speed,))
-        '    .Add(New Setting("Navmode", FormMain.NavigateMoveState.State,))
+            .Add(New Setting("Last close successful", LastTimeSuccessful, False))
+            .Add(New Setting("Vertical Split position", FormMain.ctrFileBoxes.SplitterDistance, FormMain.ctrFileBoxes.Height / 4))
+            .Add(New Setting("Horizontal split position", FormMain.ctrMainFrame.SplitterDistance, FormMain.ctrFileBoxes.Width * 0.75))
+            If LastTimeSuccessful Then
+                .Add(New Setting("Last file loaded", Media.MediaPath, ""))
+            Else
+                .Add(New Setting("Last file loaded", FormMain.LastGoodFile, ""))
+            End If
+            .Add(New Setting("Current filter state", FormMain.CurrentFilterState.State, 0))
+            .Add(New Setting("Current sort order", FormMain.PlayOrder.State, 0))
+            .Add(New Setting("Current start point state", Media.SPT.State, 0))
+            .Add(New Setting("Current navigate/move state", FormMain.NavigateMoveState.State, 0))
+            .Add(New Setting("Last button file loaded", ButtonFilePath, ""))
+            .Add(New Setting("Current alphabet button", iCurrentAlpha, 0))
+            .Add(New Setting("Favourites", CurrentFavesPath, ""))
+            .Add(New Setting("PreviewLinks", FormMain.chbPreviewLinks.Checked, False))
+            .Add(New Setting("RootScanPath", Rootpath, "C:"))
+            .Add(New Setting("Directories List", DirectoriesListFile, "")) 'DirectoriesListFile,))
+            .Add(New Setting("GlobalFaves", GlobalFavesPath, "C:"))
+            '.Add(New Setting("RandomNextFile", FormMain.chbNextFile.Checked,))
+            '.Add(New Setting("RandomOnDirectoryChange", FormMain.chbOnDir.Checked,))
+            '.Add(New Setting("RandomAutoTrail", FormMain.chbAutoTrail.Checked,))
+            '.Add(New Setting("RandomAutoLoadButtons", FormMain.chbLoadButtonFiles.Checked,))
+            '.Add(New Setting("OptionsShowAttr", FormMain.chbShowAttr.Checked,))
+            '.Add(New Setting("OptionsPreviewLinks", FormMain.chbPreviewLinks.Checked,))
+            '.Add(New Setting("OptionsEncrypt", FormMain.chbEncrypt.Checked,))
+            '.Add(New Setting("OptionsAutoAdvance", FormMain.CHBAutoAdvance.Checked,))
+            '.Add(New Setting("OptionsSeparate", FormMain.chbSeparate.Checked,))
+            '.Add(New Setting("ThumbnailDestination", ThumbDestination,))
+            '.Add(New Setting("ButtonFolder", Buttonfolder,))
+            '.Add(New Setting("FractionalJump", FormMain.SP.FractionalJump,))
+            '.Add(New Setting("AbsoluteJump", FormMain.SP.AbsoluteJump,))
+            '.Add(New Setting("Speed", FormMain.SP.Speed,))
+            '.Add(New Setting("Navmode", FormMain.NavigateMoveState.State,))
 
-        'End With
+        End With
 
         ''    Dim f As New IO.FileInfo(PrefsFilePath)
         ''    If f.Exists = False Then
@@ -239,19 +239,26 @@ Friend Module Mysettings
         Dim prefslist As New List(Of String)
         Dim f As New IO.FileInfo(PrefsFilePath)
         Dim prefs As New IO.DirectoryInfo(PrefsPath)
-
+        'Folder not found
         If prefs.Exists = False Then
             InitialiseFolders()
         End If
-        If prefs.GetFiles.Count > 1 Then
 
+        If prefs.GetFiles.Count > 1 Then
+            Dim found As Boolean
             For Each m In prefs.GetFiles
                 Dim drives As String = DrivesScan()
-                If m.CreationTimeUtc > f.CreationTimeUtc AndAlso m.FullName.Contains(drives + "MV") Then
+                If m.Name.StartsWith(drives + "MV") Then
                     f = m
-                End If
+                    found = True
 
+                End If
             Next
+            If Not found Then
+                'No suitable prefs file found
+                MsgBox("New arrangement of drives")
+                PreferencesReset(False)
+            End If
         Else
             If prefs.GetFiles.Count = 1 Then
                 f = prefs.GetFiles.First
@@ -261,6 +268,8 @@ Friend Module Mysettings
         If f.Exists Then
             prefslist = ReadListfromFile(f.FullName, False)
             FormMain.ctrPicAndButtons.SplitterDistance = 8.7 * FormMain.ctrPicAndButtons.Height / 10
+
+
             For Each s In prefslist
                 If InStr(s, "$") <> 0 Then
 
@@ -274,8 +283,12 @@ Friend Module Mysettings
                         Case "HorSplit"
                             FormMain.ctrMainFrame.SplitterDistance = value
                         Case "File" 'Drive
+                            If PassFilename() = "" Then
+                                Media.MediaPath = value
+                            Else
 
-                            Media.MediaPath = value
+                                Media.MediaPath = PassFilename()
+                            End If
                             DriveString = GetDriveString(value)
 
                         Case "Filter"
@@ -292,6 +305,10 @@ Friend Module Mysettings
                             If value = "" Then value = 0
                             FormMain.NavigateMoveState.State = value
                         Case "LastButtonFile" 'Drive
+                            If PassFilename().Contains(".msb") Then
+                                value = PassFilename()
+                            End If
+
                             If value = "" Then value = LoadButtonFileName("")
                             ButtonFilePath = value
                             DriveString = GetDriveString(value)
@@ -392,9 +409,12 @@ Friend Module Mysettings
         FormMain.tssMoveCopy.Text = CurrentFolder
         'MsgBox(DriveString)
     End Sub
+
+
+
     Private Function GetDriveString(path As String) As String
         'Adds drive of path if not already present
-        If path = "" Then path = "CDEF"
+        If path = "" Then path = "C"
         If InStr(DriveString, path(0)) <> 0 Then
         Else
             DriveString = DriveString & path(0)
@@ -432,8 +452,10 @@ Friend Module Mysettings
         Media.SPT.State = 0
         PreferencesSave()
     End Sub
-
-    Public Sub LoadForm()
+    Public Sub loadform()
+        MsgBox("Not implemented yet")
+    End Sub
+    Public Sub LoadFormOld()
         Dim prefslist As New List(Of String)
         prefslist = ReadListfromFile(PrefsFilePath, False)
         Dim screed As String = ""
@@ -511,7 +533,15 @@ Friend Module Mysettings
                 _Value = Value
             End Set
         End Property
-
+        Private _Zone As String
+        Public Property Zone() As String
+            Get
+                Return _Zone
+            End Get
+            Set(ByVal value As String)
+                _Zone = value
+            End Set
+        End Property
         Property DefaultValue
 
 

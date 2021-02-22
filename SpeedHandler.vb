@@ -14,14 +14,7 @@
     End Property
     Private mSpeed As Byte
     Public Property Fullspeed As Boolean
-    'Public Property Unpause As Boolean
-    '    Get
-    '        Return _Unpause
-    '    End Get
-    '    Set
-    '        _Unpause = Value
-    '    End Set
-    'End Property
+
     Private Sub PauseVideo(Pause As Boolean)
         If Pause Then
             Media.Player.Ctlcontrols.pause()

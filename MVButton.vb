@@ -30,6 +30,11 @@ Public Class MVButton
                     Label = m.Name
                     Empty = False
                     Active = True
+                    Dim f As New IO.DirectoryInfo(Buttonfolder)
+                    Dim file As New IO.FileInfo(f.FullName & "\" & Label & ".msb")
+                    If file.Exists Then
+                        mColour = Color.Purple
+                    End If
                 Else
                     'Label = m.Name
                     Empty = True

@@ -185,12 +185,7 @@
     </Compile>
     <Compile Include="AutoTrailer.vb" />
     <Compile Include="BundleHandler.vb" />
-    <Compile Include="Form6.Designer.vb">
-      <DependentUpon>Form6.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Form6.vb">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="FolderList.vb" />
     <Compile Include="FormButton.Designer.vb">
       <DependentUpon>FormButton.vb</DependentUpon>
     </Compile>
@@ -200,7 +195,6 @@
     <Compile Include="ButtonHandler.vb" />
     <Compile Include="ButtonSet.vb" />
     <Compile Include="ButtonRow.vb" />
-    <Compile Include="Class2.vb" />
     <Compile Include="Comparers.vb" />
     <Compile Include="Dashboard.Designer.vb">
       <DependentUpon>Dashboard.vb</DependentUpon>
@@ -231,12 +225,6 @@
       <DependentUpon>FormFolderSelect.vb</DependentUpon>
     </Compile>
     <Compile Include="FormFolderSelect.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form3.Designer.vb">
-      <DependentUpon>Form3.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Form3.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form4.Designer.vb">
@@ -286,13 +274,13 @@
     </Compile>
     <Compile Include="RandomHandler.vb" />
     <Compile Include="Settings.vb" />
-    <Compile Include="Shortcuts.vb" />
     <Compile Include="FormShowList.Designer.vb">
       <DependentUpon>FormShowList.vb</DependentUpon>
     </Compile>
     <Compile Include="FormShowList.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Shortcuts.vb" />
     <Compile Include="SortHandler.vb" />
     <Compile Include="Sound.vb" />
     <Compile Include="SpeedHandler.vb" />
@@ -303,7 +291,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="StartPointHandler.vb" />
-    <Compile Include="StartUp.vb" />
     <Compile Include="StateHandler.vb" />
     <Compile Include="FormFullScreen.Designer.vb">
       <DependentUpon>FormFullScreen.vb</DependentUpon>
@@ -359,9 +346,6 @@
     <EmbeddedResource Include="Attributes.resx">
       <DependentUpon>Attributes.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form6.resx">
-      <DependentUpon>Form6.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FormButton.resx">
       <DependentUpon>FormButton.vb</DependentUpon>
     </EmbeddedResource>
@@ -377,9 +361,6 @@
     <EmbeddedResource Include="FormFolderSelect.resx">
       <DependentUpon>FormFolderSelect.vb</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form3.resx">
-      <DependentUpon>Form3.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form4.resx">
       <DependentUpon>Form4.vb</DependentUpon>

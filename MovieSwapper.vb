@@ -6,7 +6,7 @@ Public Class MediaSwapper
     Public WithEvents Media2 As New MediaHandler("mMedia2")
     Public WithEvents Media3 As New MediaHandler("mMedia3")
     Public MediaHandlers As New List(Of MediaHandler) From {Media1, Media2, Media3}
-
+    Public IsFullScreen As Boolean
 
     Private Outliner As New PictureBox With {.BackColor = Color.HotPink}
     Private WithEvents PauseAll As New Timer With {.Interval = 3000, .Enabled = False}
@@ -39,7 +39,7 @@ Public Class MediaSwapper
     ''' <summary>
     ''' Assigns the listbox which this Media Swapper controls
     ''' </summary>
-    ''' <returns></returns>
+    '' <returns></returns>
     Public Property Listbox() As ListBox
         Get
             Return mListbox
@@ -155,21 +155,18 @@ Public Class MediaSwapper
     Private Function Prepare(ByRef MH As MediaHandler, path As String) As Boolean
         Report("PREPARE: " & MH.Player.Name & " with " & path)
         'BreakExecution()
-        If MH.MediaPath <> path Then MH.MediaPath = path 'Still not right for pics
+        If MH.MediaPath <> path Then MH.MediaPath = path
+        '  MH.MediaPath = path 'If MH.MediaPath <> path Then Still not right for pics
         Select Case MH.MediaType
             Case Filetype.Movie
                 If blnFullScreen Then
                 Else
                     MH.Player.uiMode = "Full"
                 End If
-                '                MH.Player.Visible = False
-                '               MH.Player.SendToBack()
                 MH.PlaceResetter(True)
                 DisposePic(MH.PicHandler.PicBox)
                 Return True
-              '  RaiseEvent LoadedMedia(MH) 'Currently does nothing.
             Case Filetype.Pic
-                'MH.PlaceResetter(False)
                 MH.DisposeMovie()
                 MH.Picture.Visible = True
                 MH.Picture.Tag = path 'Important for thumbnail mouseover events. 

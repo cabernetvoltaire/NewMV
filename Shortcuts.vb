@@ -225,6 +225,7 @@ Public Class ShortcutHandler
     End Function
 
 
+
     Public Sub ReAssign(ByVal sTargetPath As String, sShortCutPath As String)
         Dim d As New FileInfo(sShortCutPath)
 
