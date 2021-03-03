@@ -131,7 +131,7 @@ Public Class ButtonHandler
                 ElseIf ShiftDown Then
                     btn.Colour = Color.Blue
                 Else
-                    btn.Colour = Color.Black
+                    If btn.Colour <> Color.Purple Then btn.Colour = Color.Black
                 End If
             Else
                 btn.Colour = Color.Gray
@@ -163,7 +163,7 @@ Public Class ButtonHandler
     ''' Assigns all subdirectories linearly to btnset
     ''' </summary>
     ''' <param name="e"></param>
-    ''' <param name="buttons"></param>
+
     Public Sub AssignLinear(e As DirectoryInfo)
         Dim i = 0
         For Each d In e.EnumerateDirectories("*", SearchOption.TopDirectoryOnly)
@@ -185,12 +185,12 @@ Public Class ButtonHandler
             Dim d As New DirectoryInfo(dx)
             lst.Add(d.FullName, d.Name)
         Next
-        lst = lst.OrderBy(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(x) x.Value)
+        lst = lst.OrderBy(Function(x) x.Key.Count(Function(c As Char) c = "\")).ToDictionary(Function(x) x.Key, Function(x) x.Value)
         For Each d In lst
 
-            Dim m As Char = UCase(d.Value(0))
-            m = UCase(m)
-            buttons.CurrentLetter = LetterNumberFromAscii(Asc(m))
+            Dim _fstletter As Char = UCase(d.Value(0))
+            _fstletter = UCase(_fstletter)
+            buttons.CurrentLetter = LetterNumberFromAscii(Asc(_fstletter))
             Dim btn As MVButton
             btn = buttons.FirstFree(buttons.CurrentLetter)
             btn.Path = d.Key

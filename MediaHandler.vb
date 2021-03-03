@@ -188,9 +188,10 @@ Public Class MediaHandler
             'TODO Fix this
             If value = "" Then
                 'Deals with absent file
-                mMediaPath = DefaultFile
-                mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
-                RaiseEvent MediaChanged(Me, New EventArgs)
+                'mMediaPath = DefaultFile
+                'mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
+                'RaiseEvent MediaChanged(Me, New EventArgs)
+
             Else
 
                 mMediaPath = value
@@ -561,7 +562,7 @@ Public Class MediaHandler
         FormMain.ctrPicAndButtons.Panel1.Controls.Add(Textbox)
     End Sub
     Private Sub HandleMovie(URL As String)
-        ' BreakExecution()
+        If URL.EndsWith("exe") Then BreakExecution()
 
         If URL <> mPlayer.URL Then
             If mPlayer Is Nothing Then

@@ -18,7 +18,7 @@ Public Module General
         RightBottom = 7
         LeftBottom = 8
     End Enum
-    Public BreakHere As Boolean = False
+    Public BreakHere As Boolean = True
     Friend ShowListVisible As Boolean = False
     Public Declare Function SearchTreeForFile Lib "imagehlp" (ByVal RootPath As String, ByVal InputPathName As String, ByVal OutputPathBuffer As String) As Long
     Public Const LinkExt As String = ".mvl"

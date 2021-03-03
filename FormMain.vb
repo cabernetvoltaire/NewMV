@@ -373,7 +373,7 @@ Friend Class FormMain
         Return path
     End Function
     Private Sub LoadShowList(Optional DesiredFile As String = "")
-        ProgressBarOn(100)
+        ProgressBarOn(100, "Loading list " & DesiredFile)
         Dim path As String = ""
         If DesiredFile <> "" Then
             path = DesiredFile
@@ -1790,7 +1790,9 @@ Friend Class FormMain
         BH.AssignLinear(New DirectoryInfo(CurrentFolder))
     End Sub
     Private Sub AlphaToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlphaToolStripMenuItem.Click
+        ProgressBarOn(100, "Assigning buttons alphabetically")
         BH.AssignAlphabetical(New DirectoryInfo(CurrentFolder))
+        ProgressBarOff()
     End Sub
     Private Sub TreeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TreeToolStripMenuItem.Click
         BH.AssignTreeNew(CurrentFolder, Val(InputBox("Depth")))
@@ -1940,10 +1942,11 @@ Friend Class FormMain
     End Sub
 
     Private Sub Loadbuttonfiletoolstripmenuitem_Click(sender As Object, e As EventArgs) Handles LoadButtonFileToolStripMenuItem.Click
-
+        ProgressBarOn(100, "Loading button file " & ButtonFilePath)
         ButtonFilePath = LoadButtonList()
         BH.LoadButtonSet(ButtonFilePath)
         AddToButtonFilesList(ButtonFilePath)
+        ProgressBarOff()
     End Sub
 
     Private Sub SaveListasToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SaveListToolStripMenuItem.Click
@@ -2512,13 +2515,13 @@ Friend Class FormMain
 
 
     Private Sub ShowlistToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ShowlistToolStripMenuItem.Click
-        If FocusControl Is lbxShowList Then
+        ' If FocusControl Is lbxShowList Then
 
-            Dim x As New FormShowList
+        Dim x As New FormShowList
             x.Show()
 
-            x.ListofFiles = FBH.ItemList
-        End If
+        x.ListofFiles = LBH.ItemList
+        ' End If
     End Sub
 
 
@@ -3004,6 +3007,7 @@ Friend Class FormMain
     End Sub
 
     Private Sub tmrProgressBar_Tick(sender As Object, e As EventArgs) Handles tmrProgressBar.Tick
+        Application.DoEvents()
         tmrProgressBar.Interval = 100
         ProgressIncrement(1)
     End Sub
@@ -3308,12 +3312,15 @@ Friend Class FormMain
     Private Sub StatusStrip1_ItemClicked(sender As Object, e As ToolStripItemClickedEventArgs) Handles StatusStrip1.ItemClicked
 
     End Sub
-    Public Sub ProgressBarOn(max As Long)
+    Public Sub ProgressBarOn(max As Long, Optional Message As String = "")
         With TSPB
             .Value = 0
+
             .Maximum = max 'Math.Max(lngListSizeBytes, 100)
             .Visible = True
+
         End With
+        If Message <> "" Then lblProgress.Text = Message
         tmrProgressBar.Enabled = True
     End Sub
     Public Sub ProgressBarOff()
@@ -3322,6 +3329,7 @@ Friend Class FormMain
             .Visible = False
         End With
         TSPB.Value = 0
+        lblProgress.Text = ""
     End Sub
     Public Sub ProgressIncrement(st As Integer)
         With TSPB

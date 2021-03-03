@@ -155,15 +155,19 @@ Public Class MediaSwapper
     Private Function Prepare(ByRef MH As MediaHandler, path As String) As Boolean
         Report("PREPARE: " & MH.Player.Name & " with " & path)
         'BreakExecution()
-        If MH.MediaPath <> path Then MH.MediaPath = path
-        '  MH.MediaPath = path 'If MH.MediaPath <> path Then Still not right for pics
+        If MH.MediaPath <> path Or FullScreen.Changing Then MH.MediaPath = path
+        'MH.MediaPath = path 'If MH.MediaPath <> path Then Still not right for pics
         Select Case MH.MediaType
             Case Filetype.Movie
                 If blnFullScreen Then
                 Else
                     MH.Player.uiMode = "Full"
                 End If
-                MH.PlaceResetter(True)
+                If FullScreen.Changing Then
+                Else
+
+                    MH.PlaceResetter(True)
+                End If
                 DisposePic(MH.PicHandler.PicBox)
                 Return True
             Case Filetype.Pic

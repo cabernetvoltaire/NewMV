@@ -481,22 +481,14 @@ Friend Module FileHandling
 
         s = InputBox("Only include files containing? (Leave empty to add all)")
         If s = "" Then s = "*"
-        FormMain.Cursor = Cursors.WaitCursor
-        FormMain.ProgressBarOn(1000)
         list = GetFileFromEachFolder(d, s, Random.OnDirChange)
-        FormMain.Cursor = Cursors.Default
-        FormMain.ProgressBarOff()
     End Sub
     Public Function AddFilesToCollection(extensions As String, blnRecurse As Boolean) As List(Of String)
         Dim s As String
         Dim d As New DirectoryInfo(CurrentFolder)
         Dim List As New List(Of String)
         s = InputBox("Only include files containing? (Leave empty to add all)")
-        FormMain.Cursor = Cursors.WaitCursor
-        FormMain.ProgressBarOn(1000)
         List = FindAllFilesBelow(d, List, extensions, False, s, blnRecurse, blnChooseOne)
-        FormMain.Cursor = Cursors.Default
-        FormMain.ProgressBarOff()
         Return List
     End Function
 

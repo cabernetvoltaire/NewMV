@@ -32,20 +32,20 @@ Partial Class FormShowList
         Me.ListBox1.FormattingEnabled = True
         Me.ListBox1.ItemHeight = 20
         Me.ListBox1.Location = New System.Drawing.Point(0, 0)
-        Me.ListBox1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.ListBox1.Margin = New System.Windows.Forms.Padding(2)
         Me.ListBox1.Name = "ListBox1"
         Me.ListBox1.Size = New System.Drawing.Size(655, 375)
         Me.ListBox1.TabIndex = 0
         '
-        'ShowListForm
+        'FormShowList
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(655, 375)
         Me.Controls.Add(Me.ListBox1)
         Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
-        Me.Name = "ShowListForm"
+        Me.Margin = New System.Windows.Forms.Padding(2)
+        Me.Name = "FormShowList"
         Me.Text = "List"
         Me.ResumeLayout(False)
 

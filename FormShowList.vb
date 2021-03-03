@@ -33,4 +33,10 @@
             LBH.FillBox(mListofFiles)
         End Set
     End Property
+
+
+
+    Private Sub FormShowList_GotFocus(sender As Object, e As EventArgs) Handles Me.GotFocus
+        LBH.ListBox.BackColor = CurrentfilterState.Colour
+    End Sub
 End Class

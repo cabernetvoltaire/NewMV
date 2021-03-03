@@ -43,7 +43,6 @@ Partial Class FormMain
         Me.VideoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
-        Me.TSPB = New System.Windows.Forms.ToolStripProgressBar()
         Me.tbFiles = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbFilter = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbRandom = New System.Windows.Forms.ToolStripStatusLabel()
@@ -56,6 +55,7 @@ Partial Class FormMain
         Me.tbDate = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbState = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbLastFile = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.TSPB = New System.Windows.Forms.ToolStripProgressBar()
         Me.tssFolderInfo = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tssMoveCopy = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tssFilter = New System.Windows.Forms.ToolStripStatusLabel()
@@ -294,6 +294,7 @@ Partial Class FormMain
         Me.tmrProgressBar = New System.Windows.Forms.Timer(Me.components)
         Me.tmrJumpRandom = New System.Windows.Forms.Timer(Me.components)
         Me.tmrHighlightCurrent = New System.Windows.Forms.Timer(Me.components)
+        Me.lblProgress = New System.Windows.Forms.Label()
         Me.StatusStrip1.SuspendLayout()
         Me.FullPanel.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -459,7 +460,7 @@ Partial Class FormMain
         '
         Me.StatusStrip1.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.StatusStrip1.ImageScalingSize = New System.Drawing.Size(28, 28)
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSPB, Me.tbFiles, Me.tbFilter, Me.tbRandom, Me.tbZoom, Me.TBFractionAbsolute, Me.tbSpeed, Me.tbStartpoint, Me.tbShowfile, Me.tbButton, Me.tbDate, Me.tbState, Me.tbLastFile})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tbFiles, Me.tbFilter, Me.tbRandom, Me.tbZoom, Me.TBFractionAbsolute, Me.tbSpeed, Me.tbStartpoint, Me.tbShowfile, Me.tbButton, Me.tbDate, Me.tbState, Me.tbLastFile, Me.TSPB})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 1632)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Padding = New System.Windows.Forms.Padding(2, 0, 12, 0)
@@ -467,15 +468,6 @@ Partial Class FormMain
         Me.StatusStrip1.Stretch = False
         Me.StatusStrip1.TabIndex = 16
         Me.StatusStrip1.Text = "StatusStrip1"
-        '
-        'TSPB
-        '
-        Me.TSPB.AutoSize = False
-        Me.TSPB.ForeColor = System.Drawing.Color.Turquoise
-        Me.TSPB.Name = "TSPB"
-        Me.TSPB.Size = New System.Drawing.Size(410, 24)
-        Me.TSPB.Step = 1
-        Me.TSPB.Style = System.Windows.Forms.ProgressBarStyle.Continuous
         '
         'tbFiles
         '
@@ -550,6 +542,15 @@ Partial Class FormMain
         Me.tbLastFile.Name = "tbLastFile"
         Me.tbLastFile.Size = New System.Drawing.Size(83, 25)
         Me.tbLastFile.Text = "LASTFILE"
+        '
+        'TSPB
+        '
+        Me.TSPB.AutoSize = False
+        Me.TSPB.ForeColor = System.Drawing.Color.Turquoise
+        Me.TSPB.Name = "TSPB"
+        Me.TSPB.Size = New System.Drawing.Size(410, 24)
+        Me.TSPB.Step = 1
+        Me.TSPB.Style = System.Windows.Forms.ProgressBarStyle.Continuous
         '
         'tssFolderInfo
         '
@@ -2557,6 +2558,14 @@ Partial Class FormMain
         '
         Me.tmrHighlightCurrent.Interval = 10
         '
+        'lblProgress
+        '
+        Me.lblProgress.AutoSize = True
+        Me.lblProgress.Location = New System.Drawing.Point(1467, 1635)
+        Me.lblProgress.Name = "lblProgress"
+        Me.lblProgress.Size = New System.Drawing.Size(0, 20)
+        Me.lblProgress.TabIndex = 4
+        '
         'FormMain
         '
         Me.AllowDrop = True
@@ -2564,6 +2573,7 @@ Partial Class FormMain
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(3145, 1662)
+        Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.FullPanel)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.MenuStrip2)
@@ -2922,4 +2932,5 @@ Partial Class FormMain
     Friend WithEvents DatabaseExperimentToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents RefreshSelectedFromLinkNameToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SelectAllWrongLinksToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents lblProgress As Label
 End Class
