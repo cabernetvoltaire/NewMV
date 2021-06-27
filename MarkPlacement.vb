@@ -12,12 +12,12 @@ Public Class MarkPlacement
     Property Duration As Long
     Property Graphics As Graphics
     Property Bitmap As Bitmap
-    Private Property mMarkers As List(Of Long)
-    Property Markers As List(Of Long)
+    Private Property mMarkers As List(Of Double)
+    Property Markers As List(Of Double)
         Get
             Markers = mMarkers
         End Get
-        Set(value As List(Of Long))
+        Set(value As List(Of Double))
             mMarkers = value
 
         End Set

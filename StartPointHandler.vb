@@ -66,12 +66,12 @@
             mDistance = value
         End Set
     End Property
-    Private mMarkers As New List(Of Long)
-    Public Property Markers() As List(Of Long)
+    Private mMarkers As New List(Of Double)
+    Public Property Markers() As List(Of Double)
         Get
             Return mMarkers
         End Get
-        Set(ByVal value As List(Of Long))
+        Set(ByVal value As List(Of Double))
             mMarkers = value
         End Set
     End Property

@@ -1,7 +1,7 @@
 ﻿Imports System.IO
-Imports System.Threading
 Public Class ButtonHandler
     Public WithEvents buttons As New ButtonSet
+
     Public RowProgressBar As New ProgressBar
     Public LoadEmptyDirectories As Boolean = False
     Public Autobuttons As Boolean
@@ -14,7 +14,7 @@ Public Class ButtonHandler
     Public Event ButtonFileChanged(sender As Object, e As EventArgs)
     Public Event LetterChanged(sender As Object, e As EventArgs)
     Public Event ButtonsAltered(sender As Object, e As EventArgs)
-
+    Private mListOfButtonFiles As New List(Of String)
     Private mAlpha As String
     Public ActualButtons(8) As Button
 
@@ -37,28 +37,28 @@ Public Class ButtonHandler
     Public Sub LoadButtonSet(Optional filename As String = "")
 
         Dim path As String
-        If filename = "" Then
+        Dim file As New IO.FileInfo(filename)
+
+        If filename = "" Or Not file.Exists Then
             path = LoadButtonFileName("")
         Else
             path = filename
         End If
-        If path = "" Then Exit Sub
-        buttons.Clear()
-        'Get the file path
+        '        If path = "" Then Exit Sub
 
+        buttons.Clear()
         Dim btnList As New List(Of String)
         btnList = ReadListfromFile(path, True)
         LoadListIn(btnList)
-        'Dim t = New Thread(New ThreadStart(Sub() LoadListIn(btnList)))
-        't.IsBackground = True
-        't.SetApartmentState(ApartmentState.STA)
-        't.Start()
-        'While t.IsAlive
-        '    Thread.Sleep(100)
-        'End While
         ButtonfilePath = path
+        Dim dir As New IO.DirectoryInfo(Buttonfolder)
+        For Each f In dir.EnumerateDirectories
+            If f.FullName.EndsWith(".msb") Then
+                mListOfButtonFiles.Add(f.FullName)
+            End If
+        Next
         RaiseEvent ButtonFileChanged(Me, Nothing)
-
+        UpdateButtonAppearance()
     End Sub
 
     Public Sub New()
@@ -125,16 +125,20 @@ Public Class ButtonHandler
 
     Public Sub UpdateButtonAppearance()
         For Each btn In buttons.CurrentRow.Buttons
-            If My.Computer.FileSystem.DirectoryExists(btn.Path) Then
-                If NMS.State = StateHandler.StateOptions.Move Xor CtrlDown Then
-                    btn.Colour = Color.Red
-                ElseIf ShiftDown Then
-                    btn.Colour = Color.Blue
-                Else
-                    If btn.Colour <> Color.Purple Then btn.Colour = Color.Black
-                End If
+            If NMS.State = StateHandler.StateOptions.Move Xor CtrlDown Then
+                btn.Colour = Color.Red
+            ElseIf ShiftDown Then
+                btn.Colour = Color.Blue
+                'The following should make a list of all the files in the button directories (at the start)
+                'and then just load it in as a list. Checking would then take no time at all. Too much overhead here. 
+                'ElseIf My.Computer.FileSystem.DirectoryExists(btn.Path) Then
+                '    If btn.Colour <> Color.Purple Then btn.Colour = Color.Black
+                '    End If
             Else
                 btn.Colour = Color.Gray
+            End If
+            If mListOfButtonFiles.Contains(btn.Path) Then
+                btn.Colour = Color.Purple
             End If
         Next
         LetterLabel.Text = Chr(AsciifromLetterNumber(buttons.CurrentRow.Letter))
@@ -210,7 +214,7 @@ Public Class ButtonHandler
         Dim icomp As New MyComparer
         Dim dlist As New SortedList(Of Long, DirectoryInfo)(icomp)
 
-        CreateListOfLargeDirectories(SizeMagnitude, exclude, d, dlist)
+        CreateListOfLargeDirectories(SizeMagnitude, exclude, d, dlist) 'This just takes too long  - tree could be vast. Need a way of stopping. 
         Dim i As Int16 = 0
         For Each de In dlist
 
@@ -221,20 +225,8 @@ Public Class ButtonHandler
             btn = buttons.FirstFree(buttons.CurrentLetter)
             btn.Path = de.Value.FullName
         Next
-        'For Each dx In dlist
-        '    Dim di As IO.DirectoryInfo
-        '    di = dx.Value
-        '    Dim l As String = UCase(di.Name(0))
-        '    Dim ButtonNumber As Integer = LetterNumberFromAscii(Asc(l))
-        '    buttons.CurrentLetter = ButtonNumber
-        '    Dim firstbtn As New MVButton()
-        '    firstbtn.Letter = ButtonNumber
-        '    firstbtn.Position = buttons.CurrentRow.GetFirstFree()
-        '    firstbtn.Path = di.FullName
-        '    If firstbtn.Position < 8 Then AssignButton(firstbtn.Position, firstbtn.Letter, 1, di.FullName)
 
 
-        'Next
         RaiseEvent ButtonsAltered(Me, Nothing)
 
 

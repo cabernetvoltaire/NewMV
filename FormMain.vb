@@ -10,7 +10,6 @@ Friend Class FormMain
     Public DB As New Database
     Public Initialising As Boolean = True
     Public AutoLoadButtons As Boolean = False
-    Public ButtonsHidden As Boolean = False
     Public defaultcolour As Color = Color.Aqua
     Public movecolour As Color = Color.Orange
     Public sound As New AxWindowsMediaPlayer
@@ -256,7 +255,7 @@ Friend Class FormMain
             If x.Count <> 0 Then Op.ReuniteWithFile(x, filename)
         Next
     End Sub
-    Public Sub RemoveMarker(filepath As String, timecode As Long)
+    Public Sub RemoveMarker(filepath As String, timecode As Double)
         Dim x As List(Of String) = AllFaveMinder.GetLinksOf(filepath)
         For Each f In x
             If BookmarkFromLinkName(f) = timecode Then
@@ -456,13 +455,13 @@ Friend Class FormMain
     End Sub
 
     Private Function SpeedChange(e As KeyEventArgs) As KeyEventArgs
-
+        Dim speednumber As Int16 = e.KeyCode - KeySpeed1
 
         If Not Media.Playing Then
             tmrSlideShow.Enabled = True
             Media.Speed.Slideshow = tmrSlideShow.Enabled
             tmrSlideShow.Interval = Media.Speed.Interval
-            If e.KeyCode < KeySpeed1 Then
+            If speednumber < 0 Then
                 tmrSlideShow.Enabled = Not tmrSlideShow.Enabled
                 Return e
                 Exit Function
@@ -470,14 +469,20 @@ Friend Class FormMain
             Media.Speed.SSSpeed = e.KeyCode - KeySpeed1 'Set slideshow speed if pic showing, and start slideshow
             'PlaybackSpeed = 30
 
-        ElseIf e.KeyCode >= KeySpeed1 Then
-            Media.Speed.Speed = e.KeyCode - KeySpeed1
-            PlaybackSpeed = 1000 / Media.Speed.FrameRate 'Otherwise, set playback speed 'TODO Options
-            Media.Speed.Fullspeed = False
+        ElseIf speednumber >= 0 Then
+            'Toggle slow speeds
+            If Not Media.Speed.Speed = speednumber Then
+                TogglePause()
+
+
+            Else
+                Media.Speed.Speed = e.KeyCode - KeySpeed1
+                PlaybackSpeed = 1000 / Media.Speed.FrameRate 'Otherwise, set playback speed 'TODO Options
+                Media.Speed.Fullspeed = False
+            End If
         End If
         If e.KeyCode = KeyToggleSpeed Then
             If Media.Playing Then
-                'If Media.Player.playState = WMPLib.WMPPlayState.wmppsPaused And Media.Speed.Fullspeed = False Then
                 TogglePause()
             Else
                 tmrSlideShow.Enabled = Not tmrSlideShow.Enabled
@@ -490,13 +495,12 @@ Friend Class FormMain
                 tmrSlowMo.Enabled = True
                 Media.Player.Ctlcontrols.pause()
             Else
+                tmrSlowMo.Enabled = True
+                Media.Speed.Paused = False
+
             End If
         End If
 
-        'End If
-        'Report
-        'blnSpeedRestart = True
-        '  tbSpeed.Text = "SPEED (" & Media.Speed.FrameRate & " fps)"
         e.SuppressKeyPress = True
         Return e
     End Function
@@ -507,17 +511,19 @@ Friend Class FormMain
         MsgBox("Files moved")
     End Sub
     Private Sub TogglePause()
-        If Media.Speed.Paused Then
-            Media.Position = Media.Player.Ctlcontrols.currentPosition
+        Media.Speed.Paused = Not Media.Speed.Paused
+        'If Media.Speed.Paused Then
+        '    'Unpause
+        '    Media.Position = Media.Player.Ctlcontrols.currentPosition
 
-            Media.Speed.Paused = False
-            tmrSlowMo.Enabled = False
-            Media.Speed.Fullspeed = True
-        Else
-            Media.Player.Ctlcontrols.pause()
-            'Media.Speed.Fullspeed = False
-            Media.Speed.Paused = True
-        End If
+        '    Media.Speed.Paused = False
+        '    tmrSlowMo.Enabled = False
+        '    Media.Speed.Fullspeed = True
+        'Else
+        '    Media.Player.Ctlcontrols.pause()
+        '    'Media.Speed.Fullspeed = False
+        '    Media.Speed.Paused = True
+        'End If
     End Sub
 
     Private Sub ToggleRandomStartPoint()
@@ -871,7 +877,7 @@ Friend Class FormMain
                 ElseIf e.Control Then
                     Dim m As Integer = Media.FindNearestCounter(True)
                     If m < 0 Then Exit Select
-                    Dim l As Long = Media.Markers(m)
+                    Dim l As Double = Media.Markers(m)
                     If Media.IsLink Then
                         RemoveMarker(Media.LinkPath, l)
                     Else
@@ -922,6 +928,7 @@ Friend Class FormMain
             Case KeyToggleSpeed
                 If Media.Speed.Fullspeed Then
                     Media.Speed.Paused = Not Media.Speed.Paused
+                    If Media.Speed.Paused Then tmrSlowMo.Enabled = False
 
                 Else
                     SpeedChange(e)

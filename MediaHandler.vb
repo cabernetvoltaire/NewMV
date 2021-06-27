@@ -115,8 +115,8 @@ Public Class MediaHandler
             mPlayer.settings.autoStart = True
         End Set
     End Property
-    Private mPlayPosition As Long
-    Public Property Position() As Long
+    Private mPlayPosition As Double
+    Public Property Position() As Double
         Get
             If mType = Filetype.Movie Then
 
@@ -126,7 +126,7 @@ Public Class MediaHandler
                 Return 0
             End If
         End Get
-        Set(ByVal value As Long)
+        Set(ByVal value As Double)
             mPlayPosition = value
             mPlayer.Ctlcontrols.currentPosition = mPlayPosition
             If Speed.Paused Then
@@ -139,8 +139,8 @@ Public Class MediaHandler
         End Set
     End Property
 
-    Private mDuration As Long
-    Public Property Duration() As Long
+    Private mDuration As Double
+    Public Property Duration() As Double
         Get
             If mDuration = 0 Then
                 Report("Duration not set yet", 0)
@@ -148,7 +148,7 @@ Public Class MediaHandler
             '   mDuration = mPlayer.currentMedia.duration
             Return mDuration
         End Get
-        Set(value As Long)
+        Set(value As Double)
             mDuration = value
             SPT.Duration = value
         End Set
@@ -162,12 +162,12 @@ Public Class MediaHandler
             mFrameRate = mPlayer.network.frameRate
         End Set
     End Property
-    Private mMarkers As New List(Of Long)
-    Public Property Markers() As List(Of Long)
+    Private mMarkers As New List(Of Double)
+    Public Property Markers() As List(Of Double)
         Get
             Return mMarkers
         End Get
-        Set(ByVal value As List(Of Long))
+        Set(ByVal value As List(Of Double))
             mMarkers = value
             SPT.Markers = mMarkers
         End Set
@@ -225,9 +225,9 @@ Public Class MediaHandler
 
 
 
-    Public Function GetMarkersFromLinkList() As List(Of Long)
+    Public Function GetMarkersFromLinkList() As List(Of Double)
         Dim List As New List(Of String)
-        Dim markerslist As New List(Of Long)
+        Dim markerslist As New List(Of Double)
 
         If mIsLink Then
             List = AllFaveMinder.GetLinksOf(mLinkPath)
@@ -284,12 +284,12 @@ Public Class MediaHandler
 
         End Set
     End Property
-    Private mBookmark As Long = -1
-    Public Property Bookmark() As Long
+    Private mBookmark As Double = -1
+    Public Property Bookmark() As Double
         Get
             Return mBookmark
         End Get
-        Set(ByVal value As Long)
+        Set(ByVal value As Double)
             mBookmark = value
         End Set
     End Property
@@ -318,7 +318,7 @@ Public Class MediaHandler
         End If
 
     End Sub
-    Public Function UpdateBookmark(path As String, time As Long) As String
+    Public Function UpdateBookmark(path As String, time As Double) As String
         If Right(path, 4) <> LinkExt Then
             Return path
             Exit Function
@@ -683,6 +683,7 @@ Public Class MediaHandler
 
 
                 If FullScreen.Changing Or Speed.Paused Then 'Hold current position if switching to FS or back. 
+
                     mPlayPosition = Speed.PausedPosition
                     Speed.Paused = False
                     Speed.PausedPosition = 0

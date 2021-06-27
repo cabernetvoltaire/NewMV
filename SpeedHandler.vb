@@ -1,6 +1,17 @@
 ﻿Public Class SpeedHandler
+    ''' <summary>
+    ''' Intervals in ms for each slideshow speed
+    ''' </summary>
     Public Intervals() As Integer = {1000, 300, 10}
+    ''' <summary>
+    ''' Speed (fps) For each movie speed
+    ''' </summary>
     Public FrameRates() As Byte = {5, 15, 20}
+    ''' <summary>
+    ''' Raised when speed changes
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Public Event SpeedChanged(sender As Object, e As EventArgs)
     Private mSlideshow As Boolean = False
     Public Property Slideshow() As Boolean
@@ -14,23 +25,40 @@
     End Property
     Private mSpeed As Byte
     Public Property Fullspeed As Boolean
+        Get
+            Return _Fullspeed
+        End Get
+        Set
+            _Fullspeed = Value
+        End Set
+    End Property
 
+    ''' <summary>
+    ''' Toggles pause, saving paused position.
+    ''' </summary>
+    ''' <param name="Pause"></param>
     Private Sub PauseVideo(Pause As Boolean)
         If Pause Then
             Media.Player.Ctlcontrols.pause()
+
             PausedPosition = Media.Player.Ctlcontrols.currentPosition
-            Fullspeed = False
+            _Fullspeed = False
         Else
             Media.Player.Ctlcontrols.currentPosition = PausedPosition
             Media.Player.Ctlcontrols.play()
             PausedPosition = 0
+            _Fullspeed = True
         End If
         mPaused = Pause
 
     End Sub
 
     Private mPaused As Boolean '= False
-    Public PausedPosition As Long
+    Public PausedPosition As Double
+    ''' <summary>
+    ''' True if movie paused.
+    ''' </summary>
+    ''' <returns></returns>
     Public Property Paused() As Boolean
         Get
             Return mPaused
@@ -39,12 +67,6 @@
             mPaused = value
             PauseVideo(mPaused)
 
-            'If mPaused Then
-            '    PausedPosition = Media.Player.Ctlcontrols.currentPosition
-            '    Fullspeed = False
-            'Else
-            '    PausedPosition = 0
-            'End If
         End Set
     End Property
     Public Property AbsoluteJump As Integer ' = 35
@@ -64,7 +86,10 @@
             _FractionalJump = Value
         End Set
     End Property
-
+    ''' <summary>
+    ''' One of 3 framerates, 0, 1 and 2
+    ''' </summary>
+    ''' <returns></returns>
     Public Property Speed() As Byte
         Get
             Return mSpeed
@@ -72,7 +97,7 @@
         Set(ByVal value As Byte)
             mSpeed = value
             FrameRate = FrameRates(mSpeed)
-            Fullspeed = False
+            _Fullspeed = False
             RaiseEvent SpeedChanged(Me, Nothing)
         End Set
     End Property
@@ -103,6 +128,7 @@
     Private _Unpause As Boolean = False
     Private _AbsoluteJump As Integer = 35
     Private _FractionalJump As Integer = 8
+    Private _Fullspeed As Boolean = True
 
     Public Property FrameRate() As Integer
         Get
