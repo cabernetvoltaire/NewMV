@@ -44,7 +44,7 @@ Public Class ButtonHandler
         Else
             path = filename
         End If
-        '        If path = "" Then Exit Sub
+        If path = "" Then Exit Sub
 
         buttons.Clear()
         Dim btnList As New List(Of String)
@@ -77,18 +77,18 @@ Public Class ButtonHandler
                 m.Letter = (subs(1))
                 m.Path = (subs(2))
                 m.Label = (subs(3))
-                If LoadEmptyDirectories Then
-                    AddLoadedButtonToSet(m)
-                Else
-                    If m.Path = "" Then
-                    Else
+                'If LoadEmptyDirectories Then
+                AddLoadedButtonToSet(m)
+                'Else
+                '    If m.Path = "" Then
+                '    Else
 
-                        Dim x As New IO.DirectoryInfo(m.Path)
-                        If x.EnumerateFiles.Count <> 0 Then
-                            AddLoadedButtonToSet(m)
-                        End If
-                    End If
-                End If
+                '        Dim x As New IO.DirectoryInfo(m.Path)
+                '        If x.EnumerateFiles.Count <> 0 Then
+                '            AddLoadedButtonToSet(m)
+                '        End If
+                '    End If
+                'End If
 
             End If
         Next
@@ -184,8 +184,8 @@ Public Class ButtonHandler
         buttons.Clear()
         Dim i = 0
         Dim lst As New Dictionary(Of String, String)
-        'For Each dx In GenerateSafeFolderList(e.FullName)
-        For Each dx In GetAllFolders(e, "*")
+        For Each dx In GenerateSafeFolderList(e.FullName)
+            'For Each dx In GetAllFolders(e, "*")
             Dim d As New DirectoryInfo(dx)
             lst.Add(d.FullName, d.Name)
         Next
