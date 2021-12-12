@@ -2525,7 +2525,7 @@ Friend Class FormMain
         ' If FocusControl Is lbxShowList Then
 
         Dim x As New FormShowList
-            x.Show()
+        x.Show()
 
         x.ListofFiles = LBH.ItemList
         ' End If
@@ -3077,18 +3077,19 @@ Friend Class FormMain
     End Sub
 
     Private Sub PreferencesToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles PreferencesToolStripMenuItem1.Click
-        Mysettings.LoadForm()
+        Mysettings.loadform()
     End Sub
 
-    Private Sub LBH_ListboxChanged(sender As Object, e As EventArgs) Handles LBH.ListIndexChanged
-        HighlightCurrent(lbxShowList.SelectedItem)
-    End Sub
+    'Private Sub LBH_ListboxChanged(sender As Object, e As EventArgs) Handles LBH.ListIndexChanged
+    '    HighlightCurrent(lbxShowList.SelectedItem)
+    'End Sub
 
     Private Sub lbxFiles_Leave(sender As Object, e As EventArgs) Handles lbxFiles.Leave
         If ShowListVisible Then
             lbxShowList.Focus()
         Else
             tvmain2.Focus()
+
         End If
     End Sub
 
@@ -3446,9 +3447,7 @@ Friend Class FormMain
         x.MoveFiles(2)
     End Sub
 
-    Private Sub ToolStripMenuItem6_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem6.Click
 
-    End Sub
 
     Private Sub CreateFromCurrentShowlistToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateFromCurrentShowlistToolStripMenuItem.Click
         If ShowListVisible Then

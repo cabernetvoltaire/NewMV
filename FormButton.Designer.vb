@@ -111,14 +111,14 @@ Partial Class FormButton
         Me.TableLayoutPanel1.Controls.Add(Me.pbrButtons, 0, 2)
         Me.TableLayoutPanel1.Controls.Add(Me.FlowLayoutPanel1, 1, 1)
         Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 33)
+        Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 36)
         Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(2)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 3
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 70.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1469, 167)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1469, 164)
         Me.TableLayoutPanel1.TabIndex = 0
         '
         'Panel10
@@ -128,7 +128,7 @@ Partial Class FormButton
         Me.Panel10.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel10.Location = New System.Drawing.Point(879, 3)
         Me.Panel10.Name = "Panel10"
-        Me.Panel10.Size = New System.Drawing.Size(140, 110)
+        Me.Panel10.Size = New System.Drawing.Size(140, 108)
         Me.Panel10.TabIndex = 12
         '
         'Label5
@@ -136,7 +136,7 @@ Partial Class FormButton
         Me.Label5.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Label5.FlatStyle = System.Windows.Forms.FlatStyle.Popup
         Me.Label5.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label5.Location = New System.Drawing.Point(0, 89)
+        Me.Label5.Location = New System.Drawing.Point(0, 87)
         Me.Label5.Margin = New System.Windows.Forms.Padding(0)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(140, 21)
@@ -162,7 +162,7 @@ Partial Class FormButton
         Me.Panel9.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel9.Location = New System.Drawing.Point(733, 3)
         Me.Panel9.Name = "Panel9"
-        Me.Panel9.Size = New System.Drawing.Size(140, 110)
+        Me.Panel9.Size = New System.Drawing.Size(140, 108)
         Me.Panel9.TabIndex = 11
         '
         'lblAlpha
@@ -171,7 +171,7 @@ Partial Class FormButton
         Me.lblAlpha.Font = New System.Drawing.Font("Microsoft Sans Serif", 48.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblAlpha.Location = New System.Drawing.Point(0, 0)
         Me.lblAlpha.Name = "lblAlpha"
-        Me.lblAlpha.Size = New System.Drawing.Size(140, 110)
+        Me.lblAlpha.Size = New System.Drawing.Size(140, 108)
         Me.lblAlpha.TabIndex = 13
         Me.lblAlpha.Text = "A"
         Me.lblAlpha.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -194,7 +194,7 @@ Partial Class FormButton
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel8.Location = New System.Drawing.Point(1025, 3)
         Me.Panel8.Name = "Panel8"
-        Me.Panel8.Size = New System.Drawing.Size(140, 110)
+        Me.Panel8.Size = New System.Drawing.Size(140, 108)
         Me.Panel8.TabIndex = 10
         '
         'Label6
@@ -202,7 +202,7 @@ Partial Class FormButton
         Me.Label6.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Label6.FlatStyle = System.Windows.Forms.FlatStyle.Popup
         Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label6.Location = New System.Drawing.Point(0, 89)
+        Me.Label6.Location = New System.Drawing.Point(0, 87)
         Me.Label6.Margin = New System.Windows.Forms.Padding(0)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(140, 21)
@@ -228,7 +228,7 @@ Partial Class FormButton
         Me.Panel7.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel7.Location = New System.Drawing.Point(1317, 3)
         Me.Panel7.Name = "Panel7"
-        Me.Panel7.Size = New System.Drawing.Size(149, 110)
+        Me.Panel7.Size = New System.Drawing.Size(149, 108)
         Me.Panel7.TabIndex = 9
         '
         'Label8
@@ -236,7 +236,7 @@ Partial Class FormButton
         Me.Label8.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Label8.FlatStyle = System.Windows.Forms.FlatStyle.Popup
         Me.Label8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label8.Location = New System.Drawing.Point(0, 89)
+        Me.Label8.Location = New System.Drawing.Point(0, 87)
         Me.Label8.Margin = New System.Windows.Forms.Padding(0)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(149, 21)
@@ -262,7 +262,7 @@ Partial Class FormButton
         Me.Panel6.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel6.Location = New System.Drawing.Point(1171, 3)
         Me.Panel6.Name = "Panel6"
-        Me.Panel6.Size = New System.Drawing.Size(140, 110)
+        Me.Panel6.Size = New System.Drawing.Size(140, 108)
         Me.Panel6.TabIndex = 8
         '
         'Label7
@@ -270,7 +270,7 @@ Partial Class FormButton
         Me.Label7.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Label7.FlatStyle = System.Windows.Forms.FlatStyle.Popup
         Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label7.Location = New System.Drawing.Point(0, 89)
+        Me.Label7.Location = New System.Drawing.Point(0, 87)
         Me.Label7.Margin = New System.Windows.Forms.Padding(0)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(140, 21)
@@ -296,7 +296,7 @@ Partial Class FormButton
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel5.Location = New System.Drawing.Point(149, 3)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(140, 110)
+        Me.Panel5.Size = New System.Drawing.Size(140, 108)
         Me.Panel5.TabIndex = 7
         '
         'Label1
@@ -304,7 +304,7 @@ Partial Class FormButton
         Me.Label1.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Label1.FlatStyle = System.Windows.Forms.FlatStyle.Popup
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(0, 89)
+        Me.Label1.Location = New System.Drawing.Point(0, 87)
         Me.Label1.Margin = New System.Windows.Forms.Padding(0)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(140, 21)
@@ -330,7 +330,7 @@ Partial Class FormButton
         Me.Panel4.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel4.Location = New System.Drawing.Point(3, 3)
         Me.Panel4.Name = "Panel4"
-        Me.Panel4.Size = New System.Drawing.Size(140, 110)
+        Me.Panel4.Size = New System.Drawing.Size(140, 108)
         Me.Panel4.TabIndex = 6
         '
         'PictureBox2
@@ -339,7 +339,7 @@ Partial Class FormButton
         Me.PictureBox2.Image = Global.MasaSam.Forms.Sample.My.Resources.Resources.Untitled_1_copy1
         Me.PictureBox2.Location = New System.Drawing.Point(0, 0)
         Me.PictureBox2.Name = "PictureBox2"
-        Me.PictureBox2.Size = New System.Drawing.Size(140, 110)
+        Me.PictureBox2.Size = New System.Drawing.Size(140, 108)
         Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.PictureBox2.TabIndex = 14
         Me.PictureBox2.TabStop = False
@@ -362,7 +362,7 @@ Partial Class FormButton
         Me.Panel3.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel3.Location = New System.Drawing.Point(295, 3)
         Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(140, 110)
+        Me.Panel3.Size = New System.Drawing.Size(140, 108)
         Me.Panel3.TabIndex = 5
         '
         'Label2
@@ -370,7 +370,7 @@ Partial Class FormButton
         Me.Label2.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Label2.FlatStyle = System.Windows.Forms.FlatStyle.Popup
         Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.Location = New System.Drawing.Point(0, 89)
+        Me.Label2.Location = New System.Drawing.Point(0, 87)
         Me.Label2.Margin = New System.Windows.Forms.Padding(0)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(140, 21)
@@ -396,7 +396,7 @@ Partial Class FormButton
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel2.Location = New System.Drawing.Point(587, 3)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(140, 110)
+        Me.Panel2.Size = New System.Drawing.Size(140, 108)
         Me.Panel2.TabIndex = 4
         '
         'Label4
@@ -404,7 +404,7 @@ Partial Class FormButton
         Me.Label4.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Label4.FlatStyle = System.Windows.Forms.FlatStyle.Popup
         Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label4.Location = New System.Drawing.Point(0, 89)
+        Me.Label4.Location = New System.Drawing.Point(0, 87)
         Me.Label4.Margin = New System.Windows.Forms.Padding(0)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(140, 21)
@@ -430,7 +430,7 @@ Partial Class FormButton
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel1.Location = New System.Drawing.Point(441, 3)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(140, 110)
+        Me.Panel1.Size = New System.Drawing.Size(140, 108)
         Me.Panel1.TabIndex = 3
         '
         'Label3
@@ -438,7 +438,7 @@ Partial Class FormButton
         Me.Label3.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Label3.FlatStyle = System.Windows.Forms.FlatStyle.Popup
         Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.Location = New System.Drawing.Point(0, 89)
+        Me.Label3.Location = New System.Drawing.Point(0, 87)
         Me.Label3.Margin = New System.Windows.Forms.Padding(0)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(140, 21)
@@ -461,7 +461,7 @@ Partial Class FormButton
         '
         Me.TableLayoutPanel1.SetColumnSpan(Me.pbrButtons, 10)
         Me.pbrButtons.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.pbrButtons.Location = New System.Drawing.Point(3, 144)
+        Me.pbrButtons.Location = New System.Drawing.Point(3, 141)
         Me.pbrButtons.Name = "pbrButtons"
         Me.pbrButtons.Size = New System.Drawing.Size(1463, 20)
         Me.pbrButtons.Style = System.Windows.Forms.ProgressBarStyle.Continuous
@@ -471,19 +471,20 @@ Partial Class FormButton
         '
         Me.TableLayoutPanel1.SetColumnSpan(Me.FlowLayoutPanel1, 9)
         Me.FlowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(146, 116)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(146, 114)
         Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(0)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(1323, 25)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(1323, 24)
         Me.FlowLayoutPanel1.TabIndex = 14
         '
         'MenuStrip1
         '
+        Me.MenuStrip1.GripMargin = New System.Windows.Forms.Padding(2, 2, 0, 2)
         Me.MenuStrip1.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem2})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
-        Me.MenuStrip1.Size = New System.Drawing.Size(1469, 33)
+        Me.MenuStrip1.Size = New System.Drawing.Size(1469, 36)
         Me.MenuStrip1.TabIndex = 1
         Me.MenuStrip1.Text = "MenuStrip1"
         '
@@ -491,14 +492,14 @@ Partial Class FormButton
         '
         Me.ToolStripMenuItem2.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NewButtonFileToolStripMenuItem, Me.LoadButtonFileToolStripMenuItem, Me.SaveButtonFileToolStripMenuItem, Me.ButtonFormToolStripMenuItem, Me.ToolStripMenuItem10})
         Me.ToolStripMenuItem2.Name = "ToolStripMenuItem2"
-        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(113, 29)
+        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(117, 30)
         Me.ToolStripMenuItem2.Text = "&Button files"
         '
         'NewButtonFileToolStripMenuItem
         '
         Me.NewButtonFileToolStripMenuItem.Name = "NewButtonFileToolStripMenuItem"
         Me.NewButtonFileToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.N), System.Windows.Forms.Keys)
-        Me.NewButtonFileToolStripMenuItem.Size = New System.Drawing.Size(313, 30)
+        Me.NewButtonFileToolStripMenuItem.Size = New System.Drawing.Size(331, 34)
         Me.NewButtonFileToolStripMenuItem.Text = "&New button file"
         Me.NewButtonFileToolStripMenuItem.ToolTipText = "Create a new button file."
         '
@@ -506,7 +507,7 @@ Partial Class FormButton
         '
         Me.LoadButtonFileToolStripMenuItem.Name = "LoadButtonFileToolStripMenuItem"
         Me.LoadButtonFileToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.L), System.Windows.Forms.Keys)
-        Me.LoadButtonFileToolStripMenuItem.Size = New System.Drawing.Size(313, 30)
+        Me.LoadButtonFileToolStripMenuItem.Size = New System.Drawing.Size(331, 34)
         Me.LoadButtonFileToolStripMenuItem.Text = "&Load button file"
         Me.LoadButtonFileToolStripMenuItem.ToolTipText = "Load a previously stored set of button assignments"
         '
@@ -514,21 +515,21 @@ Partial Class FormButton
         '
         Me.SaveButtonFileToolStripMenuItem.Name = "SaveButtonFileToolStripMenuItem"
         Me.SaveButtonFileToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
-        Me.SaveButtonFileToolStripMenuItem.Size = New System.Drawing.Size(313, 30)
+        Me.SaveButtonFileToolStripMenuItem.Size = New System.Drawing.Size(331, 34)
         Me.SaveButtonFileToolStripMenuItem.Text = "&Save button file (as)"
         Me.SaveButtonFileToolStripMenuItem.ToolTipText = "Saves the current set of button assignments. "
         '
         'ButtonFormToolStripMenuItem
         '
         Me.ButtonFormToolStripMenuItem.Name = "ButtonFormToolStripMenuItem"
-        Me.ButtonFormToolStripMenuItem.Size = New System.Drawing.Size(313, 30)
+        Me.ButtonFormToolStripMenuItem.Size = New System.Drawing.Size(331, 34)
         Me.ButtonFormToolStripMenuItem.Text = "Button Form"
         '
         'ToolStripMenuItem10
         '
         Me.ToolStripMenuItem10.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LinearToolStripMenuItem, Me.AlphaToolStripMenuItem, Me.TreeToolStripMenuItem, Me.ToolStripSeparator12, Me.AutoButton, Me.ResetButtonsToolStripMenuItem})
         Me.ToolStripMenuItem10.Name = "ToolStripMenuItem10"
-        Me.ToolStripMenuItem10.Size = New System.Drawing.Size(313, 30)
+        Me.ToolStripMenuItem10.Size = New System.Drawing.Size(331, 34)
         Me.ToolStripMenuItem10.Text = "&Assign buttons"
         '
         'LinearToolStripMenuItem
@@ -536,7 +537,7 @@ Partial Class FormButton
         Me.LinearToolStripMenuItem.Name = "LinearToolStripMenuItem"
         Me.LinearToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
             Or System.Windows.Forms.Keys.L), System.Windows.Forms.Keys)
-        Me.LinearToolStripMenuItem.Size = New System.Drawing.Size(300, 30)
+        Me.LinearToolStripMenuItem.Size = New System.Drawing.Size(318, 34)
         Me.LinearToolStripMenuItem.Text = "&Linear"
         '
         'AlphaToolStripMenuItem
@@ -544,7 +545,7 @@ Partial Class FormButton
         Me.AlphaToolStripMenuItem.Name = "AlphaToolStripMenuItem"
         Me.AlphaToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
             Or System.Windows.Forms.Keys.A), System.Windows.Forms.Keys)
-        Me.AlphaToolStripMenuItem.Size = New System.Drawing.Size(300, 30)
+        Me.AlphaToolStripMenuItem.Size = New System.Drawing.Size(318, 34)
         Me.AlphaToolStripMenuItem.Text = "&Alphabetic"
         '
         'TreeToolStripMenuItem
@@ -552,18 +553,18 @@ Partial Class FormButton
         Me.TreeToolStripMenuItem.Name = "TreeToolStripMenuItem"
         Me.TreeToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
             Or System.Windows.Forms.Keys.T), System.Windows.Forms.Keys)
-        Me.TreeToolStripMenuItem.Size = New System.Drawing.Size(300, 30)
+        Me.TreeToolStripMenuItem.Size = New System.Drawing.Size(318, 34)
         Me.TreeToolStripMenuItem.Text = "&Tree"
         '
         'ToolStripSeparator12
         '
         Me.ToolStripSeparator12.Name = "ToolStripSeparator12"
-        Me.ToolStripSeparator12.Size = New System.Drawing.Size(297, 6)
+        Me.ToolStripSeparator12.Size = New System.Drawing.Size(315, 6)
         '
         'AutoButton
         '
         Me.AutoButton.Name = "AutoButton"
-        Me.AutoButton.Size = New System.Drawing.Size(300, 30)
+        Me.AutoButton.Size = New System.Drawing.Size(318, 34)
         Me.AutoButton.Text = "AutoButton"
         '
         'ResetButtonsToolStripMenuItem
@@ -571,7 +572,7 @@ Partial Class FormButton
         Me.ResetButtonsToolStripMenuItem.Name = "ResetButtonsToolStripMenuItem"
         Me.ResetButtonsToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
             Or System.Windows.Forms.Keys.R), System.Windows.Forms.Keys)
-        Me.ResetButtonsToolStripMenuItem.Size = New System.Drawing.Size(300, 30)
+        Me.ResetButtonsToolStripMenuItem.Size = New System.Drawing.Size(318, 34)
         Me.ResetButtonsToolStripMenuItem.Text = "Reset Buttons"
         '
         'FormButton

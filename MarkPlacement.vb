@@ -26,7 +26,7 @@ Public Class MarkPlacement
 
     Public Sub Create()
 
-        Clear()
+        Clear() 'Erase marks
         If mMarkers Is Nothing Then Exit Sub
         For Each m In mMarkers
             Dim start As Point
@@ -38,10 +38,6 @@ Public Class MarkPlacement
             Dim pen As New Pen(Color.Black, 1)
             Graphics.DrawLine(pen, start, endpt)
         Next
-        If mMarkers.Count <> 0 Then
-            'Graphics.Clear(mBar.Parent.BackColor)
-
-        End If
 
     End Sub
 

@@ -35,30 +35,35 @@ Public Class ButtonHandler
         RaiseEvent LetterChanged(sender, e)
     End Sub
     Public Sub LoadButtonSet(Optional filename As String = "")
+        Try
 
-        Dim path As String
-        Dim file As New IO.FileInfo(filename)
+            Dim path As String
+            Dim file As New IO.FileInfo(filename)
 
-        If filename = "" Or Not file.Exists Then
-            path = LoadButtonFileName("")
-        Else
-            path = filename
-        End If
-        If path = "" Then Exit Sub
-
-        buttons.Clear()
-        Dim btnList As New List(Of String)
-        btnList = ReadListfromFile(path, True)
-        LoadListIn(btnList)
-        ButtonfilePath = path
-        Dim dir As New IO.DirectoryInfo(Buttonfolder)
-        For Each f In dir.EnumerateDirectories
-            If f.FullName.EndsWith(".msb") Then
-                mListOfButtonFiles.Add(f.FullName)
+            If filename = "" Or Not file.Exists Then
+                path = LoadButtonFileName("")
+            Else
+                path = filename
             End If
-        Next
-        RaiseEvent ButtonFileChanged(Me, Nothing)
-        UpdateButtonAppearance()
+            If path = "" Then Exit Sub
+
+            buttons.Clear()
+            Dim btnList As New List(Of String)
+            btnList = ReadListfromFile(path, True)
+            LoadListIn(btnList)
+            ButtonfilePath = path
+            Dim dir As New IO.DirectoryInfo(Buttonfolder)
+            For Each f In dir.EnumerateDirectories
+                If f.FullName.EndsWith(".msb") Then
+                    mListOfButtonFiles.Add(f.FullName)
+                End If
+            Next
+            RaiseEvent ButtonFileChanged(Me, Nothing)
+            UpdateButtonAppearance()
+        Catch ex As Exception
+            MsgBox("Button load failed")
+        End Try
+
     End Sub
 
     Public Sub New()
@@ -72,24 +77,29 @@ Public Class ButtonHandler
                 'MsgBox("Not a button file")
                 'Exit Sub
             Else
-                Dim m As New MVButton
-                m.Position = (subs(0))
-                m.Letter = (subs(1))
-                m.Path = (subs(2))
-                m.Label = (subs(3))
-                'If LoadEmptyDirectories Then
-                AddLoadedButtonToSet(m)
-                'Else
-                '    If m.Path = "" Then
-                '    Else
+                Try
 
-                '        Dim x As New IO.DirectoryInfo(m.Path)
-                '        If x.EnumerateFiles.Count <> 0 Then
-                '            AddLoadedButtonToSet(m)
-                '        End If
-                '    End If
-                'End If
+                    Dim m As New MVButton
+                    m.Position = (subs(0))
+                    m.Letter = (subs(1))
+                    m.Path = (subs(2))
+                    m.Label = (subs(3))
+                    'If LoadEmptyDirectories Then
+                    AddLoadedButtonToSet(m)
+                    'Else
+                    '    If m.Path = "" Then
+                    '    Else
 
+                    '        Dim x As New IO.DirectoryInfo(m.Path)
+                    '        If x.EnumerateFiles.Count <> 0 Then
+                    '            AddLoadedButtonToSet(m)
+                    '        End If
+                    '    End If
+                    'End If
+
+                Catch ex As Exception
+                    MsgBox("Button skipped")
+                End Try
             End If
         Next
     End Sub
@@ -141,6 +151,7 @@ Public Class ButtonHandler
                 btn.Colour = Color.Purple
             End If
         Next
+
         LetterLabel.Text = Chr(AsciifromLetterNumber(buttons.CurrentRow.Letter))
     End Sub
     Private Sub AddLoadedButtonToSet(btn As MVButton)
@@ -288,7 +299,7 @@ Public Class ButtonHandler
     End Sub
     Public Sub SwitchRow(m As ButtonRow, Optional Backwards As Boolean = False)
         For i = 0 To 7
-            ActualButtons(i).Text = m.Buttons(i).FaceText
+            'ActualButtons(i).Text = m.Buttons(i).FaceText
             Labels(i).Text = m.Buttons(i).Label
             Tooltip.SetToolTip(ActualButtons(i), buttons.CurrentRow.Buttons(i).Path)
         Next
@@ -302,6 +313,7 @@ Public Class ButtonHandler
     Public Sub InitialiseActualButtons()
         For i = 0 To 7
             ActualButtons(i).Tag = i
+            ActualButtons(i).Text = "f" & Str(i + 5)
             '            AddHandler ActualButtons(i).MouseClick, AddressOf ShowPreview
             AddHandler ActualButtons(i).MouseHover, AddressOf ShowPreview
             AddHandler ActualButtons(i).MouseLeave, AddressOf HideFS

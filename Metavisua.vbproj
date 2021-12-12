@@ -132,7 +132,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
+    <Reference Include="System">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -240,7 +242,7 @@
     <Compile Include="GroupingForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="KeyHandler.vb" />
+    <Compile Include="KeyHandling.vb" />
     <Compile Include="ListBoxHandler.vb" />
     <Compile Include="MarkPlacement.vb" />
     <Compile Include="MediaHandler.vb" />
@@ -305,7 +307,6 @@
       <DependentUpon>FormMain.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="KeyHandling.vb" />
     <Compile Include="FileHandling.vb" />
     <Compile Include="General.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
