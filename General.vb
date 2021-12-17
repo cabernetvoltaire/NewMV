@@ -163,7 +163,7 @@ Public Module General
     Public Sub DisposePic(box As PictureBox)
         If box.Image IsNot Nothing Then
             box.Image.Dispose()
-            GC.SuppressFinalize(box)
+            ' GC.SuppressFinalize(box)
             box.Image = Nothing
         End If
     End Sub
@@ -1135,12 +1135,12 @@ Public Module General
         Return s(0)
         '        Throw New NotImplementedException()
     End Function
-    Public Function AdvanceArrayIndexModular(a As Array, i As Integer, Forward As Boolean)
+    Public Function AdvanceModular(Count As Integer, i As Integer, Forward As Boolean)
         If Forward Then
-            i = (i + 1) Mod a.Length
+            i = (i + 1) Mod Count
         Else
             i = (i - 1)
-            If i < 0 Then i = i + a.Length
+            If i < 0 Then i = i + Count
         End If
         Return i
     End Function

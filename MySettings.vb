@@ -395,7 +395,7 @@ Friend Module Mysettings
                         Case "FractionalJump"
                             FormMain.SP.FractionalJump = value
                         Case "Speed"
-                            FormMain.SP.Speed = value
+                          '  FormMain.SP.Speed = value
                         Case "Navstate"
                             FormMain.NavigateMoveState.State = value
                     End Select

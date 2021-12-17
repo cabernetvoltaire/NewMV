@@ -1,5 +1,4 @@
-﻿Imports System.IO
-Public Class FormButton
+﻿Public Class FormButton
 
     Public WithEvents buttons As New ButtonSet
     Public WithEvents BH As New ButtonHandler()

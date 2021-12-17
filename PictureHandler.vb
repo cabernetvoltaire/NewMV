@@ -6,7 +6,7 @@
     Public RandomNext As Boolean
     Private WithEvents mPicBox As New PictureBox
     Private tb As New ToolTip
-    Public MouseZone As New PictureBox
+
     Public Property PicBox() As PictureBox
         Get
             Return mPicBox
@@ -73,6 +73,8 @@
 #End Region
 #Region "Functions"
     Public Sub GetImage(strPath As String)
+        'mPicBox.Dispose()
+
         If strPath = "" Then
         Else
             If strPath.EndsWith(".gif") Then
@@ -87,7 +89,8 @@
                     OrientPic(mPicImage)
                     PicBox.Image = mPicImage
                     PicBox.Tag = strPath
-                    tb.SetToolTip(PicBox, strPath)
+                    ' tb.SetToolTip(PicBox, strPath)
+                    'tb.AutoPopDelay = 500
                 Catch ex As Exception
                     mPicImage = Nothing
                 End Try
@@ -155,23 +158,13 @@
         ePicMousePoint.X = ePicMousePoint.X + mPicBox.Left
         ePicMousePoint.Y = ePicMousePoint.Y + mPicBox.Top
 
-        If WheelAdvance Then 'State = Screenstate.Fitted Then
-            'RaiseEvent AdvanceFile(sender, e)
+        If WheelAdvance Then
             FormMain.AdvanceFile(e.Delta < 0, RandomNext)
-            'MainForm.tmrSlideShow.Enabled = False 'Break slideshow if scrolled
-            'Dim img As Image = Me.GetImage(Media.MediaPath)
         Else
             ZoomPicture(e.Delta > 0, 5)
         End If
 
     End Sub
-
-    'Public Sub PlacePic()
-    '    'Dim outside As Control = PicBoxContainer
-    '    mPicBox.Left = PicBoxContainer.Width / 2 - mPicBox.Width / 2
-    '    mPicBox.Top = PicBoxContainer.Height / 2 - mPicBox.Height / 2
-
-    'End Sub
 
 #End Region
 #Region "Methods"
@@ -215,26 +208,14 @@
 
     End Sub
 
-    'Public Sub PreparePic() 'Not actually implemented at the moment
-    '    mPicBox.Width = mPicBox.Image.Width
-    '    mPicBox.Height = mPicBox.Image.Height
-    '    'How does it exceeed the container, if at all?
-    '    If PicBoxContainer IsNot Nothing Then
-    '        ImageDimensionState = ClassifyImage(PicBoxContainer.Width, PicBoxContainer.Height, mPicBox.Width, mPicBox.Height)
-    '    End If
 
-    '    SetState(mState)
-
-    '    PlacePic()
-
-    'End Sub
     ''' <summary>
     ''' Sets the screenstate, docking style. 
     ''' Sstate is a screenstate
     ''' </summary>
     ''' <param name="Sstate"></param>
     ''' <returns></returns>
-    Public Function SetState(Sstate As Byte) As Byte
+    Private Function SetState(Sstate As Byte) As Byte
         ' Exit Sub
         'Sets the screenstate, docking style. Changes the sizemode of pbx
         'If iScreenstate = Sstate Then Exit Sub
@@ -275,7 +256,7 @@
         Return Sstate
     End Function
     Public Sub SetZoom(Percentage As Integer)
-        ' Exit Sub
+        'Exit Sub
         mState = SetState(Screenstate.Zoomed)
         Dim oldzoom As Integer = mZoomfactor
         mZoomfactor = Percentage
@@ -324,6 +305,8 @@
         End If
         ' PicTest.Label1.Text = "Picture State:" & ScreenStateDescriptions(State) & " Zoom factor: " & ZoomFactor
     End Sub
+
+
 
 
 #End Region

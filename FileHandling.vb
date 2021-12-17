@@ -54,22 +54,16 @@ Friend Module FileHandling
 
         Media = sender
         FormMain.UpdateFileInfo()
-        'If DatabaseForm.Visible Then SetDataformEntry()
 
         If Media.MediaType = Filetype.Movie Then
             FormMain.PopulateLinkList(sender)
         End If
-        'If Media.MediaType = Filetype.Doc Then
-        '    MainForm.TextBox1 = Media.Textbox
-        '    MainForm.TextBox1.Dock = DockStyle.Fill
-        'End If
         Media.SetLink(0)
         With FormMain
             .AT.Counter = Media.Markers.Count
             .Att.DestinationLabel = .lblAttributes
             If Not .tmrSlideShow.Enabled And .chbShowAttr.Checked Then
                 .Att.DestinationLabel.Text = Media.Metadata
-                '                .Att.UpdateLabel(Media.MediaPath)
             Else
                 .Att.Text = ""
             End If

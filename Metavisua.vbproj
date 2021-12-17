@@ -187,7 +187,14 @@
     </Compile>
     <Compile Include="AutoTrailer.vb" />
     <Compile Include="BundleHandler.vb" />
+    <Compile Include="MediaListHandler.vb" />
     <Compile Include="FolderList.vb" />
+    <Compile Include="Form3.Designer.vb">
+      <DependentUpon>Form3.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form3.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FormButton.Designer.vb">
       <DependentUpon>FormButton.vb</DependentUpon>
     </Compile>
@@ -346,6 +353,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Attributes.resx">
       <DependentUpon>Attributes.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form3.resx">
+      <DependentUpon>Form3.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormButton.resx">
       <DependentUpon>FormButton.vb</DependentUpon>

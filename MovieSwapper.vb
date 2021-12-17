@@ -5,6 +5,7 @@ Public Class MediaSwapper
     Public WithEvents Media1 As New MediaHandler("mMedia1")
     Public WithEvents Media2 As New MediaHandler("mMedia2")
     Public WithEvents Media3 As New MediaHandler("mMedia3")
+
     Public MediaHandlers As New List(Of MediaHandler) From {Media1, Media2, Media3}
     Public IsFullScreen As Boolean
 
@@ -321,17 +322,17 @@ Public Class MediaSwapper
 
     End Sub
 
-    Public Sub PauseMovies() Handles PauseAll.Tick
+    'Public Sub PauseMovies() Handles PauseAll.Tick
 
-        Media1.Speed.Paused = True
-        Media2.Speed.Paused = True
-        Media3.Speed.Paused = True
+    '    Media1.Speed.Paused = True
+    '    Media2.Speed.Paused = True
+    '    Media3.Speed.Paused = True
 
-    End Sub
+    'End Sub
     Public Sub ZoomPics(Pic As PictureHandler)
         If Pic.State = PictureHandler.Screenstate.Fitted And Not Pic.WheelAdvance Then
             For Each m In MediaHandlers
-                m.PicHandler.SetState(PictureHandler.Screenstate.Fitted)
+                m.PicHandler.State = PictureHandler.Screenstate.Fitted
             Next
         Else
             For Each m In MediaHandlers

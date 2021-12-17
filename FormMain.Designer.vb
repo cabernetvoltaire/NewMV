@@ -280,6 +280,7 @@ Partial Class FormMain
         Me.DatabaseExperimentToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RefreshSelectedFromLinkNameToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SelectAllWrongLinksToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ListhandlerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RenamingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem6 = New System.Windows.Forms.ToolStripMenuItem()
         Me.PrependAllFilenamesWithFolderNameToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -601,12 +602,12 @@ Partial Class FormMain
         Me.FullPanel.Controls.Add(Me.ctrMainFrame, 0, 1)
         Me.FullPanel.Controls.Add(Me.FlowLayoutPanel1, 0, 0)
         Me.FullPanel.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.FullPanel.Location = New System.Drawing.Point(0, 36)
+        Me.FullPanel.Location = New System.Drawing.Point(0, 33)
         Me.FullPanel.Name = "FullPanel"
         Me.FullPanel.RowCount = 2
         Me.FullPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.FullPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.FullPanel.Size = New System.Drawing.Size(3145, 1594)
+        Me.FullPanel.Size = New System.Drawing.Size(3145, 1597)
         Me.FullPanel.TabIndex = 0
         '
         'ctrMainFrame
@@ -1696,7 +1697,7 @@ Partial Class FormMain
         Me.MenuStrip2.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip2.Name = "MenuStrip2"
         Me.MenuStrip2.Padding = New System.Windows.Forms.Padding(5, 2, 0, 2)
-        Me.MenuStrip2.Size = New System.Drawing.Size(3145, 36)
+        Me.MenuStrip2.Size = New System.Drawing.Size(3145, 33)
         Me.MenuStrip2.TabIndex = 17
         Me.MenuStrip2.Text = "MenuStrip2"
         '
@@ -2466,7 +2467,7 @@ Partial Class FormMain
         '
         'ExperimentToolStripMenuItem
         '
-        Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RefreshLinksFromDatabaseToolStripMenuItem, Me.DatabaseExperimentToolStripMenuItem, Me.RefreshSelectedFromLinkNameToolStripMenuItem, Me.SelectAllWrongLinksToolStripMenuItem})
+        Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RefreshLinksFromDatabaseToolStripMenuItem, Me.DatabaseExperimentToolStripMenuItem, Me.RefreshSelectedFromLinkNameToolStripMenuItem, Me.SelectAllWrongLinksToolStripMenuItem, Me.ListhandlerToolStripMenuItem})
         Me.ExperimentToolStripMenuItem.Name = "ExperimentToolStripMenuItem"
         Me.ExperimentToolStripMenuItem.Size = New System.Drawing.Size(116, 29)
         Me.ExperimentToolStripMenuItem.Text = "Experiment"
@@ -2494,6 +2495,12 @@ Partial Class FormMain
         Me.SelectAllWrongLinksToolStripMenuItem.Name = "SelectAllWrongLinksToolStripMenuItem"
         Me.SelectAllWrongLinksToolStripMenuItem.Size = New System.Drawing.Size(378, 34)
         Me.SelectAllWrongLinksToolStripMenuItem.Text = "Select All Wrong Links"
+        '
+        'ListhandlerToolStripMenuItem
+        '
+        Me.ListhandlerToolStripMenuItem.Name = "ListhandlerToolStripMenuItem"
+        Me.ListhandlerToolStripMenuItem.Size = New System.Drawing.Size(378, 34)
+        Me.ListhandlerToolStripMenuItem.Text = "Listhandler"
         '
         'RenamingToolStripMenuItem
         '
@@ -2551,7 +2558,7 @@ Partial Class FormMain
         '
         'NewIndex
         '
-        Me.NewIndex.Interval = 10
+        Me.NewIndex.Interval = 1
         '
         'Response
         '
@@ -2942,4 +2949,5 @@ Partial Class FormMain
     Friend WithEvents RefreshSelectedFromLinkNameToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SelectAllWrongLinksToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents lblProgress As Label
+    Friend WithEvents ListhandlerToolStripMenuItem As ToolStripMenuItem
 End Class

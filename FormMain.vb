@@ -35,7 +35,7 @@ Friend Class FormMain
     ' Public WithEvents Response As New Timer
     Public FocusControl As New Control
     Public DraggedFolder As String
-    Public CurrentFileList As New List(Of String)
+
     Public T As Thread
     ' Public FirstButtons As New ButtonForm
     Public ScrubberProportion As Decimal = 0.97
@@ -217,11 +217,27 @@ Friend Class FormMain
     Public Sub OnSpeedChange(sender As Object, e As EventArgs) Handles SP.SpeedChanged
         Dim SH As SpeedHandler = CType(sender, SpeedHandler)
         If SH.Slideshow Then
+            tmrSlideShow.Interval = SH.Interval
             tbSpeed.Text = "Slide Interval=" & SH.Interval
-        Else
-            tbSpeed.Text = "Speed:" & SH.FrameRate & "fps"
 
+        Else
+            If SH.Fullspeed Or SH.Speed = -1 Then
+                tmrSlowMo.Enabled = False
+                tbSpeed.Text = "Speed:FULL"
+                If SH.Speed = -1 Then
+                    tbSpeed.Text = "Speed:Paused"
+
+                End If
+            Else
+                tmrSlowMo.Interval = 1000 / SH.FrameRate
+                tmrSlowMo.Enabled = True
+                tbSpeed.Text = "Speed:" & SH.FrameRate & "fps"
+            End If
         End If
+    End Sub
+    Public Sub OnSlideShowChange(sender As Object, e As EventArgs) Handles SP.SlideShowChange
+        tmrSlideShow.Enabled = SP.Slideshow
+
     End Sub
     Public Sub OnRenameFolderStart(sender As Object, e As KeyEventArgs) Handles tvmain2.KeyDown
         If e.KeyCode = Keys.F2 Then
@@ -311,8 +327,8 @@ Friend Class FormMain
             End If
             Media.Markers = Media.GetMarkersFromLinkList
             Media.Markers.Sort()
-            Marks.Markers = Media.Markers
         End If
+        Marks.Markers = Media.Markers
         DrawScrubberMarks()
 
 
@@ -324,13 +340,9 @@ Friend Class FormMain
         If Media.Duration = 0 Then Exit Sub
 
         Marks.Duration = Media.Duration
-        'Marks.Bar = Scrubber
-        '  Marks.Clear()
         Scrubber.Width = ctrPicAndButtons.Width * ScrubberProportion
         Scrubber.Left = Scrubber.Width * ((1 - ScrubberProportion) / 2)
-        'Scrubber.Visible = False
         Marks.Create()
-        'Marks.Bar.BackColor = Me.BackColor
 
         'Scrubber.Image = Marks.Bitmap NEVER add this back.
 
@@ -408,7 +420,7 @@ Friend Class FormMain
 
         If SlideshowsOff Then
             tmrMovieSlideShow.Enabled = False
-            tmrSlideShow.Enabled = False
+            'tmrSlideShow.Enabled = False
             tmrAutoTrail.Enabled = False
             SP.Slideshow = False
         End If
@@ -456,74 +468,71 @@ Friend Class FormMain
 
     Private Function SpeedChange(e As KeyEventArgs) As KeyEventArgs
         Dim speednumber As Int16 = e.KeyCode - KeySpeed1
-
-        If Not Media.Playing Then
-            tmrSlideShow.Enabled = True
-            Media.Speed.Slideshow = tmrSlideShow.Enabled
-            tmrSlideShow.Interval = Media.Speed.Interval
+        If Media.Playing Then
             If speednumber < 0 Then
-                tmrSlideShow.Enabled = Not tmrSlideShow.Enabled
-                Return e
-                Exit Function
-            End If
-            Media.Speed.SSSpeed = e.KeyCode - KeySpeed1 'Set slideshow speed if pic showing, and start slideshow
-            'PlaybackSpeed = 30
-
-        ElseIf speednumber >= 0 Then
-            'Toggle slow speeds
-            If Not Media.Speed.Speed = speednumber Then
-                TogglePause()
-
-
+                SP.TogglePause()
             Else
-                Media.Speed.Speed = e.KeyCode - KeySpeed1
-                PlaybackSpeed = 1000 / Media.Speed.FrameRate 'Otherwise, set playback speed 'TODO Options
-                Media.Speed.Fullspeed = False
+                SP.Speed = speednumber
             End If
-        End If
-        If e.KeyCode = KeyToggleSpeed Then
-            If Media.Playing Then
-                TogglePause()
-            Else
-                tmrSlideShow.Enabled = Not tmrSlideShow.Enabled
-            End If
-
         Else
-            If Media.Playing Then
 
-                tmrSlowMo.Interval = 1000 / Media.Speed.FrameRate
-                tmrSlowMo.Enabled = True
-                Media.Player.Ctlcontrols.pause()
+            If speednumber < 0 Then
+                SP.Slideshow = Not SP.Slideshow
             Else
-                tmrSlowMo.Enabled = True
-                Media.Speed.Paused = False
-
+                SP.Slideshow = True
+                SP.SSSpeed = speednumber
             End If
         End If
+        'If Not Media.Playing Then
+        '    tmrSlideShow.Enabled = True
+        '    SP.Slideshow = tmrSlideShow.Enabled
+        '    tmrSlideShow.Interval = SP.Interval
+        '    If speednumber < 0 Then
+        '        tmrSlideShow.Enabled = Not tmrSlideShow.Enabled
+        '        Return e
+        '        Exit Function
+        '    End If
+        '    SP.SSSpeed = speednumber 'Set slideshow speed if pic showing, and start slideshow
+        '    'PlaybackSpeed = 30
+
+        'ElseIf speednumber >= 0 Then
+        '    'Toggle slow speeds
+        '    If SP.Speed = speednumber Then
+        '        SP.TogglePause()
+        '    Else
+        '        SP.Speed = speednumber
+        '        PlaybackSpeed = 1000 / SP.FrameRate 'Otherwise, set playback speed 'TODO Options
+        '        SP.Fullspeed = False
+        '    End If
+        'End If
+        'If speednumber = -1 Then
+        '    If Media.Playing Then
+        '        SP.TogglePause()
+        '    Else
+        '        tmrSlideShow.Enabled = Not tmrSlideShow.Enabled
+        '    End If
+
+        'Else
+        '    If Media.Playing Then
+        '        tmrSlowMo.Interval = 1000 / SP.FrameRate
+        '        tmrSlowMo.Enabled = True
+        '        Media.Player.Ctlcontrols.pause()
+        '    Else
+        '        tmrSlowMo.Enabled = True
+        '        SP.Paused = False
+
+        '    End If
+        'End If
 
         e.SuppressKeyPress = True
         Return e
     End Function
+
     Private Sub Background(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles BackgroundWorker1.DoWork
 
     End Sub
     Private Sub BackgroundFinished() Handles BackgroundWorker1.RunWorkerCompleted
         MsgBox("Files moved")
-    End Sub
-    Private Sub TogglePause()
-        Media.Speed.Paused = Not Media.Speed.Paused
-        'If Media.Speed.Paused Then
-        '    'Unpause
-        '    Media.Position = Media.Player.Ctlcontrols.currentPosition
-
-        '    Media.Speed.Paused = False
-        '    tmrSlowMo.Enabled = False
-        '    Media.Speed.Fullspeed = True
-        'Else
-        '    Media.Player.Ctlcontrols.pause()
-        '    'Media.Speed.Fullspeed = False
-        '    Media.Speed.Paused = True
-        'End If
     End Sub
 
     Private Sub ToggleRandomStartPoint()
@@ -546,7 +555,7 @@ Friend Class FormMain
             FullScreen.Location = screen.Bounds.Location + New Point(100, 100)
             CancelDisplay(False)
             'Media.Player.Size = screen.Bounds.Size
-            TogglePause()
+            SP.TogglePause()
             FullScreen.Show()
             FullScreen.FSFiles = MSFiles
             FullScreen.FSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
@@ -573,11 +582,11 @@ Friend Class FormMain
         ctrPicAndButtons.Panel2Collapsed = Not blnButtonsLoaded
         BH.UpdateButtonAppearance()
     End Sub
-
+    Dim LBHH As New ListBoxHandler()
     Public Sub AdvanceFile(blnForward As Boolean, Optional Random As Boolean = False)
         LastGoodFile = Media.MediaPath
         PreferencesSave()
-        Dim LBHH As New ListBoxHandler()
+
         If CtrlDown Then
             LBHH = LBH
         Else
@@ -661,11 +670,7 @@ Friend Class FormMain
     Public Sub ToggleMovieSlideShow()
         tmrMovieSlideShow.Enabled = Not tmrMovieSlideShow.Enabled
         chbSlideShow.Checked = tmrMovieSlideShow.Enabled
-        If tmrMovieSlideShow.Enabled Then
 
-        Else
-
-        End If
         UpdateLabel(InstructionLabel2, ScanInstructions(0))
     End Sub
     Public Sub ToggleAutoTrail()
@@ -814,6 +819,7 @@ Friend Class FormMain
             Case KeyToggleButtons
                 ToggleButtons()
             Case KeyNextFile, KeyPreviousFile, LKeyNextFile, LKeyPreviousFile
+                SP.Slideshow = False
                 AdvanceFile(e.KeyCode = KeyNextFile, Random.NextSelect)
                 e.SuppressKeyPress = True
                 'e = SelectNextFile(e)
@@ -901,14 +907,6 @@ Friend Class FormMain
             Case KeyMuteToggle
                 Muted = Not Muted
                 MSFiles.MuteAll(Muted)
-                'If Muted Then
-                '    Media.Player.settings.mute = False
-                '    SwitchSound(False)
-                'Else
-
-                '    MSFiles.MuteAll()
-                'End If
-                '                Media.Player.settings.mute = Not Media.Player.settings.mute
                 e.SuppressKeyPress = True
 
             Case KeyLoopToggle
@@ -923,13 +921,10 @@ Friend Class FormMain
                 Else
                     JumpRandom(False)
                 End If
-                'JumpRandom(e.Control And e.Shift) 'Autotrail if both held)
 
             Case KeyToggleSpeed
-                If Media.Speed.Fullspeed Then
-                    Media.Speed.Paused = Not Media.Speed.Paused
-                    If Media.Speed.Paused Then tmrSlowMo.Enabled = False
-
+                If SP.Fullspeed Then
+                    SP.TogglePause()
                 Else
                     SpeedChange(e)
                 End If
@@ -1019,9 +1014,8 @@ Friend Class FormMain
                     ToggleMovieSlideShow()
 
                 Else
-                    tmrSlideShow.Enabled = Not tmrSlideShow.Enabled
-                    SP.Slideshow = tmrSlideShow.Enabled
-                    chbSlideShow.Checked = tmrSlideShow.Enabled
+                    SP.Slideshow = Not SP.Slideshow
+                    ' chbSlideShow.Checked = SP.Slideshow
 
                 End If
             Case Keys.Home
@@ -1214,8 +1208,8 @@ Friend Class FormMain
         Else
             SP.DecreaseSpeed()
         End If
-        tmrSlideShow.Interval = SP.Interval
-        tmrSlowMo.Interval = 1000 / SP.FrameRate
+        'tmrSlideShow.Interval = SP.Interval
+        'tmrSlowMo.Interval = 1000 / SP.FrameRate
 
     End Sub
 
@@ -1540,8 +1534,6 @@ Friend Class FormMain
     Private Sub Listbox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles LBH.ListIndexChanged, FBH.ListIndexChanged
         '  IndexHandler(FocusControl, e)
         NewIndex.Enabled = False
-
-
         NewIndex.Enabled = True
 
     End Sub
@@ -2156,6 +2148,7 @@ Friend Class FormMain
 
         AT.Framerates = SP.FrameRates
         Dim i As Byte = AT.SpeedIndex
+       
         Dim TimeUnit As Byte = tbAutoTrail.Value
         AT.RandomTimes = {1 * TimeUnit, 3 * TimeUnit, 5 * TimeUnit, 10 * TimeUnit}
         AT.AdvanceChance = 25
@@ -2726,15 +2719,15 @@ Friend Class FormMain
         Dim x = Int(Rnd() * 100)
         Dim FSPercent = 70
         If x < FSPercent Then
-            Media.Speed.Fullspeed = True
+            SP.Fullspeed = True
             Media.Position = Media.Player.Ctlcontrols.currentPosition
             Media.Player.settings.rate = 1
             Media.Player.Ctlcontrols.play()
             tmrSlowMo.Enabled = False
-            Media.Speed.Fullspeed = True
+            SP.Fullspeed = True
         Else
-            Media.Speed.Speed = Int((x - FSPercent) / ((100 - FSPercent) / 2.8))
-            SpeedChange(New KeyEventArgs(speedkeys(Media.Speed.Speed)))
+            SP.Speed = Int((x - FSPercent) / ((100 - FSPercent) / 2.8))
+            SpeedChange(New KeyEventArgs(speedkeys(SP.Speed)))
         End If
 
         '  tmrMovieSlideShow.Interval = tmrMovieSlideShow.Interval * 29 / Media.Speed.FrameRates(Media.Speed.Speed)
@@ -3080,9 +3073,9 @@ Friend Class FormMain
         Mysettings.loadform()
     End Sub
 
-    'Private Sub LBH_ListboxChanged(sender As Object, e As EventArgs) Handles LBH.ListIndexChanged
-    '    HighlightCurrent(lbxShowList.SelectedItem)
-    'End Sub
+    Private Sub LBH_ListboxChanged(sender As Object, e As EventArgs) Handles LBH.ListIndexChanged
+        HighlightCurrent(lbxShowList.SelectedItem)
+    End Sub
 
     Private Sub lbxFiles_Leave(sender As Object, e As EventArgs) Handles lbxFiles.Leave
         If ShowListVisible Then
@@ -3313,8 +3306,9 @@ Friend Class FormMain
         ShowCurrentlyLoadedToolStripMenuItem.Enabled = True
     End Sub
 
-    Private Sub OnFBHIncrease(sender As Object, e As EventArgs) Handles FBH.ListBoxIncreased
+    Public Sub OnFBHIncrease(sender As Object, e As EventArgs) Handles FBH.ListBoxIncreased
         ProgressIncrement(1)
+
     End Sub
 
     Private Sub StatusStrip1_ItemClicked(sender As Object, e As ToolStripItemClickedEventArgs) Handles StatusStrip1.ItemClicked
@@ -3514,6 +3508,12 @@ Friend Class FormMain
             End If
         Next
         FBH.SelectItems = list
+    End Sub
+
+    Private Sub ListhandlerToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ListhandlerToolStripMenuItem.Click
+        Form3.Show()
+        'Form3.LBH.FillBox()
+
     End Sub
 
 

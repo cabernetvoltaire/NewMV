@@ -56,7 +56,7 @@ Public Class FormFolderSelect
             ' med.Bookmark = med.Duration * Rnd()
             PreMH.Player = PreviewWMP
             PreMH.Player.settings.mute = True
-            PreMH.PicHandler.SetState(PictureHandler.Screenstate.Fitted)
+            PreMH.PicHandler.State = PictureHandler.Screenstate.Fitted
             PreMH.PicHandler.PicBox = PictureBox1
             PreMH.SPT.State = StartPointHandler.StartTypes.Random
             PreMH.MediaPath = f.FullName

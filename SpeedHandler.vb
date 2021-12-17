@@ -2,17 +2,19 @@
     ''' <summary>
     ''' Intervals in ms for each slideshow speed
     ''' </summary>
-    Public Intervals() As Integer = {1000, 300, 10}
+    Public Intervals() As Integer = {1000, 300, 100}
     ''' <summary>
     ''' Speed (fps) For each movie speed
     ''' </summary>
-    Public FrameRates() As Byte = {5, 15, 20}
+    Public FrameRates() As Integer = {5, 15, 20}
     ''' <summary>
     ''' Raised when speed changes
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Public Event SpeedChanged(sender As Object, e As EventArgs)
+    Public Event SlideShowChange(sender As Object, e As EventArgs)
+
     Private mSlideshow As Boolean = False
     Public Property Slideshow() As Boolean
         Get
@@ -20,10 +22,10 @@
         End Get
         Set(ByVal value As Boolean)
             mSlideshow = value
-            RaiseEvent SpeedChanged(Me, Nothing)
+            RaiseEvent SlideShowChange(Me, Nothing)
         End Set
     End Property
-    Private mSpeed As Byte
+    Private mSpeed As Int16 = -1
     Public Property Fullspeed As Boolean
         Get
             Return _Fullspeed
@@ -37,23 +39,9 @@
     ''' Toggles pause, saving paused position.
     ''' </summary>
     ''' <param name="Pause"></param>
-    Private Sub PauseVideo(Pause As Boolean)
-        If Pause Then
-            Media.Player.Ctlcontrols.pause()
 
-            PausedPosition = Media.Player.Ctlcontrols.currentPosition
-            _Fullspeed = False
-        Else
-            Media.Player.Ctlcontrols.currentPosition = PausedPosition
-            Media.Player.Ctlcontrols.play()
-            PausedPosition = 0
-            _Fullspeed = True
-        End If
-        mPaused = Pause
 
-    End Sub
-
-    Private mPaused As Boolean '= False
+    Private mPaused As Boolean = False
     Public PausedPosition As Double
     ''' <summary>
     ''' True if movie paused.
@@ -90,23 +78,25 @@
     ''' One of 3 framerates, 0, 1 and 2
     ''' </summary>
     ''' <returns></returns>
-    Public Property Speed() As Byte
+    Public Property Speed() As Int16
         Get
             Return mSpeed
         End Get
-        Set(ByVal value As Byte)
-            mSpeed = value
-            FrameRate = FrameRates(mSpeed)
-            _Fullspeed = False
-            RaiseEvent SpeedChanged(Me, Nothing)
+        Set(ByVal value As Int16)
+            If value <> mSpeed Then
+                mSpeed = value
+                FrameRate = FrameRates(mSpeed)
+                If mSpeed >= 0 Then _Fullspeed = False
+                RaiseEvent SpeedChanged(Me, Nothing)
+            End If
         End Set
     End Property
-    Private Property mSSSpeed As Byte
-    Public Property SSSpeed() As Byte
+    Private Property mSSSpeed As Int16
+    Public Property SSSpeed() As Int16
         Get
             Return mSSSpeed
         End Get
-        Set(ByVal value As Byte)
+        Set(ByVal value As Int16)
             mSSSpeed = value
             Interval = Intervals(mSSSpeed)
             RaiseEvent SpeedChanged(Me, Nothing)
@@ -114,7 +104,7 @@
     End Property
 
 
-    Private mInterval As Byte
+
     Public Property Interval() As Integer
         Get
             Return Intervals(mSSSpeed)
@@ -136,12 +126,31 @@
         End Get
         Set(ByVal value As Integer)
             FrameRates(mSpeed) = value
-            RaiseEvent SpeedChanged(Me, Nothing)
+            '  RaiseEvent SpeedChanged(Me, Nothing)
         End Set
     End Property
+    Private Sub PauseVideo(Pause As Boolean)
+        If Pause Then
+            Media.Player.Ctlcontrols.pause()
+            PausedPosition = Media.Player.Ctlcontrols.currentPosition
+            _Fullspeed = False
+        Else
+            Media.Player.Ctlcontrols.currentPosition = PausedPosition
+            Media.Player.Ctlcontrols.play()
+            ' PausedPosition = 0
+            _Fullspeed = True
+        End If
+        RaiseEvent SpeedChanged(Me, Nothing)
+        mPaused = Pause
+
+    End Sub
+    Public Sub TogglePause()
+        Paused = Not Paused
+    End Sub
+
     Public Sub IncreaseSpeed()
         If mSlideshow Then
-            Intervals(mSpeed) = Intervals(mSpeed) * 0.9
+            Intervals(mSSSpeed) = Intervals(mSSSpeed) * 0.9
         Else
             FrameRates(mSpeed) = FrameRates(mSpeed) * 1.1
         End If
@@ -149,7 +158,7 @@
     End Sub
     Public Sub DecreaseSpeed()
         If mSlideshow Then
-            Intervals(mSpeed) = Intervals(mSpeed) * 1.1
+            Intervals(mSSSpeed) = Intervals(mSSSpeed) * 1.1
         Else
             FrameRates(mSpeed) = FrameRates(mSpeed) * 0.9
         End If

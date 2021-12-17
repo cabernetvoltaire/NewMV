@@ -18,7 +18,7 @@
     ''' Framerates for each of the 3 different slow speeds
     ''' </summary>
     ''' <returns></returns>
-    Public Property Framerates As Byte() = {5, 12, 20}
+    Public Property Framerates As Integer() = {5, 12, 20}
     ''' <summary>
     ''' Reciprocal of probability of changing
     ''' </summary>

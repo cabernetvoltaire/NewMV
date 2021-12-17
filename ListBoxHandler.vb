@@ -231,13 +231,13 @@
             End If
         End If
     End Sub
-    Public Sub MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles mListbox.MouseDown
-        Dim pt As New Point(e.X, e.Y)
-        Dim index As Integer = mListbox.IndexFromPoint(pt)
+    'Public Sub MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles mListbox.MouseDown
+    '    Dim pt As New Point(e.X, e.Y)
+    '    Dim index As Integer = mListbox.IndexFromPoint(pt)
 
 
-        mListbox.DoDragDrop(mListbox.Items(index).ToString, DragDropEffects.Link)
-    End Sub
+    '    mListbox.DoDragDrop(mListbox.Items(index).ToString, DragDropEffects.Link)
+    'End Sub
 
 
 

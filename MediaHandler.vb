@@ -651,11 +651,11 @@ Public Class MediaHandler
     Private ReadOnly mResetCounter As Integer
 
     Private Sub PlaystateChange(sender As Object, e As _WMPOCXEvents_PlayStateChangeEvent) Handles mPlayer.PlayStateChange
+        FormMain.SP = Speed
         Select Case e.newState
             Case WMPLib.WMPPlayState.wmppsStopped
                 Try
                     mPlayer.Ctlcontrols.play()
-
                 Catch ex As Exception
                 End Try
 
@@ -667,23 +667,15 @@ Public Class MediaHandler
                     MediaJumpToMarker()
                 End If
             Case WMPLib.WMPPlayState.wmppsPlaying
-                'MsgBox("playing " & Media.Player.URL & " on " & Me.Name)
+
                 mSndH.Slow = False
                 PositionUpdater.Enabled = True
-
-
-                ' mResetCounter = 0
                 mDuration = mPlayer.currentMedia.duration
                 SPT.Duration = mDuration
                 MediaJumpToMarker()
                 Playing = True
-
                 RaiseEvent MediaPlaying(Me, Nothing)
-
-
-
                 If FullScreen.Changing Or Speed.Paused Then 'Hold current position if switching to FS or back. 
-
                     mPlayPosition = Speed.PausedPosition
                     Speed.Paused = False
                     Speed.PausedPosition = 0
@@ -696,12 +688,9 @@ Public Class MediaHandler
             Case Else
                 PositionUpdater.Enabled = False
         End Select
+        Speed = FormMain.SP
     End Sub
-    Private Sub OnSpeedChange(sender As Object, e As EventArgs) Handles Speed.SpeedChanged
 
-        RaiseEvent SpeedChanged(sender, e)
-
-    End Sub
     Private Sub OnStartChange(sender As Object, e As EventArgs) Handles SPT.StartPointChanged, SPT.StateChanged
 
         RaiseEvent StartChanged(sender, e)
