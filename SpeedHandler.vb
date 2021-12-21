@@ -31,6 +31,7 @@
             Return _Fullspeed
         End Get
         Set
+
             _Fullspeed = Value
         End Set
     End Property
@@ -85,8 +86,12 @@
         Set(ByVal value As Int16)
             If value <> mSpeed Then
                 mSpeed = value
-                FrameRate = FrameRates(mSpeed)
-                If mSpeed >= 0 Then _Fullspeed = False
+                If mSpeed >= 0 Then
+                    FrameRate = FrameRates(mSpeed)
+                    _Fullspeed = False
+                Else
+                    _Fullspeed = True
+                End If
                 RaiseEvent SpeedChanged(Me, Nothing)
             End If
         End Set
@@ -137,8 +142,8 @@
         Else
             Media.Player.Ctlcontrols.currentPosition = PausedPosition
             Media.Player.Ctlcontrols.play()
-            ' PausedPosition = 0
             _Fullspeed = True
+            ' PausedPosition = 0
         End If
         RaiseEvent SpeedChanged(Me, Nothing)
         mPaused = Pause

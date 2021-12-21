@@ -145,7 +145,7 @@ Public Class ButtonHandler
                 '    If btn.Colour <> Color.Purple Then btn.Colour = Color.Black
                 '    End If
             Else
-                btn.Colour = Color.Gray
+                'btn.Colour = Color.Gray
             End If
             If mListOfButtonFiles.Contains(btn.Path) Then
                 btn.Colour = Color.Purple

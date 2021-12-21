@@ -34,6 +34,8 @@ Public Class MVButton
                     Dim file As New IO.FileInfo(f.FullName & "\" & Label & ".msb")
                     If file.Exists Then
                         mColour = Color.Purple
+                    Else
+                        mColour = Color.Black
                     End If
                 Else
                     'Label = m.Name

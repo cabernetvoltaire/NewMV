@@ -36,6 +36,7 @@
     Public Property State As Byte
         Set(value As Byte)
             mState = SetState(value)
+            ' RaiseEvent StateChanged(Me, Nothing)
         End Set
         Get
             Return mState
@@ -143,12 +144,14 @@
 
     End Sub
     Private Sub PicFullScreen() Handles mPicBox.DoubleClick
-        If ShiftDown Then
-            blnSecondScreen = True
-        Else
-            blnSecondScreen = False
-        End If
-        FormMain.GoFullScreen(blnFullScreen)
+        'If ShiftDown Then
+        '    blnSecondScreen = True
+        'Else
+        '    blnSecondScreen = False
+        'End If
+        'FormMain.GoFullScreen(blnFullScreen)
+        State = PictureHandler.Screenstate.Fitted
+        RaiseEvent ZoomChange(Me, Nothing)
 
     End Sub
     Public Sub Mousewheel(sender As Object, e As MouseEventArgs) Handles mPicBox.MouseWheel
@@ -218,16 +221,11 @@
     Private Function SetState(Sstate As Byte) As Byte
         ' Exit Sub
         'Sets the screenstate, docking style. Changes the sizemode of pbx
-        'If iScreenstate = Sstate Then Exit Sub
-
         Select Case Sstate
             Case Screenstate.Fitted
                 mPicBox.Dock = DockStyle.Fill
                 mPicBox.SizeMode = PictureBoxSizeMode.Zoom
-
-               ' mWheelScroll = True
             Case Screenstate.TrueSize
-
                 mPicBox.Dock = DockStyle.None
                 mPicBox.SizeMode = PictureBoxSizeMode.Zoom
                 'Expand or shrink the picture box accordingly
@@ -239,7 +237,6 @@
                 'then
                 'reset the size mode
                 'And undock
-
                 If State <> Screenstate.Zoomed Then
                     mPicBox.Dock = DockStyle.None
                     mPicBox.Width = PicBoxContainer.Width
@@ -297,7 +294,7 @@
                 mPicBox.Height = mPicBox.Height * Reduction
                 RaiseEvent ZoomChange(Me, Nothing)
             Else
-                mState = SetState(PictureHandler.Screenstate.Fitted)
+                State = PictureHandler.Screenstate.Fitted
                 WheelAdvance = True
                 mPicBox.Cursor = Cursors.Arrow
                 RaiseEvent StateChanged(Me, Nothing)

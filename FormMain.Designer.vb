@@ -281,6 +281,7 @@ Partial Class FormMain
         Me.RefreshSelectedFromLinkNameToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SelectAllWrongLinksToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ListhandlerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ScreenOfMoviesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RenamingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem6 = New System.Windows.Forms.ToolStripMenuItem()
         Me.PrependAllFilenamesWithFolderNameToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -2467,7 +2468,7 @@ Partial Class FormMain
         '
         'ExperimentToolStripMenuItem
         '
-        Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RefreshLinksFromDatabaseToolStripMenuItem, Me.DatabaseExperimentToolStripMenuItem, Me.RefreshSelectedFromLinkNameToolStripMenuItem, Me.SelectAllWrongLinksToolStripMenuItem, Me.ListhandlerToolStripMenuItem})
+        Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RefreshLinksFromDatabaseToolStripMenuItem, Me.DatabaseExperimentToolStripMenuItem, Me.RefreshSelectedFromLinkNameToolStripMenuItem, Me.SelectAllWrongLinksToolStripMenuItem, Me.ListhandlerToolStripMenuItem, Me.ScreenOfMoviesToolStripMenuItem})
         Me.ExperimentToolStripMenuItem.Name = "ExperimentToolStripMenuItem"
         Me.ExperimentToolStripMenuItem.Size = New System.Drawing.Size(116, 29)
         Me.ExperimentToolStripMenuItem.Text = "Experiment"
@@ -2501,6 +2502,12 @@ Partial Class FormMain
         Me.ListhandlerToolStripMenuItem.Name = "ListhandlerToolStripMenuItem"
         Me.ListhandlerToolStripMenuItem.Size = New System.Drawing.Size(378, 34)
         Me.ListhandlerToolStripMenuItem.Text = "Listhandler"
+        '
+        'ScreenOfMoviesToolStripMenuItem
+        '
+        Me.ScreenOfMoviesToolStripMenuItem.Name = "ScreenOfMoviesToolStripMenuItem"
+        Me.ScreenOfMoviesToolStripMenuItem.Size = New System.Drawing.Size(378, 34)
+        Me.ScreenOfMoviesToolStripMenuItem.Text = "Screen Of Movies"
         '
         'RenamingToolStripMenuItem
         '
@@ -2950,4 +2957,5 @@ Partial Class FormMain
     Friend WithEvents SelectAllWrongLinksToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents lblProgress As Label
     Friend WithEvents ListhandlerToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ScreenOfMoviesToolStripMenuItem As ToolStripMenuItem
 End Class

@@ -27,11 +27,12 @@ Partial Class Form3
         '
         'ListBox1
         '
+        Me.ListBox1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListBox1.FormattingEnabled = True
         Me.ListBox1.ItemHeight = 20
-        Me.ListBox1.Location = New System.Drawing.Point(30, 22)
+        Me.ListBox1.Location = New System.Drawing.Point(0, 0)
         Me.ListBox1.Name = "ListBox1"
-        Me.ListBox1.Size = New System.Drawing.Size(738, 404)
+        Me.ListBox1.Size = New System.Drawing.Size(800, 450)
         Me.ListBox1.TabIndex = 0
         '
         'Form3

@@ -8,9 +8,10 @@
     Public NewItem As String = ""
     Public OldItem As String = ""
     Private Nofile As String = "(Empty folder)"
-    Private CheckFilter As String="(If nothing is shown here, check filter)"
+    Private CheckFilter As String = "(If nothing is shown here, check filter)"
     Private mEditing As Boolean = False
     Private WithEvents mText As New TextBox
+    Private mListHandler As New MediaListHandler
 
     Friend mItemList As New List(Of String)
     Friend mFullItemList As New List(Of String)
@@ -26,6 +27,7 @@
             Return mItemList
         End Get
         Set(ByVal value As List(Of String))
+            mListHandler.List = value
             mItemList = value
             mFullItemList = value
         End Set
@@ -53,8 +55,26 @@
         End Set
     End Property
 
+    Public ReadOnly Property Current As String
+        Get
+            Return mListHandler.Current
+        End Get
+    End Property
+
+    Public ReadOnly Property NextOne As String
+        Get
+            Return mListHandler.NextOne
+        End Get
+    End Property
+
+    Public ReadOnly Property Previous As String
+        Get
+            Return mListHandler.Previous
+        End Get
+    End Property
 
     Friend WithEvents mListbox As New ListBox
+
 
     Public Property ListBox() As ListBox
         Get
@@ -75,6 +95,7 @@
         Set(ByVal value As Integer)
 
             mCurrentIndex = value
+            mListHandler.Index = value
         End Set
     End Property
 #End Region
@@ -86,7 +107,7 @@
                 mFullItemList = mItemList
                 .FileList = mFullItemList
                 mItemList = .FileList
-                
+
             End With
         End If
     End Sub
@@ -173,7 +194,7 @@
             Next
             tempListBox.ClearSelected()
             For listitemIndex = 0 To tempListBox.Items.Count
-                If Array.IndexOf(selectedind, listitemIndex) <0 Then
+                If Array.IndexOf(selectedind, listitemIndex) < 0 Then
                     tempListBox.SetSelected(listitemIndex, True)
                 End If
             Next
@@ -295,7 +316,7 @@
     End Sub
 #End Region
     Private Sub IndexChanged(sender As Object, e As EventArgs) Handles mListbox.SelectedIndexChanged
-        RaiseEvent ListIndexChanged(sender, e)
+        RaiseEvent ListIndexChanged(Me, Nothing)
     End Sub
 
 #End Region

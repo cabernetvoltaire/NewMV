@@ -221,16 +221,19 @@ Friend Class FormMain
             tbSpeed.Text = "Slide Interval=" & SH.Interval
 
         Else
-            If SH.Fullspeed Or SH.Speed = -1 Then
+            'If SH.Fullspeed Or SH.Speed = -1 Then
+            If SH.Speed = -1 Then
                 tmrSlowMo.Enabled = False
-                tbSpeed.Text = "Speed:FULL"
-                If SH.Speed = -1 Then
+                If SH.Fullspeed Then
+                    tbSpeed.Text = "Speed:FULL"
+                Else
                     tbSpeed.Text = "Speed:Paused"
-
                 End If
             Else
+
                 tmrSlowMo.Interval = 1000 / SH.FrameRate
-                tmrSlowMo.Enabled = True
+                    tmrSlowMo.Enabled = True
+
                 tbSpeed.Text = "Speed:" & SH.FrameRate & "fps"
             End If
         End If
@@ -469,13 +472,10 @@ Friend Class FormMain
     Private Function SpeedChange(e As KeyEventArgs) As KeyEventArgs
         Dim speednumber As Int16 = e.KeyCode - KeySpeed1
         If Media.Playing Then
-            If speednumber < 0 Then
-                SP.TogglePause()
-            Else
-                SP.Speed = speednumber
-            End If
-        Else
+            SP.TogglePause()
+            SP.Speed = speednumber '0,1 or 2. Could make 1,2 and 3 to be compatible with AT'
 
+        Else
             If speednumber < 0 Then
                 SP.Slideshow = Not SP.Slideshow
             Else
@@ -587,12 +587,14 @@ Friend Class FormMain
         LastGoodFile = Media.MediaPath
         PreferencesSave()
 
-        If CtrlDown Then
-            LBHH = LBH
-        Else
-            LBHH = FBH
-        End If
+        'If CtrlDown Then
+        '    LBHH = LBH
+        'Else
+        '    LBHH = FBH
+        'End If
+        LBHH.ListBox = FocusControl
         LBHH.ListBox.SelectionMode = SelectionMode.One
+        MSFiles.Listbox = LBHH.ListBox
         MSFiles.RandomNext = Random
         If Random Then
             LBHH.ListBox.SelectedItem = MSFiles.NextItem
@@ -1533,6 +1535,8 @@ Friend Class FormMain
     End Sub
     Private Sub Listbox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles LBH.ListIndexChanged, FBH.ListIndexChanged
         '  IndexHandler(FocusControl, e)
+
+
         NewIndex.Enabled = False
         NewIndex.Enabled = True
 
@@ -1602,7 +1606,12 @@ Friend Class FormMain
 
     Private Sub ControlEnter(sender As Object, e As EventArgs) Handles lbxShowList.Enter, lbxFiles.Enter
         'PFocus = CtrlFocus.Tree
+        If sender Is lbxFiles Then
+            LBHH = FBH
 
+        Else
+            LBHH = LBH
+        End If
         FocusControl = sender
         SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
 
@@ -2018,15 +2027,15 @@ Friend Class FormMain
     Private Sub ClearCurrentListToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClearCurrentListToolStripMenuItem.Click
         ClearShowList()
     End Sub
-    Private Sub PicFullScreen() Handles PictureBox1.DoubleClick
-        If ShiftDown Then
-            blnSecondScreen = True
-        Else
-            blnSecondScreen = False
-        End If
-        GoFullScreen(True)
+    'Private Sub PicFullScreen() Handles PictureBox1.DoubleClick
+    '    If ShiftDown Then
+    '        blnSecondScreen = True
+    '    Else
+    '        blnSecondScreen = False
+    '    End If
+    '    GoFullScreen(True)
 
-    End Sub
+    'End Sub
 
 
     Private Sub ThumbnailsStart()
@@ -3513,6 +3522,17 @@ Friend Class FormMain
     Private Sub ListhandlerToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ListhandlerToolStripMenuItem.Click
         Form3.Show()
         'Form3.LBH.FillBox()
+
+    End Sub
+
+    Private Sub ScreenOfMoviesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ScreenOfMoviesToolStripMenuItem.Click
+        Dim x As New Form6
+        x.List = FBH.ItemList
+        x.Show()
+
+    End Sub
+
+    Private Sub Screen2ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles Screen2ToolStripMenuItem.Click
 
     End Sub
 
