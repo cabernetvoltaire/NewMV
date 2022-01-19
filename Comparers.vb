@@ -57,22 +57,27 @@ Public Class CompareByFilesize
         Implements Generic.IComparer(Of String)
 
         Public Function Compare(x As String, y As String) As Integer Implements IComparer(Of String).Compare
+        Try
+
             Dim xf As New IO.FileInfo(x)
             Dim yf As New IO.FileInfo(y)
             If xf.Exists And yf.Exists Then
                 If xf.Length = yf.Length Then
                     Return 0
                 ElseIf xf.Length < yf.Length Then
-                Return 1
-            Else
-                Return -1
-            End If
+                    Return 1
+                Else
+                    Return -1
+                End If
             Else
                 Return 0
             End If
+        Catch ex As Exception
+            Return 0
+        End Try
 
 
-        End Function
+    End Function
     End Class
     Public Class CompareByDate
         Implements Generic.IComparer(Of String)

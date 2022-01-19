@@ -74,7 +74,7 @@
     End Property
 
     Friend WithEvents mListbox As New ListBox
-
+    Private _SingleLinks As Boolean
 
     Public Property ListBox() As ListBox
         Get
@@ -161,9 +161,18 @@
         End If
     End Sub
     Public Property SingleLinks As Boolean
+        Get
+            Return _SingleLinks
+        End Get
+        Set
+            _SingleLinks = Value
+        End Set
+    End Property
+
     Public Sub FillBox(Optional List As List(Of String) = Nothing)
         mListbox.DataSource = Nothing
         If List IsNot Nothing Then mItemList = List
+        Filter.SingleLinks = _SingleLinks
         FilterList()
         OrderList()
         If mItemList.Count > 200 Then

@@ -74,7 +74,14 @@
     Private Function CumBin(n As Integer, p As Decimal, x As Integer)
         Dim prob As Decimal
         For i = 0 To x
-            prob = prob + Comb(n, i) * p ^ i * (1 - p) ^ (n - i)
+            prob = prob + Bin(n, p, i)
+        Next
+        Return prob
+    End Function
+    Private Function Bin(n As Integer, p As Decimal, x As Integer)
+        Dim prob As Decimal
+        For i = 0 To x
+            prob = Comb(n, i) * p ^ i * (1 - p) ^ (n - i)
         Next
         Return prob
     End Function

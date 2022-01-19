@@ -43,6 +43,8 @@ Partial Class FormMain
         Me.VideoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
+        Me.Length = New System.Windows.Forms.ToolStripProgressBar()
+        Me.LengthLabel = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbFiles = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbFilter = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tbRandom = New System.Windows.Forms.ToolStripStatusLabel()
@@ -114,6 +116,7 @@ Partial Class FormMain
         Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
         Me.GroupFilters = New System.Windows.Forms.GroupBox()
+        Me.cbxSingleLinks = New System.Windows.Forms.CheckBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.cbxOrder = New System.Windows.Forms.ComboBox()
         Me.Label3 = New System.Windows.Forms.Label()
@@ -189,6 +192,7 @@ Partial Class FormMain
         Me.SingleFilePerFolderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AddCurrentToShowlistToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CreateListFromLinksToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ListOfFilesFormToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DatabaseToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.CreateNewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LoadToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -282,6 +286,7 @@ Partial Class FormMain
         Me.SelectAllWrongLinksToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ListhandlerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ScreenOfMoviesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.NewMediaSwapperToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RenamingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem6 = New System.Windows.Forms.ToolStripMenuItem()
         Me.PrependAllFilenamesWithFolderNameToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -462,7 +467,7 @@ Partial Class FormMain
         '
         Me.StatusStrip1.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.StatusStrip1.ImageScalingSize = New System.Drawing.Size(28, 28)
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tbFiles, Me.tbFilter, Me.tbRandom, Me.tbZoom, Me.TBFractionAbsolute, Me.tbSpeed, Me.tbStartpoint, Me.tbShowfile, Me.tbButton, Me.tbDate, Me.tbState, Me.tbLastFile, Me.TSPB})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.Length, Me.LengthLabel, Me.tbFiles, Me.tbFilter, Me.tbRandom, Me.tbZoom, Me.TBFractionAbsolute, Me.tbSpeed, Me.tbStartpoint, Me.tbShowfile, Me.tbButton, Me.tbDate, Me.tbState, Me.tbLastFile, Me.TSPB})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 1630)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Padding = New System.Windows.Forms.Padding(2, 0, 12, 0)
@@ -470,6 +475,21 @@ Partial Class FormMain
         Me.StatusStrip1.Stretch = False
         Me.StatusStrip1.TabIndex = 16
         Me.StatusStrip1.Text = "StatusStrip1"
+        '
+        'Length
+        '
+        Me.Length.ForeColor = System.Drawing.Color.Gold
+        Me.Length.Maximum = 200
+        Me.Length.Name = "Length"
+        Me.Length.Size = New System.Drawing.Size(300, 24)
+        Me.Length.Style = System.Windows.Forms.ProgressBarStyle.Continuous
+        '
+        'LengthLabel
+        '
+        Me.LengthLabel.ImageAlign = System.Drawing.ContentAlignment.BottomLeft
+        Me.LengthLabel.Name = "LengthLabel"
+        Me.LengthLabel.Size = New System.Drawing.Size(180, 25)
+        Me.LengthLabel.Text = "ToolStripStatusLabel1"
         '
         'tbFiles
         '
@@ -1233,6 +1253,7 @@ Partial Class FormMain
         '
         'GroupFilters
         '
+        Me.GroupFilters.Controls.Add(Me.cbxSingleLinks)
         Me.GroupFilters.Controls.Add(Me.Label1)
         Me.GroupFilters.Controls.Add(Me.cbxOrder)
         Me.GroupFilters.Controls.Add(Me.Label3)
@@ -1244,6 +1265,16 @@ Partial Class FormMain
         Me.GroupFilters.Size = New System.Drawing.Size(486, 162)
         Me.GroupFilters.TabIndex = 51
         Me.GroupFilters.TabStop = False
+        '
+        'cbxSingleLinks
+        '
+        Me.cbxSingleLinks.AutoSize = True
+        Me.cbxSingleLinks.Location = New System.Drawing.Point(175, 49)
+        Me.cbxSingleLinks.Name = "cbxSingleLinks"
+        Me.cbxSingleLinks.Size = New System.Drawing.Size(120, 24)
+        Me.cbxSingleLinks.TabIndex = 31
+        Me.cbxSingleLinks.Text = "Single Links"
+        Me.cbxSingleLinks.UseVisualStyleBackColor = True
         '
         'Label1
         '
@@ -1565,11 +1596,11 @@ Partial Class FormMain
         '
         Me.tbMovieSlideShowSpeed.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbMovieSlideShowSpeed.Location = New System.Drawing.Point(230, 6)
-        Me.tbMovieSlideShowSpeed.Maximum = 20000
-        Me.tbMovieSlideShowSpeed.Minimum = 1000
+        Me.tbMovieSlideShowSpeed.Maximum = 10000
+        Me.tbMovieSlideShowSpeed.Minimum = 300
         Me.tbMovieSlideShowSpeed.Name = "tbMovieSlideShowSpeed"
         Me.tbMovieSlideShowSpeed.Size = New System.Drawing.Size(367, 69)
-        Me.tbMovieSlideShowSpeed.SmallChange = 10
+        Me.tbMovieSlideShowSpeed.SmallChange = 100
         Me.tbMovieSlideShowSpeed.TabIndex = 9
         Me.tbMovieSlideShowSpeed.TabStop = False
         Me.tbMovieSlideShowSpeed.TickFrequency = 1000
@@ -1580,10 +1611,10 @@ Partial Class FormMain
         Me.chbScan.AutoSize = True
         Me.chbScan.Location = New System.Drawing.Point(12, 67)
         Me.chbScan.Name = "chbScan"
-        Me.chbScan.Size = New System.Drawing.Size(117, 24)
+        Me.chbScan.Size = New System.Drawing.Size(156, 24)
         Me.chbScan.TabIndex = 1
         Me.chbScan.TabStop = False
-        Me.chbScan.Text = "Movie Scan"
+        Me.chbScan.Text = "Scan Bookmarks"
         Me.chbScan.UseVisualStyleBackColor = True
         '
         'chbAutoTrail
@@ -1601,10 +1632,10 @@ Partial Class FormMain
         Me.chbSlideShow.AutoSize = True
         Me.chbSlideShow.Location = New System.Drawing.Point(12, 28)
         Me.chbSlideShow.Name = "chbSlideShow"
-        Me.chbSlideShow.Size = New System.Drawing.Size(159, 24)
+        Me.chbSlideShow.Size = New System.Drawing.Size(117, 24)
         Me.chbSlideShow.TabIndex = 0
         Me.chbSlideShow.TabStop = False
-        Me.chbSlideShow.Text = "Movie Slide Show"
+        Me.chbSlideShow.Text = "Movie Scan"
         Me.chbSlideShow.UseVisualStyleBackColor = True
         '
         'CBXButtonFiles
@@ -1668,9 +1699,6 @@ Partial Class FormMain
         Me.FileSystemWatcher1.SynchronizingObject = Me
         '
         'tmrLoadLastFolder
-        '
-        '
-        'tmrMediaSpeed
         '
         '
         'tmrUpdateForm
@@ -1798,7 +1826,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem14
         '
-        Me.ToolStripMenuItem14.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SaveListToolStripMenuItem, Me.LoadListToolStripMenuItem, Me.ToolStripSeparator7, Me.AddCurrentFileListToolStripMenuItem, Me.AddCurrentAndSubfoldersToolStripMenuItem, Me.ClearCurrentListToolStripMenuItem, Me.SingleFilePerFolderToolStripMenuItem, Me.AddCurrentToShowlistToolStripMenuItem, Me.CreateListFromLinksToolStripMenuItem})
+        Me.ToolStripMenuItem14.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SaveListToolStripMenuItem, Me.LoadListToolStripMenuItem, Me.ToolStripSeparator7, Me.AddCurrentFileListToolStripMenuItem, Me.AddCurrentAndSubfoldersToolStripMenuItem, Me.ClearCurrentListToolStripMenuItem, Me.SingleFilePerFolderToolStripMenuItem, Me.AddCurrentToShowlistToolStripMenuItem, Me.CreateListFromLinksToolStripMenuItem, Me.ListOfFilesFormToolStripMenuItem})
         Me.ToolStripMenuItem14.Name = "ToolStripMenuItem14"
         Me.ToolStripMenuItem14.Size = New System.Drawing.Size(278, 34)
         Me.ToolStripMenuItem14.Text = "&Lists"
@@ -1871,6 +1899,12 @@ Partial Class FormMain
         Me.CreateListFromLinksToolStripMenuItem.Name = "CreateListFromLinksToolStripMenuItem"
         Me.CreateListFromLinksToolStripMenuItem.Size = New System.Drawing.Size(443, 34)
         Me.CreateListFromLinksToolStripMenuItem.Text = "Create list from links"
+        '
+        'ListOfFilesFormToolStripMenuItem
+        '
+        Me.ListOfFilesFormToolStripMenuItem.Name = "ListOfFilesFormToolStripMenuItem"
+        Me.ListOfFilesFormToolStripMenuItem.Size = New System.Drawing.Size(443, 34)
+        Me.ListOfFilesFormToolStripMenuItem.Text = "List of Files Form"
         '
         'DatabaseToolStripMenuItem1
         '
@@ -2468,7 +2502,7 @@ Partial Class FormMain
         '
         'ExperimentToolStripMenuItem
         '
-        Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RefreshLinksFromDatabaseToolStripMenuItem, Me.DatabaseExperimentToolStripMenuItem, Me.RefreshSelectedFromLinkNameToolStripMenuItem, Me.SelectAllWrongLinksToolStripMenuItem, Me.ListhandlerToolStripMenuItem, Me.ScreenOfMoviesToolStripMenuItem})
+        Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RefreshLinksFromDatabaseToolStripMenuItem, Me.DatabaseExperimentToolStripMenuItem, Me.RefreshSelectedFromLinkNameToolStripMenuItem, Me.SelectAllWrongLinksToolStripMenuItem, Me.ListhandlerToolStripMenuItem, Me.ScreenOfMoviesToolStripMenuItem, Me.NewMediaSwapperToolStripMenuItem})
         Me.ExperimentToolStripMenuItem.Name = "ExperimentToolStripMenuItem"
         Me.ExperimentToolStripMenuItem.Size = New System.Drawing.Size(116, 29)
         Me.ExperimentToolStripMenuItem.Text = "Experiment"
@@ -2508,6 +2542,12 @@ Partial Class FormMain
         Me.ScreenOfMoviesToolStripMenuItem.Name = "ScreenOfMoviesToolStripMenuItem"
         Me.ScreenOfMoviesToolStripMenuItem.Size = New System.Drawing.Size(378, 34)
         Me.ScreenOfMoviesToolStripMenuItem.Text = "Screen Of Movies"
+        '
+        'NewMediaSwapperToolStripMenuItem
+        '
+        Me.NewMediaSwapperToolStripMenuItem.Name = "NewMediaSwapperToolStripMenuItem"
+        Me.NewMediaSwapperToolStripMenuItem.Size = New System.Drawing.Size(378, 34)
+        Me.NewMediaSwapperToolStripMenuItem.Text = "NewMediaSwapper"
         '
         'RenamingToolStripMenuItem
         '
@@ -2558,10 +2598,7 @@ Partial Class FormMain
         '
         'tmrMovieSlideShow
         '
-        Me.tmrMovieSlideShow.Interval = 2000
-        '
-        'BackgroundWorker1
-        '
+        Me.tmrMovieSlideShow.Interval = 1500
         '
         'NewIndex
         '
@@ -2958,4 +2995,9 @@ Partial Class FormMain
     Friend WithEvents lblProgress As Label
     Friend WithEvents ListhandlerToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ScreenOfMoviesToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents NewMediaSwapperToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents cbxSingleLinks As CheckBox
+    Friend WithEvents ListOfFilesFormToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents Length As ToolStripProgressBar
+    Friend WithEvents LengthLabel As ToolStripStatusLabel
 End Class

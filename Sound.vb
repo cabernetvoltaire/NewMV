@@ -1,6 +1,6 @@
 ﻿Public Class SoundController
     Public SoundPlayer As AxWMPLib.AxWindowsMediaPlayer
-    Private WithEvents mCurrentPlayer As New AxWMPLib.AxWindowsMediaPlayer
+    Private WithEvents mCurrentPlayer As AxWMPLib.AxWindowsMediaPlayer
     Public WithEvents SPH As New SpeedHandler
     Private mMuted As Boolean
     Public Property CurrentPlayer() As AxWMPLib.AxWindowsMediaPlayer
@@ -38,17 +38,21 @@
             End If
         End Set
     End Property
+    Public Sub New(Player As AxWindowsMediaPlayer, mSoundPlayer As AxWindowsMediaPlayer)
+        CurrentPlayer = Player
+
+    End Sub
     Private Sub SlowSound()
         Exit Sub
         If mSlow Then
-            CurrentPlayer.settings.mute = True
-            SoundPlayer.URL = CurrentPlayer.URL
+            mCurrentPlayer.settings.mute = True
+            SoundPlayer.URL = mCurrentPlayer.URL
             SoundPlayer.settings.mute = False
             SoundPlayer.Ctlcontrols.currentPosition = CurrentPlayer.Ctlcontrols.currentPosition
             SoundPlayer.settings.rate = SPH.FrameRate / 30
         Else
             SoundPlayer.URL = ""
-            CurrentPlayer.settings.mute = False
+            mCurrentPlayer.settings.mute = False
         End If
     End Sub
     Private Sub Mute(mute As Boolean)
@@ -66,8 +70,8 @@
         'SoundPlayer.settings.rate = SPH.FrameRate / 30
     End Sub
     Private Sub OnURLChange()
-        'SoundPlayer.URL = CurrentPlayer.URL
-        'SoundPlayer.settings.rate = CurrentPlayer.settings.rate
+        SoundPlayer.URL = CurrentPlayer.URL
+        SoundPlayer.settings.rate = CurrentPlayer.settings.rate
     End Sub
     Private Sub OnPosChange() Handles mCurrentPlayer.PositionChange
         SoundPlayer.Ctlcontrols.currentPosition = mCurrentPlayer.Ctlcontrols.currentPosition

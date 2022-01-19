@@ -6,14 +6,20 @@
     ''' <summary>
     ''' Speed (fps) For each movie speed
     ''' </summary>
-    Public FrameRates() As Integer = {5, 15, 20}
+    Public FrameRates() As Integer = {3, 6, 15}
     ''' <summary>
     ''' Raised when speed changes
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Public Event SpeedChanged(sender As Object, e As EventArgs)
+    ''' <summary>
+    ''' Raised when slideshow turned on or off. 
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Public Event SlideShowChange(sender As Object, e As EventArgs)
+    Public Event ParameterChanged(sender As Object, e As EventArgs)
 
     Private mSlideshow As Boolean = False
     Public Property Slideshow() As Boolean
@@ -33,19 +39,18 @@
         Set
 
             _Fullspeed = Value
+            ' PauseVideo(Not _Fullspeed)
         End Set
     End Property
 
-    ''' <summary>
-    ''' Toggles pause, saving paused position.
-    ''' </summary>
-    ''' <param name="Pause"></param>
+
 
 
     Private mPaused As Boolean = False
     Public PausedPosition As Double
     ''' <summary>
     ''' True if movie paused.
+    ''' Setting pauses video.
     ''' </summary>
     ''' <returns></returns>
     Public Property Paused() As Boolean
@@ -64,6 +69,7 @@
         End Get
         Set
             _AbsoluteJump = Value
+            RaiseEvent ParameterChanged(Me, Nothing)
         End Set
     End Property
 
@@ -73,6 +79,8 @@
         End Get
         Set
             _FractionalJump = Value
+            RaiseEvent ParameterChanged(Me, Nothing)
+
         End Set
     End Property
     ''' <summary>
@@ -84,16 +92,16 @@
             Return mSpeed
         End Get
         Set(ByVal value As Int16)
-            If value <> mSpeed Then
-                mSpeed = value
-                If mSpeed >= 0 Then
-                    FrameRate = FrameRates(mSpeed)
-                    _Fullspeed = False
-                Else
-                    _Fullspeed = True
-                End If
-                RaiseEvent SpeedChanged(Me, Nothing)
+            mSpeed = value
+            If mSpeed >= 0 Then
+                FrameRate = FrameRates(mSpeed)
+                _Fullspeed = False
+                Paused = True
+            Else
+                Fullspeed = True
+                Paused = False
             End If
+            RaiseEvent SpeedChanged(Me, Nothing)
         End Set
     End Property
     Private Property mSSSpeed As Int16
@@ -157,7 +165,13 @@
         If mSlideshow Then
             Intervals(mSSSpeed) = Intervals(mSSSpeed) * 0.9
         Else
-            FrameRates(mSpeed) = FrameRates(mSpeed) * 1.1
+            Dim m As Integer = FrameRates(mSpeed)
+            If m <= 4 Then
+                m = m + 1
+            Else
+                m = m * 1.1
+            End If
+            FrameRates(mSpeed) = m
         End If
         RaiseEvent SpeedChanged(Me, Nothing)
     End Sub
@@ -165,7 +179,13 @@
         If mSlideshow Then
             Intervals(mSSSpeed) = Intervals(mSSSpeed) * 1.1
         Else
-            FrameRates(mSpeed) = FrameRates(mSpeed) * 0.9
+            Dim m As Integer = FrameRates(mSpeed)
+            If m <= 4 Then
+                m = Math.Max(1, m - 1)
+            Else
+                m = m * 0.9
+            End If
+            FrameRates(mSpeed) = m
         End If
         RaiseEvent SpeedChanged(Me, Nothing)
 

@@ -16,9 +16,13 @@ Friend Module FileHandling
     Public WithEvents t As Thread
     Public WithEvents Media As New MediaHandler("Media")
     Public WithEvents MSFiles As New MediaSwapper(FormMain.MainWMP1, FormMain.MainWMP2, FormMain.MainWMP3, FormMain.PictureBox1, FormMain.PictureBox2, FormMain.PictureBox3)
+
+    Public MSFilesNew As New MediaSwapper2
     Public AllFaveMinder As New FavouritesMinder("Q:\Favourites")
     Public FaveMinder As New FavouritesMinder("Q:\Favourites")
+    Public Sub OnMediaPlaying(sender As Object, e As EventArgs) Handles Media.MediaPlaying
 
+    End Sub
     Public Sub OnZoomChanged(sender As Object, e As EventArgs) Handles Media.Zoomchanged
         MSFiles.ZoomPics(sender)
 
@@ -71,8 +75,8 @@ Friend Module FileHandling
         If sender.MediaPath <> "" Then
         End If
         If ShiftDown Then FormMain.HighlightCurrent(Media.LinkPath) 'Used for links only, to go to original file
-
-
+        FormMain.Length.Value = Math.Min(Media.Duration / 60, 200)
+        FormMain.LengthLabel.Text = New TimeSpan(0, 0, Media.Duration).ToString("hh\:mm\:ss")
     End Sub
     Private Sub DebugStartpoint(M As MediaHandler)
         Debug.Print(M.MediaPath & " loaded into " & M.Player.Name)
@@ -117,43 +121,43 @@ Friend Module FileHandling
     ''' <param name="Dest"></param>
     ''' <param name="lbx"></param>
     '''
-    Public Sub Getlist(list As List(Of String), Dest As String, lbx As ListBox)
+    'Public Sub Getlist(list As List(Of String), Dest As String, lbx As ListBox)
 
-        Dim notlist As New List(Of String)
-        ReadListfromFile(Dest, Encrypted)
-        lbx.DataSource = list
-        'For Each s In list
-        '    Try
-        '        Dim f As New FileInfo(s)
-        '        If f.Exists Then
-        '            lbx.Items.Add(s)
-        '        Else
-        '            notlist.Add(s)
-        '        End If
-        '    Catch ex As System.IO.PathTooLongException
-        '        Continue For
-        '    Catch ex As System.ArgumentException
-        '        ReportFault("Filehandling.Getlist", ex.Message)
-        '        Exit Sub
-        '    End Try
-        '    ProgressIncrement(40)
-        'Next
+    '    Dim notlist As New List(Of String)
+    '    ReadListfromFile(Dest, Encrypted)
+    '    lbx.DataSource = list
+    '    'For Each s In list
+    '    '    Try
+    '    '        Dim f As New FileInfo(s)
+    '    '        If f.Exists Then
+    '    '            lbx.Items.Add(s)
+    '    '        Else
+    '    '            notlist.Add(s)
+    '    '        End If
+    '    '    Catch ex As System.IO.PathTooLongException
+    '    '        Continue For
+    '    '    Catch ex As System.ArgumentException
+    '    '        ReportFault("Filehandling.Getlist", ex.Message)
+    '    '        Exit Sub
+    '    '    End Try
+    '    '    ProgressIncrement(40)
+    '    'Next
 
 
 
-        'If lbx.Items.Count <> 0 Then lbx.TabStop = True
-        lngShowlistLines = Showlist.Count
+    '    'If lbx.Items.Count <> 0 Then lbx.TabStop = True
+    '    lngShowlistLines = Showlist.Count
 
-        If notlist.Count = 0 Then Exit Sub
-        If MsgBox(notlist.Count & " files were not found. Remove from list?", vbYesNo, "Metavisua") = MsgBoxResult.Yes Then
-            For Each s In notlist
-                list.Remove(s)
-            Next
-            If MsgBox("Re-save list?", vbYesNo, "Metavisua") Then
-                WriteListToFile(list, Dest, Encrypted)
-            End If
-        End If
-    End Sub
+    '    If notlist.Count = 0 Then Exit Sub
+    '    If MsgBox(notlist.Count & " files were not found. Remove from list?", vbYesNo, "Metavisua") = MsgBoxResult.Yes Then
+    '        For Each s In notlist
+    '            list.Remove(s)
+    '        Next
+    '        If MsgBox("Re-save list?", vbYesNo, "Metavisua") Then
+    '            WriteListToFile(list, Dest, Encrypted)
+    '        End If
+    '    End If
+    'End Sub
     Public Sub LevelAllFolders()
         Dim x As New DirectoryInfo(CurrentFolder)
         For Each m In x.EnumerateDirectories("*", SearchOption.AllDirectories)
@@ -177,10 +181,7 @@ Friend Module FileHandling
 
             Dim TargetDir As New DirectoryInfo(Dest)
             Dim SourceDir As New DirectoryInfo(Dir)
-            'DirectoriesList.Remove(SourceDir.FullName)
-            'DirectoriesList.Add(TargetDir.FullName)
 
-            'Make target subdirectories.
             MoveDirectoryContents(TargetDir, SourceDir, SourceDir, True)
             If SourceDir.Exists Then
                 If SourceDir.GetFiles.Count = 0 And SourceDir.GetDirectories.Count = 0 Then
@@ -625,5 +626,6 @@ Friend Module FileHandling
         Dim finfo As New IO.FileInfo(path)
         finfo.MoveTo(finfo.Directory.Parent.FullName & "\" & finfo.Name)
     End Sub
+
 
 End Module

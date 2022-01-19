@@ -980,11 +980,7 @@ Public Module General
             End Try
             TotalSize = filessize
         End If
-        'Dim FolderInfo = New IO.DirectoryInfo(RootFolder)
-        'For Each File In FolderInfo.GetFiles : TotalSize += File.Length
-        'Next
-        'For Each SubFolderInfo In FolderInfo.GetDirectories : GetDirSize(SubFolderInfo.FullName, TotalSize)
-        'Next
+
         Return TotalSize
     End Function
 
@@ -1135,11 +1131,11 @@ Public Module General
         Return s(0)
         '        Throw New NotImplementedException()
     End Function
-    Public Function AdvanceModular(Count As Integer, i As Integer, Forward As Boolean)
+    Public Function AdvanceModular(Count As Integer, i As Integer, Forward As Boolean, Optional Inc As Integer = 1)
         If Forward Then
-            i = (i + 1) Mod Count
+            i = (i + Inc) Mod Count
         Else
-            i = (i - 1)
+            i = (i - Inc)
             If i < 0 Then i = i + Count
         End If
         Return i
@@ -1479,8 +1475,6 @@ Public Module General
                     n = Entries.FindAll(Function(x) x.Filename.Contains(Path.GetFileNameWithoutExtension(filename)))
                     If n.Count = 0 Then
                         Return Nothing
-                    Else
-
                     End If
                 Case Else
                     Return n(0)

@@ -71,8 +71,10 @@
     Public Sub RemoveEmptySubfolders()
         Dim finished As Boolean = False
         Dim x As New List(Of IO.DirectoryInfo)
+
         While Not finished
             'Make a list of all the empty directories
+
             For Each fol In CurrentFolder.GetDirectories("*", IO.SearchOption.AllDirectories)
                 If fol.GetDirectories.Count = 0 And fol.GetFiles.Count = 0 Then
                     x.Add(fol)
@@ -81,11 +83,13 @@
             'If there aren't any then done
             If x.Count = 0 Then
                 finished = True
+                'Otherwise, delete them all
+            Else
+                For Each f In x
+                    My.Computer.FileSystem.DeleteDirectory(f.FullName, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
+                    'f.Delete(False)
+                Next
             End If
-            'Otherwise, delete them all
-            For Each f In x
-                f.Delete()
-            Next
             x.Clear()
         End While
     End Sub

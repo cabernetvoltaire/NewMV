@@ -249,6 +249,11 @@ Public Class MediaSwapper
             m.SPT.State = SH.State
         Next
     End Sub
+    Public Sub SetSpeedHandlers(ByRef Sp As SpeedHandler)
+        For Each m In MediaHandlers
+            m.Speed = Sp
+        Next
+    End Sub
     Public Sub SetStartpoints(ByRef SH As StartPointHandler) 'Only called when bars changed
         SetStartStates(SH)
         For Each m In MediaHandlers
