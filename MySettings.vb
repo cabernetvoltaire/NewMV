@@ -138,7 +138,10 @@ Friend Module Mysettings
             .Add("FractionalJump" & "$" & FormMain.SP.FractionalJump)
             .Add("AbsoluteJump" & "$" & FormMain.SP.AbsoluteJump)
             .Add("Speed" & "$" & FormMain.SP.Speed)
-            .Add("Navmode" & "$" & FormMain.NavigateMoveState.State)
+            .Add("MovieScan" & "$" & FormMain.chbSlideShow.Checked)
+            .Add("Scan Bookmarks" & "$" & FormMain.chbScan.Checked)
+            .Add("SingleLinks" & "$" & FormMain.cbxSingleLinks.Checked)
+            .Add("Movie Slide Show Speed" & "$" & FormMain.tbMovieSlideShowSpeed.Value)
 
         End With
 
@@ -198,21 +201,7 @@ Friend Module Mysettings
             .Add(New Setting("RootScanPath", Rootpath, "C:"))
             .Add(New Setting("Directories List", DirectoriesListFile, "")) 'DirectoriesListFile,))
             .Add(New Setting("GlobalFaves", GlobalFavesPath, "C:"))
-            '.Add(New Setting("RandomNextFile", FormMain.chbNextFile.Checked,))
-            '.Add(New Setting("RandomOnDirectoryChange", FormMain.chbOnDir.Checked,))
-            '.Add(New Setting("RandomAutoTrail", FormMain.chbAutoTrail.Checked,))
-            '.Add(New Setting("RandomAutoLoadButtons", FormMain.chbLoadButtonFiles.Checked,))
-            '.Add(New Setting("OptionsShowAttr", FormMain.chbShowAttr.Checked,))
-            '.Add(New Setting("OptionsPreviewLinks", FormMain.chbPreviewLinks.Checked,))
-            '.Add(New Setting("OptionsEncrypt", FormMain.chbEncrypt.Checked,))
-            '.Add(New Setting("OptionsAutoAdvance", FormMain.CHBAutoAdvance.Checked,))
-            '.Add(New Setting("OptionsSeparate", FormMain.chbSeparate.Checked,))
-            '.Add(New Setting("ThumbnailDestination", ThumbDestination,))
-            '.Add(New Setting("ButtonFolder", Buttonfolder,))
-            '.Add(New Setting("FractionalJump", FormMain.SP.FractionalJump,))
-            '.Add(New Setting("AbsoluteJump", FormMain.SP.AbsoluteJump,))
-            '.Add(New Setting("Speed", FormMain.SP.Speed,))
-            '.Add(New Setting("Navmode", FormMain.NavigateMoveState.State,))
+
 
         End With
 
@@ -392,6 +381,15 @@ Friend Module Mysettings
                           '  FormMain.SP.Speed = value
                             Case "Navstate"
                                 FormMain.NavigateMoveState.State = value
+                            Case "MovieScan"
+                                FormMain.chbSlideShow.Checked = value
+
+                            Case "Scan Bookmarks"
+                                FormMain.chbScan.Checked = value
+                            Case "SingleLinks"
+                                FormMain.cbxSingleLinks.Checked = value
+                            Case "Movie Slide Show Speed"
+                                FormMain.tbMovieSlideShowSpeed.Value = value
                         End Select
 
                     End If

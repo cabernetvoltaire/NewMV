@@ -8,8 +8,10 @@ Public Class MarkPlacement
             'Barcolor = mBar.BackColor
         End Set
     End Property
-    Private Property Barcolor
+    Public Property Barcolor
     Property Duration As Long
+    Property Fractions As Integer
+    Property SmallJumps As Long
     Property Graphics As Graphics
     Property Bitmap As Bitmap
     Private Property mMarkers As List(Of Double)
@@ -27,15 +29,38 @@ Public Class MarkPlacement
     Public Sub Create()
 
         Clear() 'Erase marks
+        'Draw Big Jumps
+        Dim start As Point
+        start.Y = 0
+        Dim endpt As Point
+        endpt.Y = mBar.Height
+
+        Dim count As Integer = Duration / Fractions
+        Dim x As Integer
+        While x < Duration * mBar.Width / Duration
+
+            Dim pen As New Pen(Color.Black, 2)
+            start.X = x
+            endpt.X = x
+            Graphics.DrawLine(pen, start, endpt)
+            x += count * mBar.Width / Duration
+        End While
+        x = 0
+        While x < Duration * mBar.Width / Duration
+
+            Dim pen As New Pen(Color.Gray, 1)
+            start.X = x
+            endpt.X = x
+            Graphics.DrawLine(pen, start, endpt)
+            x += SmallJumps * mBar.Width / Duration
+        End While
+
+
         If mMarkers Is Nothing Then Exit Sub
         For Each m In mMarkers
-            Dim start As Point
-            start.Y = 0
             start.X = mBar.Width * m / Duration
-            Dim endpt As Point
-            endpt.Y = mBar.Height
             endpt.X = start.X
-            Dim pen As New Pen(Color.Black, 1)
+            Dim pen As New Pen(Color.Yellow, 3)
             Graphics.DrawLine(pen, start, endpt)
         Next
 

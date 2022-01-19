@@ -12,6 +12,7 @@ Public Class MediaHandler
     Public Event MediaNotFound(ByVal sender As Object, ByVal e As EventArgs)
     Public Event MediaPlaying(ByVal sender As Object, ByVal e As EventArgs)
     Public Event Zoomchanged(ByVal sender As Object, ByVal e As EventArgs)
+    Public Event TypeChange(ByVal sender As Object, ByVal e As EventArgs)
 
     Private WithEvents mPlayer As New AxWMPLib.AxWindowsMediaPlayer
     Private WithEvents Sound As New AxWindowsMediaPlayer
@@ -640,6 +641,8 @@ Public Class MediaHandler
                 Metadata = ImageDate(PicHandler.PicBox.Image)
             End If
         End If
+        RaiseEvent TypeChange(Filetype.Pic, Nothing)
+
         DisplayerName = mPicBox.Name
     End Sub
 

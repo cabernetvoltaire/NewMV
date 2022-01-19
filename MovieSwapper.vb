@@ -411,6 +411,13 @@ Public Class MediaSwapper
 
         End If
     End Sub
+    Public Sub OnPicLoaded(sender As Object, e As EventArgs) Handles Media1.TypeChange, Media2.TypeChange, Media3.TypeChange
+        If sender = Filetype.Pic Then
+            'FormMain.Marks.Clear()
+        End If
+
+    End Sub
+
 #End Region
 
 End Class

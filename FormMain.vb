@@ -40,7 +40,7 @@ Friend Class FormMain
     ' Public FirstButtons As New ButtonForm
     Public ScrubberProportion As Decimal = 0.97
     Public FavouritesFormOpen As Boolean = False
-    Public Marks As New MarkPlacement
+    Public Marks As New MarkPlacement With {.Fractions = SP.FractionalJump, .SmallJumps = SP.AbsoluteJump}
     Public speedkeys = {KeySpeed1, KeySpeed2, KeySpeed3}
     Public WithEvents FBH As New FileboxHandler()
     Public WithEvents LBH As New ListBoxHandler()
@@ -51,6 +51,8 @@ Friend Class FormMain
 #Region "Event Responders"
     Public Sub OnSpeedParameterChanged(sender As Object, e As EventArgs) Handles SP.ParameterChanged
         MSFiles.SetSpeedHandlers(SP)
+        Marks.Fractions = SP.FractionalJump
+        Marks.SmallJumps = SP.AbsoluteJump
     End Sub
     Public Sub OnLetterChanged(sender As Object, e As EventArgs) Handles BH.LetterChanged
         BH.LetterLabel.Text = Chr(AsciifromLetterNumber(BH.buttons.CurrentLetter))
@@ -312,7 +314,7 @@ Friend Class FormMain
         If x.Count = 0 Then
             chbPreviewLinks.Font = New Font(chbPreviewLinks.Font, FontStyle.Regular)
             chbPreviewLinks.Text = "Preview links (None)"
-            Scrubber.BackColor = Me.BackColor
+            Scrubber.BackColor = FBH.ListBox.BackColor
             If chbPreviewLinks.Checked Then
                 LBH.ItemList.Clear()
                 ControlSetFocus(lbxFiles)
@@ -2847,7 +2849,7 @@ Friend Class FormMain
 
 
     Private Sub Scrubber_Paint(sender As Object, e As PaintEventArgs) Handles Scrubber.Paint
-        DrawScrubberMarks()
+        ' DrawScrubberMarks()
 
         'MsgBox("Uh-oh")
     End Sub
@@ -3475,10 +3477,12 @@ Friend Class FormMain
     End Sub
 
     Private Sub CheckBox1_CheckedChanged(sender As Object, e As EventArgs) Handles cbxSingleLinks.CheckedChanged
-        CurrentFilterState.SingleLinks = cbxSingleLinks.Checked
         If FocusControl Is lbxShowList Then
+            LBH.SingleLinks = cbxSingleLinks.Checked
             LBH.FillBox()
         Else
+            FBH.SingleLinks = cbxSingleLinks.Checked
+
             FBH.FillBox()
         End If
     End Sub
