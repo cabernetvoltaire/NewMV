@@ -113,7 +113,6 @@
     Private mStartPoint As Long
     Public ReadOnly Property StartPoint() As Long
         Get
-            '  SetStartPoint()
             Return mStartPoint
         End Get
 
@@ -170,7 +169,6 @@
     End Sub
 
     Private Function SetStartPoint() As Long
-        Dim oldstartpoint As Long = mStartPoint
         Select Case mState
             Case StartTypes.FirstMarker
                 If mMarkers.Count > 0 Then

@@ -92,7 +92,10 @@
                 Case FilterHandler.FilterState.LinkOnly
                     If LCase(f.Extension) = LinkExt Then
                         Dim x As String = LinkTarget(m)
-
+                        Dim f2 As New IO.FileInfo(x)
+                        If f2.Exists = False Then
+                            lst.Remove(m)
+                        End If
                         If x = "" Then
                             lst.Remove(m)
                             Exit Select

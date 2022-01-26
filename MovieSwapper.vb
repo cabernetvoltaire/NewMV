@@ -247,6 +247,13 @@ Public Class MediaSwapper
     Public Sub SetStartStates(ByRef SH As StartPointHandler)
         For Each m In MediaHandlers
             m.SPT.State = SH.State
+
+        Next
+    End Sub
+    Public Sub SetStartpoints(ByRef SH As StartPointHandler) 'Only called when bars changed
+        SetStartStates(SH)
+        For Each m In MediaHandlers
+            m.SPT = SH
         Next
     End Sub
     Public Sub SetSpeedHandlers(ByRef Sp As SpeedHandler)
@@ -254,12 +261,7 @@ Public Class MediaSwapper
             m.Speed = Sp
         Next
     End Sub
-    Public Sub SetStartpoints(ByRef SH As StartPointHandler) 'Only called when bars changed
-        ' SetStartStates(SH)
-        For Each m In MediaHandlers
-            m.SPT = SH
-        Next
-    End Sub
+
     Function DisposeMedia(player As AxWindowsMediaPlayer) As Integer
         player.close()
         player.currentPlaylist.clear()
