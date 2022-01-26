@@ -223,18 +223,21 @@ Public Class ButtonHandler
         Dim d As New DirectoryInfo(StartingFolder)
 
         Dim icomp As New MyComparer
-        Dim dlist As New SortedList(Of Long, DirectoryInfo)(icomp)
+        Dim dlist As New List(Of String)
+        dlist = GenerateSafeFolderList(d.FullName, SizeMagnitude)
 
-        CreateListOfLargeDirectories(SizeMagnitude, exclude, d, dlist) 'This just takes too long  - tree could be vast. Need a way of stopping. 
         Dim i As Int16 = 0
-        For Each de In dlist
+        For Each n In dlist
 
-            Dim m As Char = UCase(de.Value.Name(0))
-            m = UCase(m)
-            buttons.CurrentLetter = LetterNumberFromAscii(Asc(m))
-            Dim btn As MVButton
-            btn = buttons.FirstFree(buttons.CurrentLetter)
-            btn.Path = de.Value.FullName
+            Dim de As New IO.DirectoryInfo(n)
+            If de.EnumerateFiles.Count <> 0 Then
+                Dim m As Char = UCase(de.Name(0))
+                m = UCase(m)
+                buttons.CurrentLetter = LetterNumberFromAscii(Asc(m))
+                Dim btn As MVButton
+                btn = buttons.FirstFree(buttons.CurrentLetter)
+                btn.Path = de.FullName
+            End If
         Next
 
 
@@ -251,20 +254,20 @@ Public Class ButtonHandler
     ''' <param name="dlist"></param>
     Private Shared Sub CreateListOfLargeDirectories(SizeMagnitude As Byte, exclude As String, d As DirectoryInfo, dlist As SortedList(Of Long, DirectoryInfo))
         Dim dirlist As New List(Of String)
-        dirlist = GenerateSafeFolderList(d.FullName, True)
-        For Each x In dirlist
-            Dim di As New DirectoryInfo(x)
-            Dim disize = GetDirSize(di.FullName, 0, False)
-            If (exclude = "" Or Not di.Name.Contains(exclude)) And disize > 10 ^ SizeMagnitude Then
-                'MsgBox(di.Name & " is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###.#"))
-                While dlist.Keys.Contains(disize)
-                    disize += 1
-                End While
-                dlist.Add(disize, di)
-                CreateListOfLargeDirectories(SizeMagnitude, exclude, di, dlist)
-            End If
+        dirlist = GenerateSafeFolderList(d.FullName, SizeMagnitude)
+        'For Each x In dirlist
+        '    Dim di As New DirectoryInfo(x)
+        '    Dim disize = GetDirSize(di.FullName, 0, False)
+        '    If (exclude = "" Or Not di.Name.Contains(exclude)) And disize > 10 ^ SizeMagnitude Then
+        '        'MsgBox(di.Name & " is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###.#"))
+        '        While dlist.Keys.Contains(disize)
+        '            disize += 1
+        '        End While
+        '        dlist.Add(disize, di)
+        '        CreateListOfLargeDirectories(SizeMagnitude, exclude, di, dlist)
+        '    End If
 
-        Next
+        'Next
     End Sub
     ''' <summary>
     ''' Creates a dlist of directories whose depth is smaller than depth.

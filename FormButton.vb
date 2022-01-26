@@ -27,7 +27,7 @@
         InitializeComponent()
         ' Add any initialization after the InitializeComponent() call.
         BH.Tooltip = Me.ToolTip1
-
+        MakeMenu()
         BH.Labels = {Label1, Label2, Label3, Label4, Label5, Label6, Label7, Label8}
         BH.RowProgressBar = pbrButtons
         BH.LetterLabel = lblAlpha
@@ -35,7 +35,26 @@
 
     End Sub
 
+    Private Sub MakeMenu()
+        MainMenuStrip.Items.Clear()
 
+        For Each m In FormMain.ToolStripMenuItem2.DropDownItems
+            Dim clone As New ToolStripMenuItem
+            clone = CloneMenu(m)
+            If clone IsNot Nothing Then
+                If Tag = "" Then
+                    MainMenuStrip.Items.Add(clone)
+                Else
+                    If clone.Tag IsNot Nothing Then
+                        If clone.Tag = Tag Then
+                            MainMenuStrip.Items.Add(clone)
+                        End If
+                    Else
+                    End If
+                End If
+            End If
+        Next
+    End Sub
 
     Private Sub UpdateTinyButtons()
         For Each btn In FlowLayoutPanel1.Controls
@@ -110,6 +129,8 @@
         UpdateTinyButtons()
     End Sub
 
+    Private Sub AlphaToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlphaToolStripMenuItem.Click
 
+    End Sub
 End Class
 

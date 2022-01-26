@@ -15,6 +15,7 @@ Public Class MarkPlacement
     Property Graphics As Graphics
     Property Bitmap As Bitmap
     Private Property mMarkers As List(Of Double)
+
     Property Markers As List(Of Double)
         Get
             Markers = mMarkers
@@ -35,7 +36,7 @@ Public Class MarkPlacement
         Dim endpt As Point
         endpt.Y = mBar.Height
 
-        Dim count As Integer = Duration / Fractions
+        Dim count As Integer = Math.Max(10, Duration / Fractions)
         Dim x As Integer
         While x < Duration * mBar.Width / Duration
 

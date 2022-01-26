@@ -89,7 +89,7 @@
         End Get
         Set(ByVal value As Long)
 
-            Dim b As Long = mAbsolute
+
             If value <= Duration Then
                 mAbsolute = value
                 mPercentage = mAbsolute / mDuration * 100
@@ -190,7 +190,7 @@
                 If mStartPoint < mDuration / 2 Then
                     mStartPoint = mDuration * 0.9
                 End If
-            Case StartTypes.ParticularAbsolute, StartTypes.FirstMarker
+            Case StartTypes.ParticularAbsolute
                 mStartPoint = mAbsolute
             Case StartTypes.ParticularPercentage
                 mStartPoint = mPercentage / 100 * mDuration

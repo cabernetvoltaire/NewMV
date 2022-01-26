@@ -61,6 +61,8 @@ Friend Module FileHandling
 
         If Media.MediaType = Filetype.Movie Then
             FormMain.PopulateLinkList(sender)
+        Else
+            FormMain.Marks.Clear()
         End If
         Media.SetLink(0)
         With FormMain
@@ -72,8 +74,7 @@ Friend Module FileHandling
                 .Att.Text = ""
             End If
         End With
-        If sender.MediaPath <> "" Then
-        End If
+
         If ShiftDown Then FormMain.HighlightCurrent(Media.LinkPath) 'Used for links only, to go to original file
         FormMain.Length.Value = Math.Min(Media.Duration / 60, 200)
         FormMain.LengthLabel.Text = New TimeSpan(0, 0, Media.Duration).ToString("hh\:mm\:ss")
@@ -365,7 +366,7 @@ Friend Module FileHandling
 
 
                                         Catch ex As Exception
-                                            'MsgBox(ex.Message)
+                                            MsgBox(ex.Message)
 
                                         End Try
                                     End If
@@ -600,7 +601,7 @@ Friend Module FileHandling
     End Sub
     Public Async Function DeleteEmptyFolders(d As DirectoryInfo, blnRecurse As Boolean) As Task(Of Boolean)
         Dim x As New FileOperations
-        x.CurrentFolder = New IO.DirectoryInfo(CurrentFolder)
+        x.CurrentFolder = New DirectoryInfo(CurrentFolder)
         x.RemoveEmptySubfolders()
         Return True
 

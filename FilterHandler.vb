@@ -21,7 +21,7 @@
     Public Property SingleLinks As Boolean
 
     Public Event StateChanged(sender As Object, e As EventArgs)
-    Private mColour = {Color.MintCream, Color.LemonChiffon, Color.LightSeaGreen, Color.LightPink, Color.LightBlue, Color.Azure, Color.Blue, Color.PaleTurquoise}
+    Private mColour = {Color.MintCream, Color.LemonChiffon, Color.LightSeaGreen, Color.LightPink, Color.LightBlue, Color.Azure, Color.Aquamarine, Color.PaleTurquoise}
     Private mDescription = {"All files", "Only pictures and videos", "Only videos", "Only pictures", "Only links", "Videos without Links", "Videos with Links", "No pictures or videos"}
     Public ReadOnly Property Colour() As Color
         Get
@@ -55,11 +55,11 @@
             Return mState
         End Get
         Set(ByVal value As Byte)
-            If value = FilterState.LinkOnly Then OldState = mState
-
-            mState = value
-
-            RaiseEvent StateChanged(Me, New EventArgs)
+            If value <> mState Then
+                If value = FilterState.LinkOnly Then OldState = mState
+                mState = value
+                RaiseEvent StateChanged(Me, New EventArgs)
+            End If
         End Set
     End Property
     Public Sub IncrementState(Limited As Boolean)

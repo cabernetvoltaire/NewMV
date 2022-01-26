@@ -266,6 +266,14 @@ Public Module General
         End Try
 
     End Function
+    Public Function GenerateSafeFolderList(folder As String, Depth As Integer) As List(Of String)
+        Dim D As New DirectoryLister
+        D.Depth = Depth
+        D.Path = folder
+        D.GenerateDirs()
+        Return D.DirectoryList
+
+    End Function
     ''' <summary>
     ''' Get all folders beneath folder, which are safe.
     ''' </summary>
@@ -413,12 +421,16 @@ Public Module General
         Return path
 
     End Function
-    Public Function SaveButtonFileName(path As String) As String
-        If path = "" Then
+    Public Function SaveButtonFileName(path As String, Optional Force As Boolean = False) As String
+        If path = "" Or Force Then
             With New SaveFileDialog
                 .DefaultExt = "msb"
                 .Filter = "Metavisua button files|*.msb|All files|*.*"
-
+                If Force Then
+                    .FileName = path
+                    Return path
+                    Exit Function
+                End If
                 If .ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                     path = .FileName
                 End If
@@ -932,10 +944,10 @@ Public Module General
         lbx.Items.Insert(index, newitem)
 
     End Sub
-    Public Function GetDirSizeString(Rootfolder As String) As String
-        Return "##"
-        Exit Function
-        Dim size As Long = GetDirSize(Rootfolder, 0)
+    Public Async Function GetDirSizeString(Rootfolder As String) As Task(Of String)
+        'Return "##"
+        'Exit Function
+        Dim size As Long = Await GetDirSize(Rootfolder, 0)
         If size = 0 Then
             Return "0"
             Exit Function
@@ -950,8 +962,8 @@ Public Module General
 
     End Function
 
-    Public Function GetDirSize(RootFolder As String, TotalSize As Long, Optional NoSubs As Boolean = False) As Long
-
+    Public Async Function GetDirSize(RootFolder As String, Optional NoSubs As Boolean = False) As Task(Of Long)
+        Dim totalsize As Long
         ' Exit Function
         If RootFolder.EndsWith(":\") Then
             Return 0
@@ -966,7 +978,7 @@ Public Module General
             If dir.Exists Then
                 Dim profile = fso.GetFolder(RootFolder)
 
-                TotalSize = profile.size
+                totalsize = profile.size
             End If
         Else
             Try
@@ -978,7 +990,7 @@ Public Module General
             Catch ex As Exception
 
             End Try
-            TotalSize = filessize
+            totalsize = filessize
         End If
 
         Return TotalSize

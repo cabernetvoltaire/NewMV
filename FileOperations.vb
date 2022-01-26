@@ -65,9 +65,7 @@
         'Delete the folder (Optionally if it is empty)
         'Remove the node from the treeview
     End Sub
-    Public Sub MoveFolder()
-        'To the destination folder
-    End Sub
+
     Public Sub RemoveEmptySubfolders()
         Dim finished As Boolean = False
         Dim x As New List(Of IO.DirectoryInfo)

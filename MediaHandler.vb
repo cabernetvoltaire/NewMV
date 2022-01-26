@@ -16,7 +16,7 @@ Public Class MediaHandler
 
     Private WithEvents mPlayer As New AxWMPLib.AxWindowsMediaPlayer
     Private WithEvents Sound As New AxWindowsMediaPlayer
-    ' Private Property mSndH As New SoundController(mPlayer, Sound) ' With {.SoundPlayer = Sound, .CurrentPlayer = mPlayer}
+    ' Public Property mSndH As New SoundController With {.SoundPlayer = Sound, .CurrentPlayer = mPlayer}
     Public Property Textbox As New RichTextBox With {
         .Multiline = True,
         .Dock = DockStyle.Fill,
@@ -468,7 +468,7 @@ Public Class MediaHandler
         If Playing Then
 
             Dim Extra As Integer = 1
-            If Small Then Extra = 10
+            If Small Then Extra = 5
             If Forward Then
                 Position = Math.Min(Duration, Position + Duration / (Extra * Speed.FractionalJump))
                 If Position = Duration Then RaiseEvent MediaFinished(Me, Nothing)
@@ -511,7 +511,7 @@ Public Class MediaHandler
         mPlayer.Ctlcontrols.currentPosition = mPlayPosition
 
     End Sub
-    Public Sub MediaJumpToMarker(Optional ToEnd As Boolean = False, Optional ToMarker As Boolean = False)
+    Public Sub MediaJumpToMarker(Optional ToPoint As Double = 0, Optional ToStart As Boolean = False, Optional ToEnd As Boolean = False, Optional ToMarker As Boolean = False)
         'This is a logical mess.
         'There are markers, so jump to the next one
         If ToEnd Then 'Special Case where jump to end button pressed
@@ -522,17 +522,6 @@ Public Class MediaHandler
             mPlayPosition = m.StartPoint
             m = Nothing
         End If
-
-        'Or it's a link with a bookmark
-        'ElseIf mIsLink And mBookmark > -1 AndAlso Speed.PausedPosition = 0 AndAlso Not ToMarker Then 'And mMarkers.Count = 0 Then
-        '    If SPT.State = StartPointHandler.StartTypes.FirstMarker Then
-        '        mPlayPosition = mBookmark
-        '    Else
-        '        mPlayPosition = SPT.StartPoint
-        '    End If
-        'ElseIf Speed.PausedPosition <> 0 Then
-        '    mPlayPosition = Speed.PausedPosition
-        '    'Speed.PausedPosition = 0
         If ToMarker Then
             If mMarkers.Count > 0 Then
                 'If Not ToMarker Then mlinkcounter = 0 'Reset when it's a new file
@@ -540,6 +529,24 @@ Public Class MediaHandler
             End If
             mPlayPosition = SPT.StartPoint
         End If
+        If ToStart Then
+            Dim m As New StartPointHandler With {
+                        .Duration = mDuration,
+                        .State = StartPointHandler.StartTypes.Beginning
+                                    }
+            mPlayPosition = m.StartPoint
+
+        End If
+        If ToPoint > 0 Then
+            Dim m As New StartPointHandler With {
+                        .Duration = mDuration,
+                        .State = StartPointHandler.StartTypes.ParticularAbsolute,
+                        .Absolute = ToPoint
+                                    }
+            mPlayPosition = m.StartPoint
+
+        End If
+
         If mPlayPosition > mDuration Then
             Report(mPlayPosition & "Over-reach" & mDuration, 0, False)
         Else
@@ -715,7 +722,7 @@ Public Class MediaHandler
                 mDuration = mPlayer.currentMedia.duration
 
                 SPT.Duration = mDuration
-                'MediaJumpToMarker()
+                MediaJumpToMarker()
                 Playing = True
                 RaiseEvent MediaPlaying(Me, Nothing)
                 If FullScreen.Changing Then 'Hold current position if switching to FS or back. 

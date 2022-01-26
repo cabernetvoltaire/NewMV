@@ -44,7 +44,7 @@ Friend Class FormMain
     Public speedkeys = {KeySpeed1, KeySpeed2, KeySpeed3}
     Public WithEvents FBH As New FileboxHandler()
     Public WithEvents LBH As New ListBoxHandler()
-    Private ScanInstructions = {"Movie slide Show in progress" & vbCrLf & "Selects next movie automatically.",
+    Private ScanInstructions = {"Movie scan in progress" & vbCrLf & "Selects next movie automatically.",
         "Movie Scan in progress" & vbCrLf & "Change speed with slider.",
         "Auto Trail in progress" & vbCrLf & "Change core speed change with slider"}
 
@@ -165,6 +165,12 @@ Friend Class FormMain
                 End If
                 cbxFilter.BackColor = CurrentFilterState.Colour
                 cbxFilter.SelectedIndex = CurrentFilterState.State
+                If CurrentFilterState.State = FilterHandler.FilterState.LinkOnly Then
+                    cbxSingleLinks.Visible = True
+                Else
+                    cbxSingleLinks.Visible = False
+                    cbxSingleLinks.Checked = False
+                End If
                 tbFilter.Text = "FILTER:" & UCase(CurrentFilterState.Description)
                 If Not Media.DontLoad Then
                     SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
@@ -266,7 +272,7 @@ Friend Class FormMain
         End If
         PopulateLinkList(Media)
         '       e.SuppressKeyPress = True
-        DrawScrubberMarks()
+        'DrawScrubberMarks()
     End Sub
     Private Sub RefreshLinks(List As List(Of String))
         For Each filename In List
@@ -348,7 +354,6 @@ Friend Class FormMain
         Marks.Create()
 
         'Scrubber.Image = Marks.Bitmap NEVER add this back.
-
 
 
     End Sub
@@ -573,7 +578,7 @@ Friend Class FormMain
         lbxFiles.SelectionMode = SelectionMode.One
         If Initialising = False And Collapse Then ControlSetFocus(lbxFiles)
         MasterContainer.SplitterDistance = MasterContainer.Height / 3
-        UpdateFileInfo()
+        'UpdateFileInfo()
     End Sub
 
     Public Sub MediaSmallJump(e As KeyEventArgs, Small As Boolean, forward As Boolean)
@@ -828,7 +833,7 @@ Friend Class FormMain
                         RemoveMarker(Media.MediaPath, l)
 
                     End If
-                    DrawScrubberMarks()
+                    'DrawScrubberMarks()
                 Else
                     AddMarker()
                     '    DrawScrubberMarks()
@@ -996,6 +1001,7 @@ Friend Class FormMain
                 'Jump to folder
                 If path <> CurrentFolder Then
                     ChangeFolder(path)
+
                     tvmain2.SelectedFolder = CurrentFolder
                 ElseIf Random.OnDirChange Then
                     AdvanceFile(True, True) 'TODO: Whaat?
@@ -1047,7 +1053,7 @@ Friend Class FormMain
                     'CancelDisplay()
                     tvmain2.SelectedFolder = path
                     ' FmBH.DirectoryPath = path
-                ElseIf Random.OnDirChange Then
+                Else
                     'Change file if same folder
                     AdvanceFile(True, True)
 
@@ -1163,6 +1169,12 @@ Friend Class FormMain
         'If strPath <> FavesFolderPath Then
         '    CurrentfilterState.State = CurrentfilterState.OldState
         'End If
+        If strPath.Contains(GlobalFavesPath) Then
+            CurrentFilterState.State = FilterHandler.FilterState.LinkOnly
+        Else
+            CurrentFilterState.State = CurrentFilterState.OldState
+
+        End If
         If strPath = CurrentFolder Then
         Else
             ' MSFiles.CancelURL()
@@ -1486,7 +1498,8 @@ Friend Class FormMain
             If chbScan.Checked And Media.Markers.Count <> 0 Then
                 'Scan movie for marks
                 If Media.IncrementLinkCounter(True) = 0 Then
-                    If Media.Markers.Count < 3 Then
+                    'Static pos As Long = Media.Position
+                    If Media.Position < Media.Duration * 3 / 6 Then
                         MediaLargeJump(Nothing, False, True)
                     Else
                         AdvanceFile(True, Random.NextSelect)
@@ -1619,7 +1632,7 @@ Friend Class FormMain
         Process.Start("explorer.exe", lbx.SelectedItem)
     End Sub
 
-    Public Sub UpdateFileInfo()
+    Public Async Sub UpdateFileInfo()
         If Media.DontLoad Then Exit Sub
         If Media.MediaPath = "" Then Exit Sub
         ' If Not FileLengthCheck(Media.MediaPath) Then Exit Sub
@@ -1676,7 +1689,8 @@ Friend Class FormMain
         Else
             tbFiles.Text = "FOLDER:" & listcount & " SHOW:" & showcount
         End If
-        tbFiles.Text = tbFiles.Text.Replace("SHOW:", "(" & GetDirSizeString(CurrentFolder) & ") SHOW:")
+        Dim x As String = Await GetDirSizeString(CurrentFolder)
+        tbFiles.Text = tbFiles.Text.Replace("SHOW:", "(" & x & ") SHOW:")
         tbFilter.Text = "FILTER:" & UCase(CurrentFilterState.Description)
         tbLastFile.Text = Media.MediaPath
         tbRandom.Text = "ORDER:" & UCase(PlayOrder.Description)
@@ -2407,23 +2421,26 @@ Friend Class FormMain
     Private Sub tbAbsolute_MouseUp(sender As Object, e As MouseEventArgs) Handles tbAbsolute.MouseUp
         Media.SPT.State = StartPointHandler.StartTypes.ParticularAbsolute
         Media.SPT.Absolute = tbAbsolute.Value
-        tbxAbsolute.Text = New TimeSpan(0, 0, tbAbsolute.Value).ToString("hh\:mm\:ss")
-        tbxPercentage.Text = Str(Media.SPT.Percentage) & "%"
-        tbPercentage.Value = Media.SPT.Percentage
         Media.MediaJumpToMarker()
         MSFiles.SetStartpoints(Media.SPT)
     End Sub
+    Private Sub tbAbsolute_ValueChanged(sender As Object, e As EventArgs) Handles tbAbsolute.ValueChanged
 
+        tbxAbsolute.Text = New TimeSpan(0, 0, tbAbsolute.Value).ToString("hh\:mm\:ss")
+        tbxPercentage.Text = Str(Media.SPT.Percentage) & "%"
+        tbPercentage.Value = Media.SPT.Percentage
+    End Sub
+    Private Sub tbPercentage_ValueChanged(sender As Object, e As EventArgs) Handles tbPercentage.ValueChanged
+
+    End Sub
     Private Sub tbPercentage_MouseUp(sender As Object, e As MouseEventArgs) Handles tbPercentage.MouseUp
         Media.SPT.State = StartPointHandler.StartTypes.ParticularPercentage
         Media.SPT.Percentage = tbPercentage.Value
         tbxAbsolute.Text = New TimeSpan(0, 0, tbAbsolute.Value).ToString("hh\:mm\:ss")
         tbxPercentage.Text = Str(Media.SPT.Percentage) & "%"
         tbPercentage.Value = Media.SPT.Percentage
-
         Media.MediaJumpToMarker()
         MSFiles.SetStartpoints(Media.SPT)
-
     End Sub
 
 
@@ -2497,10 +2514,10 @@ Friend Class FormMain
 
 
     Private Sub tmrUpdateFileList_Tick(sender As Object, e As EventArgs) Handles tmrUpdateFileList.Tick
-        If AutoLoadButtons Then
-            AddToButtonFilesList(CurrentFolder)
-            UpdateFileInfo()
-        End If
+        'If AutoLoadButtons Then
+        '    AddToButtonFilesList(CurrentFolder)
+        '    UpdateFileInfo()
+        'End If
         ProgressBarOn(1000)
 
         FBH.DirectoryPath = CurrentFolder
@@ -2538,16 +2555,19 @@ Friend Class FormMain
             '     End If
             lastasked = file.FullName
         Else
+            SpawnButtonForm(Nothing, name:=Buttonfolder & "\" & Foldername)
             Foldername = ""
         End If
         Return Foldername
         'Load it (optionally)
     End Function
 
-    Private Function SpawnButtonForm(file As FileInfo) As FormButton
+    Private Function SpawnButtonForm(file As FileInfo, Optional name As String = "") As FormButton
         Dim fname As String
         If file Is Nothing Then
-            fname = SaveButtonFileName("")
+            Dim tBH As New ButtonHandler
+            tBH.SaveButtonSet(name)
+            fname = name
         Else
             fname = file.FullName
         End If
@@ -2684,6 +2704,7 @@ Friend Class FormMain
 
     Private Sub cbxStartPoint_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbxStartPoint.SelectedIndexChanged
         Media.SPT.State = cbxStartPoint.SelectedIndex
+        OnStartChanged(sender, e)
         'If cbxStartPoint.SelectedIndex <> Media.StartPoint.State Then cbxStartPoint.SelectedIndex = Media.StartPoint.State
 
     End Sub
@@ -2849,7 +2870,7 @@ Friend Class FormMain
 
 
     Private Sub Scrubber_Paint(sender As Object, e As PaintEventArgs) Handles Scrubber.Paint
-        ' DrawScrubberMarks()
+        'DrawScrubberMarks()
 
         'MsgBox("Uh-oh")
     End Sub
@@ -3082,7 +3103,7 @@ Friend Class FormMain
         End If
     End Sub
 
-    Private Sub tbMovieSlideShowSpeed_Scroll(sender As Object, e As EventArgs) Handles tbMovieSlideShowSpeed.Scroll
+    Private Sub tbMovieSlideShowSpeed_Scroll(sender As Object, e As EventArgs) Handles tbMovieSlideShowSpeed.Scroll, tbMovieSlideShowSpeed.ValueChanged
         tmrMovieSlideShow.Interval = tbMovieSlideShowSpeed.Value
         chbSlideShow.Text = "Movie Slide Show (" & Str(tbMovieSlideShowSpeed.Value / 1000) & "s.)"
     End Sub
@@ -3491,6 +3512,12 @@ Friend Class FormMain
         Dim f As New FavouriteFiles
         f.Show()
     End Sub
+
+    Private Sub tmrPumpFiles_Tick(sender As Object, e As EventArgs) Handles tmrPumpFiles.Tick
+
+    End Sub
+
+
 
 
 
