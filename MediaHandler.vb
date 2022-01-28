@@ -35,7 +35,7 @@ Public Class MediaHandler
     Public WithEvents PicHandler As New PictureHandler(Picture)
     Public Metadata As String = ""
 
-    Private ReadOnly DefaultFile As String = "C:\exiftools.exe"
+    Private ReadOnly DefaultFile As String = "Q:\image0.jpg"
     Public WithEvents SPT As New StartPointHandler
     Public WithEvents Speed As New SpeedHandler
     Public DisplayerName As String

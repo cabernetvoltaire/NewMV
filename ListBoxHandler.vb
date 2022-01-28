@@ -101,7 +101,7 @@
 #End Region
 #Region "Methods"
     Public Sub FilterList()
-        If Filter.State <> Filter.OldState Then
+        If Filter.State <> Filter.OldState Or Filter.SingleLinks Then
 
             With Filter
                 mFullItemList = mItemList
