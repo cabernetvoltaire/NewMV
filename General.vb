@@ -993,7 +993,7 @@ Public Module General
             totalsize = filessize
         End If
 
-        Return TotalSize
+        Return totalsize
     End Function
 
     Public Sub OnNotEncrypted() Handles Encrypter.NotEncrypted

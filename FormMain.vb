@@ -1689,7 +1689,9 @@ Friend Class FormMain
         Else
             tbFiles.Text = "FOLDER:" & listcount & " SHOW:" & showcount
         End If
-        Dim x As String = Await GetDirSizeString(CurrentFolder)
+        'Dim tx As Task(Of String) = GetDirSizeString(CurrentFolder)
+        Dim x As String = "XX"
+        'x = tx.Result
         tbFiles.Text = tbFiles.Text.Replace("SHOW:", "(" & x & ") SHOW:")
         tbFilter.Text = "FILTER:" & UCase(CurrentFilterState.Description)
         tbLastFile.Text = Media.MediaPath
