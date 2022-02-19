@@ -334,9 +334,9 @@ Friend Class FormMain
                 x.Sort(New CompareByEndNumber)
                 FillShowbox(lbxShowList, FilterHandler.FilterState.LinkOnly, x)
             End If
-            Media.Markers = Media.GetMarkersFromLinkList
-            Media.Markers.Sort()
         End If
+        Media.Markers = Media.GetMarkersFromLinkList
+        Media.Markers.Sort()
         Marks.Markers = Media.Markers
         DrawScrubberMarks()
 
@@ -1494,21 +1494,27 @@ Friend Class FormMain
 
     Private Sub tmrSlideShow_Tick(sender As Object, e As EventArgs) Handles tmrSlideShow.Tick
         'SP.Slideshow = True
+        If AltDown Then Exit Sub
         If Media.Playing Then
-            If chbScan.Checked And Media.Markers.Count <> 0 Then
-                'Scan movie for marks
-                If Media.IncrementLinkCounter(True) = 0 Then
-                    'Static pos As Long = Media.Position
-                    If Media.Position < Media.Duration * 3 / 6 Then
-                        MediaLargeJump(Nothing, False, True)
+            If CtrlDown Then
+                AdvanceFile(True, Random.NextSelect)
+            Else
+
+                If chbScan.Checked And Media.Markers.Count <> 0 Then
+                    'Scan movie for marks
+                    If Media.IncrementLinkCounter(True) = 0 Then
+                        'Static pos As Long = Media.Position
+                        If Media.Position > Media.Markers(Media.Markers.Count - 1) Then
+                            MediaLargeJump(Nothing, False, True)
+                        Else
+                            AdvanceFile(True, Random.NextSelect)
+                        End If
                     Else
-                        AdvanceFile(True, Random.NextSelect)
+                        Media.MediaJumpToMarker(ToMarker:=True)
                     End If
                 Else
-                    Media.MediaJumpToMarker(ToMarker:=True)
-                End If
-            Else
                     MediaLargeJump(Nothing, False, True)
+                End If
             End If
         Else
             AdvanceFile(True, Random.NextSelect)
@@ -2706,7 +2712,7 @@ Friend Class FormMain
 
     Private Sub cbxStartPoint_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbxStartPoint.SelectedIndexChanged
         Media.SPT.State = cbxStartPoint.SelectedIndex
-        OnStartChanged(sender, e)
+        '  OnStartChanged(sender, e)
         'If cbxStartPoint.SelectedIndex <> Media.StartPoint.State Then cbxStartPoint.SelectedIndex = Media.StartPoint.State
 
     End Sub

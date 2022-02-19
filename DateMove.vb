@@ -63,7 +63,10 @@ Class DateMove
 
         Dim s As New IO.DirectoryInfo(FolderName)
         Dim i As Integer
+        Dim files As New Dictionary(Of IO.FileInfo, String)
+
         For Each f In s.GetFiles
+
             Dim folname As String = ""
             With GetDate(f)
                 Select Case Choice
@@ -92,15 +95,24 @@ Class DateMove
                         If i < 10 Then folname = "0" & folname
                 End Select
             End With
-
+            files.Add(f, folname)
             'If f.Directory.EnumerateDirectories(Str(i)) Is Nothing Then
             'End If
+            'Try
+            '    f.Directory.CreateSubdirectory(folname & "\")
+            '    f.MoveTo(f.DirectoryName & "\" & folname & "\" & f.Name)
+
+            'Catch ex As Exception
+
+            'End Try
+        Next
+        For Each f In files
+            s.CreateSubdirectory(f.Value & "\")
             Try
-                f.Directory.CreateSubdirectory(folname & "\")
-                f.MoveTo(f.DirectoryName & "\" & folname & "\" & f.Name)
+                f.Key.MoveTo(s.FullName & "\" & f.Value & "\" & f.Key.Name)
 
             Catch ex As Exception
-
+                Continue For
             End Try
         Next
         RaiseEvent FilesMoved(Nothing, Nothing)

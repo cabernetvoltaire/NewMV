@@ -16,7 +16,7 @@ Public Class MediaHandler
 
     Private WithEvents mPlayer As New AxWMPLib.AxWindowsMediaPlayer
     Private WithEvents Sound As New AxWindowsMediaPlayer
-    ' Public Property mSndH As New SoundController With {.SoundPlayer = Sound, .CurrentPlayer = mPlayer}
+    ' Public Property mSndH As New SoundController With {.SoundPlayer = FormMain.SoundWMP, .CurrentPlayer = Media.Player}
     Public Property Textbox As New RichTextBox With {
         .Multiline = True,
         .Dock = DockStyle.Fill,
@@ -168,6 +168,7 @@ Public Class MediaHandler
         End Get
         Set(ByVal value As List(Of Double))
             mMarkers = value
+
             SPT.Markers = mMarkers
         End Set
     End Property
@@ -287,7 +288,7 @@ Public Class MediaHandler
 
         End Set
     End Property
-    Private mBookmark As Double = -1
+    Private mBookmark As Double = -1 'This may be redundant
     Public Property Bookmark() As Double
         Get
             Return mBookmark
@@ -524,7 +525,7 @@ Public Class MediaHandler
         End If
         If ToMarker Then
             If mMarkers.Count > 0 Then
-                'If Not ToMarker Then mlinkcounter = 0 'Reset when it's a new file
+
                 SPT.Marker = mMarkers.Item(LinkCounter)
             End If
             mPlayPosition = SPT.StartPoint
@@ -719,9 +720,9 @@ Public Class MediaHandler
 
                 'mSndH.Slow = False
                 PositionUpdater.Enabled = True
-                mDuration = mPlayer.currentMedia.duration
+                Duration = mPlayer.currentMedia.duration
 
-                SPT.Duration = mDuration
+
                 MediaJumpToMarker()
                 Playing = True
                 RaiseEvent MediaPlaying(Me, Nothing)

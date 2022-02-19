@@ -155,8 +155,9 @@
             If FilterHandler.FilterState.LinkOnly And SingleLinks Then
                 lst.Clear()
 
-            For Each v In filelist.Keys
-                lst.Add(v)
+            For Each v In filelist
+                Dim f As New IO.FileInfo(v.Value)
+                If f.Exists Then lst.Add(v.Key)
             Next
         End If
 

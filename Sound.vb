@@ -10,7 +10,7 @@
         Set(ByVal value As AxWMPLib.AxWindowsMediaPlayer)
             If value IsNot mCurrentPlayer Then
                 mCurrentPlayer = value
-                mCurrentPlayer.URL = value.URL
+                'mCurrentPlayer.URL = value.URL
                 SoundPlayer.URL = value.URL
             End If
         End Set

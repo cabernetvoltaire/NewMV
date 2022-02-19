@@ -251,7 +251,7 @@ Public Class MediaSwapper
         Next
     End Sub
     Public Sub SetStartpoints(ByRef SH As StartPointHandler) 'Only called when bars changed
-        SetStartStates(SH)
+        'SetStartStates(SH)
         For Each m In MediaHandlers
             m.SPT = SH
         Next

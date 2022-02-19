@@ -72,6 +72,7 @@
             Return mMarkers
         End Get
         Set(ByVal value As List(Of Double))
+
             mMarkers = value
         End Set
     End Property
@@ -174,7 +175,10 @@
                 If mMarkers.Count > 0 Then
                     mStartPoint = mMarkers(0)
                 Else
-                    mStartPoint = mAbsolute
+                    mStartPoint = mDistance
+                    If mStartPoint > mDuration / 2 Then
+                        mStartPoint = mDuration * 0.1
+                    End If
                 End If
             Case StartTypes.Beginning
                 mStartPoint = 0
