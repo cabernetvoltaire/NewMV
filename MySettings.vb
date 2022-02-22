@@ -146,6 +146,8 @@ Friend Module Mysettings
             .Add("Scan Bookmarks" & "$" & FormMain.chbScan.Checked)
             .Add("SingleLinks" & "$" & FormMain.cbxSingleLinks.Checked)
             .Add("Movie Slide Show Speed" & "$" & FormMain.tbMovieSlideShowSpeed.Value)
+            .Add("SlowMo Sound Option" & "$" & FormMain.SlowMoSoundOpt)
+
 
         End With
 
@@ -394,6 +396,8 @@ Friend Module Mysettings
                                 FormMain.cbxSingleLinks.Checked = value
                             Case "Movie Slide Show Speed"
                                 FormMain.tbMovieSlideShowSpeed.Value = value
+                            Case "SlowMo Sound Option"
+                                FormMain.SlowMoSoundOpt = value
                         End Select
 
                     End If

@@ -7,6 +7,11 @@ Imports System.Threading
 Public Module General
 
     Public Property ForbiddenPaths As New List(Of String)
+    Public Enum SlowMoSoundOptions
+        Silent
+        Normal
+        Slow
+    End Enum
     Public Enum ExifOrientations As Byte
         Unknown = 0
         TopLeft = 1

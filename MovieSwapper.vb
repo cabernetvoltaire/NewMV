@@ -5,7 +5,8 @@ Public Class MediaSwapper
     Public WithEvents Media1 As New MediaHandler("mMedia1")
     Public WithEvents Media2 As New MediaHandler("mMedia2")
     Public WithEvents Media3 As New MediaHandler("mMedia3")
-
+    Public Soundhandler As New SoundController With {.SoundPlayer = FormMain.SoundWMP}
+    Public SlowSoundOption As SlowMoSoundOptions
     Public MediaHandlers As New List(Of MediaHandler) From {Media1, Media2, Media3}
     Public IsFullScreen As Boolean
 
@@ -155,6 +156,7 @@ Public Class MediaSwapper
 
     Private Function Prepare(ByRef MH As MediaHandler, path As String) As Boolean
         Report("PREPARE: " & MH.Player.Name & " with " & path)
+
         'BreakExecution()
         If MH.MediaPath <> path Or FullScreen.Changing Then MH.MediaPath = path
         'MH.MediaPath = path 'If MH.MediaPath <> path Then Still not right for pics
@@ -166,6 +168,8 @@ Public Class MediaSwapper
                 End If
                 If FullScreen.Changing Then
                 Else
+
+
 
                     MH.PlaceResetter(True)
                 End If
@@ -235,10 +239,24 @@ Public Class MediaSwapper
         ResetPositionsAgain()
         MHX.PlaceResetter(False) 'Starts the video playing
         MHX.Visible = False
+        'MHX.SoundHandler.SoundPlayer = FormMain.SoundWMP
+        Soundhandler.CurrentPlayer = MHX.Player
+        Soundhandler.SoundPlayer.URL = MHX.Player.URL
+        Select Case SlowSoundOption
+            Case SlowMoSoundOptions.Slow
+                Soundhandler.SPH = FormMain.SP
+                Soundhandler.Slow = True
+            Case SlowMoSoundOptions.Normal
+                Soundhandler.SPH = New SpeedHandler
+
+            Case SlowMoSoundOptions.Silent
+                Soundhandler.Muted = True
+        End Select
         With MHX.Player
             .Visible = True
             .BringToFront()
             .settings.mute = Muted
+
             RaiseEvent MediaShown(MHX, Nothing)
         End With
 

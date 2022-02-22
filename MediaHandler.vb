@@ -16,7 +16,7 @@ Public Class MediaHandler
 
     Private WithEvents mPlayer As New AxWMPLib.AxWindowsMediaPlayer
     Private WithEvents Sound As New AxWindowsMediaPlayer
-    ' Public Property mSndH As New SoundController With {.SoundPlayer = FormMain.SoundWMP, .CurrentPlayer = Media.Player}
+    ' Public Property SoundHandler As New SoundController With {.SoundPlayer = FormMain.SoundWMP}
     Public Property Textbox As New RichTextBox With {
         .Multiline = True,
         .Dock = DockStyle.Fill,
@@ -616,9 +616,9 @@ Public Class MediaHandler
             If mPlayer Is Nothing Then
             Else
                 Try
-
                     mPlayer.URL = URL
-                    Sound.URL = URL
+
+
 
                 Catch EX As Exception
                     'BreakExecution()

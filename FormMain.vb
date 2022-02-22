@@ -32,6 +32,8 @@ Friend Class FormMain
     Public WithEvents BH As New ButtonHandler With {.RowProgressBar = ProgressBar1}
     Public Splash As New SplashScreen1
 
+    Public SlowMoSoundOpt As SlowMoSoundOptions = SlowMoSoundOptions.Silent
+
     ' Public WithEvents Response As New Timer
     Public FocusControl As New Control
     Public DraggedFolder As String
@@ -47,6 +49,7 @@ Friend Class FormMain
     Private ScanInstructions = {"Movie scan in progress" & vbCrLf & "Selects next movie automatically.",
         "Movie Scan in progress" & vbCrLf & "Change speed with slider.",
         "Auto Trail in progress" & vbCrLf & "Change core speed change with slider"}
+
 
 #Region "Event Responders"
     Public Sub OnSpeedParameterChanged(sender As Object, e As EventArgs) Handles SP.ParameterChanged
@@ -232,12 +235,18 @@ Friend Class FormMain
         Else
             If SP.Speed = -1 Then
                 tmrSlowMo.Enabled = False
+                MSFiles.Soundhandler.Muted = True
+                MSFiles.Soundhandler.Slow = False
+
                 If SP.Fullspeed Then
                     tbSpeed.Text = "Speed:FULL"
                 Else
                     tbSpeed.Text = "Speed:Paused"
                 End If
             Else
+                MSFiles.Soundhandler.Slow = True
+                MSFiles.Soundhandler.Muted = False
+
                 tmrSlowMo.Interval = 1000 / SP.FrameRate
                 tmrSlowMo.Enabled = True
                 tbSpeed.Text = "Speed:" & SP.FrameRate & "fps"
@@ -534,6 +543,7 @@ Friend Class FormMain
             MSFiles.AssignPlayers(MainWMP1, MainWMP2, MainWMP3)
             MSFiles.AssignPictures(PictureBox1, PictureBox2, PictureBox3)
             MSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
+
 
             FullScreen.Close()
             'TogglePause()
@@ -1159,7 +1169,8 @@ Friend Class FormMain
 
     Private Sub NavigateToFavourites()
         CurrentFilterState.OldState = CurrentFilterState.State
-        CurrentFilterState.State = FilterHandler.FilterState.LinkOnly
+        CurrentFilterState.State = FilterHandler.FilterState.Linked
+        cbxSingleLinks.Checked = True
         ChangeFolder(CurrentFavesPath)
 
         tvmain2.SelectedFolder = CurrentFolder
@@ -1266,7 +1277,6 @@ Friend Class FormMain
         Media.DontLoad = True
 
         PreferencesGet()
-
 
         LastTimeSuccessful = False
         'Media.Picture = PictureBox1
@@ -3523,6 +3533,21 @@ Friend Class FormMain
 
     Private Sub tmrPumpFiles_Tick(sender As Object, e As EventArgs) Handles tmrPumpFiles.Tick
 
+    End Sub
+
+    Private Sub SilentToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SilentToolStripMenuItem.Click, NormalSoundToolStripMenuItem.Click, SlowSoundToolStripMenuItem.Click
+        SilentToolStripMenuItem.Checked = False
+        NormalSoundToolStripMenuItem.Checked = False
+        SlowSoundToolStripMenuItem.Checked = False
+        sender.checked = True
+        If sender Is SilentToolStripMenuItem Then
+            SlowMoSoundOpt = SlowMoSoundOptions.Silent
+        ElseIf sender Is NormalSoundToolStripMenuItem Then
+            SlowMoSoundOpt = SlowMoSoundOptions.Normal
+        ElseIf sender Is SlowSoundToolStripMenuItem Then
+            SlowMoSoundOpt = SlowMoSoundOptions.Slow
+        End If
+        MSFiles.SlowSoundOption = SlowMoSoundOpt
     End Sub
 
 

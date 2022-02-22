@@ -135,7 +135,12 @@
 
     Public Property FrameRate() As Integer
         Get
-            Return FrameRates(mSpeed)
+            If mSpeed < 0 Then
+                Return 30
+            Else
+                Return FrameRates(mSpeed)
+
+            End If
         End Get
         Set(ByVal value As Integer)
             FrameRates(mSpeed) = value

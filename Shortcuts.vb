@@ -154,7 +154,7 @@ Public Class ShortcutHandler
             Return sShortcutName
         End Get
         Set(ByVal value As String)
-            Dim m() As String = value.Split("%")
+            Dim m() As String = value.Split("%") 'TODO - can lead to fails if filename contains % for wrong reason...
             If m.Length > 1 Then
                 mBookmark = m(m.Length - 2)
 
