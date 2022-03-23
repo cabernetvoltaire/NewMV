@@ -211,6 +211,7 @@
 
         If mStartPoint > mDuration Then MsgBox("Too far")
         Return mStartPoint
+        RaiseEvent StartPointChanged(Me, Nothing)
     End Function
 #End Region
 End Class

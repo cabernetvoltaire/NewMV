@@ -12,7 +12,7 @@
     Private mFileList As List(Of String)
     Public Property FileList As List(Of String)
         Get
-            Return FilterLBList()
+            Return FilterList()
         End Get
         Set(value As List(Of String))
             mFileList = value
@@ -92,6 +92,10 @@
                 Case FilterHandler.FilterState.LinkOnly
                     If LCase(f.Extension) = LinkExt Then
                         Dim x As String = LinkTarget(m)
+                        If x.Contains(vbNullChar) Then
+                            lst.Remove(m)
+                            Exit Select
+                        End If
                         Dim f2 As New IO.FileInfo(x)
                         If f2.Exists = False Then
                             lst.Remove(m)
@@ -101,10 +105,6 @@
                             Exit Select
                         End If
                         If x.EndsWith(".mvl") Then
-                            lst.Remove(m)
-                            Exit Select
-                        End If
-                        If x.Contains(vbNullChar) Then
                             lst.Remove(m)
                             Exit Select
                         End If
@@ -164,5 +164,75 @@
 
         Return lst
     End Function
+    Private Function FilterList() As List(Of String)
+        Dim lst As New List(Of String) 'TODO: This removes items, we'd rather it hid them.
+        'Try
+        Dim filelist As New Dictionary(Of String, String)
+        For Each m In mFileList
+            Dim f As New IO.FileInfo(m)
+            Select Case mState
+                Case FilterHandler.FilterState.All
+                    lst.Add(f.FullName)
+                Case FilterHandler.FilterState.NoPicVid
+                    If InStr(PICEXTENSIONS & VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And f.Extension.Length <> 0 Then
+                        lst.Add(f.FullName)
+                    Else
+                    End If
+                Case FilterHandler.FilterState.LinkOnly
+                    If LCase(f.Extension) = LinkExt Then
+                        Dim x As String = LinkTarget(m)
+                        If x.Contains(vbNullChar) Or x = "" Or x.EndsWith(LinkExt) Then
+                            Exit Select
+                        End If
+                        Dim f2 As New IO.FileInfo(x)
+                        If f2.Exists Then
+                            lst.Add(x)
+                        End If
+                        If SingleLinks Then
+                            'For Each link In lst
+                            If Not filelist.ContainsKey(x) Then filelist.Add(x, m)
+                        End If
+                    Else
+                    End If
+                Case FilterHandler.FilterState.Piconly
+                    If InStr(PICEXTENSIONS, LCase(f.Extension)) <> 0 And Len(f.Extension) <> 0 Then
+                        lst.Add(m)
+                    Else
+                    End If
+                Case FilterHandler.FilterState.PicVid
+                    If InStr(PICEXTENSIONS & VIDEOEXTENSIONS, LCase(f.Extension)) <> 0 And Len(f.Extension) <> 0 Then
+                        lst.Add(m)
+                    Else
+                    End If
+                Case FilterHandler.FilterState.Linkless
+                    If InStr(VIDEOEXTENSIONS, LCase(f.Extension)) <> 0 And Len(f.Extension) <> 0 Then
+                        If AllFaveMinder.GetLinksOf(m).Count = 0 Then
+                            lst.Add(m)
+                        End If
+                    End If
+                Case FilterHandler.FilterState.Linked
+                    If InStr(VIDEOEXTENSIONS, LCase(f.Extension)) <> 0 And Len(f.Extension) <> 0 Then
+                        If AllFaveMinder.GetLinksOf(m).Count <> 0 Then
+                            lst.Add(m)
+                        End If
+                    End If
 
+                Case FilterHandler.FilterState.Vidonly
+                    If InStr(VIDEOEXTENSIONS, LCase(f.Extension)) <> 0 And Len(f.Extension) <> 0 Then
+                        lst.Add(m)
+                    End If
+            End Select
+        Next
+        If FilterHandler.FilterState.LinkOnly And SingleLinks Then
+            lst.Clear()
+
+            For Each v In filelist
+                Dim f As New IO.FileInfo(v.Value)
+                If f.Exists Then lst.Add(v.Key)
+            Next
+        End If
+
+
+        Return lst
+    End Function
 End Class

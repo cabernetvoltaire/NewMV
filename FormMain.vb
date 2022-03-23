@@ -235,7 +235,7 @@ Friend Class FormMain
         Else
             If SP.Speed = -1 Then
                 tmrSlowMo.Enabled = False
-                MSFiles.Soundhandler.Muted = True
+                'MSFiles.Soundhandler.Muted = True
                 MSFiles.Soundhandler.Slow = False
 
                 If SP.Fullspeed Then
@@ -245,7 +245,7 @@ Friend Class FormMain
                 End If
             Else
                 MSFiles.Soundhandler.Slow = True
-                MSFiles.Soundhandler.Muted = False
+                'MSFiles.Soundhandler.Muted = False
 
                 tmrSlowMo.Interval = 1000 / SP.FrameRate
                 tmrSlowMo.Enabled = True
@@ -714,9 +714,14 @@ Friend Class FormMain
                         'Highlight 
                         If Media.Markers.Count > 0 Then
                             'CTRL is held - highlight the link for this file.
-                            Dim s As String = AllFaveMinder.GetLinksOf(Media.MediaPath)(Media.LinkCounter)
-                            CurrentFilterState.State = FilterHandler.FilterState.All
-                            HighlightCurrent(s)
+                            If CurrentFilterState.SingleLinks Then
+                                CurrentFilterState.State = FilterHandler.FilterState.All
+                                HighlightCurrent(Media.MediaPath)
+                            Else
+                                Dim s As String = AllFaveMinder.GetLinksOf(Media.MediaPath)(Media.LinkCounter)
+                                CurrentFilterState.State = FilterHandler.FilterState.All
+                                HighlightCurrent(s)
+                            End If
 
                         End If
                     End If

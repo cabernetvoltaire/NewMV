@@ -6,7 +6,7 @@
     ''' <summary>
     ''' Speed (fps) For each movie speed
     ''' </summary>
-    Public FrameRates() As Integer = {3, 6, 15}
+    Public FrameRates() As Integer = {3, 10, 20}
     ''' <summary>
     ''' Raised when speed changes
     ''' </summary>

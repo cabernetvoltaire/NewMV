@@ -553,7 +553,6 @@ Public Class MediaHandler
         Else
             mPlayer.Ctlcontrols.currentPosition = mPlayPosition
         End If
-
     End Sub
     Public Sub Mute(Optional Off As Boolean = False)
         mPlayer.settings.mute = Not Off

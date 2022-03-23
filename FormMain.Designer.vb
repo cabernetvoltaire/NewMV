@@ -627,12 +627,12 @@ Partial Class FormMain
         Me.FullPanel.Controls.Add(Me.ctrMainFrame, 0, 1)
         Me.FullPanel.Controls.Add(Me.FlowLayoutPanel1, 0, 0)
         Me.FullPanel.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.FullPanel.Location = New System.Drawing.Point(0, 33)
+        Me.FullPanel.Location = New System.Drawing.Point(0, 36)
         Me.FullPanel.Name = "FullPanel"
         Me.FullPanel.RowCount = 2
         Me.FullPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.FullPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.FullPanel.Size = New System.Drawing.Size(3145, 1597)
+        Me.FullPanel.Size = New System.Drawing.Size(3145, 1594)
         Me.FullPanel.TabIndex = 0
         '
         'ctrMainFrame
@@ -836,7 +836,7 @@ Partial Class FormMain
         'SoundWMP
         '
         Me.SoundWMP.Enabled = True
-        Me.SoundWMP.Location = New System.Drawing.Point(1159, 685)
+        Me.SoundWMP.Location = New System.Drawing.Point(1219, 498)
         Me.SoundWMP.Margin = New System.Windows.Forms.Padding(2)
         Me.SoundWMP.Name = "SoundWMP"
         Me.SoundWMP.OcxState = CType(resources.GetObject("SoundWMP.OcxState"), System.Windows.Forms.AxHost.State)
@@ -1729,7 +1729,7 @@ Partial Class FormMain
         Me.MenuStrip2.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip2.Name = "MenuStrip2"
         Me.MenuStrip2.Padding = New System.Windows.Forms.Padding(5, 2, 0, 2)
-        Me.MenuStrip2.Size = New System.Drawing.Size(3145, 33)
+        Me.MenuStrip2.Size = New System.Drawing.Size(3145, 36)
         Me.MenuStrip2.TabIndex = 17
         Me.MenuStrip2.Text = "MenuStrip2"
         '
@@ -1737,7 +1737,7 @@ Partial Class FormMain
         '
         Me.FileToolStripMenuItem2.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem2, Me.ToolStripMenuItem14, Me.DatabaseToolStripMenuItem1, Me.ToolStripSeparator16, Me.PreferencesToolStripMenuItem1, Me.PreferencesToolStripMenuItem, Me.SearchFunctionsToolStripMenuItem, Me.ToolStripSeparator5, Me.ToolStripSeparator14})
         Me.FileToolStripMenuItem2.Name = "FileToolStripMenuItem2"
-        Me.FileToolStripMenuItem2.Size = New System.Drawing.Size(54, 29)
+        Me.FileToolStripMenuItem2.Size = New System.Drawing.Size(54, 32)
         Me.FileToolStripMenuItem2.Text = "&File"
         '
         'ToolStripMenuItem2
@@ -2059,7 +2059,7 @@ Partial Class FormMain
         '
         Me.HarvestFolderToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteEmptyFoldersToolStripMenuItem, Me.HarvestFoldersToolStripMenuItem, Me.ToolStripSeparator8, Me.BundleToolStripMenuItem, Me.BurstFolderToolStripMenuItem, Me.ToolStripSeparator9, Me.GroupToolStripMenuItem, Me.PromoteFolderToolStripMenuItem, Me.FilterMoveToolStripMenuItem, Me.InvertSelectionToolStripMenuItem, Me.PromoteFileToolStripMenuItem, Me.PromoteIdenticalSubFoldersToolStripMenuItem, Me.FlattenAllSubfolderToolStripMenuItem})
         Me.HarvestFolderToolStripMenuItem.Name = "HarvestFolderToolStripMenuItem"
-        Me.HarvestFolderToolStripMenuItem.Size = New System.Drawing.Size(142, 29)
+        Me.HarvestFolderToolStripMenuItem.Size = New System.Drawing.Size(142, 32)
         Me.HarvestFolderToolStripMenuItem.Tag = "Folder"
         Me.HarvestFolderToolStripMenuItem.Text = "&Folder Actions"
         '
@@ -2280,7 +2280,7 @@ Partial Class FormMain
         Me.FullScreenToolStripMenuItem1.CheckOnClick = True
         Me.FullScreenToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.Screen1ToolStripMenuItem, Me.Screen2ToolStripMenuItem})
         Me.FullScreenToolStripMenuItem1.Name = "FullScreenToolStripMenuItem1"
-        Me.FullScreenToolStripMenuItem1.Size = New System.Drawing.Size(112, 29)
+        Me.FullScreenToolStripMenuItem1.Size = New System.Drawing.Size(112, 32)
         Me.FullScreenToolStripMenuItem1.Text = "F&ull Screen"
         '
         'Screen1ToolStripMenuItem
@@ -2301,7 +2301,7 @@ Partial Class FormMain
         '
         Me.OptionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToggleRandomSelectToolStripMenuItem, Me.ToggleRandomAdvanceToolStripMenuItem, Me.ToggleRandomStartToolStripMenuItem, Me.RandomiseNormalToggleToolStripMenuItem, Me.ToolStripSeparator4, Me.ToggleJumpToMarkToolStripMenuItem, Me.TrailerModeToolStripMenuItem, Me.ToolStripSeparator3})
         Me.OptionsToolStripMenuItem.Name = "OptionsToolStripMenuItem"
-        Me.OptionsToolStripMenuItem.Size = New System.Drawing.Size(117, 29)
+        Me.OptionsToolStripMenuItem.Size = New System.Drawing.Size(117, 32)
         Me.OptionsToolStripMenuItem.Text = "&Randomise"
         '
         'ToggleRandomSelectToolStripMenuItem
@@ -2377,7 +2377,7 @@ Partial Class FormMain
         Me.DuplicatesToolStripMenuItem.Name = "DuplicatesToolStripMenuItem"
         Me.DuplicatesToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.D), System.Windows.Forms.Keys)
-        Me.DuplicatesToolStripMenuItem.Size = New System.Drawing.Size(104, 29)
+        Me.DuplicatesToolStripMenuItem.Size = New System.Drawing.Size(104, 32)
         Me.DuplicatesToolStripMenuItem.Tag = "File"
         Me.DuplicatesToolStripMenuItem.Text = "&Functions"
         '
@@ -2494,20 +2494,20 @@ Partial Class FormMain
         'ShowlistToolStripMenuItem
         '
         Me.ShowlistToolStripMenuItem.Name = "ShowlistToolStripMenuItem"
-        Me.ShowlistToolStripMenuItem.Size = New System.Drawing.Size(94, 29)
+        Me.ShowlistToolStripMenuItem.Size = New System.Drawing.Size(94, 32)
         Me.ShowlistToolStripMenuItem.Text = "S&howlist"
         '
         'DashboardToolStripMenuItem
         '
         Me.DashboardToolStripMenuItem.Name = "DashboardToolStripMenuItem"
-        Me.DashboardToolStripMenuItem.Size = New System.Drawing.Size(116, 29)
+        Me.DashboardToolStripMenuItem.Size = New System.Drawing.Size(116, 32)
         Me.DashboardToolStripMenuItem.Text = "Dashboard"
         '
         'ExperimentToolStripMenuItem
         '
         Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RefreshLinksFromDatabaseToolStripMenuItem, Me.DatabaseExperimentToolStripMenuItem, Me.RefreshSelectedFromLinkNameToolStripMenuItem, Me.SelectAllWrongLinksToolStripMenuItem, Me.ListhandlerToolStripMenuItem, Me.ScreenOfMoviesToolStripMenuItem, Me.NewMediaSwapperToolStripMenuItem})
         Me.ExperimentToolStripMenuItem.Name = "ExperimentToolStripMenuItem"
-        Me.ExperimentToolStripMenuItem.Size = New System.Drawing.Size(116, 29)
+        Me.ExperimentToolStripMenuItem.Size = New System.Drawing.Size(116, 32)
         Me.ExperimentToolStripMenuItem.Text = "Experiment"
         '
         'RefreshLinksFromDatabaseToolStripMenuItem
@@ -2556,7 +2556,7 @@ Partial Class FormMain
         '
         Me.RenamingToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem6, Me.PrependAllFilenamesWithFolderNameToolStripMenuItem})
         Me.RenamingToolStripMenuItem.Name = "RenamingToolStripMenuItem"
-        Me.RenamingToolStripMenuItem.Size = New System.Drawing.Size(107, 29)
+        Me.RenamingToolStripMenuItem.Size = New System.Drawing.Size(107, 32)
         Me.RenamingToolStripMenuItem.Text = "Renaming"
         '
         'ToolStripMenuItem6
@@ -2598,25 +2598,25 @@ Partial Class FormMain
         '
         Me.SlowMotionOptionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SilentToolStripMenuItem, Me.NormalSoundToolStripMenuItem, Me.SlowSoundToolStripMenuItem})
         Me.SlowMotionOptionsToolStripMenuItem.Name = "SlowMotionOptionsToolStripMenuItem"
-        Me.SlowMotionOptionsToolStripMenuItem.Size = New System.Drawing.Size(198, 29)
+        Me.SlowMotionOptionsToolStripMenuItem.Size = New System.Drawing.Size(198, 32)
         Me.SlowMotionOptionsToolStripMenuItem.Text = "Slow Motion &Options"
         '
         'SilentToolStripMenuItem
         '
         Me.SilentToolStripMenuItem.Name = "SilentToolStripMenuItem"
-        Me.SilentToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.SilentToolStripMenuItem.Size = New System.Drawing.Size(230, 34)
         Me.SilentToolStripMenuItem.Text = "Silent"
         '
         'NormalSoundToolStripMenuItem
         '
         Me.NormalSoundToolStripMenuItem.Name = "NormalSoundToolStripMenuItem"
-        Me.NormalSoundToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.NormalSoundToolStripMenuItem.Size = New System.Drawing.Size(230, 34)
         Me.NormalSoundToolStripMenuItem.Text = "Normal Sound"
         '
         'SlowSoundToolStripMenuItem
         '
         Me.SlowSoundToolStripMenuItem.Name = "SlowSoundToolStripMenuItem"
-        Me.SlowSoundToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.SlowSoundToolStripMenuItem.Size = New System.Drawing.Size(230, 34)
         Me.SlowSoundToolStripMenuItem.Text = "Slow Sound"
         '
         'PositionUpdater

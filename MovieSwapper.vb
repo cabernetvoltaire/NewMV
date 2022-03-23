@@ -41,7 +41,7 @@ Public Class MediaSwapper
     ''' <summary>
     ''' Assigns the listbox which this Media Swapper controls
     ''' </summary>
-    '' <returns></returns>
+    ''' <returns></returns>
     Public Property Listbox() As ListBox
         Get
             Return mListbox
@@ -216,6 +216,7 @@ Public Class MediaSwapper
     End Sub
     Private Sub ShowPicture(ByRef MHX As MediaHandler)
         MuteAll(True)
+
         ' HideMedias(MHX)
         MHX.Picture.Visible = True
         MHX.Picture.BringToFront()
@@ -242,13 +243,15 @@ Public Class MediaSwapper
         'MHX.SoundHandler.SoundPlayer = FormMain.SoundWMP
         Soundhandler.CurrentPlayer = MHX.Player
         Soundhandler.SoundPlayer.URL = MHX.Player.URL
+        Soundhandler.SoundPlayer.Ctlcontrols.currentPosition = MHX.Position
         Select Case SlowSoundOption
             Case SlowMoSoundOptions.Slow
                 Soundhandler.SPH = FormMain.SP
-                Soundhandler.Slow = True
+                Soundhandler.Slow = Not Soundhandler.SPH.Fullspeed
             Case SlowMoSoundOptions.Normal
+                'Soundhandler.STPH = MHX.SPT
                 Soundhandler.SPH = New SpeedHandler
-
+                'Soundhandler.Muted = False
             Case SlowMoSoundOptions.Silent
                 Soundhandler.Muted = True
         End Select
