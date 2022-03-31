@@ -35,7 +35,7 @@ Public Class MarkPlacement
         start.Y = 0
         Dim endpt As Point
         endpt.Y = mBar.Height
-
+        Duration = Math.Min(Duration, 10000)
         Dim count As Integer = Math.Max(10, Duration / Fractions)
         Dim x As Integer
         While x < Duration * mBar.Width / Duration

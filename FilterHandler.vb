@@ -165,7 +165,7 @@
         Return lst
     End Function
     Private Function FilterList() As List(Of String)
-        Dim lst As New List(Of String) 'TODO: This removes items, we'd rather it hid them.
+        Dim lst As New List(Of String)
         'Try
         Dim filelist As New Dictionary(Of String, String)
         For Each m In mFileList
@@ -181,13 +181,18 @@
                 Case FilterHandler.FilterState.LinkOnly
                     If LCase(f.Extension) = LinkExt Then
                         Dim x As String = LinkTarget(m)
+                        'Any dodginess in link target?
                         If x.Contains(vbNullChar) Or x = "" Or x.EndsWith(LinkExt) Then
                             Exit Select
                         End If
+                        'Does file exist?
                         Dim f2 As New IO.FileInfo(x)
                         If f2.Exists Then
-                            lst.Add(x)
+                            lst.Add(m)
+                        Else
+                            Exit Select
                         End If
+                        'Group multiple links into single item.
                         If SingleLinks Then
                             'For Each link In lst
                             If Not filelist.ContainsKey(x) Then filelist.Add(x, m)

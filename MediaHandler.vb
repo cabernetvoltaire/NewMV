@@ -339,7 +339,7 @@ Public Class MediaHandler
 
     End Function
 #End Region
-    Public Function Activate()
+    Public Sub Activate()
         Select Case Me.MediaType
             Case Filetype.Movie
 
@@ -347,7 +347,7 @@ Public Class MediaHandler
             Case Filetype.Doc
 
         End Select
-    End Function
+    End Sub
     Private Property mlinkcounter As Integer
 #Region "Linkhandling"
 
@@ -499,6 +499,7 @@ Public Class MediaHandler
                 If mMarkers.Count > 0 Then
                     SPT.Marker = mMarkers.Item(LinkCounter)
                 Else
+                    SPT.ResetMarker()
                 End If
                 mPlayPosition = SPT.StartPoint
             End If
@@ -527,6 +528,8 @@ Public Class MediaHandler
             If mMarkers.Count > 0 Then
 
                 SPT.Marker = mMarkers.Item(LinkCounter)
+            Else
+                SPT.ResetMarker()
             End If
             mPlayPosition = SPT.StartPoint
         End If
@@ -665,16 +668,14 @@ Public Class MediaHandler
 
         End Select
     End Sub
-    Function DisposeMovie() As Integer
+    Sub DisposeMovie()
 
         Try
             mPlayer.close()
-
         Catch ex As Exception
-            Exit Function
+            Exit Sub
         End Try
-        Return 0
-    End Function
+    End Sub
     Public Sub CancelMedia()
         Select Case mType
             Case Filetype.Movie

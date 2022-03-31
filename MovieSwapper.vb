@@ -237,7 +237,7 @@ Public Class MediaSwapper
         MuteAll(True)
         '  HideMedias(MHX)
 
-        ResetPositionsAgain()
+        'ResetPositionsAgain()
         MHX.PlaceResetter(False) 'Starts the video playing
         MHX.Visible = False
         'MHX.SoundHandler.SoundPlayer = FormMain.SoundWMP

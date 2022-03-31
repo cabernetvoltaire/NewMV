@@ -98,7 +98,7 @@ Public Class ButtonHandler
                     'End If
 
                 Catch ex As Exception
-                    MsgBox("Button skipped")
+                    'MsgBox("Button skipped")
                 End Try
             End If
         Next
