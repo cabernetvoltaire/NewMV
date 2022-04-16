@@ -202,38 +202,38 @@ Public Module General
     ''' </summary>
     ''' <param name="str"></param>
     ''' <returns></returns>
-    Public Function LinkTarget(str As String) As String
+    'Public Function LinkTarget(str As String) As String
 
-        Dim xl As New IO.FileInfo(str)
-        If xl.Extension = LinkExt Then
-            Return NewLinkTarget(str)
-            Exit Function
-        End If
-        Try
-            str = CreateObject("WScript.Shell").CreateShortcut(str).TargetPath
-            Dim f As New IO.FileInfo(str)
-            If f.Exists Then
-            Else
-                Dim x = str
-                str = TryOtherDriveLetters(str)
-                If str = x Then
-                    'Report(str & "target not found", 1, False)
-                End If
-                'TODO TrywithoutBrackets
-            End If
-            Return str
-        Catch ex As Exception
-            Return str
-        End Try
+    '    Dim xl As New IO.FileInfo(str)
+    '    If xl.Extension = LinkExt Then
+    '        Return LinkTarget(str)
+    '        Exit Function
+    '    End If
+    '    Try
+    '        str = CreateObject("WScript.Shell").CreateShortcut(str).TargetPath
+    '        Dim f As New IO.FileInfo(str)
+    '        If f.Exists Then
+    '        Else
+    '            Dim x = str
+    '            str = TryOtherDriveLetters(str)
+    '            If str = x Then
+    '                'Report(str & "target not found", 1, False)
+    '            End If
+    '            'TODO TrywithoutBrackets
+    '        End If
+    '        Return str
+    '    Catch ex As Exception
+    '        Return str
+    '    End Try
 
-    End Function
+    'End Function
     ''' <summary>
     ''' Returns true if target contains filename contained in its name
     ''' </summary>
     ''' <param name="LinkPath"></param>
     ''' <returns></returns>
     Public Function LinkTargetContainsNameFile(LinkPath As String) As Boolean
-        Dim LinkTarget As String = NewLinkTarget(LinkPath)
+        Dim LinkTarget As String = LinkTarget(LinkPath)
         Dim Filename As String = Path.GetFileName(Split(LinkPath, "%")(0))
         If Filename = Path.GetFileName(LinkTarget) Then
             Return True
@@ -246,7 +246,7 @@ Public Module General
     ''' </summary>
     ''' <param name="str"></param>
     ''' <returns></returns>
-    Public Function NewLinkTarget(str As String) As String
+    Public Function LinkTarget(str As String) As String
         'Dim parts() = Split(Path.GetFileName(str), "%")
         'Return parts(0)
         'Exit Function
@@ -254,17 +254,17 @@ Public Module General
             Dim items As New List(Of String)
             items = ReadListfromFile(str, False)
             str = items(0)
-            Dim f As New IO.FileInfo(items(0))
-            If f.Exists Then
+            'Dim f As New IO.FileInfo(items(0))
+            'If f.Exists Then
 
-            Else
-                Dim x = str
-                str = TryOtherDriveLetters(str)
-                If str = x Then
-                    'Report(str & "target not found", 1, False)
-                End If
-                'TODO TrywithoutBrackets
-            End If
+            'Else
+            '    Dim x = str
+            '    str = TryOtherDriveLetters(str)
+            '    If str = x Then
+            '        'Report(str & "target not found", 1, False)
+            '    End If
+            '    'TODO TrywithoutBrackets
+            'End If
             Return str
         Catch ex As Exception
             Return str
@@ -364,54 +364,8 @@ Public Module General
 
     End Function
 
-    Public Function GetDirectoriesList(path As String, Optional Force As Boolean = False) As List(Of String)
-        Dim list As New List(Of String)
-        Dim pathfile As New IO.FileInfo(DirectoriesListFile)
-        If Not Force AndAlso pathfile.Exists Then
-            list = ReadListfromFile(DirectoriesListFile, Encrypted)
-            '   MsgBox(list.Count)
-        Else
-            '   DirectoriesLister(path, list)
-            t = New Thread(New ThreadStart(Sub() DirectoriesLister(path, list)))
-            t.IsBackground = True
-            t.SetApartmentState(ApartmentState.STA)
-            t.Start()
-            While t.IsAlive
-                Thread.Sleep(100)
-            End While
-            WriteListToFile(list, DirectoriesListFile, Encrypted)
-            MsgBox("Directories Loaded")
-        End If
-        Return list
-    End Function
 
-    Private Sub DirectoriesLister(path As String, list As List(Of String))
-        Try
-            Dim root As New IO.DirectoryInfo(path)
 
-            For Each m In GenerateSafeFolderList(path)
-                Dim fol As New IO.DirectoryInfo(m)
-                list.Add(fol.FullName)
-            Next
-        Catch ex As Exception
-            MsgBox(ex.Message)
-        End Try
-    End Sub
-
-    Public Sub FolderChooser(sender As Object, e As MouseEventArgs)
-        Dim x As New FormFolderSelect
-        x.BH = sender.findform.BH
-        x.ButtonNumber = sender.tag
-
-        x.Show()
-        x.Text = "Choose folder"
-        'If CurrentFolder <> "" Then
-        '    x.Folder = CurrentFolder
-        'Else
-        '    x.Folder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
-        'End If
-        x.TextBox1.Text = x.Folder
-    End Sub
     Public Function LoadButtonFileName(path As String) As String
         If path = "" Then
             With New OpenFileDialog
@@ -474,18 +428,6 @@ Public Module General
         Return path
 
     End Function
-    Public Function BrowseToFolder(Title As String, DefaultPath As String) As String
-        Dim path As String = ""
-        With New FolderBrowserDialog
-            .SelectedPath = DefaultPath
-            .Description = Title
-            If .ShowDialog() = DialogResult.OK Then
-                path = .SelectedPath
-            End If
-        End With
-
-        Return path
-    End Function
     Public Function BrowseToFile(Title As String) As String
         Dim path As String
         With New OpenFileDialog
@@ -497,27 +439,6 @@ Public Module General
             End If
         End With
         Return path
-    End Function
-    Public Function TryOtherDriveLetters(str As String) As String
-        Dim original = str
-        Dim m As New List(Of DriveInfo)
-        For Each x In IO.DriveInfo.GetDrives
-            m.Add(x)
-        Next
-        If Len(str) <> 0 Then
-            For Each drive In m
-
-                Dim driveletter As String = drive.Name
-                str = str.Replace(Left(str, 3), driveletter)
-                If My.Computer.FileSystem.FileExists(str) Then
-                    Return str
-                    Exit Function
-                End If
-            Next
-            str = original
-        End If
-        Return str
-
     End Function
 #End Region
 
@@ -538,41 +459,41 @@ Public Module General
 
 
 #Region "Metadata Functions"
-    Public Sub ExtractMetaData(theImage As Image)
+    'Public Sub ExtractMetaData(theImage As Image)
 
-        ' Try
-        'Create an Image object. 
+    '    ' Try
+    '    'Create an Image object. 
 
-        'Get the PropertyItems property from image.
-        Dim propItems As PropertyItem() = theImage.PropertyItems
+    '    'Get the PropertyItems property from image.
+    '    Dim propItems As PropertyItem() = theImage.PropertyItems
 
-        'Set up the display.
-        Dim font As New Font("Arial", 10)
-        Dim blackBrush As New SolidBrush(Color.Black)
-        Dim X As Integer = 0
-        Dim Y As Integer = 0
+    '    'Set up the display.
+    '    Dim font As New Font("Arial", 10)
+    '    Dim blackBrush As New SolidBrush(Color.Black)
+    '    Dim X As Integer = 0
+    '    Dim Y As Integer = 0
 
-        'For each PropertyItem in the array, display the id, type, and length.
-        Dim count As Integer = 0
-        Dim propItem As PropertyItem
-        Dim des As String = ""
+    '    'For each PropertyItem in the array, display the id, type, and length.
+    '    Dim count As Integer = 0
+    '    Dim propItem As PropertyItem
+    '    Dim des As String = ""
 
-        For Each propItem In propItems
-            des = des + vbCrLf & "Property Item " + count.ToString()
-            des = des & vbTab & "iD: 0x" & propItem.Id.ToString("x")
-            des = des & vbTab & "  type" & propItem.Type.ToString()
-            des = des & vbTab & "Length" & propItem.Len.ToString()
+    '    For Each propItem In propItems
+    '        des = des + vbCrLf & "Property Item " + count.ToString()
+    '        des = des & vbTab & "iD: 0x" & propItem.Id.ToString("x")
+    '        des = des & vbTab & "  type" & propItem.Type.ToString()
+    '        des = des & vbTab & "Length" & propItem.Len.ToString()
 
 
-            count += 1
-        Next propItem
-        MsgBox(des)
-        'MsgBox(PropertyItems(theImage))
-        'Catch ex As ArgumentException
-        'MessageBox.Show("There was an error. Make sure the path to the image file is valid.")
-        'End Try
+    '        count += 1
+    '    Next propItem
+    '    MsgBox(des)
+    '    'MsgBox(PropertyItems(theImage))
+    '    'Catch ex As ArgumentException
+    '    'MessageBox.Show("There was an error. Make sure the path to the image file is valid.")
+    '    'End Try
 
-    End Sub
+    'End Sub
 #End Region
 #Region "List functions"
 
@@ -581,12 +502,6 @@ Public Module General
     ''' </summary>
     ''' <param name="list"></param>
     ''' <param name="list2"></param>
-    Private Sub CopyList(ByVal list As List(Of String), ByVal list2 As SortedList(Of String, String))
-        list.Clear()
-        For Each m As KeyValuePair(Of String, String) In list2
-            list.Add(m.Value)
-        Next
-    End Sub
     Public Function Duplicatelist(ByRef inList As List(Of String)) As List(Of String)
         Dim out As New List(Of String)
         For Each i In inList
@@ -594,12 +509,6 @@ Public Module General
         Next
         Return out
     End Function
-    Private Sub CopyList(list As List(Of String), list2 As SortedList(Of Long, String))
-        list.Clear()
-        For Each m As KeyValuePair(Of Long, String) In list2
-            list.Add(m.Value)
-        Next
-    End Sub
     Public Function ListfromSelectedInListbox(lbx As ListBox, Optional All As Boolean = False) As List(Of String)
         Dim s As New List(Of String)
         If All Then
@@ -1397,21 +1306,7 @@ Public Module General
             Next
         End Sub
     End Class
-    Public Class MetaInfo
-        Public Mdir As MetadataExtractor.Directory
-        Public Directory As IReadOnlyList(Of MetadataExtractor.Directory)
-        Public FileName As String
-        Public CreateDate As String
-        Public FileSize As Long
-        Public Duration As Long
-        Public Sub GetData()
-            For Each m In Directory
-                'If m.GetTagName() = "File Name" Then
 
-                'End If
-            Next
-        End Sub
-    End Class
     Public Class DatabaseEntry
         Implements IComparable
 

@@ -409,6 +409,18 @@ Friend Module Mysettings
         FormMain.tssMoveCopy.Text = CurrentFolder
         'MsgBox(DriveString)
     End Sub
+    Private Function BrowseToFolder(Title As String, DefaultPath As String) As String
+        Dim path As String = ""
+        With New FolderBrowserDialog
+            .SelectedPath = DefaultPath
+            .Description = Title
+            If .ShowDialog() = DialogResult.OK Then
+                path = .SelectedPath
+            End If
+        End With
+
+        Return path
+    End Function
 
     Private Function CheckDrives(s As List(Of String)) As Boolean
         Dim result As Boolean = True

@@ -69,7 +69,7 @@ Friend Module FileHandling
             .AT.Counter = Media.Markers.Count
             .Att.DestinationLabel = .lblAttributes
             If Not .tmrSlideShow.Enabled And .chbShowAttr.Checked Then
-                .Att.DestinationLabel.Text = Media.Metadata
+                .TextBox1.Text = Media.Metadata
             Else
                 .Att.Text = ""
             End If
@@ -79,8 +79,9 @@ Friend Module FileHandling
         FormMain.Length.Value = Math.Min(Media.Duration / 60, 200)
         FormMain.LengthLabel.Text = New TimeSpan(0, 0, Media.Duration).ToString("hh\:mm\:ss")
     End Sub
-    Private Sub DebugStartpoint(M As MediaHandler)
+    Public Sub DebugStartpoint(M As MediaHandler)
         Debug.Print(M.MediaPath & " loaded into " & M.Player.Name)
+        Debug.Print(M.SPT.Markers.Count & " markers")
         Debug.Print(M.SPT.StartPoint & " startpoint")
         Debug.Print(M.SPT.State & " State")
         Debug.Print(M.SPT.Duration & " Duration")
@@ -297,30 +298,31 @@ Friend Module FileHandling
     '    MoveFiles(files, strDest, Folder)
 
     'End Sub
-
+    Private Sub MovingFilesN(files As List(Of String), strDest As String, s As String)
+        Dim MF As New FileHandler
+        MF.Destination = s
+        MF.FaveMinder = AllFaveMinder
+        MF.State = NavigateMoveState
+        MF.FileBox = FormMain.FBH
+        MF.FileList = files
+        MF.MoveFiles()
+    End Sub
     Private Sub MovingFiles(files As List(Of String), strDest As String, s As String)
         If strDest <> "" Then
             Dim dinfo As New IO.DirectoryInfo(strDest)
             If dinfo.Exists = False Then dinfo.Create()
-
         End If
         Dim file As String = ""
 
         Try
             For Each file In files
-                '   If Media.Player.URL = file Then Media.Player.URL = ""
-
-
                 Dim m As New IO.FileInfo(file)
                 With My.Computer.FileSystem
-                    'Dim i As Long = 0
                     Dim spath As String
                     If s.EndsWith("\") Or s = "" Then
                         spath = s & m.Name
-
                     Else
                         spath = s & "\" & m.Name
-
                     End If
 
                     Select Case NavigateMoveState.State
@@ -340,13 +342,7 @@ Friend Module FileHandling
                         Case StateHandler.StateOptions.Move, StateHandler.StateOptions.Navigate
                             'If Not currentPicBox.Image Is Nothing Then DisposePic(currentPicBox)
                             If strDest = "" Then
-                                Dim f As New IO.FileInfo(m.FullName)
-                                'AllFaveMinder.DestinationPath = strDest
-                                'AllFaveMinder.CheckFile(f)
-                                'If AllFaveMinder.OkToDelete Then
-
                                 Deletefile(m.FullName)
-                                'End If
                             Else
                                 Dim f As New IO.FileInfo(m.FullName)
                                 Dim destfile As New IO.FileInfo(spath)
@@ -363,11 +359,8 @@ Friend Module FileHandling
                                             MSFiles.CancelURL(spath)
                                             BreakHere = True
                                             m.MoveTo(spath)
-
-
                                         Catch ex As Exception
                                             MsgBox(ex.Message)
-
                                         End Try
                                     End If
                                 End If

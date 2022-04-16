@@ -194,6 +194,7 @@
     <Compile Include="FavouriteFiles.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FileHandler.vb" />
     <Compile Include="FileInfo.vb" />
     <Compile Include="Form6.Designer.vb">
       <DependentUpon>Form6.vb</DependentUpon>
@@ -205,6 +206,12 @@
       <DependentUpon>FormMovieScreen.vb</DependentUpon>
     </Compile>
     <Compile Include="FormMovieScreen.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTagging.Designer.vb">
+      <DependentUpon>FormTagging.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FormTagging.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormTestMSwapper.Designer.vb">
@@ -297,6 +304,7 @@
     <Compile Include="MVDataSet3.vb">
       <DependentUpon>MVDataSet3.xsd</DependentUpon>
     </Compile>
+    <Compile Include="MVFileInfo.vb" />
     <Compile Include="My Project\Class1.vb" />
     <Compile Include="NextFile.vb" />
     <Compile Include="OrphanFinder.vb" />
@@ -412,6 +420,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form4.resx">
       <DependentUpon>Form4.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormTagging.resx">
+      <DependentUpon>FormTagging.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormTestMSwapper.resx">
       <DependentUpon>FormTestMSwapper.vb</DependentUpon>

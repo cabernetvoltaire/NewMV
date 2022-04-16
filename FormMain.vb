@@ -146,7 +146,7 @@ Friend Class FormMain
         FullScreen.Changing = False
         cbxStartPoint.SelectedIndex = Media.SPT.State
         tbStartpoint.Text = "START:" & Media.SPT.Description
-        If Not Media.DontLoad Then Media.MediaJumpToMarker()
+        If Not Media.DontLoad Then Media.MediaJumpToMarker() 'On Start Change
 
     End Sub
     Public Sub OnStateChanged(sender As Object, e As EventArgs) Handles NavigateMoveState.StateChanged, CurrentFilterState.StateChanged, PlayOrder.StateChanged
@@ -2078,9 +2078,10 @@ Friend Class FormMain
     'End Sub
 
     Public Sub BundleFiles(lbx1 As ListBox, Folder As String)
+        Dim s As String
         If lbx1.SelectedItems.Count > 1 Then
         Else
-            SelectSubList(FocusControl, False)
+            s = SelectSubList(FocusControl, False)
         End If
         Dim x As New BundleHandler(tvmain2, lbx1, Folder)
         Dim blnold = blnSuppressCreate
@@ -2444,7 +2445,7 @@ Friend Class FormMain
     Private Sub tbAbsolute_MouseUp(sender As Object, e As MouseEventArgs) Handles tbAbsolute.MouseUp
         Media.SPT.State = StartPointHandler.StartTypes.ParticularAbsolute
         Media.SPT.Absolute = tbAbsolute.Value
-        Media.MediaJumpToMarker()
+        Media.MediaJumpToMarker() 'At mouse up (Absolute)
         MSFiles.SetStartpoints(Media.SPT)
     End Sub
     Private Sub tbAbsolute_ValueChanged(sender As Object, e As EventArgs) Handles tbAbsolute.ValueChanged
@@ -2462,7 +2463,7 @@ Friend Class FormMain
         tbxAbsolute.Text = New TimeSpan(0, 0, tbAbsolute.Value).ToString("hh\:mm\:ss")
         tbxPercentage.Text = Str(Media.SPT.Percentage) & "%"
         tbPercentage.Value = Media.SPT.Percentage
-        Media.MediaJumpToMarker()
+        Media.MediaJumpToMarker() 'At Mouse Up (Percentage)
         MSFiles.SetStartpoints(Media.SPT)
     End Sub
 
@@ -3554,6 +3555,16 @@ Friend Class FormMain
         End If
         MSFiles.SlowSoundOption = SlowMoSoundOpt
     End Sub
+
+    Private Sub TaggingToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TaggingToolStripMenuItem.Click
+        Dim x As New FormTagging
+        x.Show()
+
+    End Sub
+
+
+
+
 
 
 

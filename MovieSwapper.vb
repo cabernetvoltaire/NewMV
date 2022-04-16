@@ -156,6 +156,10 @@ Public Class MediaSwapper
 
     Private Function Prepare(ByRef MH As MediaHandler, path As String) As Boolean
         Report("PREPARE: " & MH.Player.Name & " with " & path)
+        If FormMain.chbShowAttr.Checked Then
+            Dim x As New MetaData(path)
+            MH.Metadata = x.PropertyString
+        End If
 
         'BreakExecution()
         If MH.MediaPath <> path Or FullScreen.Changing Then MH.MediaPath = path

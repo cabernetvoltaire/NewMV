@@ -173,7 +173,6 @@ Public Class ShortcutHandler
         End Set
     End Property
     Public Function New_Create_ShortCut(Optional bkmk As Long = -1) As String
-
         Dim sName As String
         Dim f As IO.FileInfo
         f = New IO.FileInfo(sShortcutPath & "\" & sShortcutName)
@@ -194,6 +193,7 @@ Public Class ShortcutHandler
         If d.Exists Then
         Else
             d.Create()
+
         End If
         Try
             sName = ShortCutToText(bkmk)
@@ -201,6 +201,8 @@ Public Class ShortcutHandler
             newshtcut.LastWriteTime = dt
         Catch ex As Exception
         End Try
+
+
 
         Return sName
     End Function

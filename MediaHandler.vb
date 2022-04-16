@@ -34,7 +34,6 @@ Public Class MediaHandler
     Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 30000}
     Public WithEvents PicHandler As New PictureHandler(Picture)
     Public Metadata As String = ""
-
     Private ReadOnly DefaultFile As String = "Q:\image0.jpg"
     Public WithEvents SPT As New StartPointHandler
     Public WithEvents Speed As New SpeedHandler
@@ -250,6 +249,10 @@ Public Class MediaHandler
                 i += 1
             End If
         Next
+        'If markerslist.Count > 0 Then
+        '    Dim x As New MVFileInfo(mMediaPath, "Q:\Favourites\Bookmarks\")
+        '    x.Markers = markerslist
+        'End If
         Return markerslist
     End Function
 
@@ -511,7 +514,7 @@ Public Class MediaHandler
             End If
         End If
         mPlayer.Ctlcontrols.currentPosition = mPlayPosition
-
+        Debug.Print("Position of " & mPlayer.URL & " reset to " & mPlayPosition)
     End Sub
     Public Sub MediaJumpToMarker(Optional ToPoint As Double = 0, Optional ToStart As Boolean = False, Optional ToEnd As Boolean = False, Optional ToMarker As Boolean = False)
         'This is a logical mess.
@@ -619,22 +622,21 @@ Public Class MediaHandler
             Else
                 Try
                     mPlayer.URL = URL
-
-
-
                 Catch EX As Exception
                     'BreakExecution()
                     Debug.WriteLine(EX.Message)
                 End Try
-
             End If
-            MediaJumpToMarker() 'Jump to a new position
+            MediaJumpToMarker() 'Place after load
+
         Else
             mlinkcounter = 0
             GetBookmark()
-            MediaJumpToMarker() 'Jump to a new position
+            'MediaJumpToMarker() 'Place when not new load
+
         End If
         DisplayerName = mPlayer.Name
+        DebugStartpoint(Me)
     End Sub
     Public Sub PlaceResetter(ResetOn As Boolean)
         ResetPosition.Enabled = ResetOn
@@ -646,10 +648,10 @@ Public Class MediaHandler
         PicHandler.GetImage(path)
         If PicHandler.PicBox.Image Is Nothing Then
         Else
-            If Not path.EndsWith(".gif") Then
-
-                Metadata = ImageDate(PicHandler.PicBox.Image)
-            End If
+            'If Not path.EndsWith(".gif") Then
+            '    Dim x As New MetaData(path)
+            '    Metadata = x.PropertyString
+            'End If
         End If
         RaiseEvent TypeChange(Filetype.Pic, Nothing)
 
@@ -714,7 +716,8 @@ Public Class MediaHandler
                     Playing = False
                     RaiseEvent MediaFinished(sender, Nothing)
                 Else
-                    MediaJumpToMarker()
+                    MediaJumpToMarker() 'Loop Movie
+
                 End If
             Case WMPLib.WMPPlayState.wmppsPlaying
 
@@ -723,7 +726,8 @@ Public Class MediaHandler
                 Duration = mPlayer.currentMedia.duration
 
 
-                MediaJumpToMarker()
+                'MediaJumpToMarker() 'After play state become Playing
+
                 Playing = True
                 RaiseEvent MediaPlaying(Me, Nothing)
                 If FullScreen.Changing Then 'Hold current position if switching to FS or back. 
@@ -768,7 +772,8 @@ Public Class MediaHandler
     Private Sub ResetPosition_Tick(sender As Object, e As EventArgs) Handles ResetPosition.Tick
         'Keeps resetting the position until ready to play.
         'mPlayer.Ctlcontrols.currentPosition = mPlayPosition
-        MediaJumpToMarker()
+        MediaJumpToMarker() 'Reset Position Tick
+
         FormMain.DrawScrubberMarks()
     End Sub
     ''' <summary>
@@ -788,7 +793,7 @@ Public Class MediaHandler
             Return ""
             Exit Function
         End If
-        'Return MetaDirectory(2).Tags(2).ToString
+        Return MetaDirectory(2).Tags(2).ToString
         Exit Function
 
 

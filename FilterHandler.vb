@@ -1,4 +1,6 @@
-﻿Public Class FilterHandler
+﻿Imports System.Threading
+
+Public Class FilterHandler
     Public Enum FilterState As Byte
         All
         PicVid
@@ -13,11 +15,13 @@
     Public Property FileList As List(Of String)
         Get
             Return FilterList()
+
         End Get
         Set(value As List(Of String))
             mFileList = value
         End Set
     End Property
+
     Public Property SingleLinks As Boolean
 
     Public Event StateChanged(sender As Object, e As EventArgs)
@@ -80,8 +84,8 @@
             lst.Add(f)
         Next
         Dim filelist As New Dictionary(Of String, String)
-            For Each m In mFileList
-                Dim f As New IO.FileInfo(m)
+        For Each m In mFileList
+            Dim f As New IO.FileInfo(m)
             Select Case mState
                 Case FilterHandler.FilterState.All
                 Case FilterHandler.FilterState.NoPicVid
@@ -152,8 +156,8 @@
                     End If
             End Select
         Next
-            If FilterHandler.FilterState.LinkOnly And SingleLinks Then
-                lst.Clear()
+        If FilterHandler.FilterState.LinkOnly And SingleLinks Then
+            lst.Clear()
 
             For Each v In filelist
                 Dim f As New IO.FileInfo(v.Value)
@@ -172,6 +176,7 @@
             Dim f As New IO.FileInfo(m)
             Select Case mState
                 Case FilterHandler.FilterState.All
+
                     lst.Add(f.FullName)
                 Case FilterHandler.FilterState.NoPicVid
                     If InStr(PICEXTENSIONS & VIDEOEXTENSIONS, LCase(f.Extension)) = 0 And f.Extension.Length <> 0 Then
