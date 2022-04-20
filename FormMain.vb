@@ -22,12 +22,12 @@ Friend Class FormMain
     Public WithEvents PlayOrder As New SortHandler
     Private WithEvents FM As New FilterMove()
     Private WithEvents DM As New DateMove
-    Public WithEvents Att As New Attributes
     Private WithEvents Op As New OrphanFinder
     Public WithEvents SP As New SpeedHandler
     Public WithEvents AT As New AutoTrailer
     Public WithEvents X As New OrphanFinder
     Public WithEvents VT As New VideoThumbnailer
+    Public AllFaveMinder As New FavouritesMinder(GlobalFavesPath)
 
     Public WithEvents FOP As FileOperations
     Public WithEvents BH As New ButtonHandler With {.RowProgressBar = ProgressBar1}
@@ -38,7 +38,7 @@ Friend Class FormMain
     ' Public WithEvents Response As New Timer
     Public FocusControl As New Control
     Public DraggedFolder As String
-
+    Public MSFiles As New MediaSwapper
     Public T As Thread
     ' Public FirstButtons As New ButtonForm
     Public ScrubberProportion As Decimal = 0.97
@@ -1289,13 +1289,10 @@ Friend Class FormMain
         tbPercentage.Enabled = True
         Marks.Bar = Scrubber
 
-        AddHandler FileHandling.FolderMoved, AddressOf OnFolderMoved
-        AddHandler FileHandling.FileMoved, AddressOf OnFilesMoved
+
 
         InitialiseButtons()
-        MSFilesNew.MediaHandlers.Add(New MediaHandler("1"))
-        MSFilesNew.MediaHandlers.Add(New MediaHandler("2"))
-        MSFilesNew.MediaHandlers.Add(New MediaHandler("3"))
+
 
         NavigateMoveState.State = StateHandler.StateOptions.Navigate
         OnRandomChanged()
@@ -1957,7 +1954,8 @@ Friend Class FormMain
 
     Private Async Sub BurstFolderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BurstFolderToolStripMenuItem.Click
         ' MSFiles.CancelURLS()
-        Await BurstFolder(New DirectoryInfo(CurrentFolder))
+        Dim x As New BundleHandler(tvmain2, lbxFiles, CurrentFolder)
+        x.Burst(New IO.DirectoryInfo(CurrentFolder))
         FBH.FillBox()
         'tvMain2.RemoveNode(CurrentFolder)
         '        tvMain2.RefreshTree(New IO.DirectoryInfo(CurrentFolder).Parent.FullName)
@@ -2636,9 +2634,9 @@ Friend Class FormMain
     End Sub
 
     Private Sub LevelFolders_Click(sender As Object, e As EventArgs) Handles PromoteFolderToolStripMenuItem.Click
-        LevelAllFolders()
+        'LevelAllFolders()
         '        PromoteFolder(New DirectoryInfo(CurrentFolder))
-        RefreshFiles()
+        'RefreshFiles()
     End Sub
 
 
