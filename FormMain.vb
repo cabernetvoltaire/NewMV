@@ -1653,7 +1653,7 @@ Friend Class FormMain
         Process.Start("explorer.exe", lbx.SelectedItem)
     End Sub
 
-    Public Async Sub UpdateFileInfo()
+    Public Sub UpdateFileInfo()
         If Media.DontLoad Then Exit Sub
         If Media.MediaPath = "" Then Exit Sub
         ' If Not FileLengthCheck(Media.MediaPath) Then Exit Sub
@@ -1869,12 +1869,12 @@ Friend Class FormMain
 
 
 
-    Private Async Sub DeleteEmptyFoldersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteEmptyFoldersToolStripMenuItem.Click, IncludingAllSubfoldersToolStripMenuItem.Click
+    Private Sub DeleteEmptyFoldersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteEmptyFoldersToolStripMenuItem.Click, IncludingAllSubfoldersToolStripMenuItem.Click
 
         'If Not MsgBox("This deletes all empty directories", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
         '    Exit Sub
         'Else
-        Await DeleteEmptyFolders(New DirectoryInfo(CurrentFolder), sender Is IncludingAllSubfoldersToolStripMenuItem)
+        DeleteEmptyFolders(New DirectoryInfo(CurrentFolder), sender Is IncludingAllSubfoldersToolStripMenuItem)
         tvmain2.RefreshTree(CurrentFolder)
         'End If
 

@@ -161,7 +161,7 @@
     Public Sub IncrementState(max As Byte)
         State = (State + 1) Mod max
     End Sub
-    Private Property mMarkCounter
+    Private Property mMarkCounter = 0
     Public Sub IncrementMarker()
         If mMarkers.Count <> 0 Then
             mMarkCounter = (mMarkCounter + 1) Mod mMarkers.Count

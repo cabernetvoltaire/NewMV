@@ -30,7 +30,7 @@ Public Class MediaHandler
     Public IsCurrent As Boolean = False
 
     Private WithEvents ResetPosition As New Timer With {.Interval = 1000} 'Changing can affect loading
-    Public WithEvents PositionUpdater As New Timer With {.Interval = 100} 'Too short causes a crash on exiting.
+    Public WithEvents PositionUpdater As New Timer With {.Interval = 200} 'Too short causes a crash on exiting.
     Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 30000}
     Public WithEvents PicHandler As New PictureHandler(Picture)
     Public Metadata As String = ""
@@ -133,7 +133,7 @@ Public Class MediaHandler
             'If Speed.Paused Then
             '    Speed.PausedPosition = mPlayPosition
             'End If
-            Debug.Print("Position was set to " & mPlayPosition)
+            Debug.Print("MHP: Position was set to " & New TimeSpan(0, 0, mPlayPosition).ToString("hh\:mm\:ss"))
         End Set
     End Property
 
@@ -186,10 +186,6 @@ Public Class MediaHandler
 
             'TODO Fix this
             If value = "" Then
-                'Deals with absent file
-                'mMediaPath = DefaultFile
-                'mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
-                'RaiseEvent MediaChanged(Me, New EventArgs)
 
             Else
 
@@ -202,7 +198,7 @@ Public Class MediaHandler
                         mLinkPath = LinkTarget(f.FullName)
                         ' MsgBox(mLinkPath)
                         If mLinkPath = "" Or mLinkPath.Contains(vbNullChar) Then
-                            mLinkPath = mMediaPath
+                            mLinkPath = "" 'mMediaPath
                             MsgBox("Destination not found")
                         End If
                     Else
@@ -502,7 +498,7 @@ Public Class MediaHandler
                 If mMarkers.Count > 0 Then
                     SPT.Marker = mMarkers.Item(LinkCounter)
                 Else
-                    SPT.ResetMarker()
+                    ' SPT.ResetMarker()
                 End If
                 mPlayPosition = SPT.StartPoint
             End If
@@ -514,7 +510,7 @@ Public Class MediaHandler
             End If
         End If
         mPlayer.Ctlcontrols.currentPosition = mPlayPosition
-        Debug.Print("Position of " & mPlayer.URL & " reset to " & mPlayPosition)
+        '  Debug.Print("MJM: Position of " & mPlayer.URL & " reset to " & LongAsTimeCode(mPlayPosition))
     End Sub
     Public Sub MediaJumpToMarker(Optional ToPoint As Double = 0, Optional ToStart As Boolean = False, Optional ToEnd As Boolean = False, Optional ToMarker As Boolean = False)
         'This is a logical mess.
@@ -632,7 +628,7 @@ Public Class MediaHandler
         Else
             mlinkcounter = 0
             GetBookmark()
-            'MediaJumpToMarker() 'Place when not new load
+            MediaJumpToMarker() 'Place when not new load
 
         End If
         DisplayerName = mPlayer.Name
@@ -773,7 +769,7 @@ Public Class MediaHandler
         'Keeps resetting the position until ready to play.
         'mPlayer.Ctlcontrols.currentPosition = mPlayPosition
         MediaJumpToMarker() 'Reset Position Tick
-
+        '  DebugStartpoint(Me)
         FormMain.DrawScrubberMarks()
     End Sub
     ''' <summary>

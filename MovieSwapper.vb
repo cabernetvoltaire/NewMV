@@ -199,7 +199,9 @@ Public Class MediaSwapper
     Private Sub RotateMedia(ByRef ThisMH As MediaHandler, ByRef NextMH As MediaHandler, ByRef PrevMH As MediaHandler)
         'CurrentURLS.Clear()
         ' HideMedias(ThisMH)
-
+        If getAvailableRAM() < 10 ^ 9 Then
+            MsgBox("Ram low")
+        End If
         Prepare(ThisMH, CurrentItem)
         ThisMH.IsCurrent = True
 

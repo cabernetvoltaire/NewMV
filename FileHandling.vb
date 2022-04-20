@@ -82,9 +82,10 @@ Friend Module FileHandling
     Public Sub DebugStartpoint(M As MediaHandler)
         Debug.Print(M.MediaPath & " loaded into " & M.Player.Name)
         Debug.Print(M.SPT.Markers.Count & " markers")
-        Debug.Print(M.SPT.StartPoint & " startpoint")
-        Debug.Print(M.SPT.State & " State")
-        Debug.Print(M.SPT.Duration & " Duration")
+        If M.SPT.Markers.Count > 0 Then Debug.Print("Current marker " & LongAsTimeCode(M.SPT.CurrentMarker))
+        Debug.Print(M.SPT.Descriptions(M.SPT.State) & " State")
+        Debug.Print(LongAsTimeCode(M.SPT.Duration) & " Duration")
+        Debug.Print(LongAsTimeCode(M.SPT.StartPoint) & " startpoint")
         Debug.Print("")
     End Sub
     Public Sub OnFilesMoved(files As List(Of String), lbx1 As ListBox)
@@ -592,7 +593,7 @@ Friend Module FileHandling
             Next
         End If
     End Sub
-    Public Async Function DeleteEmptyFolders(d As DirectoryInfo, blnRecurse As Boolean) As Task(Of Boolean)
+    Public Function DeleteEmptyFolders(d As DirectoryInfo, blnRecurse As Boolean) As Boolean
         Dim x As New FileOperations
         x.CurrentFolder = New DirectoryInfo(CurrentFolder)
         x.RemoveEmptySubfolders()
@@ -610,7 +611,7 @@ Friend Module FileHandling
         Dim x As New BundleHandler(FormMain.tvmain2, FormMain.lbxFiles, d.FullName)
 
 
-        Await x.Burst(d) 'Needs Attention
+        x.Burst(d) 'Needs Attention
         '        HarvestFolder(d, True, True)
 
     End Function

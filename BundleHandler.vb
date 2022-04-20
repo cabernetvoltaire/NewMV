@@ -49,7 +49,7 @@ Public Class BundleHandler
     End Sub
     Public Property Maxfiles As Integer
 
-    Public Async Function HarvestFolder(CurrentFolder As IO.DirectoryInfo) As Task
+    Public Function HarvestFolder(CurrentFolder As IO.DirectoryInfo)
         'For each subfolder
         'Make a list of those folders with less than maxfiles
         'for each of those, add their files to the list
@@ -75,7 +75,7 @@ Public Class BundleHandler
 
 
     End Function
-    Public Async Function Burst(CurrentFolder As IO.DirectoryInfo) As Task
+    Public Function Burst(CurrentFolder As IO.DirectoryInfo)
         'Find all subfolders with fewer than Maxfiles
         'Make a list of all their files
         'Move those files to the parent

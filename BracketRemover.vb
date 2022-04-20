@@ -1,12 +1,8 @@
 ﻿Option Explicit On
-Imports System.Drawing.Imaging
 Imports System.IO
 Imports System.Media
-Imports System.Threading
-Imports Microsoft.VisualBasic.Devices
-Public Module General
 
-    Public Property ForbiddenPaths As New List(Of String)
+Public Module General
     Public Enum SlowMoSoundOptions
         Silent
         Normal
@@ -25,13 +21,7 @@ Public Module General
     End Enum
     Public BreakHere As Boolean = True
     Friend ShowListVisible As Boolean = False
-    Public Declare Function SearchTreeForFile Lib "imagehlp" (ByVal RootPath As String, ByVal InputPathName As String, ByVal OutputPathBuffer As String) As Long
     Public Const LinkExt As String = ".mvl"
-    Public Property bImageDimensionState As Byte
-    Public Property ShiftDown As Boolean
-    Public Property CtrlDown As Boolean
-    Public Property AltDown As Boolean
-    Public Property KeyDownFlag As Boolean
 
 
     Public VIDEOEXTENSIONS = ".divx.vob.webm.avi.flv.mov.m4p.mpeg.f4v.mpg.m4a.m4v.mkv.mp4.rm.ram.wmv.wav.mp3.3gp"
@@ -55,7 +45,6 @@ Public Module General
     End Enum
 
     Public lngShowlistLines As Long = 0
-    Public ReadOnly Property Asterisk As SystemSound
     Public Orientation() As String = {"Unknown", "TopLeft", "TopRight", "BottomRight", "BottomLeft", "LeftTop", "RightTop", "RightBottom", "LeftBottom"}
     Public Enum Filetype As Byte
         Pic
@@ -364,15 +353,7 @@ Public Module General
 
     End Function
 
-    Public Function getAvailableRAM() As ULong
-        Dim CI As New ComputerInfo()
-        Dim avl, used As String
-        Dim mem As ULong = ULong.Parse(CI.AvailablePhysicalMemory.ToString())
-        Dim mem1 As ULong = ULong.Parse(CI.TotalPhysicalMemory.ToString()) - ULong.Parse(CI.AvailablePhysicalMemory.ToString())
-        avl = (mem / (1024 * 1024) & " MB").ToString() 'changed + to &
-        used = (mem1 / (1024 * 1024) & " MB").ToString() 'changed + to &
-        Return mem
-    End Function
+
 
     Public Function LoadButtonFileName(path As String) As String
         If path = "" Then
@@ -532,12 +513,6 @@ Public Module General
     End Function
 
 
-    Public Sub RefreshListbox(lbx As ListBox, list As List(Of String))
-
-        For Each m In list
-            lbx.Items.Remove(m)
-        Next
-    End Sub
 
 
     Public Function AllfromListbox(lbx As ListBox) As List(Of String)
@@ -661,14 +636,6 @@ Public Module General
         Next
         Return x
     End Function
-    Public Function GetAllFolders(d As DirectoryInfo, s As String) As List(Of String)
-
-        Dim x As New List(Of String)
-        For Each Di In d.EnumerateDirectories(s, SearchOption.AllDirectories)
-            x.Add(Di.FullName)
-        Next
-        Return x
-    End Function
 #End Region
 
 #Region "Debugging functions"
@@ -727,7 +694,7 @@ Public Module General
             Select Case LCase(info.Extension)
                 Case ""
                     Return Filetype.Unknown
-                Case LinkExt
+                Case ".lnk", LinkExt
                     Return Filetype.Link
             End Select
 
@@ -761,27 +728,6 @@ Public Module General
 
     End Sub
 
-    Public Function FileLengthCheck(file As String) As Boolean
-        Return True
-        Exit Function
-        If Len(file) > 247 Then
-            If MsgBox("Filename too long - truncate?", MsgBoxStyle.YesNo, "Filename too long") = MsgBoxResult.Yes Then
-                Dim m As New FileInfo(file)
-                Dim i As Integer = Len(m.FullName)
-                Dim l As Integer = Len(m.Directory.FullName)
-                If l > 247 Then
-                    ReportFault("FileLengthCheck", "Unsuccessful - folder name alone is too long")
-                    Return False
-                    Exit Function
-                Else
-                    Dim str As String = Right(m.Name, 247 - l)
-                    m.MoveTo(m.Directory.FullName & "\" & str)
-                    Return True
-                End If
-            End If
-        End If
-        Return False
-    End Function
 
 
     Public Function SetPlayOrder(Order As Byte, List As List(Of String), Reverse As Boolean) As List(Of String)
@@ -884,7 +830,7 @@ Public Module General
 
     End Function
 
-    Public Function GetDirSize(RootFolder As String, Optional NoSubs As Boolean = False)
+    Public Async Function GetDirSize(RootFolder As String, Optional NoSubs As Boolean = False) As Task(Of Long)
         Dim totalsize As Long
         ' Exit Function
         If RootFolder.EndsWith(":\") Then
@@ -1059,12 +1005,6 @@ Public Module General
         End If
 
     End Function
-    Public Function GetFileNameFromLinkName(Link As String) As String
-        Dim s() As String
-        s = Link.Split("%")
-        Return s(0)
-        '        Throw New NotImplementedException()
-    End Function
     Public Function AdvanceModular(Count As Integer, i As Integer, Forward As Boolean, Optional Inc As Integer = 1)
         If Forward Then
             i = (i + Inc) Mod Count
@@ -1130,16 +1070,6 @@ Public Module General
     End Function
 
 
-    Friend Function FolderPathFromPath(path As String) As String
-
-        Dim parts() = path.Split("\")
-        Dim s As String = ""
-
-        For i = 0 To parts.Length - 2
-            s = s + parts(i) & "\"
-        Next
-        Return s
-    End Function
     Friend Function CloneMenu(m As ToolStripMenuItem) As ToolStripMenuItem
         Dim newitem As New ToolStripMenuItem()
         With newitem
@@ -1162,9 +1092,7 @@ Public Module General
         AddHandler newitem.Click, AddressOf m.PerformClick
         Return newitem
     End Function
-    Public Function LongAsTimeCode(n As Long) As String
-        Return New TimeSpan(0, 0, n).ToString("hh\:mm\:ss")
-    End Function
+
 
     'Friend Function GetAllMenuItems(t As ToolStripMenuItem) As List(Of ToolStripMenuItem)
     '    Dim list As New List(Of ToolStripMenuItem)
@@ -1177,42 +1105,7 @@ Public Module General
     '    Return list
     'End Function
 
-    Public Sub MovietoPic(pic As PictureBox, img As Image)
-        pic.Image = img
-        'PreparePic(pic, img)
-        'SndH.Muted = True
 
-
-    End Sub
-    Public Sub OrientPic(img As Image)
-
-        Select Case ImageOrientation(img)
-            Case ExifOrientations.BottomRight
-                img.RotateFlip(RotateFlipType.Rotate180FlipNone)
-            Case ExifOrientations.RightTop
-                img.RotateFlip(RotateFlipType.Rotate90FlipNone)
-            Case ExifOrientations.LeftBottom
-                img.RotateFlip(RotateFlipType.Rotate270FlipNone)
-
-        End Select
-    End Sub
-    Public Function GetImage(strPath As String) As Image
-        If strPath = "" Then Return Nothing
-        'If strPath.EndsWith(".gif") = 0 Then
-        '    Return LoadImage(strPath)
-
-        '    ' Exit Function 'This Causes problems if extension is .gif
-        'Else
-        Try
-            Dim img As Image = Image.FromFile(strPath)
-            Return img
-        Catch ex As Exception
-            'Reportfault("",ex.message)
-            Return Nothing
-
-        End Try
-        'End If
-    End Function
     Public Sub StoreList(list As List(Of String), Dest As String)
         If Dest = "" Then Exit Sub
         WriteListToFile(list, Dest, Encrypted)
@@ -1255,9 +1148,7 @@ Public Module General
             End Try
         Next
     End Sub
-    Friend Sub AddToolTip(ctl As Control, tp As ToolTip, text As String)
-        tp.SetToolTip(ctl, text)
-    End Sub
+
 
     Friend Sub OutlineControl(ctl As Control, ByRef outliner As PictureBox)
         ctl.Parent.Controls.Add(outliner)
@@ -1300,120 +1191,6 @@ Public Module General
 
     End Sub
 
-    Public Class FoldersAndTheirMatches
-        Private Property _Folder As IO.DirectoryInfo
-        WriteOnly Property Folder As IO.DirectoryInfo
-            Set(value As IO.DirectoryInfo)
-                _Folder = value
-                Matches = SameNameFoldersBelow(value.Parent.FullName, value.Name)
-            End Set
-        End Property
-
-        Friend Matches As List(Of IO.DirectoryInfo)
-        Friend Sub MoveFolders()
-            For Each m In Matches
-                If m.Parent.FullName <> _Folder.Parent.FullName Then MoveFolder(m.FullName, _Folder.Parent.FullName)
-            Next
-        End Sub
-    End Class
-
-    Public Class DatabaseEntry
-        Implements IComparable
-
-        Private Property mFullPath As String
-        Public Property Filename As String
-        Public ReadOnly Property FullPath As String
-            Get
-                Return mFullPath
-            End Get
-        End Property
-
-        Private Property mPath As String
-        Public Property Path As String
-            Set(value As String)
-                mPath = value
-                mFullPath = String.Concat(mPath, Filename)
-            End Set
-            Get
-                Return mPath
-            End Get
-        End Property
-        Public Size As Long
-        Public Dt As DateTime
-
-        Public Property Mark As Boolean = False
-        'Public Thumbnail As New Bitmap(100, 100)
-        'Public Function GetThumbnail()
-        '    Thumbnail = LoadImage(mFullPath).GetThumbnailImage(100, 100, Nothing, Nothing)
-        'End Function
-        Public Function CompareTo(obj As Object) As Integer Implements IComparable.CompareTo
-            If obj.size = Size Then
-                Return 0
-            ElseIf obj.size < Size Then
-                Return 1
-            Else
-                Return -1
-
-
-            End If
-        End Function
-
-    End Class
-    Public Class Database
-        Public Entries As New List(Of DatabaseEntry)
-        Public Name As String
-        Private Property mItemCount As Long = 0
-        Public ReadOnly Property ItemCount As Long
-            Get
-                Return mItemCount
-            End Get
-        End Property
-
-
-        Public Sub AddEntry(entry As DatabaseEntry)
-            Dim f As New FileInfo(entry.FullPath)
-            If f.Exists Then
-                Entries.Add(entry)
-                mItemCount += 1
-            End If
-        End Sub
-        Public Sub ConvertDB()
-            For Each e In Entries
-
-            Next
-        End Sub
-        Private mSorted As Boolean = False
-        Public Sub Sort(Optional comparer As IComparer(Of DatabaseEntry) = Nothing)
-            Entries.Sort(comparer)
-            mSorted = True
-        End Sub
-        Public Function FindEntry(filename As String) As DatabaseEntry
-            If Not mSorted Then Sort(New CompareDBByFilename)
-
-            Dim n As New List(Of DatabaseEntry)
-            n = Entries.FindAll(Function(x) x.Filename.StartsWith(filename))
-            Select Case n.Count
-                Case 0
-                    n = Entries.FindAll(Function(x) x.Filename.Contains(Path.GetFileNameWithoutExtension(filename)))
-                    If n.Count = 0 Then
-                        Return Nothing
-                    End If
-                Case Else
-                    Return n(0)
-                    'Decide which one to return
-            End Select
-
-        End Function
-        Public Function FindPartEntry(Search As String) As List(Of DatabaseEntry)
-            If Not mSorted Then Sort()
-
-            Dim n As New List(Of DatabaseEntry)
-            n = Entries.FindAll(Function(x) x.FullPath.Contains(Search))
-            Return n
-        End Function
-
-
-    End Class
     Public Class BracketRemover
         Public ListOfFiles As New List(Of String)
         Public RemoveDuplicates As Boolean = True
