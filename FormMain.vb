@@ -10,6 +10,7 @@ Friend Class FormMain
     Public DB As New Database
     Public Initialising As Boolean = True
     Public AutoLoadButtons As Boolean = False
+    Public Media As New MediaHandler("Me", New AxWindowsMediaPlayer, New PictureBox)
     Public defaultcolour As Color = Color.Aqua
     Public movecolour As Color = Color.Orange
     Public sound As New AxWindowsMediaPlayer

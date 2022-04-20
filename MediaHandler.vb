@@ -632,7 +632,7 @@ Public Class MediaHandler
 
         End If
         DisplayerName = mPlayer.Name
-        DebugStartpoint(Me)
+        'DebugStartpoint(Me)
     End Sub
     Public Sub PlaceResetter(ResetOn As Boolean)
         ResetPosition.Enabled = ResetOn
