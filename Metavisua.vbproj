@@ -582,7 +582,6 @@
     </Content>
     <Content Include="Resources\Key_empty_Small.png" />
     <Content Include="Resources\MVSplash.PNG" />
-    <Content Include="ThumbCreator.cs" />
     <None Include="Resources\Key_empty_Small1.png" />
   </ItemGroup>
   <ItemGroup>
