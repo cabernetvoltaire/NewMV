@@ -678,15 +678,7 @@ Friend Class FormMain
             Case Keys.F2
                 CancelDisplay(False)
             Case Keys.F4
-                If e.Alt Then
-                    For Each m In MSFiles.MediaHandlers
-                        m.ResetPositionCanceller.Enabled = True
-                    Next
-                    LastTimeSuccessful = True
-                    PreferencesSave()
-                    e.SuppressKeyPress = True
-                    Application.Exit()
-                End If
+                e = ExitApplication(e)
             Case Keys.F5, Keys.F6, Keys.F7, Keys.F8, Keys.F9, Keys.F10, Keys.F11, Keys.F12
                 HandleFunctionKeyDown(sender, e)
                 e.SuppressKeyPress = True
@@ -698,52 +690,10 @@ Friend Class FormMain
 #Region "Alpha and Numeric"
 
             Case Keys.Enter
-                If e.Control Then
-                    'Find selected file in filetree/list (finds source of a link, rather than the link)
-                    If Media.IsLink Then
-                        'A link finds the actual file
-                        tmrUpdateFileList.Enabled = False
-                        CurrentFilterState.State = FilterHandler.FilterState.All
-                        HighlightCurrent(Media.LinkPath)
-                    ElseIf FocusControl Is lbxShowList Then
-                        'If focus control is the Showlist
-                        CurrentFilterState.State = FilterHandler.FilterState.All
-                        HighlightCurrent(Media.MediaPath)
-                    Else
-                        'Get link file
-                        'Highlight 
-                        If Media.Markers.Count > 0 Then
-                            'CTRL is held - highlight the link for this file.
-                            If CurrentFilterState.SingleLinks Then
-                                CurrentFilterState.State = FilterHandler.FilterState.All
-                                HighlightCurrent(Media.MediaPath)
-                            Else
-                                Dim s As String = AllFaveMinder.GetLinksOf(Media.MediaPath)(Media.LinkCounter)
-                                CurrentFilterState.State = FilterHandler.FilterState.All
-                                HighlightCurrent(s)
-                            End If
-
-                        End If
-                    End If
-                Else
-                    'General press return refreshes tree.
-                    tvmain2.RefreshTree(CurrentFolder)
-                End If
+                HandleEnterKey(e)
             Case Keys.A To Keys.Z, Keys.D0 To Keys.D9
                 RespondToKey(sender, e)
-                ''Switch letter to alphanumeric
-                'If Not e.Control Then
-                '    BH.buttons.CurrentLetter = Asc(e.KeyCode)
-                'Else
-                '    'Ctrl held
-                '    Select Case e.KeyCode
-                '        'Add folder
-                '        Case Keys.I
-                '            AddFolders.Show()
-                '            AddFolders.Folder = CurrentFolder
-                '            tvmain2.RefreshTree(CurrentFolder)
-                '    End Select
-                'End If
+
 #End Region
 
 #Region "Control Keys"
@@ -805,8 +755,8 @@ Friend Class FormMain
                         End If
 
                     End If
-                    ' e.SuppressKeyPress = True
                 End If
+                e.SuppressKeyPress = True
 
             Case KeyBigJumpOn, KeyBigJumpBack
                 If e.Alt Then
@@ -983,9 +933,58 @@ Friend Class FormMain
         End Select
         '   End If
         Me.Cursor = Cursors.Default
-        ' e.suppresskeypress = True
+        'e.SuppressKeyPress = True
         '    Response.Enabled = False
     End Sub
+
+    Private Sub HandleEnterKey(e As KeyEventArgs)
+        If e.Control Then
+            'Find selected file in filetree/list (finds source of a link, rather than the link)
+            If Media.IsLink Then
+                'A link finds the actual file
+                tmrUpdateFileList.Enabled = False
+                CurrentFilterState.State = FilterHandler.FilterState.All
+                HighlightCurrent(Media.LinkPath)
+            ElseIf FocusControl Is lbxShowList Then
+                'If focus control is the Showlist
+                CurrentFilterState.State = FilterHandler.FilterState.All
+                HighlightCurrent(Media.MediaPath)
+            Else
+                'Get link file
+                'Highlight 
+                If Media.Markers.Count > 0 Then
+                    'CTRL is held - highlight the link for this file.
+                    If CurrentFilterState.SingleLinks Then
+                        CurrentFilterState.State = FilterHandler.FilterState.All
+                        HighlightCurrent(Media.MediaPath)
+                    Else
+                        Dim s As String = AllFaveMinder.GetLinksOf(Media.MediaPath)(Media.LinkCounter)
+                        CurrentFilterState.State = FilterHandler.FilterState.All
+                        HighlightCurrent(s)
+                    End If
+
+                End If
+            End If
+        Else
+            'General press return refreshes tree.
+            tvmain2.RefreshTree(CurrentFolder)
+        End If
+    End Sub
+
+    Private Shared Function ExitApplication(e As KeyEventArgs) As KeyEventArgs
+        If e.Alt Then
+            For Each m In MSFiles.MediaHandlers
+                m.ResetPositionCanceller.Enabled = True
+            Next
+            LastTimeSuccessful = True
+            PreferencesSave()
+            e.SuppressKeyPress = True
+            Application.Exit()
+        End If
+
+        Return e
+    End Function
+
     Public Sub HandleFunctionKeyDown(sender As Object, e As KeyEventArgs)
 
         Dim mBH As New ButtonHandler
@@ -1414,6 +1413,7 @@ Friend Class FormMain
         If e.KeyCode = KeyBackUndo Then
             e.SuppressKeyPress = True
         End If
+
         'atch ex As Exception
         'sgBox(ex.Message)
         'End Try
@@ -3561,6 +3561,11 @@ Friend Class FormMain
         x.Show()
 
     End Sub
+
+    Private Sub lbxGroups_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbxGroups.SelectedIndexChanged
+
+    End Sub
+
 
 
 

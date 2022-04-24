@@ -72,7 +72,7 @@ Public Class BundleHandler
         Next
         blnSuppressCreate = True
         MoveFiles(list, CurrentFolder.FullName)
-
+        Return Nothing
 
     End Function
     Public Function Burst(CurrentFolder As IO.DirectoryInfo)
@@ -101,7 +101,7 @@ Public Class BundleHandler
         blnSuppressCreate = True
         MoveFiles(list, DestinationFolder.FullName)
 
-
+        Return Nothing
 
     End Function
 

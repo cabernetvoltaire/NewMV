@@ -611,7 +611,7 @@ Friend Module FileHandling
         Dim x As New BundleHandler(FormMain.tvmain2, FormMain.lbxFiles, d.FullName)
 
 
-        x.Burst(d) 'Needs Attention
+        Await x.Burst(d) 'Needs Attention
         '        HarvestFolder(d, True, True)
 
     End Function

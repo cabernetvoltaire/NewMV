@@ -8,7 +8,8 @@
         NearEnd
         NearBeginning
     End Enum
-
+    Public Timer As New Timer
+    Public WMP As AxWindowsMediaPlayer
     Public Event StateChanged(sender As Object, e As EventArgs)
     Public Event StartPointChanged(sender As Object, e As EventArgs)
     Public Event JumpKey()
@@ -114,6 +115,7 @@
     Private mStartPoint As Long
     Public ReadOnly Property StartPoint() As Long
         Get
+            SetStartPoint()
             Return mStartPoint
         End Get
 

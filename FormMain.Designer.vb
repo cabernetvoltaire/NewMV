@@ -629,12 +629,12 @@ Partial Class FormMain
         Me.FullPanel.Controls.Add(Me.ctrMainFrame, 0, 1)
         Me.FullPanel.Controls.Add(Me.FlowLayoutPanel1, 0, 0)
         Me.FullPanel.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.FullPanel.Location = New System.Drawing.Point(0, 36)
+        Me.FullPanel.Location = New System.Drawing.Point(0, 33)
         Me.FullPanel.Name = "FullPanel"
         Me.FullPanel.RowCount = 2
         Me.FullPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.FullPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.FullPanel.Size = New System.Drawing.Size(3145, 1594)
+        Me.FullPanel.Size = New System.Drawing.Size(3145, 1597)
         Me.FullPanel.TabIndex = 0
         '
         'ctrMainFrame
@@ -1736,13 +1736,12 @@ Partial Class FormMain
         '
         'MenuStrip2
         '
-        Me.MenuStrip2.GripMargin = New System.Windows.Forms.Padding(2, 2, 0, 2)
         Me.MenuStrip2.ImageScalingSize = New System.Drawing.Size(28, 28)
         Me.MenuStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem2, Me.HarvestFolderToolStripMenuItem, Me.FullScreenToolStripMenuItem1, Me.OptionsToolStripMenuItem, Me.DuplicatesToolStripMenuItem, Me.ShowlistToolStripMenuItem, Me.DashboardToolStripMenuItem, Me.ExperimentToolStripMenuItem, Me.RenamingToolStripMenuItem, Me.SlowMotionOptionsToolStripMenuItem})
         Me.MenuStrip2.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip2.Name = "MenuStrip2"
         Me.MenuStrip2.Padding = New System.Windows.Forms.Padding(5, 2, 0, 2)
-        Me.MenuStrip2.Size = New System.Drawing.Size(3145, 36)
+        Me.MenuStrip2.Size = New System.Drawing.Size(3145, 33)
         Me.MenuStrip2.TabIndex = 17
         Me.MenuStrip2.Text = "MenuStrip2"
         '

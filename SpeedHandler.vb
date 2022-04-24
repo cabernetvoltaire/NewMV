@@ -170,13 +170,15 @@
         If mSlideshow Then
             Intervals(mSSSpeed) = Intervals(mSSSpeed) * 0.9
         Else
-            Dim m As Integer = FrameRates(mSpeed)
-            If m <= 4 Then
-                m = m + 1
-            Else
-                m = m * 1.1
+            If mSpeed >= 0 Then
+                Dim m As Integer = FrameRates(mSpeed)
+                If m <= 4 Then
+                    m = m + 1
+                Else
+                    m = m * 1.1
+                End If
+                FrameRates(mSpeed) = m
             End If
-            FrameRates(mSpeed) = m
         End If
         RaiseEvent SpeedChanged(Me, Nothing)
     End Sub
@@ -184,13 +186,15 @@
         If mSlideshow Then
             Intervals(mSSSpeed) = Intervals(mSSSpeed) * 1.1
         Else
-            Dim m As Integer = FrameRates(mSpeed)
-            If m <= 4 Then
-                m = Math.Max(1, m - 1)
-            Else
-                m = m * 0.9
+            If mSpeed >= 0 Then
+                Dim m As Integer = FrameRates(mSpeed)
+                If m <= 4 Then
+                    m = Math.Max(1, m - 1)
+                Else
+                    m = m * 0.9
+                End If
+                FrameRates(mSpeed) = m
             End If
-            FrameRates(mSpeed) = m
         End If
         RaiseEvent SpeedChanged(Me, Nothing)
 

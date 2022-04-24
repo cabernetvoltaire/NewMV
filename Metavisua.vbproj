@@ -464,6 +464,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Metavisua_TemporaryKey.pfx" />
     <None Include="MVDataSet3.xsc">
       <DependentUpon>MVDataSet3.xsd</DependentUpon>

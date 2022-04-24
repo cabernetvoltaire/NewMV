@@ -498,7 +498,7 @@ Public Class MediaHandler
                 If mMarkers.Count > 0 Then
                     SPT.Marker = mMarkers.Item(LinkCounter)
                 Else
-                    ' SPT.ResetMarker()
+                    SPT.ResetMarker()
                 End If
                 mPlayPosition = SPT.StartPoint
             End If
