@@ -29,8 +29,18 @@
     End Property
     Private _DepthCounter As Integer
     Public Sub GenerateDirs()
-
-        _DirList = FindDirs(_DirectoryPath)
+        Dim list As New List(Of String)
+        Dim nlist As New List(Of String)
+        list = FindDirs(_DirectoryPath)
+        While _DepthCounter > 0
+            '_DirList.AddRange(list)
+            For i = 0 To list.Count - 1
+                nlist.AddRange(FindDirs(list(i)))
+            Next
+            list = nlist
+            _DepthCounter -= 1
+        End While
+        _DirList = list
     End Sub
     ''' <summary>
     ''' Returns a list of safe directories under string path s
@@ -40,11 +50,12 @@
     Private Function FindDirs(s As String) As List(Of String)
         Dim founddirs As New List(Of String)
         Dim dir As New IO.DirectoryInfo(s)
-        For Each m In dir.EnumerateDirectories("*", IO.SearchOption.AllDirectories)
+        For Each m In dir.EnumerateDirectories("*", IO.SearchOption.TopDirectoryOnly)
 
             If (((m.Attributes And System.IO.FileAttributes.Hidden) = 0) AndAlso
                                 ((m.Attributes And System.IO.FileAttributes.System) = 0)) Then
                 founddirs.Add(m.FullName)
+
             End If
         Next
         Return founddirs

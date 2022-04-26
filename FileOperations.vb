@@ -73,8 +73,10 @@
         x = GenerateSafeFolderList(CurrentFolder.FullName, 3)
         For Each r In x
             Dim f As New IO.DirectoryInfo(r)
-            If f.GetDirectories.Count = 0 And f.GetFiles.Count = 0 Then
-                My.Computer.FileSystem.DeleteDirectory(f.FullName, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
+            If f.Exists Then
+                If f.GetDirectories.Count = 0 And f.GetFiles.Count = 0 Then
+                    My.Computer.FileSystem.DeleteDirectory(f.FullName, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
+                End If
             End If
             'f.Delete(False)
         Next

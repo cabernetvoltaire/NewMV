@@ -1,4 +1,5 @@
-﻿Public Class FormButton
+﻿Imports System.IO
+Public Class FormButton
 
     Public WithEvents buttons As New ButtonSet
     Public WithEvents BH As New ButtonHandler()
@@ -36,6 +37,7 @@
     End Sub
 
     Private Sub MakeMenu()
+        Exit Sub
         MainMenuStrip.Items.Clear()
 
         For Each m In FormMain.ToolStripMenuItem2.DropDownItems
@@ -54,6 +56,16 @@
                 End If
             End If
         Next
+    End Sub
+    Private Sub LinearToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LinearToolStripMenuItem.Click
+        BH.AssignLinear(New DirectoryInfo(CurrentFolder))
+    End Sub
+    Private Sub AlphaToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlphaToolStripMenuItem.Click
+
+        BH.AssignAlphabetical(New DirectoryInfo(CurrentFolder))
+    End Sub
+    Private Sub TreeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TreeToolStripMenuItem.Click
+        BH.AssignTreeNew(CurrentFolder, Val(InputBox("Depth")))
     End Sub
 
     Private Sub UpdateTinyButtons()
@@ -129,8 +141,6 @@
         UpdateTinyButtons()
     End Sub
 
-    Private Sub AlphaToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlphaToolStripMenuItem.Click
 
-    End Sub
 End Class
 
