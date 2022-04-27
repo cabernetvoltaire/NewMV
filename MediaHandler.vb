@@ -498,7 +498,7 @@ Public Class MediaHandler
                 If mMarkers.Count > 0 Then
                     SPT.Marker = mMarkers.Item(LinkCounter)
                 Else
-                    SPT.ResetMarker()
+                    SPT.Reset()
                 End If
                 mPlayPosition = SPT.StartPoint
             End If
@@ -528,7 +528,7 @@ Public Class MediaHandler
 
                 SPT.Marker = mMarkers.Item(LinkCounter)
             Else
-                SPT.ResetMarker()
+                SPT.Reset()
             End If
             mPlayPosition = SPT.StartPoint
         End If
@@ -623,14 +623,13 @@ Public Class MediaHandler
                     Debug.WriteLine(EX.Message)
                 End Try
             End If
-            MediaJumpToMarker() 'Place after load
 
         Else
             mlinkcounter = 0
             GetBookmark()
-            MediaJumpToMarker() 'Place when not new load
 
         End If
+        MediaJumpToMarker() 'Place after load
         DisplayerName = mPlayer.Name
         DebugStartpoint(Me)
     End Sub
@@ -743,7 +742,6 @@ Public Class MediaHandler
     End Sub
 
     Private Sub OnStartChange(sender As Object, e As EventArgs) Handles SPT.StartPointChanged, SPT.StateChanged
-
         RaiseEvent StartChanged(sender, e)
 
     End Sub

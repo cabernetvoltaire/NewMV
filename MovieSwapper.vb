@@ -265,7 +265,7 @@ Public Class MediaSwapper
             .Visible = True
             .BringToFront()
             .settings.mute = Muted
-
+            'LabelStartPoint(MHX)
             RaiseEvent MediaShown(MHX, Nothing)
         End With
 

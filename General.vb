@@ -701,11 +701,13 @@ Public Module General
         Dim s As String = ""
         Dim sh As StartPointHandler = MH.SPT
         s = s & MH.Name & vbCrLf
-        s = s & MH.MediaPath & vbCrLf
-        s = s & "Duration: " & sh.Duration & vbCrLf & "Percentage:" & sh.Percentage & vbCrLf & " Absolute:" & sh.Absolute & vbCrLf & " Startpoint:" & sh.StartPoint & vbCrLf & " Player:" & Media.Player.Name
+        s &= "Markers Count:" & MH.Markers.Count & vbCrLf
+
+        '  s = s & MH.MediaPath & vbCrLf
+        s = s & "Duration: " & sh.Duration & vbCrLf & "Percentage:" & sh.Percentage & vbCrLf & " Absolute:" & sh.Absolute & vbCrLf & " Startpoint:" & sh.StartPoint & vbCrLf & " Player:" & MH.Player.Name
         s = s & vbCrLf & sh.Description
         Debug.Print(s)
-        FormMain.lblNavigateState.Text = s
+        FormMain.TextBox1.Text = s
     End Sub
     Public Sub ReportTime(str As String)
         Debug.Print(Int(Now().Second) & "." & Int(Now().Millisecond) & " " & str)
