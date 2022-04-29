@@ -59,12 +59,8 @@ Friend Module FileHandling
         Media = sender
         FormMain.UpdateFileInfo()
 
-        If Media.MediaType = Filetype.Movie Then
-            FormMain.PopulateLinkList(sender)
-        Else
-            FormMain.Marks.Clear()
-        End If
-        Media.SetLink(0)
+
+        'Media.SetLink(0)
         With FormMain
             .AT.Counter = Media.Markers.Count
             .Att.DestinationLabel = .lblAttributes
@@ -78,6 +74,11 @@ Friend Module FileHandling
         If ShiftDown Then FormMain.HighlightCurrent(Media.LinkPath) 'Used for links only, to go to original file
         FormMain.Length.Value = Math.Min(Media.Duration / 60, 200)
         FormMain.LengthLabel.Text = New TimeSpan(0, 0, Media.Duration).ToString("hh\:mm\:ss")
+        If Media.MediaType = Filetype.Movie Then
+            FormMain.PopulateLinkList(sender)
+        Else
+            FormMain.Marks.Clear()
+        End If
     End Sub
     Public Sub DebugStartpoint(M As MediaHandler)
         Debug.Print(M.MediaPath & " loaded into " & M.Player.Name)

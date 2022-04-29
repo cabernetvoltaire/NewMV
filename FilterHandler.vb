@@ -195,6 +195,7 @@ Public Class FilterHandler
                         If f2.Exists Then
                             lst.Add(m)
                         Else
+                            f.Delete()
                             Exit Select
                         End If
                         'Group multiple links into single item.

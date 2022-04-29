@@ -236,7 +236,10 @@ Friend Class FormMain
             If SP.Speed = -1 Then
                 tmrSlowMo.Enabled = False
                 'MSFiles.Soundhandler.Muted = True
-                MSFiles.Soundhandler.Slow = False
+                If Media.MediaType = Filetype.Movie Then
+                    MSFiles.Soundhandler.Slow = False
+
+                End If
 
                 If SP.Fullspeed Then
                     tbSpeed.Text = "Speed:FULL"
@@ -362,7 +365,7 @@ Friend Class FormMain
         Scrubber.Left = Scrubber.Width * ((1 - ScrubberProportion) / 2)
         Marks.Create()
 
-        'Scrubber.Image = Marks.Bitmap NEVER add this back.
+        '  Scrubber.Image = Marks.Bitmap 'NEVER add this back.
 
 
     End Sub
@@ -749,9 +752,24 @@ Friend Class FormMain
                         End If
 
                     Else
-                        MediaSmallJump(e, e.Modifiers = Keys.Control, e.KeyCode > (KeySmallJumpUp + KeySmallJumpDown) / 2)
-                        If tmrMovieSlideShow.Enabled Then
-                            ToggleMovieSlideShow()
+                        If Media.Speed.Paused Then
+                            If e.KeyCode = KeySmallJumpUp Then
+
+                                Media.Player.Ctlcontrols.step(1)
+                            Else
+
+                                Media.Player.Ctlcontrols.step(-1)
+                                For i = 0 To 22
+                                    Media.Player.Ctlcontrols.step(1)
+                                Next
+
+                            End If
+                            Media.Speed.PausedPosition = Media.Player.Ctlcontrols.currentPosition
+                        Else
+                            MediaSmallJump(e, e.Modifiers = Keys.Control, e.KeyCode > (KeySmallJumpUp + KeySmallJumpDown) / 2)
+                            If tmrMovieSlideShow.Enabled Then
+                                ToggleMovieSlideShow()
+                            End If
                         End If
 
                     End If
@@ -1998,6 +2016,7 @@ Friend Class FormMain
     ''' <param name="e"></param>
     Private Sub tmrSlowMo_Tick(sender As Object, e As EventArgs) Handles tmrSlowMo.Tick
         Media.Player.Ctlcontrols.step(1)
+        Media.Speed.PausedPosition = Media.Player.Ctlcontrols.currentPosition
         'Throw New Exception
 
     End Sub

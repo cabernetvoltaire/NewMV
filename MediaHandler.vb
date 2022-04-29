@@ -666,11 +666,11 @@ Public Class MediaHandler
         End Select
     End Sub
     Sub DisposeMovie()
-
+        Exit Sub
         Try
-            mPlayer.close()
+            mPlayer.URL = ""
         Catch ex As Exception
-            Exit Sub
+            MsgBox("Close failure")
         End Try
     End Sub
     Public Sub CancelMedia()
@@ -699,6 +699,9 @@ Public Class MediaHandler
     Private ReadOnly mResetCounter As Integer
 
     Private Sub PlaystateChange(sender As Object, e As _WMPOCXEvents_PlayStateChangeEvent) Handles mPlayer.PlayStateChange
+
+
+
         FormMain.SP = Speed
         Select Case e.newState
             Case WMPLib.WMPPlayState.wmppsStopped
@@ -768,7 +771,7 @@ Public Class MediaHandler
         'mPlayer.Ctlcontrols.currentPosition = mPlayPosition
         MediaJumpToMarker() 'Reset Position Tick
         '  DebugStartpoint(Me)
-        FormMain.DrawScrubberMarks()
+        '  FormMain.DrawScrubberMarks()
     End Sub
     ''' <summary>
     ''' Only there to prevent Position resetting from starting indefinitely. 

@@ -1,11 +1,15 @@
 ﻿
 Public Class MarkPlacement
+    Private WithEvents tmr As New Timer With {.Enabled = False, .Interval = 100}
     Private Property mBar As New PictureBox()
+    Private TooltipText As String = "Remove markers using CTRL"
     Public WriteOnly Property Bar As PictureBox
         Set(value As PictureBox)
             mBar = value
             Graphics = mBar.CreateGraphics
             'Barcolor = mBar.BackColor
+
+            AddToolTip(mBar, New ToolTip, TooltipText)
         End Set
     End Property
     Public Property Barcolor
@@ -26,17 +30,20 @@ Public Class MarkPlacement
         End Set
 
     End Property
-
     Public Sub Create()
+        tmr.Enabled = True
+    End Sub
+
+    Private Sub DrawMarks() Handles tmr.Tick
 
         Clear() 'Erase marks
-        'Draw Big Jumps
         Dim start As Point
         start.Y = 0
         Dim endpt As Point
         endpt.Y = mBar.Height
-        Duration = Math.Min(Duration, 10000)
-        Dim count As Integer = Math.Max(10, Duration / Fractions)
+        '  Duration = Math.Min(Duration, 50000)
+        'Draw Big Jumps
+        Dim JumpSize As Integer = Math.Max(10, Duration / Fractions)
         Dim x As Integer
         While x < Duration * mBar.Width / Duration
 
@@ -44,19 +51,20 @@ Public Class MarkPlacement
             start.X = x
             endpt.X = x
             Graphics.DrawLine(pen, start, endpt)
-            x += count * mBar.Width / Duration
+            x += JumpSize * mBar.Width / Duration
         End While
         x = 0
+        'Draw small jumps
         While x < Duration * mBar.Width / Duration
 
-            Dim pen As New Pen(Color.Gray, 1)
+            Dim pen As New Pen(Color.Green, 1)
             start.X = x
             endpt.X = x
             Graphics.DrawLine(pen, start, endpt)
             x += SmallJumps * mBar.Width / Duration
         End While
 
-
+        'Draw Markers
         If mMarkers Is Nothing Then Exit Sub
         For Each m In mMarkers
             start.X = mBar.Width * m / Duration
@@ -64,7 +72,7 @@ Public Class MarkPlacement
             Dim pen As New Pen(Color.Yellow, 3)
             Graphics.DrawLine(pen, start, endpt)
         Next
-
+        tmr.Enabled = False
     End Sub
 
     Public Sub Clear()
