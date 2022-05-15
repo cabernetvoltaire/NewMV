@@ -240,6 +240,7 @@ Public Class MediaSwapper
 
     End Sub
     Private Sub ShowPlayer(ByRef MHX As MediaHandler)
+        Report("Shower player")
         MuteAll(True)
         '  HideMedias(MHX)
 

@@ -619,8 +619,8 @@ Public Class MediaHandler
                 Try
                     mPlayer.URL = URL
                 Catch EX As Exception
-                    'BreakExecution()
-                    Debug.WriteLine(EX.Message)
+                    BreakExecution()
+                    'Debug.WriteLine(EX.Message)
                 End Try
             End If
 
@@ -702,7 +702,7 @@ Public Class MediaHandler
 
 
 
-        FormMain.SP = Speed
+        ' FormMain.SP = Speed
         Select Case e.newState
             Case WMPLib.WMPPlayState.wmppsStopped
                 Try
@@ -741,7 +741,7 @@ Public Class MediaHandler
             Case Else
                 PositionUpdater.Enabled = False
         End Select
-        Speed = FormMain.SP
+        ' Speed = FormMain.SP
     End Sub
 
     Private Sub OnStartChange(sender As Object, e As EventArgs) Handles SPT.StartPointChanged, SPT.StateChanged

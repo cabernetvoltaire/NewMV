@@ -682,7 +682,7 @@ Public Module General
         End If
     End Sub
     Public Sub Report(str As String, Optional gaps As Integer = 0, Optional Sound As Boolean = False)
-        Exit Sub
+        'Exit Sub
         If DebugOn Then
             If Sound Then SystemSounds.Asterisk.Play()
 
@@ -1521,6 +1521,7 @@ Public Module General
         End If
 
     End Sub
+
     Friend Function ListFromDatabase(DB As Database) As List(Of String)
         Dim s As New List(Of String)
         For Each e In DB.Entries

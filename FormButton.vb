@@ -3,7 +3,7 @@ Public Class FormButton
 
     Public WithEvents buttons As New ButtonSet
     Public WithEvents BH As New ButtonHandler()
-
+    Public Directory As String
     Public ButtonFilePath As String
     Private ofd As New OpenFileDialog
     Private sfd As New SaveFileDialog
@@ -67,7 +67,9 @@ Public Class FormButton
     Private Sub TreeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TreeToolStripMenuItem.Click
         BH.AssignTreeNew(CurrentFolder, Val(InputBox("Depth")))
     End Sub
-
+    Public Sub AssignDefaultTree()
+        BH.AssignTreeNew(Directory, 8, True)
+    End Sub
     Private Sub UpdateTinyButtons()
         For Each btn In FlowLayoutPanel1.Controls
             Dim b As Button

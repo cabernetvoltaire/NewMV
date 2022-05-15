@@ -17,7 +17,7 @@ Public Class MarkPlacement
     Property Fractions As Integer
     Property SmallJumps As Long
     Property Graphics As Graphics
-    Property Bitmap As Bitmap
+    ' Property Bitmap As Bitmap
     Private Property mMarkers As List(Of Double)
 
     Property Markers As List(Of Double)
@@ -41,11 +41,12 @@ Public Class MarkPlacement
         start.Y = 0
         Dim endpt As Point
         endpt.Y = mBar.Height
-        '  Duration = Math.Min(Duration, 50000)
+        Duration = Math.Max(Duration, 1)
         'Draw Big Jumps
-        Dim JumpSize As Integer = Math.Max(10, Duration / Fractions)
+        Dim JumpSize As Integer = Duration / Fractions
+        If JumpSize = 0 Then JumpSize = Math.Max(1, Duration / 2)
         Dim x As Integer
-        While x < Duration * mBar.Width / Duration
+        While x < mBar.Width
 
             Dim pen As New Pen(Color.Black, 2)
             start.X = x
@@ -55,7 +56,7 @@ Public Class MarkPlacement
         End While
         x = 0
         'Draw small jumps
-        While x < Duration * mBar.Width / Duration
+        While x < mBar.Width
 
             Dim pen As New Pen(Color.Green, 1)
             start.X = x
