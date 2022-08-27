@@ -27,7 +27,7 @@ Friend Class FormMain
     Public WithEvents AT As New AutoTrailer
     Public WithEvents X As New OrphanFinder
     Public WithEvents VT As New VideoThumbnailer
-    Public CurrentButtonFolder As String
+
     Public WithEvents FOP As FileOperations
     Public WithEvents BH As New ButtonHandler With {.RowProgressBar = ProgressBar1}
     Public Splash As New SplashScreen1
@@ -233,7 +233,7 @@ Friend Class FormMain
             tmrSlideShow.Interval = SP.Interval
             tbSpeed.Text = "Slide Interval=" & SP.Interval
         Else
-            If Media.Speed.Speed = -1 Then
+            If SP.Speed = -1 Then
                 tmrSlowMo.Enabled = False
                 'MSFiles.Soundhandler.Muted = True
                 If Media.MediaType = Filetype.Movie Then
@@ -241,12 +241,10 @@ Friend Class FormMain
 
                 End If
 
-                If Media.Speed.Fullspeed Then
+                If SP.Fullspeed Then
                     tbSpeed.Text = "Speed:FULL"
-                    Instructions("Full")
                 Else
                     tbSpeed.Text = "Speed:Paused"
-                    Instructions("Paused")
                 End If
             Else
                 MSFiles.Soundhandler.Slow = True
@@ -255,7 +253,6 @@ Friend Class FormMain
                 tmrSlowMo.Interval = 1000 / SP.FrameRate
                 tmrSlowMo.Enabled = True
                 tbSpeed.Text = "Speed:" & SP.FrameRate & "fps"
-                Instructions("Slow")
             End If
         End If
     End Sub
@@ -275,8 +272,8 @@ Friend Class FormMain
         Dim d As New IO.DirectoryInfo(tvmain2.SelectedFolder)
         tvmain2.RemoveNode(path)
         ' tvMain2.RefreshTree(d.FullName)
-        Dim dir As New IO.DirectoryInfo(path)
-        dir.Delete()
+        'Dim dir As New IO.DirectoryInfo(path)
+        'Dir.Delete()
     End Sub
 #End Region
     Private Sub AddMarker()
@@ -364,7 +361,6 @@ Friend Class FormMain
         If Media.Duration = 0 Then Exit Sub
 
         Marks.Duration = Media.Duration
-
         Scrubber.Width = ctrPicAndButtons.Width * ScrubberProportion
         Scrubber.Left = Scrubber.Width * ((1 - ScrubberProportion) / 2)
         Marks.Create()
@@ -461,9 +457,6 @@ Friend Class FormMain
                 MoveFolder(FolderName, "")
                 tvw.Traverse(False)
                 tvw.RemoveNode(FolderName)
-                Dim dir As New IO.DirectoryInfo(FolderName)
-                FileHandling.t.Join()
-                dir.Delete()
                 BH.SwapPath(FolderName, "")
                 BH.RefreshButtons()
             End If
@@ -494,24 +487,19 @@ Friend Class FormMain
     End Sub
 
     Private Function SpeedChange(e As KeyEventArgs) As KeyEventArgs
-        Dim speednumber As Short = FindSpeed(e)
-
+        Dim speednumber As Int16 = e.KeyCode - KeySpeed1
         If Media.Playing Then
-
-            'If same key pressed, toggle speed and fullspeed
-            If speednumber = Media.Speed.Speed Then 'Repeat slow pressed
-                If Media.Speed.Paused Then
-                    Media.Speed.TogglePause()
+            ' SP.TogglePause()
+            If speednumber = SP.Speed Then
+                ' MsgBox("Set Fullspeed")
+                If speednumber = -1 Then
+                    SP.TogglePause()
                 Else
-                    If speednumber = -1 Then
-                        Media.Speed.TogglePause()
-                    Else
-                        Media.Speed.Speed = -1
-                    End If
+
+                    SP.Speed = -1
                 End If
             Else
-                'else select new speed
-                Media.Speed.Speed = speednumber 'Set new speed -1,0,1 or 2. 
+                SP.Speed = speednumber '-1,0,1 or 2. Could make 0, 1,2 and 3 to be compatible with AT'
             End If
         Else 'Slideshow
             If speednumber < 0 Then
@@ -525,22 +513,7 @@ Friend Class FormMain
         Return e
     End Function
 
-    Private Shared Function FindSpeed(e As KeyEventArgs) As Short
-        Dim speednumber As Int16
-        Select Case e.KeyCode
-            Case KeySpeed1
-                speednumber = 0
-            Case KeySpeed2
-                speednumber = 1
-            Case KeySpeed3
-                speednumber = 2
-            Case KeyToggleSpeed
-                speednumber = -1
 
-        End Select
-
-        Return speednumber
-    End Function
 
     Private Sub ToggleRandomStartPoint()
         Random.StartPointFlag = Not Random.StartPointFlag
@@ -702,7 +675,6 @@ Friend Class FormMain
         Me.Cursor = Cursors.WaitCursor
         Dim nke As New Keys
         nke = NumKeyEquivalent(e)
-        ' MsgBox(e.KeyCode.ToString)
 
         Select Case e.KeyCode
 #Region "Function Keys"
@@ -738,13 +710,12 @@ Friend Class FormMain
                 ControlSetFocus(tvmain2)
                 tvmain2.tvFiles_KeyDown(sender, e)
             Case Keys.Up, Keys.Down
-                'If tvmain2.Focused Then
-                ControlSetFocus(tvmain2)
+                If tvmain2.Focused Then
+                    ControlSetFocus(tvmain2)
                     tvmain2.tvFiles_KeyDown(sender, e)
 
-                'End If
+                End If
             Case Keys.Escape
-
                 MSFiles.CancelURL()
                 CancelDisplay(True)
 
@@ -762,8 +733,6 @@ Friend Class FormMain
 
 #Region "Video Navigation"
             Case KeySmallJumpDown, KeySmallJumpUp, LKeySmallJumpDown, LKeySmallJumpUp
-
-                Dim delta As Double = 1.0# / CType(Media.Player.network.encodedFrameRate, Double)
                 If tmrJumpRandom.Enabled Then
                     If e.KeyCode = KeySmallJumpUp Then
                         tbScanRate.Value = Math.Min(tbScanRate.Maximum, tbScanRate.Maximum * 0.1 + tbScanRate.Value)
@@ -783,14 +752,16 @@ Friend Class FormMain
                         End If
 
                     Else
-                        If Media.Speed.Speed >= 0 Or Media.Speed.Paused Then 'Frame advance
-                            Media.Speed.Paused = True
-
+                        If Media.Speed.Paused Then
                             If e.KeyCode = KeySmallJumpUp Then
+
                                 Media.Player.Ctlcontrols.step(1)
                             Else
 
-                                DirectCast(Media.Player.Ctlcontrols, WMPLib.IWMPControls2).currentPosition -= delta
+                                Media.Player.Ctlcontrols.step(-1)
+                                For i = 0 To 22
+                                    Media.Player.Ctlcontrols.step(1)
+                                Next
 
                             End If
                             Media.Speed.PausedPosition = Media.Player.Ctlcontrols.currentPosition
@@ -877,7 +848,13 @@ Friend Class FormMain
                     JumpRandom(False)
                 End If
 
-            Case KeySpeed1, KeySpeed2, KeySpeed3, KeyToggleSpeed
+            Case KeyToggleSpeed
+                'If SP.Fullspeed Then
+                '    SP.TogglePause()
+                'Else
+                SpeedChange(e)
+                'End If
+            Case KeySpeed1, KeySpeed2, KeySpeed3
                 SpeedChange(e)
 #End Region
 
@@ -1046,10 +1023,7 @@ Friend Class FormMain
 
             Exit Sub
         ElseIf e.Alt Then
-            Dim x As New MVButton
-            x = mBH.buttons.CurrentRow.Buttons(buttonnumber)
-            CurrentButtonFolder = x.Path
-            Autoload(x.Label, True)
+            Autoload(mBH.buttons.CurrentRow.Buttons(buttonnumber).Label, True)
             Exit Sub
         End If
 
@@ -1102,7 +1076,6 @@ Friend Class FormMain
                 End If
 
             ElseIf e.Alt Then
-                CurrentButtonFolder = mBH.buttons.CurrentRow.Buttons(buttonnumber).Path
                 Autoload(mBH.buttons.CurrentRow.Buttons(buttonnumber).Label, True)
             Else
 
@@ -1324,7 +1297,7 @@ Friend Class FormMain
         SetupPlayers()
         PositionUpdater.Enabled = False
         Media.DontLoad = True
-        InitialiseKeys()
+
         PreferencesGet()
 
         LastTimeSuccessful = False
@@ -1908,7 +1881,7 @@ Friend Class FormMain
 
         T.Start()
 
-
+        OnFolderMoved(Source)
 
     End Sub
 
@@ -2001,9 +1974,7 @@ Friend Class FormMain
 
     Private Async Sub BurstFolderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BurstFolderToolStripMenuItem.Click
         ' MSFiles.CancelURLS()
-        Dim x As New BundleHandler(tvmain2, FBH.ListBox, CurrentFolder)
-        x.Burst(New IO.DirectoryInfo(CurrentFolder))
-        '        Await BurstFolder(New DirectoryInfo(CurrentFolder))
+        Await BurstFolder(New DirectoryInfo(CurrentFolder))
         FBH.FillBox()
         'tvMain2.RemoveNode(CurrentFolder)
         '        tvMain2.RefreshTree(New IO.DirectoryInfo(CurrentFolder).Parent.FullName)
@@ -2044,10 +2015,7 @@ Friend Class FormMain
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub tmrSlowMo_Tick(sender As Object, e As EventArgs) Handles tmrSlowMo.Tick
-        If Media.Speed.Paused Then
-        Else
-            Media.Player.Ctlcontrols.step(1)
-        End If
+        Media.Player.Ctlcontrols.step(1)
         Media.Speed.PausedPosition = Media.Player.Ctlcontrols.currentPosition
         'Throw New Exception
 
@@ -2630,20 +2598,19 @@ Friend Class FormMain
             '     End If
             lastasked = file.FullName
         Else
-            SpawnButtonForm(Nothing, buttonlabel:=Buttonfolder & "\" & Foldername)
+            SpawnButtonForm(Nothing, name:=Buttonfolder & "\" & Foldername)
             Foldername = ""
         End If
         Return Foldername
         'Load it (optionally)
     End Function
 
-
-    Private Function SpawnButtonForm(file As FileInfo, Optional buttonlabel As String = "") As FormButton
+    Private Function SpawnButtonForm(file As FileInfo, Optional name As String = "") As FormButton
         Dim fname As String
         If file Is Nothing Then
             Dim tBH As New ButtonHandler
-            tBH.SaveButtonSet(buttonlabel)
-            fname = buttonlabel
+            tBH.SaveButtonSet(name)
+            fname = name
         Else
             fname = file.FullName
         End If
@@ -2651,11 +2618,8 @@ Friend Class FormMain
                         .ButtonFilePath = fname
                     }
         x.BH.Alpha = iCurrentAlpha
-        x.Directory = CurrentButtonFolder
         AddHandler x.KeyDown, AddressOf HandleKeys
-        If file Is Nothing Then
-            x.AssignDefaultTree()
-        End If
+
         x.Show()
         x.Top = Me.Height * 0.8
         Return x
@@ -3617,41 +3581,11 @@ Friend Class FormMain
 
     End Sub
 
-    Private Sub Instructions(state As String)
-        Dim s As String
+    Private Sub lbxGroups_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbxGroups.SelectedIndexChanged
 
-        Select Case state
-            Case "Paused"
-                s &= "PAUSED MODE" & vbCrLf
-                s &= "Small jump keys to move by one frame" & vbCrLf
-                s &= "Speed keys to change speed" & vbCrLf
-                s &= KeyAssignments("KeyBigJumpOn ") & " to jump by fixed fraction" & vbCrLf
-                ChangeLabel(InstructionLabel2, s)
-            Case "Full"
-                s &= "FULL SPEED MODE" & vbCrLf
-                s &= "Small jump keys to jump by fixed time" & vbCrLf
-                s &= KeyAssignments("KeySpeed1 ") & " to change speed" & vbCrLf
-                s &= KeyAssignments("KeyBigJumpOn ") & " to jump by fixed fraction" & vbCrLf
-                ChangeLabel(InstructionLabel2, s)
-            Case "Slow"
-                s &= "SLOW MODE (" & Media.Speed.Speed + 1 & ")" & vbCrLf
-                s &= "Small jump keys to set pause mode and move by one frame" & vbCrLf
-                s &= "Same speed key to toggle full speed, different ones change speed" & vbCrLf
-                s &= KeyAssignments("KeyBigJumpOn ") & " to jump by fixed fraction" & vbCrLf
-                s &= "Pause key toggles pause and full speed" & vbCrLf
-                ChangeLabel(InstructionLabel2, s)
-            Case "Marks"
-                s &= KeyAssignments("KeyMarkFavourite ") & " to set a mark and create favourite" & vbCrLf
-                s &= "ALT & " & KeyAssignments("KeyMarkFavourite ") & " removes" & vbCrLf
-                s &= "Navigate marks using (ALT for backwards) " & KeyAssignments("KeyJumpToMark ") & vbCrLf
-                ChangeLabel(InstructionLabel2, s)
-
-        End Select
     End Sub
 
-    Private Sub FormMain_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
-        DrawScrubberMarks()
-    End Sub
+
 
 
 

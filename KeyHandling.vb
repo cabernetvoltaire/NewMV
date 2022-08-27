@@ -1,6 +1,5 @@
 ﻿Public Module KeyHandling
     'Numpad options (not available on Laptop)
-    Public KeyAssignments As New Dictionary(Of String, String)
     Public KeyJumpToPoint = Keys.Insert
     Public KeyCycleStartPoint = Keys.OemQuestion
     Public KeyCycleFilter = Keys.Scroll
@@ -66,75 +65,7 @@
 
 
 
-    Public Sub InitialiseKeys()
-        AssignKey("KeyJumpToPoint ", Keys.Insert)
-        AssignKey("KeyCycleStartPoint ", Keys.OemQuestion)
-        AssignKey("KeyCycleFilter ", Keys.Scroll)
-        AssignKey("KeyCycleNavMoveState ", Keys.Oem7)
-        AssignKey("KeyCycleSortOrder ", Keys.Pause)
-        AssignKey("KeyFullscreen ", Keys.Scroll + Keys.Control)
-        AssignKey("KeyNextFile ", Keys.PageDown)
-        AssignKey("KeyPreviousFile ", Keys.PageUp)
-        AssignKey("KeyJumpRandom ", Keys.Divide)
-        AssignKey("KeyTraverseTreeBack ", Keys.Subtract)
-        AssignKey("KeyTraverseTree ", Keys.Add)
-        AssignKey("KeyMarkFavourite ", Keys.NumPad7)
-        AssignKey("KeyBigJumpBack ", Keys.NumPad8)
-        AssignKey("KeyBigJumpOn ", Keys.NumPad9)
-        AssignKey("KeyJumpToMark ", Keys.NumPad4)
-        AssignKey("KeySmallJumpDown ", Keys.NumPad5)
-        AssignKey("KeySmallJumpUp ", Keys.NumPad6)
-        AssignKey("KeySpeed1 ", Keys.NumPad1)
-        AssignKey("KeySpeed2 ", Keys.NumPad2)
-        AssignKey("KeySpeed3 ", Keys.NumPad3)
-        AssignKey("KeyToggleSpeed ", Keys.NumPad0)
-        AssignKey("KeyMuteToggle ", Keys.Decimal)
-        AssignKey("LKeyFullscreen ", Keys.F + Keys.Control)
-        AssignKey("LKeyRandomize ", Keys.R + Keys.Control)
-        AssignKey("LKeyTraverseTreeBack ", Keys.Control + Keys.OemMinus)
-        AssignKey("LKeyTraverseTree ", Keys.Control + Keys.Oemplus)
-        AssignKey("LKeyJumpAutoT ", Keys.Control + Keys.Divide)
-        AssignKey("LKeyMuteToggle ", Keys.Control + Keys.Decimal)
-        AssignKey("LKeyNextFile ", Keys.Control + Keys.N)
-        AssignKey("LKeyPreviousFile ", Keys.Control + Keys.P)
-        AssignKey("LKeyZoomIn ", Keys.Control + Keys.Z)
-        AssignKey("LKeyFolderJump ", Keys.Control + Keys.Multiply)
-        AssignKey("LKeyToggleSpeed ", Keys.Control + Keys.D0)
-        AssignKey("LKeySpeed1 ", Keys.Control + Keys.D1)
-        AssignKey("LKeySpeed2 ", Keys.Control + Keys.D2)
-        AssignKey("LKeySpeed3 ", Keys.Control + Keys.D3)
-        AssignKey("LKeySmallJumpDown ", Keys.Control + Keys.D5)
-        AssignKey("LKeySmallJumpUp ", Keys.Control + Keys.D6)
-        AssignKey("LKeyJumpToPoint ", Keys.Control + Keys.D7)
-        AssignKey("LKeyBigJumpBack ", Keys.Control + Keys.D8)
-        AssignKey("LKeyBigJumpOn ", Keys.Control + Keys.D9)
-        AssignKey("LKeyMarkPoint ", Keys.Control + Keys.D4)
 
 
-        AssignKey("KeyBackUndo ", Keys.Back)
-        AssignKey("KeyReStartSS ", Keys.Space)
-        AssignKey("KeyLoopToggle ", Keys.OemCloseBrackets + Keys.Alt)
-        AssignKey("KeyTrueSize ", Keys.Oemplus)
-        AssignKey("KeyRotate ", Keys.OemCloseBrackets)
-        AssignKey("KeyRotateBack ", Keys.OemOpenBrackets)
-        AssignKey("KeyAddFile ", Keys.Oemtilde)
-        AssignKey("KeyZoomOut ", Keys.Oemcomma)
-        AssignKey("KeyToggleThumbs ", Keys.Oem3)
-        AssignKey("KeyToggleButtons ", Keys.OemSemicolon)
-        AssignKey("KeyEscape ", Keys.Escape)
-        AssignKey("KeySelect ", Keys.F3)
-        AssignKey("KeyDelete ", Keys.Delete)
-
-    End Sub
-
-    Public Sub AssignKey(name As String, n As Keys)
-
-        KeyAssignments.Add(name, n.ToString)
-    End Sub
-    Public Structure MVKey
-        Public KeyFunction As String
-        Public Key As Integer
-
-    End Structure
 End Module
 

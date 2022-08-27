@@ -164,7 +164,29 @@ Friend Module Mysettings
     End Sub
     Public Sub PreferencesSaveNew()
         With Settings
-
+            '        
+            '    "Horizontal split position",
+            '    ,
+            '   
+            '    ,
+            '    "Current navigate/move state",
+            '    ,
+            '    "Current alphabet button",
+            '    "Current favourites location",
+            '    "Preview links?",
+            '    "Root scan path",
+            '    "Directories list:",
+            '    "Global favourites directory",
+            '    "Choose next file at random",
+            '    "Always choose random file on directory change",
+            '    "Auto trail mode",
+            '"Auto load button sets",
+            '"Show attributes",
+            '"Preview links",
+            '"Encrypt text files",
+            '"Auto advance",
+            '"Directory containing thumbnails",
+            '"Directory containing button files"
 
             .Add(New Setting("Last close successful", LastTimeSuccessful, False))
             .Add(New Setting("Vertical Split position", FormMain.ctrFileBoxes.SplitterDistance, FormMain.ctrFileBoxes.Height / 4))
@@ -390,7 +412,6 @@ Friend Module Mysettings
     Private Function BrowseToFolder(Title As String, DefaultPath As String) As String
         Dim path As String = ""
         With New FolderBrowserDialog
-
             .SelectedPath = DefaultPath
             .Description = Title
             If .ShowDialog() = DialogResult.OK Then

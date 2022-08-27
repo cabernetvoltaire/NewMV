@@ -28,35 +28,29 @@
         End Set
     End Property
     Private _DepthCounter As Integer
-    Public Sub GenerateDirsOld()
+    Public Sub GenerateDirs()
         Dim list As New List(Of String)
         Dim nlist As New List(Of String)
-        list = FindDirs(_DirectoryPath, IO.SearchOption.TopDirectoryOnly)
+        list = FindDirs(_DirectoryPath)
         While _DepthCounter > 0
             '_DirList.AddRange(list)
             For i = 0 To list.Count - 1
-                nlist.AddRange(FindDirs(list(i), IO.SearchOption.TopDirectoryOnly))
+                nlist.AddRange(FindDirs(list(i)))
             Next
             list = nlist
-            nlist.Clear()
             _DepthCounter -= 1
         End While
         _DirList = list
     End Sub
-    Public Sub GenerateDirs()
-        _DirList = FindDirs(_DirectoryPath, IO.SearchOption.AllDirectories)
-
-    End Sub
-
     ''' <summary>
     ''' Returns a list of safe directories under string path s
     ''' </summary>
     ''' <param name="s"></param>
     ''' <returns></returns>
-    Private Function FindDirs(s As String, choice As IO.SearchOption) As List(Of String)
+    Private Function FindDirs(s As String) As List(Of String)
         Dim founddirs As New List(Of String)
         Dim dir As New IO.DirectoryInfo(s)
-        For Each m In dir.EnumerateDirectories("*", choice)
+        For Each m In dir.EnumerateDirectories("*", IO.SearchOption.TopDirectoryOnly)
 
             If (((m.Attributes And System.IO.FileAttributes.Hidden) = 0) AndAlso
                                 ((m.Attributes And System.IO.FileAttributes.System) = 0)) Then

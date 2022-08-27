@@ -16,7 +16,7 @@ Friend Module FileHandling
     Public WithEvents t As Thread
     Public WithEvents Media As New MediaHandler("Media")
     Public WithEvents MSFiles As New MediaSwapper(FormMain.MainWMP1, FormMain.MainWMP2, FormMain.MainWMP3, FormMain.PictureBox1, FormMain.PictureBox2, FormMain.PictureBox3)
-    Private MoveFinished As Boolean
+
     Public MSFilesNew As New MediaSwapper2
     Public AllFaveMinder As New FavouritesMinder("Q:\Favourites")
     Public FaveMinder As New FavouritesMinder("Q:\Favourites")
@@ -171,7 +171,6 @@ Friend Module FileHandling
         Next
     End Sub
     Public Sub MoveFolder(Dir As String, Dest As String)
-        MoveFinished = False
         MSFiles.CancelURL()
 
         If Dest = "" Then
@@ -198,7 +197,7 @@ Friend Module FileHandling
                 End If
             End If
         End If
-        MoveFinished = True
+
     End Sub
 
     Private Sub MoveDirectoryContents(TargetDir As DirectoryInfo, SourceDir As DirectoryInfo, d As DirectoryInfo, Optional Parent As Boolean = False)
@@ -609,11 +608,11 @@ Friend Module FileHandling
 
     End Function
 
-    Public Function BurstFolder(d As DirectoryInfo)
+    Public Async Function BurstFolder(d As DirectoryInfo) As Task
         Dim x As New BundleHandler(FormMain.tvmain2, FormMain.lbxFiles, d.FullName)
 
 
-        x.Burst(d) 'Needs Attention
+        Await x.Burst(d) 'Needs Attention
         '        HarvestFolder(d, True, True)
 
     End Function

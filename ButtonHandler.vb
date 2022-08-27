@@ -195,13 +195,12 @@ Public Class ButtonHandler
         buttons.Clear()
         Dim i = 0
         Dim lst As New Dictionary(Of String, String)
-        For Each dx In GenerateSafeFolderList(e.FullName, 5)
+        For Each dx In GenerateSafeFolderList(e.FullName)
             'For Each dx In GetAllFolders(e, "*")
             Dim d As New DirectoryInfo(dx)
             lst.Add(d.FullName, d.Name)
         Next
-        '        lst = lst.OrderBy(Function(x) x.Key.Count(Function(c As Char) c = "\")).ToDictionary(Function(x) x.Key, Function(x) x.Value)
-
+        lst = lst.OrderBy(Function(x) x.Key.Count(Function(c As Char) c = "\")).ToDictionary(Function(x) x.Key, Function(x) x.Value)
         For Each d In lst
 
             Dim _fstletter As Char = UCase(d.Value(0))
@@ -215,15 +214,11 @@ Public Class ButtonHandler
 
     End Sub
 
-    Public Sub AssignTreeNew(StartingFolder As String, SizeMagnitude As Byte, Optional Silent As Boolean = False)
-        If Silent Then
-        Else
+    Public Sub AssignTreeNew(StartingFolder As String, SizeMagnitude As Byte)
+        If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
 
-            If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
-
-            Dim exclude As String = ""
-            exclude = InputBox("String to exclude from folders?", "")
-        End If
+        Dim exclude As String = ""
+        exclude = InputBox("String to exclude from folders?", "")
         buttons.Clear()
         Dim d As New DirectoryInfo(StartingFolder)
 
@@ -324,7 +319,7 @@ Public Class ButtonHandler
             ActualButtons(i).Text = "f" & Str(i + 5)
             '            AddHandler ActualButtons(i).MouseClick, AddressOf ShowPreview
             AddHandler ActualButtons(i).MouseHover, AddressOf ShowPreview
-            ' AddHandler ActualButtons(i).MouseLeave, AddressOf HideFS
+            AddHandler ActualButtons(i).MouseLeave, AddressOf HideFS
             AddHandler ActualButtons(i).MouseMove, AddressOf ChangeFS
 
 
@@ -347,7 +342,7 @@ Public Class ButtonHandler
 
         For Each f In Application.OpenForms
             If f.name = "FS" Then
-                f.close
+                f.hide
 
                 Exit For
             End If
@@ -356,18 +351,17 @@ Public Class ButtonHandler
 
     Public Sub ShowPreview(Sender As Object, e As EventArgs)
         Dim folderselect As FormFolderSelect
-        'If mFSOpen Then
-        '    For Each f In Application.OpenForms
-        '        If f.name = "FS" Then
-        '            folderselect = AssignFolderSelect(Sender, f)
-        '            f.show
-        '            Exit For
-        '        End If
-        '    Next
-        'Else
-        HideFS(Me, Nothing)
-        folderselect = SpawnFolderSelect(Sender)
-        'End If
+        If mFSOpen Then
+            For Each f In Application.OpenForms
+                If f.name = "FS" Then
+                    folderselect = AssignFolderSelect(Sender, f)
+                    f.show
+                    Exit For
+                End If
+            Next
+        Else
+            folderselect = SpawnFolderSelect(Sender)
+        End If
         Dim control As Control = CType(Sender, Control)
         Dim startpoint As Point
         startpoint.X = control.Left

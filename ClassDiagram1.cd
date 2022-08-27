@@ -3,15 +3,8 @@
   <Class Name="MasaSam.Forms.Sample.StartPointHandler" Collapsed="true">
     <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>gCAAAgAACKAiBBAAAAgARQBAAAgBgwBAAAKBBKAEACg=</HashCode>
+      <HashCode>gCAAAgAACKAiABAAAAgARQBAAAhBgwBAAAKBBKAEACg=</HashCode>
       <FileName>StartPointHandler.vb</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="MasaSam.Forms.Sample.SpeedHandler" Collapsed="true">
-    <Position X="2.5" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAA4AAAQAAAAAAADgIAIAAADACBCAQCAICEAgQAQgAA=</HashCode>
-      <FileName>SpeedHandler.vb</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

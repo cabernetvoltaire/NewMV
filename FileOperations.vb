@@ -69,24 +69,18 @@
     Public Sub RemoveEmptySubfolders()
         Dim finished As Boolean = False
         Dim x As New List(Of String)
-        Dim todelete As New List(Of IO.DirectoryInfo)
-        x = GenerateSafeFolderList(CurrentFolder.FullName, 8)
-        x.Reverse()
 
+        x = GenerateSafeFolderList(CurrentFolder.FullName, 3)
         For Each r In x
             Dim f As New IO.DirectoryInfo(r)
             If f.Exists Then
                 If f.GetDirectories.Count = 0 And f.GetFiles.Count = 0 Then
-                    todelete.Add(f)
-                    '                    My.Computer.FileSystem.DeleteDirectory(f.FullName, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
+                    My.Computer.FileSystem.DeleteDirectory(f.FullName, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
                 End If
             End If
             'f.Delete(False)
         Next
-        For Each m In todelete
-            If m.Exists Then m.Delete()
-        Next
-        '        x.Clear()
+        x.Clear()
     End Sub
 
 #End Region

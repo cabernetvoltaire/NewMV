@@ -60,7 +60,6 @@
         Set(ByVal value As Boolean)
             mPaused = value
             PauseVideo(mPaused)
-            RaiseEvent SpeedChanged(Me, Nothing)
 
         End Set
     End Property
@@ -86,7 +85,6 @@
     End Property
     ''' <summary>
     ''' One of 3 framerates, 0, 1 and 2
-    ''' -1 sets going
     ''' </summary>
     ''' <returns></returns>
     Public Property Speed() As Int16
@@ -98,13 +96,11 @@
             If mSpeed >= 0 Then
                 FrameRate = FrameRates(mSpeed)
                 _Fullspeed = False
-                ' Paused = True
-
+                Paused = True
             Else
                 Fullspeed = True
                 Paused = False
             End If
-
             RaiseEvent SpeedChanged(Me, Nothing)
         End Set
     End Property
