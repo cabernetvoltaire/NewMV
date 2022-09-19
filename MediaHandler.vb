@@ -693,7 +693,7 @@ Public Class MediaHandler
 
     Private Sub Uhoh() Handles mPlayer.ErrorEvent
 
-        'MsgBox("Error in MediaPlayer")
+        MsgBox("Error in MediaPlayer")
     End Sub
 
     Private ReadOnly mResetCounter As Integer

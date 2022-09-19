@@ -253,7 +253,12 @@ Public Module General
         Try
             Dim items As New List(Of String)
             items = ReadListfromFile(str, False)
-            str = items(0)
+            If items.Count > 0 Then
+
+                str = items(0)
+            Else
+                str = ""
+            End If
             'Dim f As New IO.FileInfo(items(0))
             'If f.Exists Then
 
@@ -532,12 +537,7 @@ Public Module General
     End Function
 
 
-    Public Sub RefreshListbox(lbx As ListBox, list As List(Of String))
 
-        For Each m In list
-            lbx.Items.Remove(m)
-        Next
-    End Sub
 
 
     Public Function AllfromListbox(lbx As ListBox) As List(Of String)

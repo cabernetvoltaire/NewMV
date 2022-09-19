@@ -361,8 +361,8 @@ Friend Class FormMain
         If Media.Duration = 0 Then Exit Sub
 
         Marks.Duration = Media.Duration
-        Scrubber.Width = ctrPicAndButtons.Width * ScrubberProportion
-        Scrubber.Left = Scrubber.Width * ((1 - ScrubberProportion) / 2)
+        Scrubber.Width = Media.Player.Width * ScrubberProportion
+        Scrubber.Left = Media.Player.Width * ((1 - ScrubberProportion) / 2)
         Marks.Create()
 
         '  Scrubber.Image = Marks.Bitmap 'NEVER add this back.
@@ -672,6 +672,7 @@ Friend Class FormMain
 
     Public Sub HandleKeys(sender As Object, e As KeyEventArgs)
         'Principal key handling
+        '  KeyDownFlag = True
         Me.Cursor = Cursors.WaitCursor
         Dim nke As New Keys
         nke = NumKeyEquivalent(e)
@@ -733,6 +734,7 @@ Friend Class FormMain
 
 #Region "Video Navigation"
             Case KeySmallJumpDown, KeySmallJumpUp, LKeySmallJumpDown, LKeySmallJumpUp
+
                 If tmrJumpRandom.Enabled Then
                     If e.KeyCode = KeySmallJumpUp Then
                         tbScanRate.Value = Math.Min(tbScanRate.Maximum, tbScanRate.Maximum * 0.1 + tbScanRate.Value)
@@ -797,7 +799,8 @@ Friend Class FormMain
             Case KeyMarkFavourite
                 If e.Control And e.Alt And e.Shift Then
                     RemoveAllFavourites(Media.MediaPath)
-                ElseIf e.Control And e.Alt Then
+                ElseIf e.Control And e.Alt Then 'Update link
+
                     If Media.IsLink Then 'TODO: Does this work?
                         Dim finfo As New IO.FileInfo(Media.MediaPath)
                         Dim s As String = Media.UpdateBookmark(Media.MediaPath, Media.Position)
@@ -1047,21 +1050,21 @@ Friend Class FormMain
                     mBH.SwapPath(source, path & "\" & xx)
                 End If
             Else
-                If path <> "" Then
 
-                    Dim flag = blnSuppressCreate
-                    blnSuppressCreate = True
-                    If ShowListVisible Then
-                        Dim m = LBH.SelectedItemsList
-                        LBH.RemoveItems(m)
-                        MoveFiles(m, path)
-                    Else
-                        Dim m = FBH.SelectedItemsList
-                        FBH.RemoveItems(m)
-                        MoveFiles(m, path)
-                    End If
-                    blnSuppressCreate = flag
+                Dim flag = blnSuppressCreate
+                blnSuppressCreate = True
+                If ShowListVisible Then
+                    Dim m = LBH.SelectedItemsList
+                    LBH.RemoveItems(m)
+
+                    FBH.RemoveItems(m)
+                    MoveFiles(m, path)
+                Else
+                    Dim m = FBH.SelectedItemsList
+                    FBH.RemoveItems(m)
+                    MoveFiles(m, path)
                 End If
+                blnSuppressCreate = flag
             End If
         Else
             'Navigate behaviour
@@ -1165,14 +1168,14 @@ Friend Class FormMain
             End If
 
             Dim m As List(Of String) = ListfromSelectedInListbox(lbx)
-            If lbx Is lbxShowList And NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
-                LBH.RemoveItems(m)
-            Else
-                FBH.RemoveItems(m)
-                blnSuppressCreate = True
-                MoveFiles(m, "")
-                'FBH.Refresh()
-            End If
+            'If lbx Is lbxShowList And NavigateMoveState.State = StateHandler.StateOptions.Navigate Then
+            LBH.RemoveItems(m)
+            'Else
+            FBH.RemoveItems(m)
+            blnSuppressCreate = True
+            MoveFiles(m, "")
+            'FBH.Refresh()
+            'End If
 
 
         End If
@@ -1192,7 +1195,7 @@ Friend Class FormMain
     Private Sub NavigateToFavourites()
         CurrentFilterState.OldState = CurrentFilterState.State
         CurrentFilterState.State = FilterHandler.FilterState.Linked
-        cbxSingleLinks.Checked = True
+        cbxSingleLinks.Checked = False
         ChangeFolder(CurrentFavesPath)
 
         tvmain2.SelectedFolder = CurrentFolder
@@ -1427,7 +1430,12 @@ Friend Class FormMain
         CtrlDown = e.Control
         AltDown = e.Alt
         BH.UpdateButtonAppearance()
-        HandleKeys(sender, e)
+        Try
+            HandleKeys(sender, e)
+            Report(sender.ToString)
+        Catch ex As Exception
+            MsgBox(ex.Message)
+        End Try
         If e.KeyCode = KeyBackUndo Then
             e.SuppressKeyPress = True
         End If
@@ -1441,10 +1449,6 @@ Friend Class FormMain
         ShiftDown = e.Shift
         CtrlDown = e.Control
         AltDown = e.Alt
-        If FocusControl IsNot tvmain2 Then
-            'IndexHandler(FocusControl, New EventArgs)
-
-        End If
 
         If e.KeyData <> (Keys.F4 Or AltDown) Then
             Try
@@ -2936,6 +2940,7 @@ Friend Class FormMain
 
     Private Sub PromoteFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PromoteFileToolStripMenuItem.Click
         Dim folder As New IO.DirectoryInfo(FBH.DirectoryPath)
+        blnSuppressCreate = True
         MoveFiles(FBH.SelectedItemsList, folder.Parent.FullName)
     End Sub
 
@@ -3583,6 +3588,14 @@ Friend Class FormMain
 
     Private Sub lbxGroups_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbxGroups.SelectedIndexChanged
 
+    End Sub
+
+    Private Sub FormMain_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
+        DrawScrubberMarks()
+    End Sub
+
+    Private Sub ctrPicAndButtons_Resize(sender As Object, e As EventArgs) Handles ctrPicAndButtons.Resize
+        ' If Media IsNot Nothing Then DrawScrubberMarks()
     End Sub
 
 

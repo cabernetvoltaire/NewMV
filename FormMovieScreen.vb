@@ -25,7 +25,6 @@
             wmp.uiMode = "None"
             wmp.Tag = m
             Dim x As New MediaHandler("mp" & i) With {.Picture = pic, .Player = wmp, .MediaPath = m, .Visible = True, .SPT = Media.SPT}
-            x.Mute()
             _Mediahandlers.Add(x)
 
             AddHandler wmp.MouseMoveEvent, AddressOf Mousover

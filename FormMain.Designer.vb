@@ -724,7 +724,7 @@ Partial Class FormMain
         Me.lbxFiles.Name = "lbxFiles"
         Me.lbxFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
         Me.lbxFiles.Size = New System.Drawing.Size(175, 306)
-        Me.lbxFiles.TabIndex = 2
+        Me.lbxFiles.TabIndex = 0
         '
         'ContextMenuStrip1
         '
@@ -921,10 +921,10 @@ Partial Class FormMain
         Me.Scrubber.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.btnRow.SetColumnSpan(Me.Scrubber, 10)
         Me.Scrubber.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Scrubber.Location = New System.Drawing.Point(226, 2)
+        Me.Scrubber.Location = New System.Drawing.Point(6, 2)
         Me.Scrubber.Margin = New System.Windows.Forms.Padding(2)
         Me.Scrubber.Name = "Scrubber"
-        Me.Scrubber.Size = New System.Drawing.Size(2470, 51)
+        Me.Scrubber.Size = New System.Drawing.Size(2910, 51)
         Me.Scrubber.TabIndex = 15
         Me.Scrubber.TabStop = False
         '
@@ -1671,11 +1671,11 @@ Partial Class FormMain
         '
         Me.InstructionLabel2.AutoSize = True
         Me.InstructionLabel2.Dock = System.Windows.Forms.DockStyle.Top
-        Me.InstructionLabel2.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.InstructionLabel2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.InstructionLabel2.Location = New System.Drawing.Point(2924, 0)
         Me.InstructionLabel2.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.InstructionLabel2.Name = "InstructionLabel2"
-        Me.InstructionLabel2.Size = New System.Drawing.Size(0, 29)
+        Me.InstructionLabel2.Size = New System.Drawing.Size(0, 20)
         Me.InstructionLabel2.TabIndex = 56
         '
         'tmrUpdateFileList
@@ -2649,7 +2649,7 @@ Partial Class FormMain
         '
         'NewIndex
         '
-        Me.NewIndex.Interval = 1
+        Me.NewIndex.Interval = 5
         '
         'Response
         '

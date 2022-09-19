@@ -108,11 +108,11 @@ Friend Module Mysettings
             .Add("VertSplit" & "$" & FormMain.ctrFileBoxes.SplitterDistance)
             .Add("HorSplit" & "$" & FormMain.ctrMainFrame.SplitterDistance)
             If LastTimeSuccessful Then
-                If Media.IsLink Then
-                    .Add("File" & "$" & Media.LinkPath)
-                Else
-                    .Add("File" & "$" & Media.MediaPath)
-                End If
+                'If Media.IsLink Then
+                '    .Add("File" & "$" & Media.LinkPath)
+                'Else
+                .Add("File" & "$" & Media.MediaPath)
+                'End If
             Else
                 .Add("File" & "$" & FormMain.LastGoodFile)
 

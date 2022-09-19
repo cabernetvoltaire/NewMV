@@ -101,10 +101,10 @@ Friend Module FileHandling
                     FormMain.UpdatePlayOrder(FormMain.FBH)
             End Select
         Next
-        If ShowListVisible Then
-            FormMain.LBH.FillBox()
-        End If
-        FormMain.FBH.FillBox()
+        'If ShowListVisible Then
+        '    FormMain.LBH.FillBox()
+        'End If
+        'FormMain.FBH.FillBox()
         'DeleteEmptyFolders(New IO.DirectoryInfo(CurrentFolder), True)
         If lbx1.Items.Count <> 0 Then
             Dim index = Math.Max(Math.Min(ind, lbx1.Items.Count - 1), 0)
@@ -118,13 +118,7 @@ Friend Module FileHandling
     Public strFilterExtensions(6) As String
 
 
-    ''' <summary>
-    ''' Loads Dest into List, and adds all to lbx. 
-    ''' </summary>
-    ''' <param name="list"></param>
-    ''' <param name="Dest"></param>
-    ''' <param name="lbx"></param>
-    '''
+
     'Public Sub Getlist(list As List(Of String), Dest As String, lbx As ListBox)
 
     '    Dim notlist As New List(Of String)
@@ -222,14 +216,20 @@ Friend Module FileHandling
     End Sub
 
     Private Sub MoveDirectoryContents(SourceDir As DirectoryInfo, Optional Parent As Boolean = False)
-        'To delete all the files in SourceDir
-        Dim flist As New List(Of String)
-        For Each f In SourceDir.EnumerateFiles("*", SearchOption.TopDirectoryOnly)
-            flist.Add(f.FullName)
-        Next
-        blnSuppressCreate = True
-        MoveFiles(flist, "", True)
+        ''To delete all the files in SourceDir
+        'Dim flist As New List(Of String)
+        'For Each f In SourceDir.EnumerateFiles("*", SearchOption.TopDirectoryOnly)
+        '    flist.Add(f.FullName)
+        'Next
+        'blnSuppressCreate = True
+        'MoveFiles(flist, "", True)
+        Try
 
+            My.Computer.FileSystem.DeleteDirectory(SourceDir.FullName, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
+
+        Catch ex As Exception
+
+        End Try
     End Sub
     'Private Sub GetFiles(dir As DirectoryInfo, flist As List(Of String))
     '    For Each m In dir.EnumerateFiles("*", SearchOption.AllDirectories)

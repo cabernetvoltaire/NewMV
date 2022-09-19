@@ -1,12 +1,13 @@
 ﻿
 Public Class MarkPlacement
-    Private WithEvents tmr As New Timer With {.Enabled = False, .Interval = 100}
+    Private WithEvents tmr As New Timer With {.Enabled = False, .Interval = 300}
     Private Property mBar As New PictureBox()
     Private TooltipText As String = "Remove markers using CTRL"
     Public WriteOnly Property Bar As PictureBox
         Set(value As PictureBox)
             mBar = value
             Graphics = mBar.CreateGraphics
+            mBar.Width = mBar.Parent.Width
             'Barcolor = mBar.BackColor
 
             AddToolTip(mBar, New ToolTip, TooltipText)
@@ -35,7 +36,7 @@ Public Class MarkPlacement
     End Sub
 
     Private Sub DrawMarks() Handles tmr.Tick
-
+        If Duration = 0 Then Exit Sub
         Clear() 'Erase marks
         Dim start As Point
         start.Y = 0
@@ -45,8 +46,7 @@ Public Class MarkPlacement
         'Draw Big Jumps
         Dim JumpSize As Integer = Math.Max(10, Duration / Fractions)
         Dim x As Integer
-        While x < Duration * mBar.Width / Duration
-
+        While x < mBar.Width
             Dim pen As New Pen(Color.Black, 2)
             start.X = x
             endpt.X = x
@@ -55,8 +55,7 @@ Public Class MarkPlacement
         End While
         x = 0
         'Draw small jumps
-        While x < Duration * mBar.Width / Duration
-
+        While x < mBar.Width
             Dim pen As New Pen(Color.Green, 1)
             start.X = x
             endpt.X = x
