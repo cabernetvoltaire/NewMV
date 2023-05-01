@@ -124,22 +124,22 @@ Public Class CompareByFilesize
         End Function
     End Class
 
-    Public Class CompareByEndNumber
-        Implements Generic.IComparer(Of String)
+Public Class CompareByEndNumber
+    Implements Generic.IComparer(Of String)
 
-        Public Function Compare(x As String, y As String) As Integer Implements IComparer(Of String).Compare
-            x = FilenameFromPath(x, False)
-            y = FilenameFromPath(y, False)
-            'Counting from end, find the trailing numerics
-            Dim i = 0
-            Dim xnum, ynum As String
-            xnum = ""
-            ynum = ""
-            For i = 0 To x.Length - 1
-                Dim m = x.Length - 1 - i
-                If Instr("0123456789", x(m)) <> 0 Then
-                    xnum = x(x.Length - i - 1) & xnum
-                Else
+    Public Function Compare(x As String, y As String) As Integer Implements IComparer(Of String).Compare
+        x = FilenameFromPath(x, False)
+        y = FilenameFromPath(y, False)
+        'Counting from end, find the trailing numerics
+        Dim i = 0
+        Dim xnum, ynum As String
+        xnum = ""
+        ynum = ""
+        For i = 0 To x.Length - 1
+            Dim m = x.Length - 1 - i
+            If Instr("0123456789", x(m)) <> 0 Then
+                xnum = x(x.Length - i - 1) & xnum
+            Else
                 If xnum = "" Then
                 Else
                     Exit For
@@ -147,8 +147,8 @@ Public Class CompareByFilesize
                 End If
             End If
         Next
-            For i = 0 To y.Length - 1
-                Dim m = y.Length - 1 - i
+        For i = 0 To y.Length - 1
+            Dim m = y.Length - 1 - i
             If InStr("0123456789", y(m)) <> 0 Then
                 ynum = y(y.Length - i - 1) & ynum
             Else
@@ -159,29 +159,49 @@ Public Class CompareByFilesize
                 End If
             End If
         Next
-            'If same Then order in normal way
-            If ynum.Length = xnum.Length Or ynum = "" Or xnum = "" Then
-                If y < x Then
-                    Return 1
-                ElseIf x < y Then
-                    Return -1
-                Else
-                    Return 0
-                End If
+        'If same Then order in normal way
+        If ynum.Length = xnum.Length Or ynum = "" Or xnum = "" Then
+            If y < x Then
+                Return 1
+            ElseIf x < y Then
+                Return -1
             Else
-                'Otherwise, order according to those numbers
-                Dim ynumnum = Val(ynum)
-                Dim xnumnum = Val(xnum)
-                If ynumnum < xnumnum Then
-                    Return 1
-                ElseIf xnumnum < ynumnum Then
-                    Return -1
-                Else
-                    Return 0
-                End If
+                Return 0
             End If
+        Else
+            'Otherwise, order according to those numbers
+            Dim ynumnum = Val(ynum)
+            Dim xnumnum = Val(xnum)
+            If ynumnum < xnumnum Then
+                Return 1
+            ElseIf xnumnum < ynumnum Then
+                Return -1
+            Else
+                Return 0
+            End If
+        End If
 
-        End Function
+    End Function
 
 
-    End Class
+End Class
+
+Public Class FolderComparer
+    Implements IComparer(Of String)
+
+    Public Function Compare(x As String, y As String) As Integer Implements IComparer(Of String).Compare
+        Dim xArray = x.Split("\")
+        Dim yArray = y.Split("\")
+        Dim minLength = Math.Min(xArray.Length, yArray.Length)
+
+        For i As Integer = 0 To minLength - 1
+            Dim result = String.Compare(xArray(i), yArray(i), StringComparison.OrdinalIgnoreCase)
+            If result <> 0 Then
+                Return result
+            End If
+        Next
+
+        Return xArray.Length.CompareTo(yArray.Length)
+    End Function
+End Class
+

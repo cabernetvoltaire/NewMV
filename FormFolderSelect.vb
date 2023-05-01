@@ -149,11 +149,5 @@ Public Class FormFolderSelect
         '        changepic.Enabled = False
     End Sub
 
-    Private Sub FolderSelect_MouseEnter(sender As Object, e As EventArgs) Handles Me.MouseEnter
-        Me.BringToFront()
-    End Sub
 
-    Private Sub FolderSelect_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
-    End Sub
 End Class

@@ -1,9 +1,13 @@
-﻿Imports System.IO
+﻿Imports System.Threading
+Imports System.IO
+Imports System.Windows.Forms
 Public Class ButtonHandler
+    Private isOverSpawnedForm As Boolean
+    Public WithEvents Oldbuttons As New Stack(Of ButtonSet)
     Public WithEvents buttons As New ButtonSet
 
     Public RowProgressBar As New ProgressBar
-    Public LoadEmptyDirectories As Boolean = False
+    Public ButtonsLoaded As Boolean = False
     Public Autobuttons As Boolean
     Public Labels(8) As Label
     Public LetterLabel As Label
@@ -155,6 +159,7 @@ Public Class ButtonHandler
         LetterLabel.Text = Chr(AsciifromLetterNumber(buttons.CurrentRow.Letter))
     End Sub
     Private Sub AddLoadedButtonToSet(btn As MVButton)
+        ButtonsLoaded = True
         With buttons
             'Switch to appropriate row
             buttons.CurrentLetter = btn.Letter
@@ -191,6 +196,38 @@ Public Class ButtonHandler
         Next
         RaiseEvent ButtonsAltered(Me, Nothing)
     End Sub
+    Public Function AssignAlphabetical(b As ButtonSet, findstring As String) As ButtonSet
+        Dim lst As New Dictionary(Of String, String)
+        Dim i = 0
+        For Each rw In b.CurrentSet
+            For i = 0 To 7
+                Dim s = rw.Buttons(i).Path
+                Dim l = rw.Buttons(i).Label
+                If UCase(l).Contains(UCase(findstring)) Then
+                    If Not lst.ContainsKey(s) Then
+                        lst.Add(s, rw.Buttons(i).Label)
+                    End If
+                End If
+
+            Next
+        Next
+        Dim newbuttons As New ButtonSet
+        lst = lst.OrderBy(Function(x) x.Key.Count(Function(c As Char) c = "\")).ToDictionary(Function(x) x.Key, Function(x) x.Value)
+        i = 0
+        For Each d In lst
+            Dim btn As MVButton = newbuttons.CurrentRow.Buttons(i)
+            If Not btn.Empty Then
+                newbuttons.InsertRow(newbuttons.CurrentLetter)
+            End If
+            newbuttons.CurrentRow.Buttons(i).Path = d.Key
+            newbuttons.CurrentRow.Buttons(i).Label = d.Value
+
+            i = (i + 1) Mod 8
+
+        Next
+        'RaiseEvent ButtonsAltered(Me, Nothing)
+        Return newbuttons
+    End Function
     Public Sub AssignAlphabetical(e As DirectoryInfo)
         buttons.Clear()
         Dim i = 0
@@ -213,6 +250,7 @@ Public Class ButtonHandler
         RaiseEvent ButtonsAltered(Me, Nothing)
 
     End Sub
+
 
     Public Sub AssignTreeNew(StartingFolder As String, SizeMagnitude As Byte)
         If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
@@ -240,6 +278,35 @@ Public Class ButtonHandler
             End If
         Next
 
+
+        RaiseEvent ButtonsAltered(Me, Nothing)
+
+
+    End Sub
+    Public Sub AssignAlphaHierarchical(StartingFolder As String, Depth As Byte, Optional NoEmpties As Boolean = False)
+        If MsgBox("This will replace a large number of button assignments. Are you sure?", MsgBoxStyle.OkCancel) = MsgBoxResult.Cancel Then Exit Sub
+        If MsgBox("Include empty folders?", MsgBoxStyle.YesNo) = MsgBoxResult.No Then NoEmpties = True
+        Dim exclude As String = ""
+        exclude = InputBox("String to exclude from folders?", "")
+        buttons.Clear()
+        Dim d As New DirectoryInfo(StartingFolder)
+
+        Dim icomp As New MyComparer
+        Dim dlist As New List(Of FolderInfo)
+
+        Dim sortedFolders = FolderSorter.GetSortedFolders(CurrentFolder, Depth)
+        For Each n In sortedFolders
+            If NoEmpties AndAlso n.Files = 0 Then
+            Else
+                Dim de As String = n.ShortName
+                Dim m As Char = UCase(de(0))
+                m = UCase(m)
+                buttons.CurrentLetter = LetterNumberFromAscii(Asc(m))
+                Dim btn As MVButton
+                btn = buttons.FirstFree(buttons.CurrentLetter)
+                btn.Path = n.Path
+            End If
+        Next
 
         RaiseEvent ButtonsAltered(Me, Nothing)
 
@@ -323,8 +390,12 @@ Public Class ButtonHandler
             AddHandler ActualButtons(i).MouseMove, AddressOf ChangeFS
 
 
+
         Next
     End Sub
+
+
+
     Private Sub ChangeFS(sender As Object, e As MouseEventArgs)
         Static mousepos As Point
         If Math.Abs(mousepos.X - e.X) > sender.width / 30 Then
@@ -342,7 +413,11 @@ Public Class ButtonHandler
 
         For Each f In Application.OpenForms
             If f.name = "FS" Then
-                f.hide
+                If isOverSpawnedForm Then
+                Else
+
+                    f.hide
+                End If
 
                 Exit For
             End If
@@ -361,6 +436,9 @@ Public Class ButtonHandler
             Next
         Else
             folderselect = SpawnFolderSelect(Sender)
+
+
+
         End If
         Dim control As Control = CType(Sender, Control)
         Dim startpoint As Point
@@ -368,10 +446,13 @@ Public Class ButtonHandler
         startpoint.Y = control.Top
         startpoint = control.PointToScreen(startpoint)
         folderselect.Show()
+
         folderselect.BringToFront()
         folderselect.Left = startpoint.X - folderselect.Width / 2
         folderselect.Top = startpoint.Y - folderselect.Height + control.Height / 10
     End Sub
+
+
 
     Private Function SpawnFolderSelect(Sender As Object) As FormFolderSelect
         Dim folderselect As New FormFolderSelect With {.Name = "FS"}
@@ -403,5 +484,60 @@ Public Class ButtonHandler
         Next
         SaveButtonSet(ButtonfilePath)
     End Sub
+    Public Sub GetSubButtons(Findstring As String)
+        If Findstring = "" AndAlso Oldbuttons.Count <> 0 Then
+            RestoreButtons()
+        Else
+            Oldbuttons.Push(buttons)
+            buttons = AssignAlphabetical(buttons, Findstring)
+        End If
 
+    End Sub
+    Public Sub RestoreButtons()
+        buttons = Oldbuttons.Pop
+    End Sub
+End Class
+
+
+
+
+Module FolderSorter
+    Private Sub TraverseFolders(ByVal Folder As DirectoryInfo, ByVal SortedFolders As List(Of FolderInfo), ByVal MaxDepth As Integer)
+        If MaxDepth < 0 Then Exit Sub ' Exit recursion if max depth is reached
+        Dim NewFolder As New FolderInfo(Folder.FullName)
+        SortedFolders.Add(NewFolder)
+        For Each Subfolder As DirectoryInfo In Folder.GetDirectories()
+            TraverseFolders(Subfolder, SortedFolders, MaxDepth - 1)
+        Next
+    End Sub
+
+    Public Function GetSortedFolders(ByVal RootFolder As String, ByVal MaxDepth As Integer) As List(Of FolderInfo)
+        Dim SortedFolders As New List(Of FolderInfo)
+        Dim RootDir As New DirectoryInfo(RootFolder)
+        TraverseFolders(RootDir, SortedFolders, MaxDepth)
+        SortedFolders.Sort(Function(x, y)
+                               Dim result = x.Path.Count(Function(c) c = "\"c) - y.Path.Count(Function(c) c = "\"c)
+                               If result = 0 Then
+                                   result = String.Compare(x.ShortName, y.ShortName)
+                               End If
+                               Return result
+                           End Function)
+
+        Return SortedFolders
+    End Function
+End Module
+
+Public Class FolderInfo
+    Public Property Path As String
+    Public Property ShortName As String
+    Public Property Depth As Integer
+    Public Property Files As Integer
+
+    Public Sub New(ByVal FolderPath As String)
+        Path = FolderPath
+        Dim d = New DirectoryInfo(FolderPath)
+        ShortName = d.Name
+        Depth = Path.Split(IO.Path.DirectorySeparatorChar).Count - 1
+        Files = d.GetFiles.Length
+    End Sub
 End Class

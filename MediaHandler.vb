@@ -1,6 +1,7 @@
 ﻿Imports AxWMPLib
 Imports System.Text.UTF8Encoding
 Imports System.IO
+Imports Microsoft.Web.WebView2
 
 Public Class MediaHandler
 #Region "Members"
@@ -25,6 +26,7 @@ Public Class MediaHandler
         .Font = New Font("Calibri", 16, FontStyle.Regular),
         .BackColor = Color.Black,
         .ForeColor = Color.AntiqueWhite}
+    Public Property Browser As New Microsoft.Web.WebView2.WinForms.WebView2
     Private MetaDirectory As IReadOnlyList(Of MetadataExtractor.Directory)
     Public ShowMeta As Boolean = False
     Public IsCurrent As Boolean = False
@@ -200,6 +202,7 @@ Public Class MediaHandler
                         If mLinkPath = "" Or mLinkPath.Contains(vbNullChar) Then
                             mLinkPath = "" 'mMediaPath
                             MsgBox("Destination not found")
+                            DontLoad = True
                         End If
                     Else
                         mIsLink = False
@@ -225,6 +228,7 @@ Public Class MediaHandler
 
 
     Public Function GetMarkersFromLinkList() As List(Of Double)
+
         Dim List As New List(Of String)
         Dim markerslist As New List(Of Double)
 
@@ -235,6 +239,10 @@ Public Class MediaHandler
             List = AllFaveMinder.GetLinksOf(mMediaPath)
         End If
         Dim i = 0
+        If List Is Nothing Then
+            Return Nothing
+            Exit Function
+        End If
         For Each m In List
             Dim n = BookmarkFromLinkName(m)
             If n > 0 Then
@@ -256,6 +264,8 @@ Public Class MediaHandler
         Name = Nomen
         PicHandler.PicBox = mPicBox
         PositionUpdater.Enabled = False
+
+        AddHandler Browser.NavigationCompleted, AddressOf WebView21_NavigationCompleted
         'mSndH.SoundPlayer = Sound
         'mSndH.CurrentPlayer = Player
         '     StartPoint = Media.StartPoint
@@ -559,10 +569,10 @@ Public Class MediaHandler
     Public Sub Mute(Optional Off As Boolean = False)
         mPlayer.settings.mute = Not Off
     End Sub
-    Public Sub LoadMedia()
+    Public Async Sub LoadMedia()
         ' Mysettings.LastTimeSuccessful = False
         '        PreferencesSave()
-
+        Await Browser.EnsureCoreWebView2Async(Nothing)
         Playing = False
         Select Case mType
             Case Filetype.Doc
@@ -594,22 +604,88 @@ Public Class MediaHandler
 
         End Try
     End Sub
-    Private Sub HandleDoc(url As String)
+    'Private Async Sub HandleDoc(url As String)
+    '    Dim fileReader As String
+    '    fileReader = My.Computer.FileSystem.ReadAllText(url)
+    '    Try
+    '        Dim htmlTemplate As String = "<!DOCTYPE html><html><head><style>body { font-family: Consolas, monospace; } #content { white-space: pre-wrap; word-wrap: break-word; }</style></head><body><pre id='content'></pre></body></html>"
+
+
+    '        ' Replace the placeholder in the HTML template with the actual text content
+    '        Dim html As String = htmlTemplate.Replace("<pre id='content'></pre>", "<pre id='content'>" & fileReader & "</pre>")
+
+    '        Browser.CoreWebView2.NavigateToString(html)
+    '        Browser.Dock = DockStyle.Fill
+    '        '            Textbox.LoadFile(url)
+    '    Catch ex As Exception
+    '        Dim s As String = ExtractParagraphs(fileReader, Me)
+    '        If s = "No" Then
+    '        Else
+    '            Textbox.Text = s
+
+    '        End If
+
+    '    End Try
+    '    '        FormMain.ctrPicAndButtons.Panel1.Controls.Add(Browser)
+    'End Sub
+    Private Async Sub HandleDoc(url As String)
         Dim fileReader As String
         fileReader = My.Computer.FileSystem.ReadAllText(url)
         Try
-            Textbox.LoadFile(url)
-        Catch ex As Exception
-            Dim s As String = ExtractParagraphs(fileReader, Me)
-            If s = "No" Then
-            Else
-                Textbox.Text = s
-
+            If Path.GetExtension(url) = ".rtf" Then
+                fileReader = ConvertRtfToHtml(fileReader)
             End If
+            Dim htmlTemplate As String = "<!DOCTYPE html><html><head><style>body { font-family: Consolas, monospace; font-size: 30px; } #content { white-space: pre-wrap; word-wrap: break-word; }</style></head><body><pre id='content'></pre></body></html>"
 
+            ' Replace the placeholder in the HTML template with the actual text content
+            Dim html As String = htmlTemplate.Replace("<pre id='content'></pre>", "<pre id='content'>" & fileReader & "</pre>")
+
+            Browser.CoreWebView2.NavigateToString(html)
+            Browser.Dock = DockStyle.Fill
+        Catch ex As Exception
+            MsgBox("Cannot read document")
+            'Dim s As String = ExtractParagraphs(fileReader, Me)
+            'If s = "No" Then
+            'Else
+            '    Textbox.Text = s
+            '    Textbox.BringToFront()
+            '    Textbox.Dock = DockStyle.Fill
+            'End If
         End Try
-        FormMain.ctrPicAndButtons.Panel1.Controls.Add(Textbox)
     End Sub
+    Function ConvertRtfToHtml(rtfText As String) As String
+        Dim rtb As New System.Windows.Forms.RichTextBox()
+        rtb.Rtf = rtfText
+
+        ' Get the plain text from the RTF content.
+        Dim plainText As String = rtb.Text
+
+        ' Replace special characters with their corresponding HTML entities.
+        plainText = plainText.Replace("&", "&amp;")
+        plainText = plainText.Replace("<", "&lt;")
+        plainText = plainText.Replace(">", "&gt;")
+        plainText = plainText.Replace(vbCrLf, "<br>")
+
+        ' Wrap the plain text in an HTML template.
+        Dim html As String = "<html><head><style>body { font-family: Consolas, monospace; } pre { white-space: pre-wrap; word-wrap: break-word; }</style></head><body><pre>" & plainText & "</pre></body></html>"
+
+        Return html
+    End Function
+
+
+    Private Async Sub WebView21_NavigationCompleted(sender As Object, e As Core.CoreWebView2NavigationCompletedEventArgs)
+        Await SetDefaultFontSize()
+    End Sub
+
+    Private Async Function SetDefaultFontSize() As Task
+        Dim setFontSizeScript As String = "(() => {" &
+        "document.body.style.fontSize = '18px';" &
+    "})();"
+
+
+        Await Browser.ExecuteScriptAsync(setFontSizeScript)
+    End Function
+
     Private Sub HandleMovie(URL As String)
         If URL.EndsWith("exe") Then BreakExecution()
 
@@ -693,7 +769,7 @@ Public Class MediaHandler
 
     Private Sub Uhoh() Handles mPlayer.ErrorEvent
 
-        MsgBox("Error in MediaPlayer")
+        'MsgBox("Error " & mPlayer.Error.ToString & " in MediaPlayer")
     End Sub
 
     Private ReadOnly mResetCounter As Integer

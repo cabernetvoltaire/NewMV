@@ -180,7 +180,7 @@ Public Class TextAnalyzer
         End If
 
         _MinLineLength = min
-            _MaxLineLength = max
+        _MaxLineLength = max
     End Sub
     Private Sub LineThenSpaceRatio()
         Dim LastBlank As Boolean = False
@@ -212,3 +212,5 @@ Public Class TextAnalyzer
     End Function
 
 End Class
+
+
