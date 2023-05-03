@@ -1476,6 +1476,7 @@ Public Class FormMain
     Private Sub Form1_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Splash.Hide()
         Try
+            CurrentFolder = "C:\"
             GlobalInitialise()
 
         Catch ex As Exception

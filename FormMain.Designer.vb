@@ -482,7 +482,7 @@ Partial Class FormMain
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Font = New System.Drawing.Font("Segoe UI", 14.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.StatusStrip1.Font = New System.Drawing.Font("Segoe UI", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.StatusStrip1.ImageScalingSize = New System.Drawing.Size(28, 28)
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.Length, Me.LengthLabel, Me.tbFiles, Me.tbFilter, Me.tbRandom, Me.tbZoom, Me.TBFractionAbsolute, Me.tbSpeed, Me.tbStartpoint, Me.tbShowfile, Me.tbButton, Me.tbDate, Me.tbState, Me.tbLastFile, Me.TSPB})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 1617)
@@ -498,88 +498,88 @@ Partial Class FormMain
         Me.Length.ForeColor = System.Drawing.Color.Gold
         Me.Length.Maximum = 200
         Me.Length.Name = "Length"
-        Me.Length.Size = New System.Drawing.Size(300, 27)
+        Me.Length.Size = New System.Drawing.Size(300, 37)
         Me.Length.Style = System.Windows.Forms.ProgressBarStyle.Continuous
         '
         'LengthLabel
         '
         Me.LengthLabel.ImageAlign = System.Drawing.ContentAlignment.BottomLeft
         Me.LengthLabel.Name = "LengthLabel"
-        Me.LengthLabel.Size = New System.Drawing.Size(180, 28)
+        Me.LengthLabel.Size = New System.Drawing.Size(158, 38)
         Me.LengthLabel.Text = "ToolStripStatusLabel1"
         '
         'tbFiles
         '
         Me.tbFiles.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenOuter
         Me.tbFiles.Name = "tbFiles"
-        Me.tbFiles.Size = New System.Drawing.Size(53, 28)
+        Me.tbFiles.Size = New System.Drawing.Size(47, 38)
         Me.tbFiles.Text = "FILES"
         '
         'tbFilter
         '
         Me.tbFilter.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter
         Me.tbFilter.Name = "tbFilter"
-        Me.tbFilter.Size = New System.Drawing.Size(62, 28)
+        Me.tbFilter.Size = New System.Drawing.Size(55, 38)
         Me.tbFilter.Text = "FILTER"
         '
         'tbRandom
         '
         Me.tbRandom.Name = "tbRandom"
-        Me.tbRandom.Size = New System.Drawing.Size(91, 28)
+        Me.tbRandom.Size = New System.Drawing.Size(79, 38)
         Me.tbRandom.Text = "RANDOM"
         '
         'tbZoom
         '
         Me.tbZoom.Name = "tbZoom"
-        Me.tbZoom.Size = New System.Drawing.Size(66, 28)
+        Me.tbZoom.Size = New System.Drawing.Size(57, 38)
         Me.tbZoom.Text = "ZOOM"
         '
         'TBFractionAbsolute
         '
         Me.TBFractionAbsolute.Name = "TBFractionAbsolute"
-        Me.TBFractionAbsolute.Size = New System.Drawing.Size(242, 28)
+        Me.TBFractionAbsolute.Size = New System.Drawing.Size(211, 38)
         Me.TBFractionAbsolute.Text = "Fraction: (F)ths Absolute: (A)s"
         '
         'tbSpeed
         '
         Me.tbSpeed.Name = "tbSpeed"
-        Me.tbSpeed.Size = New System.Drawing.Size(63, 28)
+        Me.tbSpeed.Size = New System.Drawing.Size(55, 38)
         Me.tbSpeed.Text = "SPEED"
         '
         'tbStartpoint
         '
         Me.tbStartpoint.Name = "tbStartpoint"
-        Me.tbStartpoint.Size = New System.Drawing.Size(112, 28)
+        Me.tbStartpoint.Size = New System.Drawing.Size(98, 38)
         Me.tbStartpoint.Text = "STARTPOINT"
         '
         'tbShowfile
         '
         Me.tbShowfile.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter
         Me.tbShowfile.Name = "tbShowfile"
-        Me.tbShowfile.Size = New System.Drawing.Size(97, 28)
+        Me.tbShowfile.Size = New System.Drawing.Size(85, 38)
         Me.tbShowfile.Text = "SHOWFILE"
         '
         'tbButton
         '
         Me.tbButton.Name = "tbButton"
-        Me.tbButton.Size = New System.Drawing.Size(113, 28)
+        Me.tbButton.Size = New System.Drawing.Size(100, 38)
         Me.tbButton.Text = "BUTTONFILE:"
         '
         'tbDate
         '
         Me.tbDate.Name = "tbDate"
-        Me.tbDate.Size = New System.Drawing.Size(54, 28)
+        Me.tbDate.Size = New System.Drawing.Size(46, 38)
         Me.tbDate.Text = "DATE"
         '
         'tbState
         '
         Me.tbState.Name = "tbState"
-        Me.tbState.Size = New System.Drawing.Size(0, 28)
+        Me.tbState.Size = New System.Drawing.Size(0, 38)
         '
         'tbLastFile
         '
         Me.tbLastFile.Name = "tbLastFile"
-        Me.tbLastFile.Size = New System.Drawing.Size(83, 28)
+        Me.tbLastFile.Size = New System.Drawing.Size(73, 38)
         Me.tbLastFile.Text = "LASTFILE"
         '
         'TSPB
@@ -587,7 +587,7 @@ Partial Class FormMain
         Me.TSPB.AutoSize = False
         Me.TSPB.ForeColor = System.Drawing.Color.Turquoise
         Me.TSPB.Name = "TSPB"
-        Me.TSPB.Size = New System.Drawing.Size(410, 27)
+        Me.TSPB.Size = New System.Drawing.Size(410, 37)
         Me.TSPB.Step = 1
         Me.TSPB.Style = System.Windows.Forms.ProgressBarStyle.Continuous
         '
@@ -694,9 +694,9 @@ Partial Class FormMain
         Me.tvmain2.AutoExpandNodes = False
         Me.tvmain2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tvmain2.FileExtensions = "*"
-        Me.tvmain2.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.tvmain2.Font = New System.Drawing.Font("Segoe UI", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.tvmain2.Location = New System.Drawing.Point(0, 0)
-        Me.tvmain2.Margin = New System.Windows.Forms.Padding(8, 8, 8, 8)
+        Me.tvmain2.Margin = New System.Windows.Forms.Padding(8)
         Me.tvmain2.Name = "tvmain2"
         Me.tvmain2.RootDrive = Nothing
         Me.tvmain2.SelectedFolder = Nothing
@@ -728,9 +728,9 @@ Partial Class FormMain
         Me.lbxFiles.AllowDrop = True
         Me.lbxFiles.ContextMenuStrip = Me.ContextMenuStrip1
         Me.lbxFiles.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lbxFiles.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lbxFiles.Font = New System.Drawing.Font("Segoe UI", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lbxFiles.FormattingEnabled = True
-        Me.lbxFiles.ItemHeight = 26
+        Me.lbxFiles.ItemHeight = 21
         Me.lbxFiles.Items.AddRange(New Object() {"If there is nothing showing here, check your filter"})
         Me.lbxFiles.Location = New System.Drawing.Point(0, 0)
         Me.lbxFiles.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
@@ -779,9 +779,9 @@ Partial Class FormMain
         '
         Me.lbxShowList.AllowDrop = True
         Me.lbxShowList.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lbxShowList.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lbxShowList.Font = New System.Drawing.Font("Segoe UI", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lbxShowList.FormattingEnabled = True
-        Me.lbxShowList.ItemHeight = 26
+        Me.lbxShowList.ItemHeight = 21
         Me.lbxShowList.Location = New System.Drawing.Point(0, 0)
         Me.lbxShowList.Name = "lbxShowList"
         Me.lbxShowList.Size = New System.Drawing.Size(171, 645)
@@ -969,7 +969,7 @@ Partial Class FormMain
         Me.btnRow.SetColumnSpan(Me.Scrubber, 10)
         Me.Scrubber.Cursor = System.Windows.Forms.Cursors.Default
         Me.Scrubber.Location = New System.Drawing.Point(9, 12)
-        Me.Scrubber.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.Scrubber.Margin = New System.Windows.Forms.Padding(2)
         Me.Scrubber.Name = "Scrubber"
         Me.Scrubber.Size = New System.Drawing.Size(2910, 51)
         Me.Scrubber.TabIndex = 15
@@ -1277,7 +1277,7 @@ Partial Class FormMain
         Me.ProgressBar1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ProgressBar1.ForeColor = System.Drawing.Color.Green
         Me.ProgressBar1.Location = New System.Drawing.Point(2, 303)
-        Me.ProgressBar1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.ProgressBar1.Margin = New System.Windows.Forms.Padding(2)
         Me.ProgressBar1.Name = "ProgressBar1"
         Me.ProgressBar1.Size = New System.Drawing.Size(378, 73)
         Me.ProgressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous
@@ -1299,7 +1299,7 @@ Partial Class FormMain
         Me.FlowLayoutPanel1.Controls.Add(Me.InstructionLabel2)
         Me.FlowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.FlowLayoutPanel1.Location = New System.Drawing.Point(2, 2)
-        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(2)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
         Me.FlowLayoutPanel1.Size = New System.Drawing.Size(3142, 172)
         Me.FlowLayoutPanel1.TabIndex = 19
@@ -1312,9 +1312,9 @@ Partial Class FormMain
         Me.GroupFilters.Controls.Add(Me.Label3)
         Me.GroupFilters.Controls.Add(Me.cbxFilter)
         Me.GroupFilters.Location = New System.Drawing.Point(2, 2)
-        Me.GroupFilters.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.GroupFilters.Margin = New System.Windows.Forms.Padding(2)
         Me.GroupFilters.Name = "GroupFilters"
-        Me.GroupFilters.Padding = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.GroupFilters.Padding = New System.Windows.Forms.Padding(2)
         Me.GroupFilters.Size = New System.Drawing.Size(486, 162)
         Me.GroupFilters.TabIndex = 51
         Me.GroupFilters.TabStop = False
@@ -1366,6 +1366,7 @@ Partial Class FormMain
         Me.cbxFilter.Dock = System.Windows.Forms.DockStyle.Top
         Me.cbxFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbxFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.cbxFilter.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cbxFilter.Location = New System.Drawing.Point(2, 21)
         Me.cbxFilter.Name = "cbxFilter"
         Me.cbxFilter.Size = New System.Drawing.Size(482, 28)
@@ -1391,7 +1392,7 @@ Partial Class FormMain
         '
         Me.tbAbsolute.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.tbAbsolute.Location = New System.Drawing.Point(95, 85)
-        Me.tbAbsolute.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.tbAbsolute.Margin = New System.Windows.Forms.Padding(2)
         Me.tbAbsolute.Name = "tbAbsolute"
         Me.tbAbsolute.Size = New System.Drawing.Size(295, 69)
         Me.tbAbsolute.TabIndex = 50
@@ -1506,7 +1507,7 @@ Partial Class FormMain
         Me.lbxGroups.FormattingEnabled = True
         Me.lbxGroups.ItemHeight = 17
         Me.lbxGroups.Location = New System.Drawing.Point(1427, 2)
-        Me.lbxGroups.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.lbxGroups.Margin = New System.Windows.Forms.Padding(2)
         Me.lbxGroups.Name = "lbxGroups"
         Me.lbxGroups.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
         Me.lbxGroups.Size = New System.Drawing.Size(328, 55)
@@ -1544,7 +1545,7 @@ Partial Class FormMain
         '
         Me.chbSeparate.AutoSize = True
         Me.chbSeparate.Location = New System.Drawing.Point(3, 94)
-        Me.chbSeparate.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.chbSeparate.Margin = New System.Windows.Forms.Padding(2)
         Me.chbSeparate.Name = "chbSeparate"
         Me.chbSeparate.Size = New System.Drawing.Size(101, 24)
         Me.chbSeparate.TabIndex = 53
@@ -1558,7 +1559,7 @@ Partial Class FormMain
         Me.chbEncrypt.Checked = True
         Me.chbEncrypt.CheckState = System.Windows.Forms.CheckState.Checked
         Me.chbEncrypt.Location = New System.Drawing.Point(3, 69)
-        Me.chbEncrypt.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.chbEncrypt.Margin = New System.Windows.Forms.Padding(2)
         Me.chbEncrypt.Name = "chbEncrypt"
         Me.chbEncrypt.Size = New System.Drawing.Size(89, 24)
         Me.chbEncrypt.TabIndex = 49
@@ -1570,7 +1571,7 @@ Partial Class FormMain
         '
         Me.chbPreviewLinks.AutoSize = True
         Me.chbPreviewLinks.Location = New System.Drawing.Point(3, 46)
-        Me.chbPreviewLinks.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.chbPreviewLinks.Margin = New System.Windows.Forms.Padding(2)
         Me.chbPreviewLinks.Name = "chbPreviewLinks"
         Me.chbPreviewLinks.Size = New System.Drawing.Size(130, 24)
         Me.chbPreviewLinks.TabIndex = 48
@@ -1582,7 +1583,7 @@ Partial Class FormMain
         '
         Me.chbShowAttr.AutoSize = True
         Me.chbShowAttr.Location = New System.Drawing.Point(3, 22)
-        Me.chbShowAttr.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.chbShowAttr.Margin = New System.Windows.Forms.Padding(2)
         Me.chbShowAttr.Name = "chbShowAttr"
         Me.chbShowAttr.Size = New System.Drawing.Size(249, 24)
         Me.chbShowAttr.TabIndex = 47
@@ -1783,6 +1784,8 @@ Partial Class FormMain
         '
         'MenuStrip2
         '
+        Me.MenuStrip2.AutoSize = False
+        Me.MenuStrip2.GripMargin = New System.Windows.Forms.Padding(2, 2, 0, 2)
         Me.MenuStrip2.ImageScalingSize = New System.Drawing.Size(28, 28)
         Me.MenuStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem2, Me.HarvestFolderToolStripMenuItem, Me.FullScreenToolStripMenuItem1, Me.OptionsToolStripMenuItem, Me.DuplicatesToolStripMenuItem, Me.ShowlistToolStripMenuItem, Me.DashboardToolStripMenuItem, Me.ExperimentToolStripMenuItem, Me.RenamingToolStripMenuItem, Me.SlowMotionOptionsToolStripMenuItem})
         Me.MenuStrip2.Location = New System.Drawing.Point(0, 0)
@@ -1795,22 +1798,23 @@ Partial Class FormMain
         'FileToolStripMenuItem2
         '
         Me.FileToolStripMenuItem2.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem2, Me.ToolStripMenuItem14, Me.DatabaseToolStripMenuItem1, Me.ToolStripSeparator16, Me.PreferencesToolStripMenuItem1, Me.PreferencesToolStripMenuItem, Me.SearchFunctionsToolStripMenuItem, Me.ToolStripSeparator5, Me.ToolStripSeparator14})
+        Me.FileToolStripMenuItem2.Font = New System.Drawing.Font("Segoe UI", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FileToolStripMenuItem2.Name = "FileToolStripMenuItem2"
-        Me.FileToolStripMenuItem2.Size = New System.Drawing.Size(54, 29)
+        Me.FileToolStripMenuItem2.Size = New System.Drawing.Size(50, 29)
         Me.FileToolStripMenuItem2.Text = "&File"
         '
         'ToolStripMenuItem2
         '
         Me.ToolStripMenuItem2.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NewButtonFileToolStripMenuItem, Me.LoadButtonFileToolStripMenuItem, Me.SaveButtonFileToolStripMenuItem, Me.ButtonFormToolStripMenuItem, Me.ToolStripMenuItem10})
         Me.ToolStripMenuItem2.Name = "ToolStripMenuItem2"
-        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(278, 34)
+        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(255, 34)
         Me.ToolStripMenuItem2.Text = "&Button files"
         '
         'NewButtonFileToolStripMenuItem
         '
         Me.NewButtonFileToolStripMenuItem.Name = "NewButtonFileToolStripMenuItem"
         Me.NewButtonFileToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.N), System.Windows.Forms.Keys)
-        Me.NewButtonFileToolStripMenuItem.Size = New System.Drawing.Size(331, 34)
+        Me.NewButtonFileToolStripMenuItem.Size = New System.Drawing.Size(302, 34)
         Me.NewButtonFileToolStripMenuItem.Text = "&New button file"
         Me.NewButtonFileToolStripMenuItem.ToolTipText = "Create a new button file."
         '
@@ -1818,7 +1822,7 @@ Partial Class FormMain
         '
         Me.LoadButtonFileToolStripMenuItem.Name = "LoadButtonFileToolStripMenuItem"
         Me.LoadButtonFileToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.L), System.Windows.Forms.Keys)
-        Me.LoadButtonFileToolStripMenuItem.Size = New System.Drawing.Size(331, 34)
+        Me.LoadButtonFileToolStripMenuItem.Size = New System.Drawing.Size(302, 34)
         Me.LoadButtonFileToolStripMenuItem.Text = "&Load button file"
         Me.LoadButtonFileToolStripMenuItem.ToolTipText = "Load a previously stored set of button assignments"
         '
@@ -1826,21 +1830,21 @@ Partial Class FormMain
         '
         Me.SaveButtonFileToolStripMenuItem.Name = "SaveButtonFileToolStripMenuItem"
         Me.SaveButtonFileToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
-        Me.SaveButtonFileToolStripMenuItem.Size = New System.Drawing.Size(331, 34)
+        Me.SaveButtonFileToolStripMenuItem.Size = New System.Drawing.Size(302, 34)
         Me.SaveButtonFileToolStripMenuItem.Text = "&Save button file (as)"
         Me.SaveButtonFileToolStripMenuItem.ToolTipText = "Saves the current set of button assignments. "
         '
         'ButtonFormToolStripMenuItem
         '
         Me.ButtonFormToolStripMenuItem.Name = "ButtonFormToolStripMenuItem"
-        Me.ButtonFormToolStripMenuItem.Size = New System.Drawing.Size(331, 34)
+        Me.ButtonFormToolStripMenuItem.Size = New System.Drawing.Size(302, 34)
         Me.ButtonFormToolStripMenuItem.Text = "Button Form"
         '
         'ToolStripMenuItem10
         '
         Me.ToolStripMenuItem10.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LinearToolStripMenuItem, Me.AlphaToolStripMenuItem, Me.TreeToolStripMenuItem, Me.ToolStripSeparator12, Me.AutoButton, Me.ResetButtonsToolStripMenuItem})
         Me.ToolStripMenuItem10.Name = "ToolStripMenuItem10"
-        Me.ToolStripMenuItem10.Size = New System.Drawing.Size(331, 34)
+        Me.ToolStripMenuItem10.Size = New System.Drawing.Size(302, 34)
         Me.ToolStripMenuItem10.Text = "&Assign buttons"
         '
         'LinearToolStripMenuItem
@@ -1848,7 +1852,7 @@ Partial Class FormMain
         Me.LinearToolStripMenuItem.Name = "LinearToolStripMenuItem"
         Me.LinearToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
             Or System.Windows.Forms.Keys.L), System.Windows.Forms.Keys)
-        Me.LinearToolStripMenuItem.Size = New System.Drawing.Size(318, 34)
+        Me.LinearToolStripMenuItem.Size = New System.Drawing.Size(291, 34)
         Me.LinearToolStripMenuItem.Text = "&Linear"
         '
         'AlphaToolStripMenuItem
@@ -1856,7 +1860,7 @@ Partial Class FormMain
         Me.AlphaToolStripMenuItem.Name = "AlphaToolStripMenuItem"
         Me.AlphaToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
             Or System.Windows.Forms.Keys.A), System.Windows.Forms.Keys)
-        Me.AlphaToolStripMenuItem.Size = New System.Drawing.Size(318, 34)
+        Me.AlphaToolStripMenuItem.Size = New System.Drawing.Size(291, 34)
         Me.AlphaToolStripMenuItem.Text = "&Alphabetic"
         '
         'TreeToolStripMenuItem
@@ -1865,24 +1869,24 @@ Partial Class FormMain
         Me.TreeToolStripMenuItem.Name = "TreeToolStripMenuItem"
         Me.TreeToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
             Or System.Windows.Forms.Keys.T), System.Windows.Forms.Keys)
-        Me.TreeToolStripMenuItem.Size = New System.Drawing.Size(318, 34)
+        Me.TreeToolStripMenuItem.Size = New System.Drawing.Size(291, 34)
         Me.TreeToolStripMenuItem.Text = "&Tree"
         '
         'NewToolStripMenuItem1
         '
         Me.NewToolStripMenuItem1.Name = "NewToolStripMenuItem1"
-        Me.NewToolStripMenuItem1.Size = New System.Drawing.Size(149, 34)
+        Me.NewToolStripMenuItem1.Size = New System.Drawing.Size(142, 34)
         Me.NewToolStripMenuItem1.Text = "New"
         '
         'ToolStripSeparator12
         '
         Me.ToolStripSeparator12.Name = "ToolStripSeparator12"
-        Me.ToolStripSeparator12.Size = New System.Drawing.Size(315, 6)
+        Me.ToolStripSeparator12.Size = New System.Drawing.Size(288, 6)
         '
         'AutoButton
         '
         Me.AutoButton.Name = "AutoButton"
-        Me.AutoButton.Size = New System.Drawing.Size(318, 34)
+        Me.AutoButton.Size = New System.Drawing.Size(291, 34)
         Me.AutoButton.Text = "AutoButton"
         '
         'ResetButtonsToolStripMenuItem
@@ -1890,14 +1894,14 @@ Partial Class FormMain
         Me.ResetButtonsToolStripMenuItem.Name = "ResetButtonsToolStripMenuItem"
         Me.ResetButtonsToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
             Or System.Windows.Forms.Keys.R), System.Windows.Forms.Keys)
-        Me.ResetButtonsToolStripMenuItem.Size = New System.Drawing.Size(318, 34)
+        Me.ResetButtonsToolStripMenuItem.Size = New System.Drawing.Size(291, 34)
         Me.ResetButtonsToolStripMenuItem.Text = "Reset Buttons"
         '
         'ToolStripMenuItem14
         '
         Me.ToolStripMenuItem14.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SaveListToolStripMenuItem, Me.LoadListToolStripMenuItem, Me.ToolStripSeparator7, Me.AddCurrentFileListToolStripMenuItem, Me.AddCurrentAndSubfoldersToolStripMenuItem, Me.ClearCurrentListToolStripMenuItem, Me.SingleFilePerFolderToolStripMenuItem, Me.AddCurrentToShowlistToolStripMenuItem, Me.CreateListFromLinksToolStripMenuItem, Me.ListOfFilesFormToolStripMenuItem})
         Me.ToolStripMenuItem14.Name = "ToolStripMenuItem14"
-        Me.ToolStripMenuItem14.Size = New System.Drawing.Size(278, 34)
+        Me.ToolStripMenuItem14.Size = New System.Drawing.Size(255, 34)
         Me.ToolStripMenuItem14.Text = "&Lists"
         Me.ToolStripMenuItem14.ToolTipText = "Create file lists"
         '
@@ -1907,7 +1911,7 @@ Partial Class FormMain
         Me.SaveListToolStripMenuItem.ShortcutKeys = CType((((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
             Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
-        Me.SaveListToolStripMenuItem.Size = New System.Drawing.Size(443, 34)
+        Me.SaveListToolStripMenuItem.Size = New System.Drawing.Size(398, 34)
         Me.SaveListToolStripMenuItem.Text = "Save list"
         '
         'LoadListToolStripMenuItem
@@ -1916,19 +1920,19 @@ Partial Class FormMain
         Me.LoadListToolStripMenuItem.ShortcutKeys = CType((((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
             Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.L), System.Windows.Forms.Keys)
-        Me.LoadListToolStripMenuItem.Size = New System.Drawing.Size(443, 34)
+        Me.LoadListToolStripMenuItem.Size = New System.Drawing.Size(398, 34)
         Me.LoadListToolStripMenuItem.Text = "Load list"
         '
         'ToolStripSeparator7
         '
         Me.ToolStripSeparator7.Name = "ToolStripSeparator7"
-        Me.ToolStripSeparator7.Size = New System.Drawing.Size(440, 6)
+        Me.ToolStripSeparator7.Size = New System.Drawing.Size(395, 6)
         '
         'AddCurrentFileListToolStripMenuItem
         '
         Me.AddCurrentFileListToolStripMenuItem.Name = "AddCurrentFileListToolStripMenuItem"
         Me.AddCurrentFileListToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.A), System.Windows.Forms.Keys)
-        Me.AddCurrentFileListToolStripMenuItem.Size = New System.Drawing.Size(443, 34)
+        Me.AddCurrentFileListToolStripMenuItem.Size = New System.Drawing.Size(398, 34)
         Me.AddCurrentFileListToolStripMenuItem.Text = "Add current file list"
         '
         'AddCurrentAndSubfoldersToolStripMenuItem
@@ -1936,7 +1940,7 @@ Partial Class FormMain
         Me.AddCurrentAndSubfoldersToolStripMenuItem.Name = "AddCurrentAndSubfoldersToolStripMenuItem"
         Me.AddCurrentAndSubfoldersToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.A), System.Windows.Forms.Keys)
-        Me.AddCurrentAndSubfoldersToolStripMenuItem.Size = New System.Drawing.Size(443, 34)
+        Me.AddCurrentAndSubfoldersToolStripMenuItem.Size = New System.Drawing.Size(398, 34)
         Me.AddCurrentAndSubfoldersToolStripMenuItem.Text = "Add current and subfolders"
         '
         'ClearCurrentListToolStripMenuItem
@@ -1944,7 +1948,7 @@ Partial Class FormMain
         Me.ClearCurrentListToolStripMenuItem.Name = "ClearCurrentListToolStripMenuItem"
         Me.ClearCurrentListToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.C), System.Windows.Forms.Keys)
-        Me.ClearCurrentListToolStripMenuItem.Size = New System.Drawing.Size(443, 34)
+        Me.ClearCurrentListToolStripMenuItem.Size = New System.Drawing.Size(398, 34)
         Me.ClearCurrentListToolStripMenuItem.Text = "Clear current list"
         '
         'SingleFilePerFolderToolStripMenuItem
@@ -1953,140 +1957,140 @@ Partial Class FormMain
         Me.SingleFilePerFolderToolStripMenuItem.Name = "SingleFilePerFolderToolStripMenuItem"
         Me.SingleFilePerFolderToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
-        Me.SingleFilePerFolderToolStripMenuItem.Size = New System.Drawing.Size(443, 34)
+        Me.SingleFilePerFolderToolStripMenuItem.Size = New System.Drawing.Size(398, 34)
         Me.SingleFilePerFolderToolStripMenuItem.Text = "Single file per folder"
         '
         'AddCurrentToShowlistToolStripMenuItem
         '
         Me.AddCurrentToShowlistToolStripMenuItem.Name = "AddCurrentToShowlistToolStripMenuItem"
         Me.AddCurrentToShowlistToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.F), System.Windows.Forms.Keys)
-        Me.AddCurrentToShowlistToolStripMenuItem.Size = New System.Drawing.Size(443, 34)
+        Me.AddCurrentToShowlistToolStripMenuItem.Size = New System.Drawing.Size(398, 34)
         Me.AddCurrentToShowlistToolStripMenuItem.Text = "Add current file to showlist"
         '
         'CreateListFromLinksToolStripMenuItem
         '
         Me.CreateListFromLinksToolStripMenuItem.Name = "CreateListFromLinksToolStripMenuItem"
-        Me.CreateListFromLinksToolStripMenuItem.Size = New System.Drawing.Size(443, 34)
+        Me.CreateListFromLinksToolStripMenuItem.Size = New System.Drawing.Size(398, 34)
         Me.CreateListFromLinksToolStripMenuItem.Text = "Create list from links"
         '
         'ListOfFilesFormToolStripMenuItem
         '
         Me.ListOfFilesFormToolStripMenuItem.Name = "ListOfFilesFormToolStripMenuItem"
-        Me.ListOfFilesFormToolStripMenuItem.Size = New System.Drawing.Size(443, 34)
+        Me.ListOfFilesFormToolStripMenuItem.Size = New System.Drawing.Size(398, 34)
         Me.ListOfFilesFormToolStripMenuItem.Text = "List of Files Form"
         '
         'DatabaseToolStripMenuItem1
         '
         Me.DatabaseToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CreateNewToolStripMenuItem, Me.LoadToolStripMenuItem, Me.AppendDatabaseToolStripMenuItem, Me.SaveToolStripMenuItem2, Me.ShowCurrentlyLoadedToolStripMenuItem, Me.ToolStripSeparator17, Me.CreateFromCurrentShowlistToolStripMenuItem})
         Me.DatabaseToolStripMenuItem1.Name = "DatabaseToolStripMenuItem1"
-        Me.DatabaseToolStripMenuItem1.Size = New System.Drawing.Size(278, 34)
+        Me.DatabaseToolStripMenuItem1.Size = New System.Drawing.Size(255, 34)
         Me.DatabaseToolStripMenuItem1.Text = "Database"
         '
         'CreateNewToolStripMenuItem
         '
         Me.CreateNewToolStripMenuItem.Name = "CreateNewToolStripMenuItem"
-        Me.CreateNewToolStripMenuItem.Size = New System.Drawing.Size(337, 34)
+        Me.CreateNewToolStripMenuItem.Size = New System.Drawing.Size(308, 34)
         Me.CreateNewToolStripMenuItem.Text = "New"
         '
         'LoadToolStripMenuItem
         '
         Me.LoadToolStripMenuItem.Name = "LoadToolStripMenuItem"
-        Me.LoadToolStripMenuItem.Size = New System.Drawing.Size(337, 34)
+        Me.LoadToolStripMenuItem.Size = New System.Drawing.Size(308, 34)
         Me.LoadToolStripMenuItem.Text = "Open"
         '
         'AppendDatabaseToolStripMenuItem
         '
         Me.AppendDatabaseToolStripMenuItem.Name = "AppendDatabaseToolStripMenuItem"
-        Me.AppendDatabaseToolStripMenuItem.Size = New System.Drawing.Size(337, 34)
+        Me.AppendDatabaseToolStripMenuItem.Size = New System.Drawing.Size(308, 34)
         Me.AppendDatabaseToolStripMenuItem.Text = "Append"
         '
         'SaveToolStripMenuItem2
         '
         Me.SaveToolStripMenuItem2.Name = "SaveToolStripMenuItem2"
-        Me.SaveToolStripMenuItem2.Size = New System.Drawing.Size(337, 34)
+        Me.SaveToolStripMenuItem2.Size = New System.Drawing.Size(308, 34)
         Me.SaveToolStripMenuItem2.Text = "Save"
         '
         'ShowCurrentlyLoadedToolStripMenuItem
         '
         Me.ShowCurrentlyLoadedToolStripMenuItem.Enabled = False
         Me.ShowCurrentlyLoadedToolStripMenuItem.Name = "ShowCurrentlyLoadedToolStripMenuItem"
-        Me.ShowCurrentlyLoadedToolStripMenuItem.Size = New System.Drawing.Size(337, 34)
+        Me.ShowCurrentlyLoadedToolStripMenuItem.Size = New System.Drawing.Size(308, 34)
         Me.ShowCurrentlyLoadedToolStripMenuItem.Text = "Show Currently Loaded"
         '
         'ToolStripSeparator17
         '
         Me.ToolStripSeparator17.Name = "ToolStripSeparator17"
-        Me.ToolStripSeparator17.Size = New System.Drawing.Size(334, 6)
+        Me.ToolStripSeparator17.Size = New System.Drawing.Size(305, 6)
         '
         'CreateFromCurrentShowlistToolStripMenuItem
         '
         Me.CreateFromCurrentShowlistToolStripMenuItem.Name = "CreateFromCurrentShowlistToolStripMenuItem"
-        Me.CreateFromCurrentShowlistToolStripMenuItem.Size = New System.Drawing.Size(337, 34)
+        Me.CreateFromCurrentShowlistToolStripMenuItem.Size = New System.Drawing.Size(308, 34)
         Me.CreateFromCurrentShowlistToolStripMenuItem.Text = "Create from current showlist"
         '
         'ToolStripSeparator16
         '
         Me.ToolStripSeparator16.Name = "ToolStripSeparator16"
-        Me.ToolStripSeparator16.Size = New System.Drawing.Size(275, 6)
+        Me.ToolStripSeparator16.Size = New System.Drawing.Size(252, 6)
         '
         'PreferencesToolStripMenuItem1
         '
         Me.PreferencesToolStripMenuItem1.Name = "PreferencesToolStripMenuItem1"
-        Me.PreferencesToolStripMenuItem1.Size = New System.Drawing.Size(278, 34)
+        Me.PreferencesToolStripMenuItem1.Size = New System.Drawing.Size(255, 34)
         Me.PreferencesToolStripMenuItem1.Text = "Preferences"
         '
         'PreferencesToolStripMenuItem
         '
         Me.PreferencesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenToolStripMenuItem1, Me.ResetToolStripMenuItem, Me.SaveToolStripMenuItem1, Me.RestoreToolStripMenuItem, Me.ToolStripSeparator10, Me.FavouritesFolderToolStripMenuItem, Me.ForceFavouritesReloadToolStripMenuItem, Me.ForceDirectoriesReloadToolStripMenuItem})
         Me.PreferencesToolStripMenuItem.Name = "PreferencesToolStripMenuItem"
-        Me.PreferencesToolStripMenuItem.Size = New System.Drawing.Size(278, 34)
+        Me.PreferencesToolStripMenuItem.Size = New System.Drawing.Size(255, 34)
         Me.PreferencesToolStripMenuItem.Text = "Preferences"
         '
         'OpenToolStripMenuItem1
         '
         Me.OpenToolStripMenuItem1.Name = "OpenToolStripMenuItem1"
-        Me.OpenToolStripMenuItem1.Size = New System.Drawing.Size(305, 34)
+        Me.OpenToolStripMenuItem1.Size = New System.Drawing.Size(279, 34)
         Me.OpenToolStripMenuItem1.Text = "Open"
         '
         'ResetToolStripMenuItem
         '
         Me.ResetToolStripMenuItem.Name = "ResetToolStripMenuItem"
-        Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(305, 34)
+        Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(279, 34)
         Me.ResetToolStripMenuItem.Text = "Reset"
         '
         'SaveToolStripMenuItem1
         '
         Me.SaveToolStripMenuItem1.Name = "SaveToolStripMenuItem1"
-        Me.SaveToolStripMenuItem1.Size = New System.Drawing.Size(305, 34)
+        Me.SaveToolStripMenuItem1.Size = New System.Drawing.Size(279, 34)
         Me.SaveToolStripMenuItem1.Text = "Save"
         '
         'RestoreToolStripMenuItem
         '
         Me.RestoreToolStripMenuItem.Name = "RestoreToolStripMenuItem"
-        Me.RestoreToolStripMenuItem.Size = New System.Drawing.Size(305, 34)
+        Me.RestoreToolStripMenuItem.Size = New System.Drawing.Size(279, 34)
         Me.RestoreToolStripMenuItem.Text = "Restore"
         '
         'ToolStripSeparator10
         '
         Me.ToolStripSeparator10.Name = "ToolStripSeparator10"
-        Me.ToolStripSeparator10.Size = New System.Drawing.Size(302, 6)
+        Me.ToolStripSeparator10.Size = New System.Drawing.Size(276, 6)
         '
         'FavouritesFolderToolStripMenuItem
         '
         Me.FavouritesFolderToolStripMenuItem.Name = "FavouritesFolderToolStripMenuItem"
-        Me.FavouritesFolderToolStripMenuItem.Size = New System.Drawing.Size(305, 34)
+        Me.FavouritesFolderToolStripMenuItem.Size = New System.Drawing.Size(279, 34)
         Me.FavouritesFolderToolStripMenuItem.Text = "Favourites Folder"
         '
         'ForceFavouritesReloadToolStripMenuItem
         '
         Me.ForceFavouritesReloadToolStripMenuItem.Name = "ForceFavouritesReloadToolStripMenuItem"
-        Me.ForceFavouritesReloadToolStripMenuItem.Size = New System.Drawing.Size(305, 34)
+        Me.ForceFavouritesReloadToolStripMenuItem.Size = New System.Drawing.Size(279, 34)
         Me.ForceFavouritesReloadToolStripMenuItem.Text = "Force Favourites Reload"
         '
         'ForceDirectoriesReloadToolStripMenuItem
         '
         Me.ForceDirectoriesReloadToolStripMenuItem.Name = "ForceDirectoriesReloadToolStripMenuItem"
-        Me.ForceDirectoriesReloadToolStripMenuItem.Size = New System.Drawing.Size(305, 34)
+        Me.ForceDirectoriesReloadToolStripMenuItem.Size = New System.Drawing.Size(279, 34)
         Me.ForceDirectoriesReloadToolStripMenuItem.Text = "Force Directories Reload"
         '
         'SearchFunctionsToolStripMenuItem
@@ -2094,38 +2098,39 @@ Partial Class FormMain
         Me.SearchFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SearchToolStripMenuItem, Me.RegexSearchToolStripMenuItem})
         Me.SearchFunctionsToolStripMenuItem.Name = "SearchFunctionsToolStripMenuItem"
         Me.SearchFunctionsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3
-        Me.SearchFunctionsToolStripMenuItem.Size = New System.Drawing.Size(278, 34)
+        Me.SearchFunctionsToolStripMenuItem.Size = New System.Drawing.Size(255, 34)
         Me.SearchFunctionsToolStripMenuItem.Text = "&Search Functions"
         '
         'SearchToolStripMenuItem
         '
         Me.SearchToolStripMenuItem.Name = "SearchToolStripMenuItem"
         Me.SearchToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3
-        Me.SearchToolStripMenuItem.Size = New System.Drawing.Size(288, 34)
+        Me.SearchToolStripMenuItem.Size = New System.Drawing.Size(266, 34)
         Me.SearchToolStripMenuItem.Text = "Search"
         '
         'RegexSearchToolStripMenuItem
         '
         Me.RegexSearchToolStripMenuItem.Name = "RegexSearchToolStripMenuItem"
         Me.RegexSearchToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.F3), System.Windows.Forms.Keys)
-        Me.RegexSearchToolStripMenuItem.Size = New System.Drawing.Size(288, 34)
+        Me.RegexSearchToolStripMenuItem.Size = New System.Drawing.Size(266, 34)
         Me.RegexSearchToolStripMenuItem.Text = "Regex Search"
         '
         'ToolStripSeparator5
         '
         Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
-        Me.ToolStripSeparator5.Size = New System.Drawing.Size(275, 6)
+        Me.ToolStripSeparator5.Size = New System.Drawing.Size(252, 6)
         '
         'ToolStripSeparator14
         '
         Me.ToolStripSeparator14.Name = "ToolStripSeparator14"
-        Me.ToolStripSeparator14.Size = New System.Drawing.Size(275, 6)
+        Me.ToolStripSeparator14.Size = New System.Drawing.Size(252, 6)
         '
         'HarvestFolderToolStripMenuItem
         '
         Me.HarvestFolderToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteEmptyFoldersToolStripMenuItem, Me.HarvestFoldersToolStripMenuItem, Me.ToolStripSeparator8, Me.BundleToolStripMenuItem, Me.BurstFolderToolStripMenuItem, Me.ToolStripSeparator9, Me.GroupToolStripMenuItem, Me.PromoteFolderToolStripMenuItem, Me.FilterMoveToolStripMenuItem, Me.InvertSelectionToolStripMenuItem, Me.PromoteFileToolStripMenuItem, Me.PromoteIdenticalSubFoldersToolStripMenuItem, Me.FlattenAllSubfolderToolStripMenuItem})
+        Me.HarvestFolderToolStripMenuItem.Font = New System.Drawing.Font("Segoe UI", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.HarvestFolderToolStripMenuItem.Name = "HarvestFolderToolStripMenuItem"
-        Me.HarvestFolderToolStripMenuItem.Size = New System.Drawing.Size(142, 29)
+        Me.HarvestFolderToolStripMenuItem.Size = New System.Drawing.Size(125, 29)
         Me.HarvestFolderToolStripMenuItem.Tag = "Folder"
         Me.HarvestFolderToolStripMenuItem.Text = "&Folder Actions"
         '
@@ -2133,7 +2138,7 @@ Partial Class FormMain
         '
         Me.DeleteEmptyFoldersToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.IncludingAllSubfoldersToolStripMenuItem, Me.JustTopFoldersToolStripMenuItem})
         Me.DeleteEmptyFoldersToolStripMenuItem.Name = "DeleteEmptyFoldersToolStripMenuItem"
-        Me.DeleteEmptyFoldersToolStripMenuItem.Size = New System.Drawing.Size(357, 34)
+        Me.DeleteEmptyFoldersToolStripMenuItem.Size = New System.Drawing.Size(326, 34)
         Me.DeleteEmptyFoldersToolStripMenuItem.Tag = "Folder"
         Me.DeleteEmptyFoldersToolStripMenuItem.Text = "Delete Empty Folders"
         '
@@ -2143,7 +2148,7 @@ Partial Class FormMain
         Me.IncludingAllSubfoldersToolStripMenuItem.ShortcutKeys = CType((((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
             Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.E), System.Windows.Forms.Keys)
-        Me.IncludingAllSubfoldersToolStripMenuItem.Size = New System.Drawing.Size(440, 34)
+        Me.IncludingAllSubfoldersToolStripMenuItem.Size = New System.Drawing.Size(398, 34)
         Me.IncludingAllSubfoldersToolStripMenuItem.Text = "Including all subfolders"
         '
         'JustTopFoldersToolStripMenuItem
@@ -2151,7 +2156,7 @@ Partial Class FormMain
         Me.JustTopFoldersToolStripMenuItem.Name = "JustTopFoldersToolStripMenuItem"
         Me.JustTopFoldersToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.E), System.Windows.Forms.Keys)
-        Me.JustTopFoldersToolStripMenuItem.Size = New System.Drawing.Size(440, 34)
+        Me.JustTopFoldersToolStripMenuItem.Size = New System.Drawing.Size(398, 34)
         Me.JustTopFoldersToolStripMenuItem.Text = "Just top folders"
         '
         'HarvestFoldersToolStripMenuItem
@@ -2160,7 +2165,7 @@ Partial Class FormMain
         Me.HarvestFoldersToolStripMenuItem.Name = "HarvestFoldersToolStripMenuItem"
         Me.HarvestFoldersToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.H), System.Windows.Forms.Keys)
-        Me.HarvestFoldersToolStripMenuItem.Size = New System.Drawing.Size(357, 34)
+        Me.HarvestFoldersToolStripMenuItem.Size = New System.Drawing.Size(326, 34)
         Me.HarvestFoldersToolStripMenuItem.Tag = "Folder"
         Me.HarvestFoldersToolStripMenuItem.Text = "Harvest Folders"
         '
@@ -2170,19 +2175,19 @@ Partial Class FormMain
         Me.RecursiveToolStripMenuItem.ShortcutKeys = CType((((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
             Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.H), System.Windows.Forms.Keys)
-        Me.RecursiveToolStripMenuItem.Size = New System.Drawing.Size(333, 34)
+        Me.RecursiveToolStripMenuItem.Size = New System.Drawing.Size(307, 34)
         Me.RecursiveToolStripMenuItem.Text = "Recursive"
         '
         'ToolStripSeparator8
         '
         Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
-        Me.ToolStripSeparator8.Size = New System.Drawing.Size(354, 6)
+        Me.ToolStripSeparator8.Size = New System.Drawing.Size(323, 6)
         '
         'BundleToolStripMenuItem
         '
         Me.BundleToolStripMenuItem.Name = "BundleToolStripMenuItem"
         Me.BundleToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.B), System.Windows.Forms.Keys)
-        Me.BundleToolStripMenuItem.Size = New System.Drawing.Size(357, 34)
+        Me.BundleToolStripMenuItem.Size = New System.Drawing.Size(326, 34)
         Me.BundleToolStripMenuItem.Tag = "Folder"
         Me.BundleToolStripMenuItem.Text = "Bundle"
         Me.BundleToolStripMenuItem.ToolTipText = "Places all the selected files into a sub-folder of their current directory."
@@ -2192,132 +2197,132 @@ Partial Class FormMain
         Me.BurstFolderToolStripMenuItem.Name = "BurstFolderToolStripMenuItem"
         Me.BurstFolderToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.B), System.Windows.Forms.Keys)
-        Me.BurstFolderToolStripMenuItem.Size = New System.Drawing.Size(357, 34)
+        Me.BurstFolderToolStripMenuItem.Size = New System.Drawing.Size(326, 34)
         Me.BurstFolderToolStripMenuItem.Tag = "Folder"
         Me.BurstFolderToolStripMenuItem.Text = "Burst Folder"
         '
         'ToolStripSeparator9
         '
         Me.ToolStripSeparator9.Name = "ToolStripSeparator9"
-        Me.ToolStripSeparator9.Size = New System.Drawing.Size(354, 6)
+        Me.ToolStripSeparator9.Size = New System.Drawing.Size(323, 6)
         '
         'GroupToolStripMenuItem
         '
         Me.GroupToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ByMonthToolStripMenuItem, Me.ByDateToolStripMenuItem, Me.ByYearToolStripMenuItem, Me.ByTimeToolStripMenuItem, Me.BySizeToolStripMenuItem, Me.CalendarToolStripMenuItem, Me.ToolStripSeparator6, Me.ByNameToolStripMenuItem, Me.ByExtToolStripMenuItem, Me.ByLinkFolderToolStripMenuItem, Me.AlphabeticGroupsToolStripMenuItem, Me.LinksByPartOfPathToolStripMenuItem})
         Me.GroupToolStripMenuItem.Name = "GroupToolStripMenuItem"
-        Me.GroupToolStripMenuItem.Size = New System.Drawing.Size(357, 34)
+        Me.GroupToolStripMenuItem.Size = New System.Drawing.Size(326, 34)
         Me.GroupToolStripMenuItem.Tag = "Folder"
         Me.GroupToolStripMenuItem.Text = "&Group..."
         '
         'ByMonthToolStripMenuItem
         '
         Me.ByMonthToolStripMenuItem.Name = "ByMonthToolStripMenuItem"
-        Me.ByMonthToolStripMenuItem.Size = New System.Drawing.Size(297, 34)
+        Me.ByMonthToolStripMenuItem.Size = New System.Drawing.Size(274, 34)
         Me.ByMonthToolStripMenuItem.Text = "By &Month"
         '
         'ByDateToolStripMenuItem
         '
         Me.ByDateToolStripMenuItem.Name = "ByDateToolStripMenuItem"
-        Me.ByDateToolStripMenuItem.Size = New System.Drawing.Size(297, 34)
+        Me.ByDateToolStripMenuItem.Size = New System.Drawing.Size(274, 34)
         Me.ByDateToolStripMenuItem.Text = "By &Date"
         '
         'ByYearToolStripMenuItem
         '
         Me.ByYearToolStripMenuItem.Name = "ByYearToolStripMenuItem"
-        Me.ByYearToolStripMenuItem.Size = New System.Drawing.Size(297, 34)
+        Me.ByYearToolStripMenuItem.Size = New System.Drawing.Size(274, 34)
         Me.ByYearToolStripMenuItem.Text = "By &Year"
         '
         'ByTimeToolStripMenuItem
         '
         Me.ByTimeToolStripMenuItem.Name = "ByTimeToolStripMenuItem"
-        Me.ByTimeToolStripMenuItem.Size = New System.Drawing.Size(297, 34)
+        Me.ByTimeToolStripMenuItem.Size = New System.Drawing.Size(274, 34)
         Me.ByTimeToolStripMenuItem.Text = "By &Time"
         '
         'BySizeToolStripMenuItem
         '
         Me.BySizeToolStripMenuItem.Name = "BySizeToolStripMenuItem"
-        Me.BySizeToolStripMenuItem.Size = New System.Drawing.Size(297, 34)
+        Me.BySizeToolStripMenuItem.Size = New System.Drawing.Size(274, 34)
         Me.BySizeToolStripMenuItem.Text = "By &Size"
         '
         'CalendarToolStripMenuItem
         '
         Me.CalendarToolStripMenuItem.Name = "CalendarToolStripMenuItem"
-        Me.CalendarToolStripMenuItem.Size = New System.Drawing.Size(297, 34)
+        Me.CalendarToolStripMenuItem.Size = New System.Drawing.Size(274, 34)
         Me.CalendarToolStripMenuItem.Text = "&Calendar"
         '
         'ToolStripSeparator6
         '
         Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
-        Me.ToolStripSeparator6.Size = New System.Drawing.Size(294, 6)
+        Me.ToolStripSeparator6.Size = New System.Drawing.Size(271, 6)
         '
         'ByNameToolStripMenuItem
         '
         Me.ByNameToolStripMenuItem.Name = "ByNameToolStripMenuItem"
         Me.ByNameToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.N), System.Windows.Forms.Keys)
-        Me.ByNameToolStripMenuItem.Size = New System.Drawing.Size(297, 34)
+        Me.ByNameToolStripMenuItem.Size = New System.Drawing.Size(274, 34)
         Me.ByNameToolStripMenuItem.Text = "By Name"
         '
         'ByExtToolStripMenuItem
         '
         Me.ByExtToolStripMenuItem.Name = "ByExtToolStripMenuItem"
-        Me.ByExtToolStripMenuItem.Size = New System.Drawing.Size(297, 34)
+        Me.ByExtToolStripMenuItem.Size = New System.Drawing.Size(274, 34)
         Me.ByExtToolStripMenuItem.Text = "By E&xtension"
         '
         'ByLinkFolderToolStripMenuItem
         '
         Me.ByLinkFolderToolStripMenuItem.Name = "ByLinkFolderToolStripMenuItem"
-        Me.ByLinkFolderToolStripMenuItem.Size = New System.Drawing.Size(297, 34)
+        Me.ByLinkFolderToolStripMenuItem.Size = New System.Drawing.Size(274, 34)
         Me.ByLinkFolderToolStripMenuItem.Text = "By Link Folder"
         '
         'AlphabeticGroupsToolStripMenuItem
         '
         Me.AlphabeticGroupsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FilesToolStripMenuItem, Me.FoldersToolStripMenuItem})
         Me.AlphabeticGroupsToolStripMenuItem.Name = "AlphabeticGroupsToolStripMenuItem"
-        Me.AlphabeticGroupsToolStripMenuItem.Size = New System.Drawing.Size(297, 34)
+        Me.AlphabeticGroupsToolStripMenuItem.Size = New System.Drawing.Size(274, 34)
         Me.AlphabeticGroupsToolStripMenuItem.Text = "Alphabetic groups"
         '
         'FilesToolStripMenuItem
         '
         Me.FilesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LettersToolStripMenuItem})
         Me.FilesToolStripMenuItem.Name = "FilesToolStripMenuItem"
-        Me.FilesToolStripMenuItem.Size = New System.Drawing.Size(172, 34)
+        Me.FilesToolStripMenuItem.Size = New System.Drawing.Size(161, 34)
         Me.FilesToolStripMenuItem.Text = "Files"
         '
         'LettersToolStripMenuItem
         '
         Me.LettersToolStripMenuItem.Name = "LettersToolStripMenuItem"
-        Me.LettersToolStripMenuItem.Size = New System.Drawing.Size(166, 34)
+        Me.LettersToolStripMenuItem.Size = New System.Drawing.Size(157, 34)
         Me.LettersToolStripMenuItem.Text = "Letters"
         '
         'FoldersToolStripMenuItem
         '
         Me.FoldersToolStripMenuItem.Name = "FoldersToolStripMenuItem"
-        Me.FoldersToolStripMenuItem.Size = New System.Drawing.Size(172, 34)
+        Me.FoldersToolStripMenuItem.Size = New System.Drawing.Size(161, 34)
         Me.FoldersToolStripMenuItem.Text = "Folders"
         '
         'LinksByPartOfPathToolStripMenuItem
         '
         Me.LinksByPartOfPathToolStripMenuItem.Name = "LinksByPartOfPathToolStripMenuItem"
-        Me.LinksByPartOfPathToolStripMenuItem.Size = New System.Drawing.Size(297, 34)
+        Me.LinksByPartOfPathToolStripMenuItem.Size = New System.Drawing.Size(274, 34)
         Me.LinksByPartOfPathToolStripMenuItem.Text = "Links By Part of Path"
         '
         'PromoteFolderToolStripMenuItem
         '
         Me.PromoteFolderToolStripMenuItem.Name = "PromoteFolderToolStripMenuItem"
-        Me.PromoteFolderToolStripMenuItem.Size = New System.Drawing.Size(357, 34)
+        Me.PromoteFolderToolStripMenuItem.Size = New System.Drawing.Size(326, 34)
         Me.PromoteFolderToolStripMenuItem.Text = "Level Folders Below"
         '
         'FilterMoveToolStripMenuItem
         '
         Me.FilterMoveToolStripMenuItem.Name = "FilterMoveToolStripMenuItem"
-        Me.FilterMoveToolStripMenuItem.Size = New System.Drawing.Size(357, 34)
+        Me.FilterMoveToolStripMenuItem.Size = New System.Drawing.Size(326, 34)
         Me.FilterMoveToolStripMenuItem.Text = "Filter &Move"
         '
         'InvertSelectionToolStripMenuItem
         '
         Me.InvertSelectionToolStripMenuItem.Name = "InvertSelectionToolStripMenuItem"
-        Me.InvertSelectionToolStripMenuItem.Size = New System.Drawing.Size(357, 34)
+        Me.InvertSelectionToolStripMenuItem.Size = New System.Drawing.Size(326, 34)
         Me.InvertSelectionToolStripMenuItem.Text = "Invert Selection"
         '
         'PromoteFileToolStripMenuItem
@@ -2326,19 +2331,19 @@ Partial Class FormMain
         Me.PromoteFileToolStripMenuItem.ShortcutKeys = CType((((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Alt) _
             Or System.Windows.Forms.Keys.Shift) _
             Or System.Windows.Forms.Keys.P), System.Windows.Forms.Keys)
-        Me.PromoteFileToolStripMenuItem.Size = New System.Drawing.Size(357, 34)
+        Me.PromoteFileToolStripMenuItem.Size = New System.Drawing.Size(326, 34)
         Me.PromoteFileToolStripMenuItem.Text = "Promote File"
         '
         'PromoteIdenticalSubFoldersToolStripMenuItem
         '
         Me.PromoteIdenticalSubFoldersToolStripMenuItem.Name = "PromoteIdenticalSubFoldersToolStripMenuItem"
-        Me.PromoteIdenticalSubFoldersToolStripMenuItem.Size = New System.Drawing.Size(357, 34)
+        Me.PromoteIdenticalSubFoldersToolStripMenuItem.Size = New System.Drawing.Size(326, 34)
         Me.PromoteIdenticalSubFoldersToolStripMenuItem.Text = "Promote Identical SubFolders"
         '
         'FlattenAllSubfolderToolStripMenuItem
         '
         Me.FlattenAllSubfolderToolStripMenuItem.Name = "FlattenAllSubfolderToolStripMenuItem"
-        Me.FlattenAllSubfolderToolStripMenuItem.Size = New System.Drawing.Size(357, 34)
+        Me.FlattenAllSubfolderToolStripMenuItem.Size = New System.Drawing.Size(326, 34)
         Me.FlattenAllSubfolderToolStripMenuItem.Text = "Flatten All Subfolders"
         '
         'FullScreenToolStripMenuItem1
@@ -2763,6 +2768,7 @@ Partial Class FormMain
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.Name = "FormMain"
+        Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
         Me.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds
         Me.Text = "Metavisua"
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
