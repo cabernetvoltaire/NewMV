@@ -1,5 +1,4 @@
 ﻿Imports System.Environment
-Imports Newtonsoft.Json
 Friend Module Mysettings
 
     Public FirstLoad As Boolean = False
@@ -102,8 +101,6 @@ Friend Module Mysettings
     Public ChosenPlayOrder As Byte = 0
 #End Region
     Public Sub PreferencesSave()
-        'SavePreferences()
-        'Exit Sub
         Dim PrefsList As New List(Of String)
         With PrefsList
 
@@ -164,54 +161,6 @@ Friend Module Mysettings
         WriteListToFile(PrefsList, PrefsFilePath, False)
 
 
-    End Sub
-    Public Sub SavePreferences()
-        Dim preferences As New Dictionary(Of String, Object) From {
-        {"LastTimeSuccessful", LastTimeSuccessful},
-        {"VertSplit", FormMain.ctrFileBoxes.SplitterDistance},
-        {"HorSplit", FormMain.ctrMainFrame.SplitterDistance},
-        {"File", If(LastTimeSuccessful, Media.MediaPath, FormMain.LastGoodFile)},
-        {"Filter", FormMain.CurrentFilterState.State},
-        {"SortOrder", FormMain.PlayOrder.State},
-        {"StartPoint", Media.SPT.State},
-        {"State", FormMain.NavigateMoveState.State},
-        {"LastButtonFile", ButtonFilePath},
-        {"LastAlpha", iCurrentAlpha},
-        {"Favourites", CurrentFavesPath},
-        {"PreviewLinks", FormMain.chbPreviewLinks.Checked},
-        {"RootScanPath", Rootpath},
-        {"DirectoriesList", DirectoriesListFile},
-        {"GlobalFaves", GlobalFavesPath},
-        {"RandomNextFile", FormMain.chbNextFile.Checked},
-        {"RandomOnDirectoryChange", FormMain.chbOnDir.Checked},
-        {"RandomAutoTrail", FormMain.chbAutoTrail.Checked},
-        {"RandomAutoLoadButtons", FormMain.chbLoadButtonFiles.Checked},
-        {"OptionsShowAttr", FormMain.chbShowAttr.Checked},
-        {"OptionsPreviewLinks", FormMain.chbPreviewLinks.Checked},
-        {"OptionsEncrypt", FormMain.chbEncrypt.Checked},
-        {"OptionsAutoAdvance", FormMain.CHBAutoAdvance.Checked},
-        {"OptionsSeparate", FormMain.chbSeparate.Checked},
-        {"ThumbnailDestination", ThumbDestination},
-        {"ButtonFolder", Buttonfolder},
-        {"FractionalJump", FormMain.SP.FractionalJump},
-        {"AbsoluteJump", FormMain.SP.AbsoluteJump},
-        {"Speed", FormMain.SP.Speed},
-        {"MovieScan", FormMain.chbSlideShow.Checked},
-        {"ScanBookmarks", FormMain.chbScan.Checked},
-        {"SingleLinks", FormMain.cbxSingleLinks.Checked},
-        {"MovieSlideShowSpeed", FormMain.tbMovieSlideShowSpeed.Value},
-        {"SlowMoSoundOption", FormMain.SlowMoSoundOpt}
-    }
-
-        Dim preferencesJson As String = JsonConvert.SerializeObject(preferences)
-
-        Dim prefsFilePath As String = IO.Path.Combine(PrefsPath, DrivesScan() & "MVPrefs.json")
-
-        If IO.File.Exists(prefsFilePath) Then
-            IO.File.Delete(prefsFilePath)
-        End If
-
-        IO.File.WriteAllText(prefsFilePath, preferencesJson)
     End Sub
     Public Sub PreferencesSaveNew()
         With Settings
@@ -463,7 +412,6 @@ Friend Module Mysettings
     Private Function BrowseToFolder(Title As String, DefaultPath As String) As String
         Dim path As String = ""
         With New FolderBrowserDialog
-
             .SelectedPath = DefaultPath
             .Description = Title
             If .ShowDialog() = DialogResult.OK Then

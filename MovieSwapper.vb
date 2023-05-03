@@ -84,11 +84,10 @@ Public Class MediaSwapper
 
         End Set
     End Property
-    Public Sub New(ByRef MP1 As AxWindowsMediaPlayer, ByRef MP2 As AxWindowsMediaPlayer, ByRef MP3 As AxWindowsMediaPlayer, ByRef PB1 As PictureBox, ByRef PB2 As PictureBox, ByRef PB3 As PictureBox, ByRef B1 As Microsoft.Web.WebView2.WinForms.WebView2, ByRef b2 As Microsoft.Web.WebView2.WinForms.WebView2, ByRef b3 As Microsoft.Web.WebView2.WinForms.WebView2)
+    Public Sub New(ByRef MP1 As AxWindowsMediaPlayer, ByRef MP2 As AxWindowsMediaPlayer, ByRef MP3 As AxWindowsMediaPlayer, ByRef PB1 As PictureBox, ByRef PB2 As PictureBox, ByRef PB3 As PictureBox)
 
         AssignPlayers(MP1, MP2, MP3)
         AssignPictures(PB1, PB2, PB3)
-        AssignBrowsers(B1, b2, b3)
 
     End Sub
     Public Sub New()
@@ -105,12 +104,6 @@ Public Class MediaSwapper
         Media2.Picture = PB2
         Media1.Picture = PB1
 
-
-    End Sub
-    Public Sub AssignBrowsers(ByRef PB1 As Microsoft.Web.WebView2.WinForms.WebView2, ByRef PB2 As Microsoft.Web.WebView2.WinForms.WebView2, ByRef PB3 As Microsoft.Web.WebView2.WinForms.WebView2)
-        Media1.Browser = PB1
-        Media2.Browser = PB2
-        Media3.Browser = PB3
 
     End Sub
     Public Sub AssignPlayers(ByVal MP1 As AxWindowsMediaPlayer, ByVal MP2 As AxWindowsMediaPlayer, ByVal MP3 As AxWindowsMediaPlayer)
@@ -241,8 +234,8 @@ Public Class MediaSwapper
         ' HideMedias(MHX)
 
         MHX.Visible = False
-        MHX.Browser.BringToFront()
-        MHX.Browser.Visible = True
+        MHX.Textbox.BringToFront()
+        MHX.Textbox.Visible = True
         RaiseEvent MediaShown(MHX, Nothing)
 
     End Sub

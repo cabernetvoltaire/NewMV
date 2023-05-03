@@ -2,21 +2,11 @@
 Option Explicit On
 Imports System.ComponentModel
 Imports System.IO
+Imports AxWMPLib
 Imports System.Threading
 Imports MasaSam.Forms.Controls
 
-
-Imports Microsoft.VisualBasic.FileIO
-
-Imports System.Windows.Forms
-Imports System.Text
-Imports System.Timers
-
-
-Public Class FormMain
-    Inherits Form
-
-
+Friend Class FormMain
     Public DB As New Database
     Public Initialising As Boolean = True
     Public AutoLoadButtons As Boolean = False
@@ -24,8 +14,7 @@ Public Class FormMain
     Public movecolour As Color = Color.Orange
     Public sound As New AxWindowsMediaPlayer
     Public AutoTraverse As Boolean = False
-    Public WithEvents FNG As New FilenamesGrouper
-    Public WithEvents FG As New FileGrouper
+    Public WithEvents FNG As New FileNamesGrouper
     Public WithEvents Random As New RandomHandler
     Public WithEvents NavigateMoveState As New StateHandler()
     Public WithEvents CurrentFilterState As New FilterHandler
@@ -38,7 +27,7 @@ Public Class FormMain
     Public WithEvents AT As New AutoTrailer
     Public WithEvents X As New OrphanFinder
     Public WithEvents VT As New VideoThumbnailer
-    Public folderwatcher As FileSystemWatcher
+
     Public WithEvents FOP As FileOperations
     Public WithEvents BH As New ButtonHandler With {.RowProgressBar = ProgressBar1}
     Public Splash As New SplashScreen1
@@ -60,66 +49,6 @@ Public Class FormMain
     Private ScanInstructions = {"Movie scan in progress" & vbCrLf & "Selects next movie automatically.",
         "Movie Scan in progress" & vbCrLf & "Change speed with slider.",
         "Auto Trail in progress" & vbCrLf & "Change core speed change with slider"}
-    'Private ReadOnly _keyPressTimer As New Timers.Timer()
-    'Private ReadOnly _inputBuffer As New StringBuilder()
-    'Private Const TimePeriodMilliseconds As Double = 200 ' Set the time period in milliseconds
-
-    'Public Event KeySequenceCompleted(ByVal sender As Object, ByVal e As KeySequenceEventArgs)
-
-    Public Sub New()
-
-        ' This call is required by the designer.
-        InitializeComponent()
-        InitializeFolderWatcher()
-        '' Configure the timer
-
-    End Sub
-
-    Private Sub InitializeFolderWatcher()
-        folderwatcher = New FileSystemWatcher()
-        ' Set the folder to watch
-        folderwatcher.NotifyFilter = NotifyFilters.FileName Or NotifyFilters.DirectoryName ' Watch for changes in file and folder names
-        folderwatcher.Path = "C:\"
-        ' Add event handlers
-        AddHandler folderwatcher.Changed, AddressOf Folderwatcher_Changed
-        AddHandler folderwatcher.Created, AddressOf Folderwatcher_Changed
-        AddHandler folderwatcher.Deleted, AddressOf Folderwatcher_Changed
-        AddHandler folderwatcher.Renamed, AddressOf Folderwatcher_Changed
-
-        folderwatcher.EnableRaisingEvents = True ' Enable the FileSystemWatcher
-    End Sub
-    Public Sub Folderwatcher_Changed()
-        If FBH.ListBox.InvokeRequired Then
-            FBH.ListBox.Invoke(New MethodInvoker(AddressOf FBH.Refresh))
-        Else
-            FBH.Refresh()
-        End If
-    End Sub
-    'Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
-    '    MyBase.OnKeyDown(e)
-
-    '    If Char.IsLetterOrDigit(ChrW(e.KeyCode)) Then
-    '        _inputBuffer.Append(ChrW(e.KeyCode))
-    '        _keyPressTimer.Stop()
-    '        _keyPressTimer.Start()
-    '    End If
-    'End Sub
-
-    'Private Sub OnTimerElapsed(sender As Object, e As ElapsedEventArgs)
-    '    If _inputBuffer.Length > 0 Then
-    '        Dim finalKeySequenceEventArgs As New KeySequenceEventArgs(_inputBuffer.ToString())
-    '        If finalKeySequenceEventArgs.KeySequence.Length > 1 Then
-
-    '            RaiseEvent KeySequenceCompleted(Me, finalKeySequenceEventArgs)
-    '        End If
-    '        _inputBuffer.Clear()
-    '    End If
-    'End Sub
-
-    'Private Sub OnKeySequenceCompleted(sender As Object, e As KeySequenceEventArgs)
-    '    '  MessageBox.Show($"Key sequence completed: {e.KeySequence}")
-    '    SpawnSubButtonsForm(e.KeySequence)
-    'End Sub
 
 
 #Region "Event Responders"
@@ -789,7 +718,6 @@ Public Class FormMain
                 End If
             Case Keys.Escape
                 MSFiles.CancelURL()
-                BH.GetSubButtons("")
                 CancelDisplay(True)
 
             Case KeyToggleButtons
@@ -946,12 +874,7 @@ Public Class FormMain
 #End Region
 #Region "States"
             Case KeySelect
-                If CtrlDown And AltDown Then
-                    SpawnSubButtonsForm("")
-                Else
-                    SelectSubList(FocusControl, False)
-
-                End If
+                SelectSubList(FocusControl, False)
 
             Case KeyFullscreen
                 e.SuppressKeyPress = True
@@ -1475,12 +1398,7 @@ Public Class FormMain
 
     Private Sub Form1_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Splash.Hide()
-        Try
-            GlobalInitialise()
-
-        Catch ex As Exception
-
-        End Try
+        GlobalInitialise()
 
         Me.Visible = True
 
@@ -1540,7 +1458,7 @@ Public Class FormMain
             End Try
         End If
         e.Handled = True
-        '  e.SuppressKeyPress = True
+        e.SuppressKeyPress = True
 
     End Sub
     Private Sub Main_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
@@ -1880,14 +1798,8 @@ Public Class FormMain
         ProgressBarOff()
     End Sub
     Private Sub TreeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TreeToolStripMenuItem.Click
-        BH.AssignAlphaHierarchical(CurrentFolder, 15)
-
+        BH.AssignTreeNew(CurrentFolder, Val(InputBox("Depth")))
     End Sub
-
-
-
-
-
     Private Sub RespondToKey(sender As Object, e As KeyEventArgs)
         Dim mBH As New ButtonHandler
         If TypeOf (sender) Is FormButton Then
@@ -1945,23 +1857,7 @@ Public Class FormMain
                     '    Case Keys.S
                     '        mBH.SaveButtonSet()
                     'End Select
-                ElseIf e.Alt And e.Shift Then
-                    Select Case e.KeyCode
-                        Case Keys.I
-                            VideoTrim.StartTime = Media.Position
-                            VideoTrim.Active = True
-                        Case Keys.O
-                            VideoTrim.Finish = Media.Position
-                            Marks.Create()
-                        Case Keys.P
-                            VideoTrim.InputFile1 = MSFiles.CurrentItem
-                            VideoTrim.Main()
-
-                            VideoTrim.Active = False
-                    End Select
-
                 Else
-
                     'Advance row, or change letter
                     If mBH.buttons.CurrentLetter = LetterNumberFromAscii(e.KeyCode) Then
 
@@ -1974,7 +1870,7 @@ Public Class FormMain
 
                 End If
 
-                ' e.SuppressKeyPress = True
+                e.SuppressKeyPress = True
             Case Else
 
         End Select
@@ -2000,28 +1896,20 @@ Public Class FormMain
         'If Not MsgBox("This deletes all empty directories", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
         '    Exit Sub
         'Else
-
-        DeleteEmptyFolders(CurrentFolder)
-        ' tvmain2.RefreshTree(CurrentFolder)
+        DeleteEmptyFolders(New DirectoryInfo(CurrentFolder), sender Is IncludingAllSubfoldersToolStripMenuItem)
+        tvmain2.RefreshTree(CurrentFolder)
         'End If
 
     End Sub
 
     Private Async Sub HarvestFoldersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HarvestFoldersToolStripMenuItem.Click
-        '        Await HarvestBelow(New DirectoryInfo(CurrentFolder))
-        Dim FC As New FolderCleaner
-        FC.FolderPath = CurrentFolder
-        FC.MaxFileCount = 0
-        FC.CleanupFolder()
-        AddHandler FC.CleanupFinished, AddressOf CleanupFinishedHandler
-
+        Await HarvestBelow(New DirectoryInfo(CurrentFolder))
+        tvmain2.RefreshTree(CurrentFolder)
         'Dim x As New BundleHandler(tvMain2, lbxFiles, CurrentFolder)
 
     End Sub
 
-    Private Sub CleanupFinishedHandler(ByVal folderPath As String)
-        tvmain2.RefreshTree(folderPath)
-    End Sub
+
 
     Public Sub AddCurrentType(Recurse As Boolean)
         Showlist = AddFilesToCollection(strFilterExtensions(CurrentFilterState.State), Recurse)
@@ -2111,18 +1999,18 @@ Public Class FormMain
     End Sub
 
     Private Sub OnFilenamesParsed() Handles FNG.WordsParsed
-        'lbxGroups.Items.Clear()
-        ''    Dim i As Integer = 0
-        'For Each g In FG.
-        '    lbxGroups.Items.Add(FNG.GroupNames(i) & " (" & g.Count & ")")
-        '    '        Console.WriteLine(FNG.GroupNames(i))
+        lbxGroups.Items.Clear()
+        Dim i As Integer = 0
+        For Each g In FNG.Groups
+            lbxGroups.Items.Add(FNG.GroupNames(i) & " (" & g.Count & ")")
+            Console.WriteLine(FNG.GroupNames(i))
 
-        '    '        i += 1
-        '    '        For Each m In g
-        '    '            Console.WriteLine(m)
-        '    '        Next
-        '    '        Console.WriteLine()
-        'Next
+            i += 1
+            For Each m In g
+                Console.WriteLine(m)
+            Next
+            Console.WriteLine()
+        Next
 
     End Sub
     ''' <summary>
@@ -2226,7 +2114,7 @@ Public Class FormMain
         tmrUpdateFileList.Enabled = True
 
     End Sub
-    Private Sub Groupfiles(ByVal m As FilenamesGrouper)
+    Private Sub Groupfiles(ByVal m As FileNamesGrouper)
         MSFiles.URLSZero()
         blnSuppressCreate = True
         For i As Integer = 0 To m.Groups.Count - 1
@@ -2687,7 +2575,7 @@ Public Class FormMain
     End Sub
 
     Public Sub AddToButtonFilesList(path As String)
-        Dim folder As String = Autoload(IO.Path.GetFileNameWithoutExtension(path))
+        Dim folder As String = Autoload(FilenameFromPath(path, False), False)
         If CBXButtonFiles.Items.Contains(folder) Then
         ElseIf folder <> "" Then
             CBXButtonFiles.Items.Add(folder)
@@ -2720,39 +2608,13 @@ Public Class FormMain
         Return Foldername
         'Load it (optionally)
     End Function
-    Private Function SpawnSubButtonsForm(Search As String) As FormButton
-        Dim s = ShowInputDialog(Search)
-        BH.GetSubButtons(s)
 
-
-    End Function
-
-    Private Function ShowInputDialog(search As String) As String
-        Dim prompt As String = "Correct?"
-        Dim title As String = "Input Box"
-        Dim defaultResponse As String = search
-
-        Dim userInput As String = InputBox(prompt, title, defaultResponse)
-
-        If userInput <> "" Then
-            ' Perform actions with userInput
-            Return userInput
-        Else
-            ' Do nothing if the input box was canceled or empty
-            Return ""
-        End If
-
-    End Function
-    Private Function SpawnButtonForm(file As FileInfo, Optional name As String = "", Optional Nofile As Boolean = False) As FormButton
+    Private Function SpawnButtonForm(file As FileInfo, Optional name As String = "") As FormButton
         Dim fname As String
-        'If already a file, load it. Otherwise create a new one. 
         If file Is Nothing Then
-            If Not Nofile Then
-
-                Dim tBH As New ButtonHandler
-                tBH.SaveButtonSet(name)
-                fname = name
-            End If
+            Dim tBH As New ButtonHandler
+            tBH.SaveButtonSet(name)
+            fname = name
         Else
             fname = file.FullName
         End If
@@ -2941,8 +2803,6 @@ Public Class FormMain
     Private Sub lbxGroups_DoubleClick(sender As Object, e As EventArgs) Handles lbxGroups.DoubleClick
         FNG.AdvanceOption()
         FNG.Filenames = FBH.ItemList
-        FG.FilePaths = FBH.ItemList
-        FG.GroupFiles(4, CurrentFolder)
     End Sub
 
 
@@ -3645,7 +3505,6 @@ Public Class FormMain
         RefreshLinksOnPathNameFromDatabase(x)
     End Sub
 
-
     Private Sub SelectAllWrongLinksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectAllWrongLinksToolStripMenuItem.Click
         Dim list As New List(Of String)
         FBH.ListBox.SelectionMode = SelectionMode.MultiExtended
@@ -3739,73 +3598,6 @@ Public Class FormMain
         ' If Media IsNot Nothing Then DrawScrubberMarks()
     End Sub
 
-    Private Sub GroupButtonsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles GroupButtonsToolStripMenuItem.Click
-        BH.buttons.StringButtons(InputBox("String"))
-        BH.RefreshButtons()
-    End Sub
-
-    Public Class FolderCleaner
-
-        Private mFolderPath As String
-        Private mMaxFileCount As Integer
-        Public Event CleanupFinished(ByVal folderPath As String)
-
-        Public Property FolderPath As String
-            Get
-                Return mFolderPath
-            End Get
-            Set(ByVal value As String)
-                mFolderPath = value
-            End Set
-        End Property
-
-        Public Property MaxFileCount As Integer
-            Get
-                Return mMaxFileCount
-            End Get
-            Set(ByVal value As Integer)
-                mMaxFileCount = value
-            End Set
-        End Property
-
-        Public Sub CleanupFolder()
-            Dim files As String() = Directory.GetFiles(mFolderPath, "*", IO.SearchOption.AllDirectories)
-
-            Dim subFolders = Directory.GetDirectories(mFolderPath)
-
-            For Each folder As String In subFolders
-                Dim folderFiles As String() = Directory.GetFiles(folder)
-                If folderFiles.Length <= mMaxFileCount Or mMaxFileCount = 0 Then
-                    For Each file As String In folderFiles
-                        Dim destinationFile As String = Path.Combine(mFolderPath, Path.GetFileName(file))
-                        FileSystem.MoveFile(file, destinationFile, UIOption.OnlyErrorDialogs, UICancelOption.ThrowException)
-                    Next
-                    FileSystem.DeleteDirectory(folder, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin)
-                End If
-            Next
-
-            RaiseEvent CleanupFinished(mFolderPath)
-        End Sub
-    End Class
-
-    Private Sub SubButtonToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SubButtonToolStripMenuItem.Click
-        SpawnSubButtonsForm(InputBox("Search for what?"))
-    End Sub
-
-    Private Sub ExtractSubFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExtractSubFileToolStripMenuItem.Click
-        VideoTrim.StartTime = Media.Position
-        VideoTrim.Finish = StartTime + 1000
-        VideoTrim.InputFile1 = MSFiles.CurrentItem
-        VideoTrim.Main()
-        '        Marks.DrawConnectedCircles(Media.Position, Media.Position + 2500)
-
-    End Sub
-
-
-
-
-
-
 
 
 
@@ -3817,13 +3609,4 @@ Public Class FormMain
 
 #End Region
 
-End Class
-Public Class KeySequenceEventArgs
-    Inherits EventArgs
-
-    Public Property KeySequence As String
-
-    Public Sub New(keySequence As String)
-        Me.KeySequence = keySequence
-    End Sub
 End Class

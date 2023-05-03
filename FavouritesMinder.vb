@@ -120,7 +120,6 @@
 
     Public Function GetLinksOf(Path As String) As List(Of String)
         ' Exit Function
-        If Path = "" Then Exit Function
         Dim finfo As New IO.FileInfo(Path)
         Dim list As New List(Of String)
         If finfo.Exists Then

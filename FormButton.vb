@@ -115,10 +115,7 @@ Public Class FormButton
         ' FocusOnMain()
         BH.ActualButtons = {Button1, Button2, Button3a, Button4, Button5, Button6, Button7, Button8a}
         BH.InitialiseActualButtons()
-        If BH.ButtonsLoaded Then
-        Else
-            BH.LoadButtonSet(LoadButtonFileName(ButtonFilePath))
-        End If
+        BH.LoadButtonSet(LoadButtonFileName(ButtonFilePath))
         buttons = BH.buttons
         buttons.CurrentLetter = iCurrentAlpha
         BH.SwitchRow(buttons.CurrentRow)

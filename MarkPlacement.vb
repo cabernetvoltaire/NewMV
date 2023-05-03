@@ -31,39 +31,12 @@ Public Class MarkPlacement
         End Set
 
     End Property
-    Private mouseDownTimePosition As Double?
-    Private mouseUpTimePosition As Double?
-
-    Public Sub New()
-        ' Attach the event handlers to the PictureBox control
-        AddHandler mBar.MouseDown, AddressOf PictureBox_MouseDown
-        AddHandler mBar.MouseUp, AddressOf PictureBox_MouseUp
-    End Sub
-
-    Private Sub PictureBox_MouseDown(sender As Object, e As MouseEventArgs)
-        If e.Button = MouseButtons.Left Then
-            mouseDownTimePosition = e.X * Duration / mBar.Width
-        End If
-    End Sub
-
-    Private Sub PictureBox_MouseUp(sender As Object, e As MouseEventArgs)
-        If e.Button = MouseButtons.Left AndAlso mouseDownTimePosition.HasValue Then
-            mouseUpTimePosition = e.X * Duration / mBar.Width
-
-            ' Draw connected circles at the mouse down and up time positions
-            DrawConnectedCircles(mouseDownTimePosition.Value, mouseUpTimePosition.Value)
-
-            ' Reset the time positions
-            mouseDownTimePosition = Nothing
-            mouseUpTimePosition = Nothing
-        End If
-    End Sub
     Public Sub Create()
         tmr.Enabled = True
     End Sub
 
     Private Sub DrawMarks() Handles tmr.Tick
-        If Duration = 0 Or Duration > 10 ^ 6 Then Exit Sub
+        If Duration = 0 Then Exit Sub
         Clear() 'Erase marks
         Dim start As Point
         start.Y = 0
@@ -98,27 +71,7 @@ Public Class MarkPlacement
             Dim pen As New Pen(Color.Yellow, 3)
             Graphics.DrawLine(pen, start, endpt)
         Next
-        'Draw StartEnd
-        If VideoTrim.Active Then DrawConnectedCircles(VideoTrim.StartTime, VideoTrim.Finish)
         tmr.Enabled = False
-    End Sub
-    Public Sub DrawConnectedCircles(timePosition1 As Double, timePosition2 As Double)
-        Dim circleRadius As Integer = 3
-        Dim verticalOffset As Integer = mBar.Height \ 2
-
-        Dim xPosition1 As Integer = CInt(mBar.Width * timePosition1 / Duration)
-        Dim xPosition2 As Integer = CInt(mBar.Width * timePosition2 / Duration)
-
-        Dim circle1Center As New Point(xPosition1, verticalOffset)
-        Dim circle2Center As New Point(xPosition2, verticalOffset)
-
-        Dim circlePen As New Pen(Color.Red, 1)
-        Dim circleBrush As New SolidBrush(Color.Red)
-
-        Graphics.FillEllipse(circleBrush, circle1Center.X - circleRadius, circle1Center.Y - circleRadius, circleRadius * 2, circleRadius * 2)
-        Graphics.FillEllipse(circleBrush, circle2Center.X - circleRadius, circle2Center.Y - circleRadius, circleRadius * 2, circleRadius * 2)
-
-        Graphics.DrawLine(circlePen, circle1Center, circle2Center)
     End Sub
 
     Public Sub Clear()

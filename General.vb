@@ -40,7 +40,7 @@ Public Module General
     Public separate As Boolean = False
     Public DebugOn As Boolean = True
     Public t As Threading.Thread
-    Public CurrentFolder As String = "C:\"
+    Public CurrentFolder As String
     ' Public DirectoriesList As New List(Of String)
 
     Public Encrypted As Boolean = False
@@ -259,7 +259,17 @@ Public Module General
             Else
                 str = ""
             End If
+            'Dim f As New IO.FileInfo(items(0))
+            'If f.Exists Then
 
+            'Else
+            '    Dim x = str
+            '    str = TryOtherDriveLetters(str)
+            '    If str = x Then
+            '        'Report(str & "target not found", 1, False)
+            '    End If
+            '    'TODO TrywithoutBrackets
+            'End If
             Return str
         Catch ex As Exception
             Return str
@@ -726,7 +736,7 @@ Public Module General
                 Return Filetype.Movie
             ElseIf InStr(PICEXTENSIONS, strExt) <> 0 Then
                 Return Filetype.Pic
-            ElseIf InStr(LCase(".txt.prn.sty.doc.csv.html.rtf.mht"), LCase(strExt)) <> 0 Then
+            ElseIf InStr(LCase(".txt.prn.sty.doc.csv.html"), LCase(strExt)) <> 0 Then
                 Return Filetype.Doc
             Else
                 Return Filetype.Unknown

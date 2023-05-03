@@ -2,7 +2,6 @@
 Imports System.Threading
 Imports MasaSam.Forms.Controls
 
-
 Friend Module FileHandling
 
     '  Public WithEvents StartPoint As New StartPointHandler
@@ -16,7 +15,7 @@ Friend Module FileHandling
 
     Public WithEvents t As Thread
     Public WithEvents Media As New MediaHandler("Media")
-    Public WithEvents MSFiles As New MediaSwapper(FormMain.MainWMP1, FormMain.MainWMP2, FormMain.MainWMP3, FormMain.PictureBox1, FormMain.PictureBox2, FormMain.PictureBox3, FormMain.WebView21, FormMain.WebView22, FormMain.WebView23)
+    Public WithEvents MSFiles As New MediaSwapper(FormMain.MainWMP1, FormMain.MainWMP2, FormMain.MainWMP3, FormMain.PictureBox1, FormMain.PictureBox2, FormMain.PictureBox3)
 
     Public MSFilesNew As New MediaSwapper2
     Public AllFaveMinder As New FavouritesMinder("Q:\Favourites")
@@ -595,30 +594,13 @@ Friend Module FileHandling
             Next
         End If
     End Sub
-    Public Event DeleteEmptyFoldersCompleted()
+    Public Function DeleteEmptyFolders(d As DirectoryInfo, blnRecurse As Boolean) As Boolean
+        Dim x As New FileOperations
+        x.CurrentFolder = New DirectoryInfo(CurrentFolder)
+        x.RemoveEmptySubfolders()
+        Return True
 
-    Public Sub DeleteEmptyFolders(ByVal rootFolderPath As String)
-
-        For Each folderPath As String In Directory.GetDirectories(rootFolderPath)
-            DeleteEmptyFolders(folderPath)
-            If Directory.GetFiles(folderPath).Length = 0 AndAlso
-           Directory.GetDirectories(folderPath).Length = 0 Then
-                Directory.Delete(folderPath)
-            End If
-        Next
-        RaiseEvent DeleteEmptyFoldersCompleted()
-    End Sub
-
-    Private Sub CleanUpTree(sender As Object, e As EventArgs)
-        FormMain.tvmain2.Refresh()
-    End Sub
-    'Public Function DeleteEmptyFolders(d As DirectoryInfo, blnRecurse As Boolean) As Boolean
-    '    Dim x As New FileOperations
-    '    x.CurrentFolder = New DirectoryInfo(CurrentFolder)
-    '    x.RemoveEmptySubfolders()
-    '    Return True
-
-    'End Function
+    End Function
 
     Public Async Function HarvestBelow(d As DirectoryInfo) As Task
         Dim x As New BundleHandler(FormMain.tvmain2, FormMain.lbxFiles, d.FullName)
@@ -640,8 +622,6 @@ Friend Module FileHandling
         Dim finfo As New IO.FileInfo(path)
         finfo.MoveTo(finfo.Directory.Parent.FullName & "\" & finfo.Name)
     End Sub
-
-
 
 
 End Module

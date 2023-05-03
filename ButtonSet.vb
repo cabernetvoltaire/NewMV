@@ -165,25 +165,5 @@ Public Class ButtonSet
         num = InStr(alph, ch)
         Return num
     End Function
-    Public Function StringButtons(str As String) As ButtonRow
-        Dim newrow As New ButtonRow
-        newrow.InitialiseButtons()
-        Dim i As Integer = 0
-
-        For Each row In CurrentSet
-
-            For Each btn In row.Buttons
-                If i < 8 Then
-                    If btn.Path.Contains(str) Then
-                        newrow.Buttons(i) = btn
-                        i += 1
-                    End If
-                Else
-                    Exit For
-                End If
-            Next
-        Next
-        CurrentRow = newrow
-    End Function
 End Class
 

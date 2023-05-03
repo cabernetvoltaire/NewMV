@@ -246,13 +246,9 @@
         End If
     End Sub
     Public Sub SetIndex(num As Integer, Optional force As Boolean = False)
-        Try
-            ListBox.SelectedIndex = num
-            If force Then RaiseEvent ListIndexChanged(ListBox, Nothing)
 
-        Catch ex As Exception
-            MsgBox(ex.Message)
-        End Try
+        ListBox.SelectedIndex = num
+        If force Then RaiseEvent ListIndexChanged(ListBox, Nothing)
     End Sub
     Public Sub SetNamed(Name As String)
         If ListBox.SelectedItem = Name Then Exit Sub
@@ -358,7 +354,6 @@ Public Class FileboxHandler
                 GetFiles()
                 mFullItemList = mItemList
                 FillBox(mItemList)
-                FormMain.folderwatcher.Path = Value
             End If
 
         End Set
