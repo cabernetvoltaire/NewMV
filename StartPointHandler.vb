@@ -170,8 +170,8 @@
             mStartPoint = mMarkers(mMarkCounter)
         End If
     End Sub
-    Public Sub Reset()
-        mMarkers.Clear()
+    Public Sub ResetMarker()
+        mMarker = mDistance
         SetStartPoint()
     End Sub
     Private Function SetStartPoint() As Long
