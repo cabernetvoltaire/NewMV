@@ -68,7 +68,7 @@
     <ApplicationIcon>Resources\FileAccess_Alpha_frmMain_Icon1.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
@@ -483,6 +483,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.manifest" />
     <None Include="ClassDiagram1.cd" />
     <None Include="Metavisua_TemporaryKey.pfx" />
     <None Include="MVDataSet3.xsc">

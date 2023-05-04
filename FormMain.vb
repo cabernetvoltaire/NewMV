@@ -70,6 +70,10 @@ Public Class FormMain
 
         ' This call is required by the designer.
         InitializeComponent()
+
+        ' Enable high-DPI support
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+
         InitializeFolderWatcher()
         '' Configure the timer
 
