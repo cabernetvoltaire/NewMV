@@ -1,4 +1,5 @@
-﻿Public Class ListBoxHandler
+﻿Imports System.IO
+Public Class ListBoxHandler
 #Region "Properties"
     Public Property SortOrder As New SortHandler
     Public Property Reverse As Boolean = False
@@ -354,11 +355,13 @@ Public Class FileboxHandler
         Set
 
             If Value <> "" Then
-                _DirectoryPath = Value
-                GetFiles()
-                mFullItemList = mItemList
-                FillBox(mItemList)
-                FormMain.folderwatcher.Path = Value
+                If Directory.Exists(Value) Then
+                    _DirectoryPath = Value
+                    GetFiles()
+                    mFullItemList = mItemList
+                    FillBox(mItemList)
+                    FormMain.folderwatcher.Path = Value
+                End If
             End If
 
         End Set

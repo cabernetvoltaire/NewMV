@@ -1,5 +1,6 @@
 ﻿Imports System.Environment
 Imports Newtonsoft.Json
+Imports System.IO
 Friend Module Mysettings
 
     Public FirstLoad As Boolean = False
@@ -165,7 +166,7 @@ Friend Module Mysettings
 
 
     End Sub
-    Public Sub SavePreferences()
+    Public Sub SavePreferencesJSON()
         Dim preferences As New Dictionary(Of String, Object) From {
         {"LastTimeSuccessful", LastTimeSuccessful},
         {"VertSplit", FormMain.ctrFileBoxes.SplitterDistance},
@@ -316,7 +317,7 @@ Friend Module Mysettings
 
         If f.Exists Then
             prefslist = ReadListfromFile(f.FullName, False)
-            FormMain.ctrPicAndButtons.SplitterDistance = 8.7 * FormMain.ctrPicAndButtons.Height / 10
+            FormMain.ctrPicAndButtons.SplitterDistance = 8 * FormMain.ctrPicAndButtons.Height / 10
             If CheckDrives(prefslist) Then
                 For Each s In prefslist
                     If InStr(s, "$") <> 0 Then
@@ -625,6 +626,66 @@ Friend Module Mysettings
 
 
     End Class
+    Public Class Preference
+        Private Shared _preferences As Dictionary(Of String, Object) = Nothing
+        Private Shared _prefsPath As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Metavisua", "Preferences")
 
+        Public Shared ReadOnly Property Preferences() As Dictionary(Of String, Object)
+            Get
+                If _preferences Is Nothing Then
+                    LoadPreferences()
+                End If
+                Return _preferences
+            End Get
+        End Property
+
+        Private Shared Sub LoadPreferences()
+            Dim prefsFilePath As String = GetPrefsFilePath()
+
+            If File.Exists(prefsFilePath) Then
+                Try
+                    Dim prefsJson As String = File.ReadAllText(prefsFilePath)
+                    _preferences = JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(prefsJson)
+                Catch ex As Exception
+                    MsgBox("Error loading preferences file: " & ex.Message)
+                End Try
+            Else
+                _preferences = New Dictionary(Of String, Object)
+                SavePreferences()
+            End If
+        End Sub
+
+        Public Shared Sub SavePreferences()
+            Dim preferencesJson As String = JsonConvert.SerializeObject(_preferences)
+
+            Dim prefsFilePath As String = GetPrefsFilePath()
+
+            If IO.File.Exists(prefsFilePath) Then
+                IO.File.Delete(prefsFilePath)
+            End If
+
+            IO.File.WriteAllText(prefsFilePath, preferencesJson)
+        End Sub
+
+        Private Shared Function GetPrefsFilePath() As String
+            Dim driveLetters As String = GetDriveLetters()
+
+            Dim prefsFilePath As String = IO.Path.Combine(_prefsPath, driveLetters & "MVPrefs.json")
+
+            Return prefsFilePath
+        End Function
+
+        Private Shared Function GetDriveLetters() As String
+            Dim driveLetters As String = ""
+
+            For Each drive As DriveInfo In DriveInfo.GetDrives()
+                If drive.IsReady Then
+                    driveLetters &= drive.Name.Substring(0, 1)
+                End If
+            Next
+
+            Return driveLetters
+        End Function
+    End Class
 End Module
 
