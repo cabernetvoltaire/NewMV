@@ -179,6 +179,7 @@ Partial Class FormMain
         Me.LoadButtonFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveButtonFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ButtonFormToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SubButtonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem10 = New System.Windows.Forms.ToolStripMenuItem()
         Me.LinearToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AlphaToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -315,7 +316,6 @@ Partial Class FormMain
         Me.tmrHighlightCurrent = New System.Windows.Forms.Timer(Me.components)
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.MouseMonitorTimer = New System.Windows.Forms.Timer(Me.components)
-        Me.SubButtonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.KeyHoldTimer = New System.Windows.Forms.Timer(Me.components)
         Me.StatusStrip1.SuspendLayout()
         Me.FullPanel.SuspendLayout()
@@ -1842,6 +1842,12 @@ Partial Class FormMain
         Me.ButtonFormToolStripMenuItem.Size = New System.Drawing.Size(331, 34)
         Me.ButtonFormToolStripMenuItem.Text = "Button Form"
         '
+        'SubButtonToolStripMenuItem
+        '
+        Me.SubButtonToolStripMenuItem.Name = "SubButtonToolStripMenuItem"
+        Me.SubButtonToolStripMenuItem.Size = New System.Drawing.Size(331, 34)
+        Me.SubButtonToolStripMenuItem.Text = "SubButton"
+        '
         'ToolStripMenuItem10
         '
         Me.ToolStripMenuItem10.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LinearToolStripMenuItem, Me.AlphaToolStripMenuItem, Me.TreeToolStripMenuItem, Me.ToolStripSeparator12, Me.AutoButton, Me.ResetButtonsToolStripMenuItem})
@@ -2359,7 +2365,7 @@ Partial Class FormMain
         'Screen1ToolStripMenuItem
         '
         Me.Screen1ToolStripMenuItem.Name = "Screen1ToolStripMenuItem"
-        Me.Screen1ToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.Screen1ToolStripMenuItem.Size = New System.Drawing.Size(181, 34)
         Me.Screen1ToolStripMenuItem.Text = "Screen 1"
         '
         'Screen2ToolStripMenuItem
@@ -2367,7 +2373,7 @@ Partial Class FormMain
         Me.Screen2ToolStripMenuItem.Checked = True
         Me.Screen2ToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
         Me.Screen2ToolStripMenuItem.Name = "Screen2ToolStripMenuItem"
-        Me.Screen2ToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.Screen2ToolStripMenuItem.Size = New System.Drawing.Size(181, 34)
         Me.Screen2ToolStripMenuItem.Text = "Screen 2"
         '
         'OptionsToolStripMenuItem
@@ -2697,19 +2703,19 @@ Partial Class FormMain
         'SilentToolStripMenuItem
         '
         Me.SilentToolStripMenuItem.Name = "SilentToolStripMenuItem"
-        Me.SilentToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.SilentToolStripMenuItem.Size = New System.Drawing.Size(230, 34)
         Me.SilentToolStripMenuItem.Text = "Silent"
         '
         'NormalSoundToolStripMenuItem
         '
         Me.NormalSoundToolStripMenuItem.Name = "NormalSoundToolStripMenuItem"
-        Me.NormalSoundToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.NormalSoundToolStripMenuItem.Size = New System.Drawing.Size(230, 34)
         Me.NormalSoundToolStripMenuItem.Text = "Normal Sound"
         '
         'SlowSoundToolStripMenuItem
         '
         Me.SlowSoundToolStripMenuItem.Name = "SlowSoundToolStripMenuItem"
-        Me.SlowSoundToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.SlowSoundToolStripMenuItem.Size = New System.Drawing.Size(230, 34)
         Me.SlowSoundToolStripMenuItem.Text = "Slow Sound"
         '
         'PositionUpdater
@@ -2746,12 +2752,6 @@ Partial Class FormMain
         Me.lblProgress.Name = "lblProgress"
         Me.lblProgress.Size = New System.Drawing.Size(0, 20)
         Me.lblProgress.TabIndex = 4
-        '
-        'SubButtonToolStripMenuItem
-        '
-        Me.SubButtonToolStripMenuItem.Name = "SubButtonToolStripMenuItem"
-        Me.SubButtonToolStripMenuItem.Size = New System.Drawing.Size(331, 34)
-        Me.SubButtonToolStripMenuItem.Text = "SubButton"
         '
         'KeyHoldTimer
         '

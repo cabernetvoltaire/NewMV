@@ -91,6 +91,7 @@ Module VideoTrim
 
             Console.WriteLine("Process exited.")
             MsgBox("Extraction Done")
+            process.Close()
 
             If process.ExitCode <> 0 Then
                 Console.WriteLine($"Error code: {process.ExitCode}")
