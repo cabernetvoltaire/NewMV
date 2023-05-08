@@ -294,7 +294,6 @@ Partial Class FormMain
         Me.NewMediaSwapperToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TaggingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.GroupButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.SubButtonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExtractSubFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RenamingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem6 = New System.Windows.Forms.ToolStripMenuItem()
@@ -316,6 +315,8 @@ Partial Class FormMain
         Me.tmrHighlightCurrent = New System.Windows.Forms.Timer(Me.components)
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.MouseMonitorTimer = New System.Windows.Forms.Timer(Me.components)
+        Me.SubButtonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.KeyHoldTimer = New System.Windows.Forms.Timer(Me.components)
         Me.StatusStrip1.SuspendLayout()
         Me.FullPanel.SuspendLayout()
         CType(Me.ctrMainFrame, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -815,8 +816,8 @@ Partial Class FormMain
         Me.ctrPicAndButtons.Panel2.Controls.Add(Me.btnRow)
         Me.ctrPicAndButtons.Panel2MinSize = 45
         Me.ctrPicAndButtons.Size = New System.Drawing.Size(2394, 1924)
-        Me.ctrPicAndButtons.SplitterDistance = 1879
-        Me.ctrPicAndButtons.SplitterWidth = 100
+        Me.ctrPicAndButtons.SplitterDistance = 1112
+        Me.ctrPicAndButtons.SplitterWidth = 6
         Me.ctrPicAndButtons.TabIndex = 0
         Me.ctrPicAndButtons.TabStop = False
         '
@@ -896,7 +897,7 @@ Partial Class FormMain
         '
         Me.PictureBox2.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.PictureBox2.BackColor = System.Drawing.Color.Black
-        Me.PictureBox2.Location = New System.Drawing.Point(1202, 396)
+        Me.PictureBox2.Location = New System.Drawing.Point(1202, 13)
         Me.PictureBox2.Name = "PictureBox2"
         Me.PictureBox2.Size = New System.Drawing.Size(327, 332)
         Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -907,7 +908,7 @@ Partial Class FormMain
         '
         Me.PictureBox3.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.PictureBox3.BackColor = System.Drawing.Color.Black
-        Me.PictureBox3.Location = New System.Drawing.Point(258, 656)
+        Me.PictureBox3.Location = New System.Drawing.Point(258, 273)
         Me.PictureBox3.Name = "PictureBox3"
         Me.PictureBox3.Size = New System.Drawing.Size(327, 332)
         Me.PictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -918,7 +919,7 @@ Partial Class FormMain
         '
         Me.PictureBox1.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.PictureBox1.BackColor = System.Drawing.Color.Black
-        Me.PictureBox1.Location = New System.Drawing.Point(-34, 280)
+        Me.PictureBox1.Location = New System.Drawing.Point(-34, -103)
         Me.PictureBox1.Name = "PictureBox1"
         Me.PictureBox1.Size = New System.Drawing.Size(705, 595)
         Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -959,7 +960,7 @@ Partial Class FormMain
         Me.btnRow.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60.0!))
         Me.btnRow.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20.0!))
         Me.btnRow.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
-        Me.btnRow.Size = New System.Drawing.Size(2394, 45)
+        Me.btnRow.Size = New System.Drawing.Size(2394, 806)
         Me.btnRow.TabIndex = 3
         '
         'Scrubber
@@ -968,10 +969,10 @@ Partial Class FormMain
         Me.Scrubber.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.btnRow.SetColumnSpan(Me.Scrubber, 10)
         Me.Scrubber.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Scrubber.Location = New System.Drawing.Point(2, 2)
+        Me.Scrubber.Location = New System.Drawing.Point(2, 55)
         Me.Scrubber.Margin = New System.Windows.Forms.Padding(2)
         Me.Scrubber.Name = "Scrubber"
-        Me.Scrubber.Size = New System.Drawing.Size(2390, 5)
+        Me.Scrubber.Size = New System.Drawing.Size(2390, 50)
         Me.Scrubber.TabIndex = 15
         Me.Scrubber.TabStop = False
         '
@@ -980,9 +981,9 @@ Partial Class FormMain
         Me.Panel8.Controls.Add(Me.lbl8)
         Me.Panel8.Controls.Add(Me.btn8)
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel8.Location = New System.Drawing.Point(2163, 12)
+        Me.Panel8.Location = New System.Drawing.Point(2163, 164)
         Me.Panel8.Name = "Panel8"
-        Me.Panel8.Size = New System.Drawing.Size(228, 21)
+        Me.Panel8.Size = New System.Drawing.Size(228, 477)
         Me.Panel8.TabIndex = 10
         '
         'lbl8
@@ -1014,9 +1015,9 @@ Partial Class FormMain
         Me.Panel7.Controls.Add(Me.lbl7)
         Me.Panel7.Controls.Add(Me.btn7)
         Me.Panel7.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel7.Location = New System.Drawing.Point(1932, 12)
+        Me.Panel7.Location = New System.Drawing.Point(1932, 164)
         Me.Panel7.Name = "Panel7"
-        Me.Panel7.Size = New System.Drawing.Size(225, 21)
+        Me.Panel7.Size = New System.Drawing.Size(225, 477)
         Me.Panel7.TabIndex = 9
         '
         'lbl7
@@ -1048,9 +1049,9 @@ Partial Class FormMain
         Me.Panel6.Controls.Add(Me.lbl6)
         Me.Panel6.Controls.Add(Me.btn6)
         Me.Panel6.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel6.Location = New System.Drawing.Point(1701, 12)
+        Me.Panel6.Location = New System.Drawing.Point(1701, 164)
         Me.Panel6.Name = "Panel6"
-        Me.Panel6.Size = New System.Drawing.Size(225, 21)
+        Me.Panel6.Size = New System.Drawing.Size(225, 477)
         Me.Panel6.TabIndex = 8
         '
         'lbl6
@@ -1082,9 +1083,9 @@ Partial Class FormMain
         Me.Panel5.Controls.Add(Me.lbl5)
         Me.Panel5.Controls.Add(Me.btn5)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel5.Location = New System.Drawing.Point(1470, 12)
+        Me.Panel5.Location = New System.Drawing.Point(1470, 164)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(225, 21)
+        Me.Panel5.Size = New System.Drawing.Size(225, 477)
         Me.Panel5.TabIndex = 7
         '
         'lbl5
@@ -1116,9 +1117,9 @@ Partial Class FormMain
         Me.Panel4.Controls.Add(Me.lbl4)
         Me.Panel4.Controls.Add(Me.btn4)
         Me.Panel4.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel4.Location = New System.Drawing.Point(1008, 12)
+        Me.Panel4.Location = New System.Drawing.Point(1008, 164)
         Me.Panel4.Name = "Panel4"
-        Me.Panel4.Size = New System.Drawing.Size(225, 21)
+        Me.Panel4.Size = New System.Drawing.Size(225, 477)
         Me.Panel4.TabIndex = 5
         '
         'lbl4
@@ -1150,9 +1151,9 @@ Partial Class FormMain
         Me.Panel3.Controls.Add(Me.lbl3)
         Me.Panel3.Controls.Add(Me.btn3)
         Me.Panel3.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel3.Location = New System.Drawing.Point(777, 12)
+        Me.Panel3.Location = New System.Drawing.Point(777, 164)
         Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(225, 21)
+        Me.Panel3.Size = New System.Drawing.Size(225, 477)
         Me.Panel3.TabIndex = 4
         '
         'lbl3
@@ -1184,9 +1185,9 @@ Partial Class FormMain
         Me.Panel2.Controls.Add(Me.lbl2)
         Me.Panel2.Controls.Add(Me.btn2)
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel2.Location = New System.Drawing.Point(546, 12)
+        Me.Panel2.Location = New System.Drawing.Point(546, 164)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(225, 21)
+        Me.Panel2.Size = New System.Drawing.Size(225, 477)
         Me.Panel2.TabIndex = 3
         '
         'lbl2
@@ -1219,15 +1220,15 @@ Partial Class FormMain
         Me.Panel1.Controls.Add(Me.lbl1)
         Me.Panel1.Controls.Add(Me.btn1)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel1.Location = New System.Drawing.Point(315, 12)
+        Me.Panel1.Location = New System.Drawing.Point(315, 164)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(225, 21)
+        Me.Panel1.Size = New System.Drawing.Size(225, 477)
         Me.Panel1.TabIndex = 2
         '
         'lbl1
         '
+        Me.lbl1.Anchor = System.Windows.Forms.AnchorStyles.Top
         Me.lbl1.AutoSize = True
-        Me.lbl1.Dock = System.Windows.Forms.DockStyle.Top
         Me.lbl1.FlatStyle = System.Windows.Forms.FlatStyle.Popup
         Me.lbl1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.142858!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lbl1.Location = New System.Drawing.Point(0, 77)
@@ -1235,6 +1236,7 @@ Partial Class FormMain
         Me.lbl1.Size = New System.Drawing.Size(65, 20)
         Me.lbl1.TabIndex = 2
         Me.lbl1.Text = "Label1"
+        Me.lbl1.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
         'btn1
         '
@@ -1254,9 +1256,9 @@ Partial Class FormMain
         '
         Me.lblAlpha.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lblAlpha.Font = New System.Drawing.Font("Microsoft Sans Serif", 48.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblAlpha.Location = New System.Drawing.Point(1239, 9)
+        Me.lblAlpha.Location = New System.Drawing.Point(1239, 161)
         Me.lblAlpha.Name = "lblAlpha"
-        Me.lblAlpha.Size = New System.Drawing.Size(225, 27)
+        Me.lblAlpha.Size = New System.Drawing.Size(225, 483)
         Me.lblAlpha.TabIndex = 11
         Me.lblAlpha.Text = "A"
         Me.lblAlpha.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -1264,7 +1266,7 @@ Partial Class FormMain
         'emblem
         '
         Me.emblem.Image = Global.MasaSam.Forms.Sample.My.Resources.Resources.Untitled_1_copy1
-        Me.emblem.Location = New System.Drawing.Point(3, 12)
+        Me.emblem.Location = New System.Drawing.Point(3, 164)
         Me.emblem.Name = "emblem"
         Me.emblem.Size = New System.Drawing.Size(225, 21)
         Me.emblem.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -1276,10 +1278,10 @@ Partial Class FormMain
         Me.ProgressBar1.BackColor = System.Drawing.SystemColors.Control
         Me.ProgressBar1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ProgressBar1.ForeColor = System.Drawing.Color.Green
-        Me.ProgressBar1.Location = New System.Drawing.Point(2, 38)
+        Me.ProgressBar1.Location = New System.Drawing.Point(2, 646)
         Me.ProgressBar1.Margin = New System.Windows.Forms.Padding(2)
         Me.ProgressBar1.Name = "ProgressBar1"
-        Me.ProgressBar1.Size = New System.Drawing.Size(308, 5)
+        Me.ProgressBar1.Size = New System.Drawing.Size(308, 158)
         Me.ProgressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous
         Me.ProgressBar1.TabIndex = 16
         '
@@ -1805,7 +1807,7 @@ Partial Class FormMain
         '
         'ToolStripMenuItem2
         '
-        Me.ToolStripMenuItem2.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NewButtonFileToolStripMenuItem, Me.LoadButtonFileToolStripMenuItem, Me.SaveButtonFileToolStripMenuItem, Me.ButtonFormToolStripMenuItem, Me.ToolStripMenuItem10})
+        Me.ToolStripMenuItem2.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NewButtonFileToolStripMenuItem, Me.LoadButtonFileToolStripMenuItem, Me.SaveButtonFileToolStripMenuItem, Me.ButtonFormToolStripMenuItem, Me.SubButtonToolStripMenuItem, Me.ToolStripMenuItem10})
         Me.ToolStripMenuItem2.Name = "ToolStripMenuItem2"
         Me.ToolStripMenuItem2.Size = New System.Drawing.Size(278, 34)
         Me.ToolStripMenuItem2.Text = "&Button files"
@@ -2576,7 +2578,7 @@ Partial Class FormMain
         '
         'ExperimentToolStripMenuItem
         '
-        Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RefreshLinksFromDatabaseToolStripMenuItem, Me.DatabaseExperimentToolStripMenuItem, Me.RefreshSelectedFromLinkNameToolStripMenuItem, Me.SelectAllWrongLinksToolStripMenuItem, Me.ListhandlerToolStripMenuItem, Me.ScreenOfMoviesToolStripMenuItem, Me.NewMediaSwapperToolStripMenuItem, Me.TaggingToolStripMenuItem, Me.GroupButtonsToolStripMenuItem, Me.SubButtonToolStripMenuItem, Me.ExtractSubFileToolStripMenuItem})
+        Me.ExperimentToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RefreshLinksFromDatabaseToolStripMenuItem, Me.DatabaseExperimentToolStripMenuItem, Me.RefreshSelectedFromLinkNameToolStripMenuItem, Me.SelectAllWrongLinksToolStripMenuItem, Me.ListhandlerToolStripMenuItem, Me.ScreenOfMoviesToolStripMenuItem, Me.NewMediaSwapperToolStripMenuItem, Me.TaggingToolStripMenuItem, Me.GroupButtonsToolStripMenuItem, Me.ExtractSubFileToolStripMenuItem})
         Me.ExperimentToolStripMenuItem.Name = "ExperimentToolStripMenuItem"
         Me.ExperimentToolStripMenuItem.Size = New System.Drawing.Size(116, 29)
         Me.ExperimentToolStripMenuItem.Text = "Experiment"
@@ -2634,12 +2636,6 @@ Partial Class FormMain
         Me.GroupButtonsToolStripMenuItem.Name = "GroupButtonsToolStripMenuItem"
         Me.GroupButtonsToolStripMenuItem.Size = New System.Drawing.Size(378, 34)
         Me.GroupButtonsToolStripMenuItem.Text = "GroupButtons"
-        '
-        'SubButtonToolStripMenuItem
-        '
-        Me.SubButtonToolStripMenuItem.Name = "SubButtonToolStripMenuItem"
-        Me.SubButtonToolStripMenuItem.Size = New System.Drawing.Size(378, 34)
-        Me.SubButtonToolStripMenuItem.Text = "SubButton"
         '
         'ExtractSubFileToolStripMenuItem
         '
@@ -2701,19 +2697,19 @@ Partial Class FormMain
         'SilentToolStripMenuItem
         '
         Me.SilentToolStripMenuItem.Name = "SilentToolStripMenuItem"
-        Me.SilentToolStripMenuItem.Size = New System.Drawing.Size(230, 34)
+        Me.SilentToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
         Me.SilentToolStripMenuItem.Text = "Silent"
         '
         'NormalSoundToolStripMenuItem
         '
         Me.NormalSoundToolStripMenuItem.Name = "NormalSoundToolStripMenuItem"
-        Me.NormalSoundToolStripMenuItem.Size = New System.Drawing.Size(230, 34)
+        Me.NormalSoundToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
         Me.NormalSoundToolStripMenuItem.Text = "Normal Sound"
         '
         'SlowSoundToolStripMenuItem
         '
         Me.SlowSoundToolStripMenuItem.Name = "SlowSoundToolStripMenuItem"
-        Me.SlowSoundToolStripMenuItem.Size = New System.Drawing.Size(230, 34)
+        Me.SlowSoundToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
         Me.SlowSoundToolStripMenuItem.Text = "Slow Sound"
         '
         'PositionUpdater
@@ -2750,6 +2746,16 @@ Partial Class FormMain
         Me.lblProgress.Name = "lblProgress"
         Me.lblProgress.Size = New System.Drawing.Size(0, 20)
         Me.lblProgress.TabIndex = 4
+        '
+        'SubButtonToolStripMenuItem
+        '
+        Me.SubButtonToolStripMenuItem.Name = "SubButtonToolStripMenuItem"
+        Me.SubButtonToolStripMenuItem.Size = New System.Drawing.Size(331, 34)
+        Me.SubButtonToolStripMenuItem.Text = "SubButton"
+        '
+        'KeyHoldTimer
+        '
+        Me.KeyHoldTimer.Interval = 10
         '
         'FormMain
         '
@@ -3138,10 +3144,11 @@ Partial Class FormMain
     Friend WithEvents TextBox1 As TextBox
     Friend WithEvents GroupButtonsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents NewToolStripMenuItem1 As ToolStripMenuItem
-    Friend WithEvents SubButtonToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ExtractSubFileToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents MouseMonitorTimer As Timer
     Friend WithEvents WebView23 As Microsoft.Web.WebView2.WinForms.WebView2
     Friend WithEvents WebView22 As Microsoft.Web.WebView2.WinForms.WebView2
     Friend WithEvents WebView21 As Microsoft.Web.WebView2.WinForms.WebView2
+    Friend WithEvents SubButtonToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents KeyHoldTimer As Timer
 End Class

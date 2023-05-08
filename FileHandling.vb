@@ -595,10 +595,10 @@ Friend Module FileHandling
             Next
         End If
     End Sub
-    Public Event DeleteEmptyFoldersCompleted()
+    Public Event DeleteEmptyFoldersCompleted(sender As Object, e As EventArgs)
 
     Public Sub DeleteEmptyFolders(ByVal rootFolderPath As String)
-
+        'AddHandler FileHandling.DeleteEmptyFoldersCompleted, AddressOf CleanUpTree
         For Each folderPath As String In Directory.GetDirectories(rootFolderPath)
             DeleteEmptyFolders(folderPath)
             If Directory.GetFiles(folderPath).Length = 0 AndAlso
@@ -606,10 +606,11 @@ Friend Module FileHandling
                 Directory.Delete(folderPath)
             End If
         Next
-        RaiseEvent DeleteEmptyFoldersCompleted()
+
+        RaiseEvent DeleteEmptyFoldersCompleted(Nothing, Nothing)
     End Sub
 
-    Private Sub CleanUpTree(sender As Object, e As EventArgs)
+    Public Sub CleanUpTree(sender As Object, e As EventArgs)
         FormMain.tvmain2.Refresh()
     End Sub
     'Public Function DeleteEmptyFolders(d As DirectoryInfo, blnRecurse As Boolean) As Boolean
