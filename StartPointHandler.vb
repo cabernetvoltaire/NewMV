@@ -1,12 +1,13 @@
 ﻿Public Class StartPointHandler
     Public Enum StartTypes As Byte
-        Beginning
+        NearBeginning
         FirstMarker
+        NearEnd
         ParticularAbsolute
         ParticularPercentage
         Random
-        NearEnd
-        NearBeginning
+        Beginning
+
     End Enum
     Public Timer As New Timer
     Public WMP As AxWindowsMediaPlayer
@@ -14,13 +15,13 @@
     Public Event StartPointChanged(sender As Object, e As EventArgs)
     Public Event JumpKey()
     Private ReadOnly mOrder = {
-        "Beginning",
+        "Near Beginning",
         "First Marker",
+        "Near End",
         "Particular(s)",
         "Particular(%)",
         "Random",
-        "Near End",
-        "Near Beginning"
+        "Beginning"
     }
     Private mDescList As New List(Of String)
     Public Sub New(Optional ByVal StartPercentage As Byte = 50, Optional ByVal StartAbsolute As Byte = 65)
@@ -177,26 +178,11 @@
     Private Function SetStartPoint() As Long
         Select Case mState
             Case StartTypes.FirstMarker
-                If mMarkers.Count > 0 Then
-                    mStartPoint = mMarkers(0)
-                Else
-                    mStartPoint = mDistance
-                    If mStartPoint > mDuration / 2 Then
-                        mStartPoint = mDuration * 0.1
-                    End If
-                End If
+                mStartPoint = If(mMarkers.Any(), mMarkers(0), GetAdjustedStartPoint(mDistance))
             Case StartTypes.Beginning
                 mStartPoint = 0
-            Case StartTypes.NearBeginning
-                mStartPoint = mDistance
-                If mStartPoint > mDuration / 2 Then
-                    mStartPoint = mDuration * 0.1
-                End If
-            Case StartTypes.NearEnd
-                mStartPoint = mDuration - mDistance
-                If mStartPoint < mDuration / 2 Then
-                    mStartPoint = mDuration * 0.9
-                End If
+            Case StartTypes.NearBeginning, StartTypes.NearEnd
+                mStartPoint = GetAdjustedStartPoint(If(mState = StartTypes.NearBeginning, mDuration * 0.05, mDuration * 0.95))
             Case StartTypes.ParticularAbsolute
                 mStartPoint = mAbsolute
             Case StartTypes.ParticularPercentage
@@ -204,19 +190,34 @@
             Case StartTypes.Random
                 mStartPoint = Rnd() * mDuration
         End Select
-        'Apply limits
-        'Not too close to end
-        If mDuration - mStartPoint < 5 Then
-            mStartPoint = mDuration - 5
-            If mStartPoint < 0 Then mStartPoint = 0 'But the beginning if clip is less than min duration
-        End If
-        If mStartPoint > mDuration Then
-            mStartPoint = mDuration / 2 'If we overshoot, re-locate to halfway point. 
-        End If
 
+        ' Apply limits
+        mStartPoint = ApplyLimitsToStartPoint(mStartPoint)
         If mStartPoint > mDuration Then MsgBox("Too far")
+
         Return mStartPoint
         RaiseEvent StartPointChanged(Me, Nothing)
     End Function
+
+    Private Function GetAdjustedStartPoint(value As Long) As Long
+        If value > mDuration / 2 Then
+            Return mDuration * If(mState = StartTypes.NearBeginning, 0.1, 0.9)
+        End If
+        Return value
+    End Function
+
+    Private Function ApplyLimitsToStartPoint(value As Long) As Long
+        If mDuration - value < 5 Then
+            value = mDuration - 5
+        End If
+        If value < 0 Then
+            value = 0
+        End If
+        If value > mDuration Then
+            value = mDuration / 2
+        End If
+        Return value
+    End Function
+
 #End Region
 End Class

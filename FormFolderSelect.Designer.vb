@@ -22,6 +22,7 @@ Partial Class FormFolderSelect
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormFolderSelect))
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.fst1 = New MasaSam.Forms.Controls.FileSystemTree()
@@ -32,6 +33,7 @@ Partial Class FormFolderSelect
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
         Me.PreviewWMP = New AxWMPLib.AxWindowsMediaPlayer()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
+        Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
         Me.TableLayoutPanel1.SuspendLayout()
         Me.Panel1.SuspendLayout()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -51,12 +53,13 @@ Partial Class FormFolderSelect
         Me.TableLayoutPanel1.Controls.Add(Me.SplitContainer1, 0, 0)
         Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
+        Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 3
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 400.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 333.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 82.5!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 17.5!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(618, 977)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(506, 814)
         Me.TableLayoutPanel1.TabIndex = 0
         '
         'fst1
@@ -64,12 +67,12 @@ Partial Class FormFolderSelect
         Me.fst1.AutoExpandNodes = True
         Me.fst1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.fst1.FileExtensions = "*"
-        Me.fst1.Location = New System.Drawing.Point(6, 406)
-        Me.fst1.Margin = New System.Windows.Forms.Padding(6)
+        Me.fst1.Location = New System.Drawing.Point(5, 338)
+        Me.fst1.Margin = New System.Windows.Forms.Padding(5, 5, 5, 5)
         Me.fst1.Name = "fst1"
         Me.fst1.RootDrive = Nothing
         Me.fst1.SelectedFolder = Nothing
-        Me.fst1.Size = New System.Drawing.Size(606, 464)
+        Me.fst1.Size = New System.Drawing.Size(496, 386)
         Me.fst1.TabIndex = 0
         Me.fst1.TrackDriveState = True
         '
@@ -79,41 +82,46 @@ Partial Class FormFolderSelect
         Me.Panel1.Controls.Add(Me.TextBox1)
         Me.Panel1.Controls.Add(Me.Label1)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel1.Location = New System.Drawing.Point(3, 879)
+        Me.Panel1.Location = New System.Drawing.Point(2, 731)
+        Me.Panel1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(612, 95)
+        Me.Panel1.Size = New System.Drawing.Size(502, 81)
         Me.Panel1.TabIndex = 1
         '
         'btnAssign
         '
         Me.btnAssign.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnAssign.Location = New System.Drawing.Point(435, 45)
+        Me.btnAssign.Location = New System.Drawing.Point(356, 37)
+        Me.btnAssign.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.btnAssign.Name = "btnAssign"
-        Me.btnAssign.Size = New System.Drawing.Size(168, 38)
+        Me.btnAssign.Size = New System.Drawing.Size(137, 32)
         Me.btnAssign.TabIndex = 2
         Me.btnAssign.Text = "A&ssign"
         Me.btnAssign.UseVisualStyleBackColor = True
         '
         'TextBox1
         '
-        Me.TextBox1.Location = New System.Drawing.Point(14, 49)
+        Me.TextBox1.Location = New System.Drawing.Point(11, 41)
+        Me.TextBox1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(416, 29)
+        Me.TextBox1.Size = New System.Drawing.Size(341, 26)
         Me.TextBox1.TabIndex = 1
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(9, 0)
+        Me.Label1.Location = New System.Drawing.Point(7, 0)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(71, 25)
+        Me.Label1.Size = New System.Drawing.Size(57, 20)
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "Label1"
         '
         'SplitContainer1
         '
         Me.SplitContainer1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SplitContainer1.Location = New System.Drawing.Point(3, 3)
+        Me.SplitContainer1.Location = New System.Drawing.Point(2, 2)
+        Me.SplitContainer1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.SplitContainer1.Name = "SplitContainer1"
         '
         'SplitContainer1.Panel1
@@ -123,8 +131,9 @@ Partial Class FormFolderSelect
         'SplitContainer1.Panel2
         '
         Me.SplitContainer1.Panel2.Controls.Add(Me.PictureBox1)
-        Me.SplitContainer1.Size = New System.Drawing.Size(612, 394)
-        Me.SplitContainer1.SplitterDistance = 311
+        Me.SplitContainer1.Size = New System.Drawing.Size(502, 329)
+        Me.SplitContainer1.SplitterDistance = 255
+        Me.SplitContainer1.SplitterWidth = 3
         Me.SplitContainer1.TabIndex = 2
         '
         'PreviewWMP
@@ -132,10 +141,9 @@ Partial Class FormFolderSelect
         Me.PreviewWMP.Dock = System.Windows.Forms.DockStyle.Fill
         Me.PreviewWMP.Enabled = True
         Me.PreviewWMP.Location = New System.Drawing.Point(0, 0)
-        Me.PreviewWMP.Margin = New System.Windows.Forms.Padding(4)
         Me.PreviewWMP.Name = "PreviewWMP"
         Me.PreviewWMP.OcxState = CType(resources.GetObject("PreviewWMP.OcxState"), System.Windows.Forms.AxHost.State)
-        Me.PreviewWMP.Size = New System.Drawing.Size(311, 394)
+        Me.PreviewWMP.Size = New System.Drawing.Size(255, 329)
         Me.PreviewWMP.TabIndex = 7
         Me.PreviewWMP.TabStop = False
         '
@@ -143,22 +151,28 @@ Partial Class FormFolderSelect
         '
         Me.PictureBox1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.PictureBox1.Location = New System.Drawing.Point(0, 0)
+        Me.PictureBox1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(297, 394)
+        Me.PictureBox1.Size = New System.Drawing.Size(244, 329)
         Me.PictureBox1.TabIndex = 0
         Me.PictureBox1.TabStop = False
         '
-        'FolderSelect
+        'Timer1
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(11.0!, 24.0!)
+        Me.Timer1.Interval = 600
+        '
+        'FormFolderSelect
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.btnAssign
-        Me.ClientSize = New System.Drawing.Size(618, 977)
+        Me.ClientSize = New System.Drawing.Size(506, 814)
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.Name = "FolderSelect"
+        Me.Name = "FormFolderSelect"
         Me.ShowIcon = False
         Me.Text = "FolderSelect"
         Me.TableLayoutPanel1.ResumeLayout(False)
@@ -183,4 +197,5 @@ Partial Class FormFolderSelect
     Friend WithEvents SplitContainer1 As SplitContainer
     Friend WithEvents PreviewWMP As AxWMPLib.AxWindowsMediaPlayer
     Friend WithEvents PictureBox1 As PictureBox
+    Public WithEvents Timer1 As Timer
 End Class

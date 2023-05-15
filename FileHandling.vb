@@ -85,7 +85,7 @@ Friend Module FileHandling
         Debug.Print(M.MediaPath & " loaded into " & M.Player.Name)
         Debug.Print(M.SPT.Markers.Count & " markers")
         If M.SPT.Markers.Count > 0 Then Debug.Print("Current marker " & LongAsTimeCode(M.SPT.CurrentMarker))
-        Debug.Print(M.SPT.Descriptions(M.SPT.State) & " State")
+        Debug.Print(M.SPT.Description & " State")
         Debug.Print(LongAsTimeCode(M.SPT.Duration) & " Duration")
         Debug.Print(LongAsTimeCode(M.SPT.StartPoint) & " startpoint")
         Debug.Print("")

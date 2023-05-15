@@ -2,7 +2,8 @@
 Imports System.IO
 Imports System.Windows.Forms
 Public Class ButtonHandler
-    Private isOverSpawnedForm As Boolean
+    Public isOverSpawnedForm As Boolean
+    Public SubFormVisible As Boolean
     Public WithEvents Oldbuttons As New Stack(Of ButtonSet)
     Public WithEvents buttons As New ButtonSet
 
@@ -386,6 +387,8 @@ Public Class ButtonHandler
             ActualButtons(i).Text = "f" & Str(i + 5)
             '            AddHandler ActualButtons(i).MouseClick, AddressOf ShowPreview
             AddHandler ActualButtons(i).MouseHover, AddressOf ShowPreview
+            AddHandler ActualButtons(i).MouseEnter, AddressOf ShowPreview
+
             AddHandler ActualButtons(i).MouseLeave, AddressOf HideFS
             AddHandler ActualButtons(i).MouseMove, AddressOf ChangeFS
 
@@ -413,11 +416,8 @@ Public Class ButtonHandler
 
         For Each f In Application.OpenForms
             If f.name = "FS" Then
-                If isOverSpawnedForm Then
-                Else
+                f.timer1.enabled = True
 
-                    f.hide
-                End If
 
                 Exit For
             End If
@@ -426,11 +426,13 @@ Public Class ButtonHandler
 
     Public Sub ShowPreview(Sender As Object, e As EventArgs)
         Dim folderselect As FormFolderSelect
+        SubFormVisible = True
         If mFSOpen Then
             For Each f In Application.OpenForms
                 If f.name = "FS" Then
                     folderselect = AssignFolderSelect(Sender, f)
                     f.show
+                    f.Timer1.enabled = False
                     Exit For
                 End If
             Next

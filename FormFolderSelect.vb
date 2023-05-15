@@ -150,4 +150,13 @@ Public Class FormFolderSelect
     End Sub
 
 
+    Private Sub FormFolderSelect_MouseMove(sender As Object, e As MouseEventArgs) Handles Me.MouseMove
+        Timer1.Enabled = False
+    End Sub
+
+    Public Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
+
+        Me.Hide()
+
+    End Sub
 End Class

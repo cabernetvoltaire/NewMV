@@ -42,7 +42,7 @@ Public Class FormMain
     Public WithEvents FOP As FileOperations
     Public WithEvents BH As New ButtonHandler With {.RowProgressBar = ProgressBar1}
     Public Splash As New SplashScreen1
-
+    'Public openvr As New openvrsystem()
     Public SlowMoSoundOpt As SlowMoSoundOptions = SlowMoSoundOptions.Silent
 
     ' Public WithEvents Response As New Timer
@@ -51,7 +51,7 @@ Public Class FormMain
 
     Public T As Thread
     ' Public FirstButtons As New ButtonForm
-    Public ScrubberProportion As Decimal = 0.97
+    Public ScrubberProportion As Decimal = 0.98
     Public FavouritesFormOpen As Boolean = False
     Public Marks As New MarkPlacement With {.Fractions = SP.FractionalJump, .SmallJumps = SP.AbsoluteJump}
     Public speedkeys = {KeySpeed1, KeySpeed2, KeySpeed3}
@@ -1387,7 +1387,7 @@ Public Class FormMain
         LastTimeSuccessful = False
         'Media.Picture = PictureBox1
         tbPercentage.Enabled = True
-        Marks.Bar = Scrubber
+
 
         AddHandler FileHandling.FolderMoved, AddressOf OnFolderMoved
         AddHandler FileHandling.FileMoved, AddressOf OnFilesMoved
@@ -2084,7 +2084,10 @@ Public Class FormMain
 
         ConstructMenuShortcuts()
         ConstructMenutooltips()
-
+        Marks.Bar = Scrubber
+        Scrubber.Size = New Size(Scrubber.Width + 1, Scrubber.Height + 1)
+        Scrubber.Size = New Size(Scrubber.Width - 1, Scrubber.Height - 1)
+        Marks.Create()
     End Sub
 
     Private Sub ToggleMove()
@@ -2894,6 +2897,7 @@ Public Class FormMain
 
     Private Sub cbxStartPoint_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbxStartPoint.SelectedIndexChanged
         Media.SPT.State = cbxStartPoint.SelectedIndex
+        MSFiles.SetStartStates(Media.SPT)
         '  OnStartChanged(sender, e)
         'If cbxStartPoint.SelectedIndex <> Media.StartPoint.State Then cbxStartPoint.SelectedIndex = Media.StartPoint.State
 
@@ -3737,7 +3741,7 @@ Public Class FormMain
     End Sub
 
     Private Sub FormMain_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
-        DrawScrubberMarks()
+        ' DrawScrubberMarks()
     End Sub
 
     Private Sub ctrPicAndButtons_Resize(sender As Object, e As EventArgs) Handles ctrPicAndButtons.Resize
@@ -3804,6 +3808,40 @@ Public Class FormMain
         VideoTrim.Main()
         '        Marks.DrawConnectedCircles(Media.Position, Media.Position + 2500)
 
+    End Sub
+
+    Private Sub GetFolderListToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles GetFolderListToolStripMenuItem.Click
+        Dim outputFile As String = "Q:\folder_list.txt"
+
+        Task.Run(Sub()
+                     ' Get a list of all drives on the computer
+                     Dim drives As DriveInfo() = DriveInfo.GetDrives()
+
+                     Using sw As StreamWriter = New StreamWriter(outputFile, False, Encoding.UTF8)
+                         For Each drive As DriveInfo In drives
+                             If drive.IsReady Then
+                                 Try
+                                     ListFolders(drive.RootDirectory.FullName, sw)
+                                 Catch ex As Exception
+                                     Invoke(New Action(Sub() Console.WriteLine($"Error accessing {drive.RootDirectory.FullName}: {ex.Message}" & Environment.NewLine)))
+                                 End Try
+                             End If
+                         Next
+                     End Using
+
+                     Invoke(New Action(Sub() Console.WriteLine("Folder list saved to: " & outputFile & Environment.NewLine)))
+                 End Sub)
+    End Sub
+
+    Private Sub ListFolders(path As String, sw As StreamWriter)
+        Try
+            For Each folder As String In Directory.GetDirectories(path)
+                sw.WriteLine(folder)
+                ListFolders(folder, sw)
+            Next
+        Catch ex As Exception
+            Invoke(New Action(Sub() Console.WriteLine($"Error accessing {path}: {ex.Message}" & Environment.NewLine)))
+        End Try
     End Sub
 
 

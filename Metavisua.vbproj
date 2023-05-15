@@ -308,6 +308,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Module1.vb" />
+    <Compile Include="Module2.vb" />
     <Compile Include="SplashScreen.xaml.vb">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
     </Compile>
