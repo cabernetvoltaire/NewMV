@@ -101,7 +101,7 @@ Public Class MarkPlacement
             start.X = x
             endpt.X = x
             Graphics.DrawLine(pen, start, endpt)
-            px += JumpSize * mBar.Width / Duration
+            px += mBar.Width / Fractions
         End While
         px = 0
         'Draw small jumps

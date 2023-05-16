@@ -34,6 +34,7 @@ Partial Class FormFolderSelect
         Me.PreviewWMP = New AxWMPLib.AxWindowsMediaPlayer()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
+        Me.ListBox1 = New System.Windows.Forms.ListBox()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.Panel1.SuspendLayout()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -49,17 +50,19 @@ Partial Class FormFolderSelect
         Me.TableLayoutPanel1.ColumnCount = 1
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.TableLayoutPanel1.Controls.Add(Me.fst1, 0, 1)
-        Me.TableLayoutPanel1.Controls.Add(Me.Panel1, 0, 2)
+        Me.TableLayoutPanel1.Controls.Add(Me.Panel1, 0, 3)
         Me.TableLayoutPanel1.Controls.Add(Me.SplitContainer1, 0, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.ListBox1, 0, 2)
         Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
-        Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(2)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
-        Me.TableLayoutPanel1.RowCount = 3
+        Me.TableLayoutPanel1.RowCount = 4
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 333.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 82.5!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 17.5!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(506, 814)
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.66667!))
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(525, 982)
         Me.TableLayoutPanel1.TabIndex = 0
         '
         'fst1
@@ -72,7 +75,7 @@ Partial Class FormFolderSelect
         Me.fst1.Name = "fst1"
         Me.fst1.RootDrive = Nothing
         Me.fst1.SelectedFolder = Nothing
-        Me.fst1.Size = New System.Drawing.Size(496, 386)
+        Me.fst1.Size = New System.Drawing.Size(515, 346)
         Me.fst1.TabIndex = 0
         Me.fst1.TrackDriveState = True
         '
@@ -82,17 +85,17 @@ Partial Class FormFolderSelect
         Me.Panel1.Controls.Add(Me.TextBox1)
         Me.Panel1.Controls.Add(Me.Label1)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel1.Location = New System.Drawing.Point(2, 731)
-        Me.Panel1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.Panel1.Location = New System.Drawing.Point(2, 907)
+        Me.Panel1.Margin = New System.Windows.Forms.Padding(2)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(502, 81)
+        Me.Panel1.Size = New System.Drawing.Size(521, 73)
         Me.Panel1.TabIndex = 1
         '
         'btnAssign
         '
         Me.btnAssign.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.btnAssign.Location = New System.Drawing.Point(356, 37)
-        Me.btnAssign.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.btnAssign.Margin = New System.Windows.Forms.Padding(2)
         Me.btnAssign.Name = "btnAssign"
         Me.btnAssign.Size = New System.Drawing.Size(137, 32)
         Me.btnAssign.TabIndex = 2
@@ -102,7 +105,7 @@ Partial Class FormFolderSelect
         'TextBox1
         '
         Me.TextBox1.Location = New System.Drawing.Point(11, 41)
-        Me.TextBox1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.TextBox1.Margin = New System.Windows.Forms.Padding(2)
         Me.TextBox1.Name = "TextBox1"
         Me.TextBox1.Size = New System.Drawing.Size(341, 26)
         Me.TextBox1.TabIndex = 1
@@ -121,7 +124,7 @@ Partial Class FormFolderSelect
         '
         Me.SplitContainer1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SplitContainer1.Location = New System.Drawing.Point(2, 2)
-        Me.SplitContainer1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.SplitContainer1.Margin = New System.Windows.Forms.Padding(2)
         Me.SplitContainer1.Name = "SplitContainer1"
         '
         'SplitContainer1.Panel1
@@ -131,8 +134,8 @@ Partial Class FormFolderSelect
         'SplitContainer1.Panel2
         '
         Me.SplitContainer1.Panel2.Controls.Add(Me.PictureBox1)
-        Me.SplitContainer1.Size = New System.Drawing.Size(502, 329)
-        Me.SplitContainer1.SplitterDistance = 255
+        Me.SplitContainer1.Size = New System.Drawing.Size(521, 329)
+        Me.SplitContainer1.SplitterDistance = 264
         Me.SplitContainer1.SplitterWidth = 3
         Me.SplitContainer1.TabIndex = 2
         '
@@ -143,7 +146,7 @@ Partial Class FormFolderSelect
         Me.PreviewWMP.Location = New System.Drawing.Point(0, 0)
         Me.PreviewWMP.Name = "PreviewWMP"
         Me.PreviewWMP.OcxState = CType(resources.GetObject("PreviewWMP.OcxState"), System.Windows.Forms.AxHost.State)
-        Me.PreviewWMP.Size = New System.Drawing.Size(255, 329)
+        Me.PreviewWMP.Size = New System.Drawing.Size(264, 329)
         Me.PreviewWMP.TabIndex = 7
         Me.PreviewWMP.TabStop = False
         '
@@ -151,9 +154,9 @@ Partial Class FormFolderSelect
         '
         Me.PictureBox1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.PictureBox1.Location = New System.Drawing.Point(0, 0)
-        Me.PictureBox1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.PictureBox1.Margin = New System.Windows.Forms.Padding(2)
         Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(244, 329)
+        Me.PictureBox1.Size = New System.Drawing.Size(254, 329)
         Me.PictureBox1.TabIndex = 0
         Me.PictureBox1.TabStop = False
         '
@@ -161,15 +164,25 @@ Partial Class FormFolderSelect
         '
         Me.Timer1.Interval = 600
         '
+        'ListBox1
+        '
+        Me.ListBox1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ListBox1.FormattingEnabled = True
+        Me.ListBox1.ItemHeight = 20
+        Me.ListBox1.Location = New System.Drawing.Point(3, 692)
+        Me.ListBox1.Name = "ListBox1"
+        Me.ListBox1.Size = New System.Drawing.Size(519, 210)
+        Me.ListBox1.TabIndex = 3
+        '
         'FormFolderSelect
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.btnAssign
-        Me.ClientSize = New System.Drawing.Size(506, 814)
+        Me.ClientSize = New System.Drawing.Size(525, 982)
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
-        Me.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.Margin = New System.Windows.Forms.Padding(2)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "FormFolderSelect"
@@ -198,4 +211,5 @@ Partial Class FormFolderSelect
     Friend WithEvents PreviewWMP As AxWMPLib.AxWindowsMediaPlayer
     Friend WithEvents PictureBox1 As PictureBox
     Public WithEvents Timer1 As Timer
+    Friend WithEvents ListBox1 As ListBox
 End Class

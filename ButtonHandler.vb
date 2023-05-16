@@ -426,6 +426,7 @@ Public Class ButtonHandler
 
     Public Sub ShowPreview(Sender As Object, e As EventArgs)
         Dim folderselect As FormFolderSelect
+
         SubFormVisible = True
         If mFSOpen Then
             For Each f In Application.OpenForms
@@ -448,7 +449,8 @@ Public Class ButtonHandler
         startpoint.Y = control.Top
         startpoint = control.PointToScreen(startpoint)
         folderselect.Show()
-
+        folderselect.TextBox1.Text = ""
+        folderselect.TextBox1.Focus()
         folderselect.BringToFront()
         folderselect.Left = startpoint.X - folderselect.Width / 2
         folderselect.Top = startpoint.Y - folderselect.Height + control.Height / 10

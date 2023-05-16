@@ -68,42 +68,31 @@ Module VideoTrim
             Console.WriteLine("Error message: " & ffmpegProcess.StandardError.ReadToEnd())
         End If
     End Sub
-    Sub ExtractVideoSegment(inputFile As String, startTime As String, duration As String, outputFile As String)
-        Try
-            Dim startInfo As New ProcessStartInfo()
-            startInfo.FileName = "C:\ffmpeg.exe"
-            startInfo.Arguments = $"-i ""{inputFile}"" -ss {startTime} -t {duration} -c copy ""{outputFile}"""
-            startInfo.CreateNoWindow = True
-            startInfo.UseShellExecute = False
-            startInfo.RedirectStandardError = True
+    Private Sub ExtractVideoSegment(inputFile As String, startTime As Integer, duration As Integer, outputFile As String)
+        ' Create an FFmpeg process
+        Using ffmpegProcess As New Process()
+            ffmpegProcess.StartInfo.FileName = "C:\ffmpeg.exe"
+            ffmpegProcess.StartInfo.Arguments = $"-i ""{inputFile}"" -ss {startTime} -t {duration} -c copy ""{outputFile}"""
 
-            Dim process As New Process()
-            process.StartInfo = startInfo
+            ffmpegProcess.StartInfo.UseShellExecute = False
+            ffmpegProcess.StartInfo.CreateNoWindow = True
+            ffmpegProcess.StartInfo.RedirectStandardOutput = True
+            ffmpegProcess.StartInfo.RedirectStandardError = True
 
-            Console.WriteLine("Starting FFmpeg process...")
-            process.Start()
+            ' Start the FFmpeg process and wait for it to finish
+            ffmpegProcess.Start()
+            ffmpegProcess.WaitForExit()
 
-            Console.WriteLine("Reading standard error...")
-            Dim errorOutput As String = process.StandardError.ReadToEnd()
-
-            Console.WriteLine("Waiting for process to exit...")
-            process.WaitForExit()
-
-            Console.WriteLine("Process exited.")
-            MsgBox("Extraction Done")
-            process.Close()
-
-            If process.ExitCode <> 0 Then
-                Console.WriteLine($"Error code: {process.ExitCode}")
-                Console.WriteLine($"Error message: {errorOutput}")
-                Throw New Exception("An error occurred during the extraction process.")
+            ' Check if the process exited successfully
+            If ffmpegProcess.ExitCode = 0 Then
+                Console.WriteLine("The portion of the MP4 file was successfully extracted.")
+            Else
+                Console.WriteLine("An error occurred during the extraction process.")
+                Console.WriteLine("Error code: " & ffmpegProcess.ExitCode)
+                Console.WriteLine("Error message: " & ffmpegProcess.StandardError.ReadToEnd())
             End If
-
-        Catch ex As Exception
-            Console.WriteLine($"Exception: {ex.Message}")
-        End Try
+        End Using ' This will call Dispose() on the process, cleaning up resources
     End Sub
-
     ' Rest of your code
 End Module
 
