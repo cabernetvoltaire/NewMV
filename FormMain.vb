@@ -1106,6 +1106,10 @@ Public Class FormMain
             mBH.AssignButton(buttonnumber, CurrentFolder)
 
             Exit Sub
+        ElseIf e.Alt And e.Control Then
+            sender = mBH.ActualButtons(buttonnumber)
+            mBH.ShowPreview(sender, e)
+            Exit Sub
         ElseIf e.Alt Then
             Autoload(mBH.buttons.CurrentRow.Buttons(buttonnumber).Label, True)
             Exit Sub
@@ -2096,9 +2100,10 @@ Public Class FormMain
         BH.UpdateButtonAppearance()
     End Sub
 
-    Private Async Sub BurstFolderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BurstFolderToolStripMenuItem.Click
+    Private Sub BurstFolderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BurstFolderToolStripMenuItem.Click
         ' MSFiles.CancelURLS()
-        Await BurstFolder(New DirectoryInfo(CurrentFolder))
+        Dim d As New IO.DirectoryInfo(CurrentFolder)
+        BurstFolder(d)
         FBH.FillBox()
         'tvMain2.RemoveNode(CurrentFolder)
         '        tvMain2.RefreshTree(New IO.DirectoryInfo(CurrentFolder).Parent.FullName)
@@ -3811,37 +3816,8 @@ Public Class FormMain
     End Sub
 
     Private Sub GetFolderListToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles GetFolderListToolStripMenuItem.Click
-        Dim outputFile As String = "Q:\folder_list.txt"
-
-        Task.Run(Sub()
-                     ' Get a list of all drives on the computer
-                     Dim drives As DriveInfo() = DriveInfo.GetDrives()
-
-                     Using sw As StreamWriter = New StreamWriter(outputFile, False, Encoding.UTF8)
-                         For Each drive As DriveInfo In drives
-                             If drive.IsReady Then
-                                 Try
-                                     ListFolders(drive.RootDirectory.FullName, sw)
-                                 Catch ex As Exception
-                                     Invoke(New Action(Sub() Console.WriteLine($"Error accessing {drive.RootDirectory.FullName}: {ex.Message}" & Environment.NewLine)))
-                                 End Try
-                             End If
-                         Next
-                     End Using
-
-                     Invoke(New Action(Sub() Console.WriteLine("Folder list saved to: " & outputFile & Environment.NewLine)))
-                 End Sub)
-    End Sub
-
-    Private Sub ListFolders(path As String, sw As StreamWriter)
-        Try
-            For Each folder As String In Directory.GetDirectories(path)
-                sw.WriteLine(folder)
-                ListFolders(folder, sw)
-            Next
-        Catch ex As Exception
-            Invoke(New Action(Sub() Console.WriteLine($"Error accessing {path}: {ex.Message}" & Environment.NewLine)))
-        End Try
+        Dim f As New Form1
+        f.Show()
     End Sub
 
 

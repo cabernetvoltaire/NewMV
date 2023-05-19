@@ -373,33 +373,25 @@ Public Class MediaHandler
     End Property
 
     Public Function IncrementLinkCounter(Forward As Boolean) As Integer
+        ' Initialize variables.
+        Dim p As Integer = mPlayPosition
+        Dim count As Integer = mMarkers.Count
 
-        'Get current position
-        Dim p = mPlayPosition
-        'mMarkers.Sort()
-        Dim count = mMarkers.Count
-        For i = 0 To count - 1 'Find preceding marker to position
+        ' Find the index of the last marker that is less than or equal to the current position.
+        mlinkcounter = mMarkers.TakeWhile(Function(marker) marker < p + 1).Count() - 1
 
-            If mMarkers(i) < p + 1 Then
-                mlinkcounter = i
-            End If
-
-        Next
+        ' Depending on the Forward flag, increment or decrement the link counter.
         If Forward Then
-            mlinkcounter += 1
-            If mlinkcounter = count Then
-                mlinkcounter = 0
-            End If
+            ' Increment and wrap around if necessary.
+            mlinkcounter = (mlinkcounter + 1) Mod count
         Else
-            mlinkcounter -= 1
-            If mlinkcounter = -1 Then mlinkcounter = count - 1
+            ' Decrement and wrap around if necessary.
+            mlinkcounter = (mlinkcounter - 1 + count) Mod count
         End If
-        If mlinkcounter > count - 1 Then mlinkcounter = 0
 
         Return mlinkcounter
-
-
     End Function
+
     Public Function RandomCounter() As Integer
         Static done As New List(Of Integer) 'Choose random counter, but don't repeat it. 
 

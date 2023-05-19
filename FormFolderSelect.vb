@@ -10,7 +10,7 @@ Public Class FormFolderSelect
     Public BH As New ButtonHandler
     Public Property Alpha() As Int16
     Private newButtonNumber As Byte
-    Public KeepDisplaying As Boolean = True
+
     Public Property ButtonNumber() As Byte
         Get
             Return newButtonNumber
@@ -20,7 +20,7 @@ Public Class FormFolderSelect
             Folder = BH.buttons.CurrentRow.Buttons(value).Path
         End Set
     End Property
-    Public Property Showing As Boolean = True
+
     Private newFolder As String
     Public Property Folder() As String
         Get
@@ -197,5 +197,10 @@ Public Class FormFolderSelect
         fst1.SelectedFolder = ListBox1.SelectedItem
         Folder = ListBox1.SelectedItem
         ClickedFolder = True
+        btnAssign_Click(sender, e)
+    End Sub
+
+    Private Sub FormFolderSelect_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        If e.KeyCode = Keys.Escape Then Me.Hide()
     End Sub
 End Class

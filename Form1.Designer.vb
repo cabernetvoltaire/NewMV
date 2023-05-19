@@ -41,18 +41,20 @@ Partial Class Form1
         Me.TableLayoutPanel1.Controls.Add(Me.ProgressBar1, 1, 0)
         Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
+        Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 81.83962!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 18.16038!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(2026, 848)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1823, 678)
         Me.TableLayoutPanel1.TabIndex = 0
         '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(1549, 697)
+        Me.Button1.Location = New System.Drawing.Point(1394, 556)
+        Me.Button1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(224, 59)
+        Me.Button1.Size = New System.Drawing.Size(202, 47)
         Me.Button1.TabIndex = 0
         Me.Button1.Text = "Button1"
         Me.Button1.UseVisualStyleBackColor = True
@@ -61,32 +63,36 @@ Partial Class Form1
         '
         Me.ListBox1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListBox1.FormattingEnabled = True
-        Me.ListBox1.ItemHeight = 25
-        Me.ListBox1.Location = New System.Drawing.Point(3, 3)
+        Me.ListBox1.ItemHeight = 20
+        Me.ListBox1.Location = New System.Drawing.Point(3, 2)
+        Me.ListBox1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.ListBox1.Name = "ListBox1"
-        Me.ListBox1.Size = New System.Drawing.Size(1540, 688)
+        Me.ListBox1.Size = New System.Drawing.Size(1385, 550)
         Me.ListBox1.TabIndex = 1
         '
         'TextBox1
         '
-        Me.TextBox1.Location = New System.Drawing.Point(3, 697)
+        Me.TextBox1.Location = New System.Drawing.Point(3, 556)
+        Me.TextBox1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(968, 31)
+        Me.TextBox1.Size = New System.Drawing.Size(872, 26)
         Me.TextBox1.TabIndex = 2
         '
         'ProgressBar1
         '
-        Me.ProgressBar1.Location = New System.Drawing.Point(1549, 3)
+        Me.ProgressBar1.Location = New System.Drawing.Point(1394, 2)
+        Me.ProgressBar1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.ProgressBar1.Name = "ProgressBar1"
-        Me.ProgressBar1.Size = New System.Drawing.Size(474, 114)
+        Me.ProgressBar1.Size = New System.Drawing.Size(426, 91)
         Me.ProgressBar1.TabIndex = 3
         '
         'Form1
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(10.0!, 25.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(2026, 848)
+        Me.ClientSize = New System.Drawing.Size(1823, 678)
         Me.Controls.Add(Me.TableLayoutPanel1)
+        Me.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Name = "Form1"
         Me.Text = "Form1"
         Me.TableLayoutPanel1.ResumeLayout(False)

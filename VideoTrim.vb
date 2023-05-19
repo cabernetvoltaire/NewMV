@@ -39,34 +39,7 @@ Module VideoTrim
         ExtractVideoSegment(InputFile1, StartTime, duration, outputFile)
         Dim extractVideoSegmentTask As Task = Task.Run(Sub() ExtractVideoSegment(InputFile1, StartTime, duration, outputFile))
 
-        Exit Sub
-        ' Time range to extract (in seconds)
 
-
-        ' Create an FFmpeg process
-        Dim ffmpegProcess As New Process()
-        ffmpegProcess.StartInfo.FileName = "C:\ffmpeg.exe"
-        ffmpegProcess.StartInfo.Arguments = $"-i ""{InputFile1}"" -ss {StartTime} -t {duration} -c copy ""{outputFile}"""
-
-        ffmpegProcess.StartInfo.UseShellExecute = False
-        ffmpegProcess.StartInfo.CreateNoWindow = True
-        ffmpegProcess.StartInfo.RedirectStandardOutput = True
-        ffmpegProcess.StartInfo.RedirectStandardError = True
-        Console.WriteLine($"Input file: {InputFile1}")
-        Console.WriteLine($"Output file: {outputFile}")
-
-        ' Start the FFmpeg process and wait for it to finish
-        ffmpegProcess.Start()
-        ffmpegProcess.WaitForExit()
-
-        ' Check if the process exited successfully
-        If ffmpegProcess.ExitCode = 0 Then
-            Console.WriteLine("The portion of the MP4 file was successfully extracted.")
-        Else
-            Console.WriteLine("An error occurred during the extraction process.")
-            Console.WriteLine("Error code: " & ffmpegProcess.ExitCode)
-            Console.WriteLine("Error message: " & ffmpegProcess.StandardError.ReadToEnd())
-        End If
     End Sub
     Private Sub ExtractVideoSegment(inputFile As String, startTime As Integer, duration As Integer, outputFile As String)
         ' Create an FFmpeg process

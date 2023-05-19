@@ -627,11 +627,11 @@ Friend Module FileHandling
 
     End Function
 
-    Public Async Function BurstFolder(d As DirectoryInfo) As Task
+    Public Function BurstFolder(d As DirectoryInfo) As Task
         Dim x As New BundleHandler(FormMain.tvmain2, FormMain.lbxFiles, d.FullName)
 
 
-        Await x.Burst(d) 'Needs Attention
+        x.Burst(d) 'Needs Attention
         '        HarvestFolder(d, True, True)
 
     End Function

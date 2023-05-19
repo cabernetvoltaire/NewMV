@@ -33,8 +33,8 @@ Partial Class FormFolderSelect
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
         Me.PreviewWMP = New AxWMPLib.AxWindowsMediaPlayer()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
-        Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
         Me.ListBox1 = New System.Windows.Forms.ListBox()
+        Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
         Me.TableLayoutPanel1.SuspendLayout()
         Me.Panel1.SuspendLayout()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -76,7 +76,7 @@ Partial Class FormFolderSelect
         Me.fst1.RootDrive = Nothing
         Me.fst1.SelectedFolder = Nothing
         Me.fst1.Size = New System.Drawing.Size(515, 346)
-        Me.fst1.TabIndex = 0
+        Me.fst1.TabIndex = 2
         Me.fst1.TrackDriveState = True
         '
         'Panel1
@@ -108,7 +108,7 @@ Partial Class FormFolderSelect
         Me.TextBox1.Margin = New System.Windows.Forms.Padding(2)
         Me.TextBox1.Name = "TextBox1"
         Me.TextBox1.Size = New System.Drawing.Size(341, 26)
-        Me.TextBox1.TabIndex = 1
+        Me.TextBox1.TabIndex = 0
         '
         'Label1
         '
@@ -138,6 +138,7 @@ Partial Class FormFolderSelect
         Me.SplitContainer1.SplitterDistance = 264
         Me.SplitContainer1.SplitterWidth = 3
         Me.SplitContainer1.TabIndex = 2
+        Me.SplitContainer1.TabStop = False
         '
         'PreviewWMP
         '
@@ -160,10 +161,6 @@ Partial Class FormFolderSelect
         Me.PictureBox1.TabIndex = 0
         Me.PictureBox1.TabStop = False
         '
-        'Timer1
-        '
-        Me.Timer1.Interval = 600
-        '
         'ListBox1
         '
         Me.ListBox1.Dock = System.Windows.Forms.DockStyle.Fill
@@ -172,7 +169,11 @@ Partial Class FormFolderSelect
         Me.ListBox1.Location = New System.Drawing.Point(3, 692)
         Me.ListBox1.Name = "ListBox1"
         Me.ListBox1.Size = New System.Drawing.Size(519, 210)
-        Me.ListBox1.TabIndex = 3
+        Me.ListBox1.TabIndex = 1
+        '
+        'Timer1
+        '
+        Me.Timer1.Interval = 200
         '
         'FormFolderSelect
         '

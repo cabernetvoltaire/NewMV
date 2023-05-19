@@ -165,12 +165,7 @@
         State = (State + 1) Mod max
     End Sub
     Private Property mMarkCounter = 0
-    Public Sub IncrementMarker()
-        If mMarkers.Count <> 0 Then
-            mMarkCounter = (mMarkCounter + 1) Mod mMarkers.Count
-            mStartPoint = mMarkers(mMarkCounter)
-        End If
-    End Sub
+
     Public Sub Reset()
         mMarkers.Clear()
         SetStartPoint()
