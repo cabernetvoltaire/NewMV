@@ -425,6 +425,11 @@ Public Class FormMain
         Media.Markers = Media.GetMarkersFromLinkList
         Media.Markers.Sort()
         Marks.Markers = Media.Markers
+        Dim longs As New List(Of Long)
+        For Each m In Marks.Markers
+            longs.Add(CLng(m))
+        Next
+        'FileMetadataModule.WriteMetadata(Media.MediaPath, longs, New List(Of String)())
         DrawScrubberMarks()
 
 
@@ -1963,6 +1968,7 @@ Public Class FormMain
                             VideoTrim.Finish = Media.Position
                             Marks.Create()
                         Case Keys.P
+                            AddHandler VideoTrim.Finished, AddressOf VideoTrimFinished
                             VideoTrim.InputFile1 = MSFiles.CurrentItem
                             VideoTrim.Main()
 
@@ -1988,8 +1994,10 @@ Public Class FormMain
 
         End Select
     End Sub
+    Private Sub VideoTrimFinished(sender As Object, e As EventArgs)
+        Dim output As String = sender
 
-
+    End Sub
     Private Sub MovingFolder(Source As String, Dest As String)
         T = New Thread(New ThreadStart(Sub() MoveFolder(Source, Dest))) With {
             .IsBackground = True

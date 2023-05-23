@@ -45,10 +45,7 @@
         mFavesList.Clear()
         Dim faves As New IO.DirectoryInfo(path)
         If Not faves.Exists Then faves = IO.Directory.CreateDirectory(Environment.SpecialFolder.MyPictures & "\Favourites")
-        'For Each f In faves.GetFiles("*.lnk", IO.SearchOption.AllDirectories)
 
-        '    mFavesList.Add(f.FullName)
-        'Next
         For Each f In faves.GetFiles("*" & LinkExt, IO.SearchOption.AllDirectories)
 
             mFavesList.Add(f.FullName)
@@ -100,7 +97,7 @@
         End If
     End Sub
 
-    Private Sub ReallocateShortCuts(dest As String, mf As List(Of String))
+    Public Sub ReallocateShortCuts(dest As String, mf As List(Of String), Optional offset As Long = 0)
         Dim bk As Long = 0
         For Each m In mf
             Dim minfo As New IO.FileInfo(m)
@@ -113,7 +110,7 @@
                 bk = 0
             End If
             'Create a new shortcut where the old one was.
-            ReallocateShortCut(dest, m, bk, minfo)
+            ReallocateShortCut(dest, m, bk - offset, minfo)
 
         Next
     End Sub
