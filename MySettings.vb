@@ -276,191 +276,176 @@ Friend Module Mysettings
     End Sub
 
 
-
-
     Public Sub PreferencesGet()
         If FirstLoad Then
             ResetDefaultPrefs()
-            Exit Sub
+            Return
         End If
+
         Dim prefslist As New List(Of String)
         Dim f As New IO.FileInfo(PrefsFilePath)
         Dim prefs As New IO.DirectoryInfo(PrefsPath)
-        'Folder not found
-        If prefs.Exists = False Then
+
+        ' Check if folders exist, initialize if they don't
+        If Not prefs.Exists Then
             InitialiseFolders()
         End If
-        'Replace this.
-        'If prefs.GetFiles.Count > 1 Then
-        '    Dim found As Boolean
-        '    For Each m In prefs.GetFiles
-        '        Dim drives As String = DrivesScan()
-        '        If m.Name.StartsWith(drives + "MV") Then
-        '            f = m
-        '            found = True
-
-        '        End If
-        '    Next
-        '    If Not found Then
-        '        'No suitable prefs file found
-        '        MsgBox("New arrangement of drives")
-        '        PreferencesReset(False)
-        '    End If
-        'Else
-        '    If prefs.GetFiles.Count = 1 Then
-        '        f = prefs.GetFiles.First
-        '    End If
-        'End If
-        'Instead use:
-        'Find all path refs in prefs. 
-        'If any drives don't exist, create a new preferences file. 
 
         If f.Exists Then
             prefslist = ReadListfromFile(f.FullName, False)
+
             FormMain.ctrPicAndButtons.SplitterDistance = 8 * FormMain.ctrPicAndButtons.Height / 10
+
             If CheckDrives(prefslist) Then
-                For Each s In prefslist
-                    If InStr(s, "$") <> 0 Then
-
-                        Dim name As String = Split(s, "$")(0)
-                        Dim value As String = Split(s, "$")(1)
-                        Select Case name
-                            Case "LastTimeSuccessful"
-                                LastTimeSuccessful = value
-                            Case "VertSplit"
-                                FormMain.ctrFileBoxes.SplitterDistance = value
-                            Case "HorSplit"
-                                FormMain.ctrMainFrame.SplitterDistance = value
-                            Case "File" 'Drive
-                                If PassFilename() = "" Then
-                                    Media.MediaPath = value
-                                Else
-
-                                    Media.MediaPath = PassFilename()
-                                End If
-                                DriveString = GetDriveString(value)
-
-                            Case "Filter"
-                                If value = "" Then value = 0
-                                FormMain.CurrentFilterState.State = value
-
-                            Case "SortOrder"
-                                If value = "" Then value = 0
-                                FormMain.PlayOrder.State = value
-                            Case "StartPoint"
-                                If value = "" Then value = 0
-                                Media.SPT.State = value
-                            Case "State"
-                                If value = "" Then value = 0
-                                FormMain.NavigateMoveState.State = value
-                            Case "LastButtonFile" 'Drive
-                                If PassFilename().Contains(".msb") Then
-                                    value = PassFilename()
-                                End If
-
-                                If value = "" Then value = LoadButtonFileName("")
-                                ButtonFilePath = value
-                                DriveString = GetDriveString(value)
-                            Case "LastAlpha"
-                                If value = "" Then value = 0
-                                iCurrentAlpha = value
-                            Case "Favourites" 'Drive
-                                If value = "" Then value = BrowseToFolder("Choose favourites path", PrefsPath)
-                                CurrentFavesPath = value
-                                DriveString = GetDriveString(value)
-                            Case "PreviewLinks"
-                                If value = "" Then value = False
-                                FormMain.chbPreviewLinks.Checked = value
-                            Case "RootScanPath" 'Drive
-                                If value = "" Then value = BrowseToFolder("Choose root scanning path", PrefsPath)
-                                Rootpath = value
-                                DriveString = GetDriveString(value)
-                            Case "Directories List" 'Drive
-                                If value = "" Then value = PrefsPath & "Directories.txt"
-
-
-                                DriveString = GetDriveString(value)
-                            Case "GlobalFaves" 'Drive
-                                Dim ff As New IO.DirectoryInfo(value)
-                                If value = "" Or Not ff.Exists Then
-                                    value = BrowseToFolder("Choose global favourites path", PrefsPath)
-                                End If
-                                GlobalFavesPath = value
-                                DriveString = GetDriveString(value)
-                            Case "AutoLoadButtons"
-                                If value = "" Then value = False
-                                FormMain.chbLoadButtonFiles.Checked = value
-
-                            Case "RandomNextFile"
-                                If value = "" Then value = False
-
-                                FormMain.chbNextFile.Checked = value
-                            Case "RandomOnDirectoryChange"
-                                If value = "" Then value = False
-                                FormMain.chbOnDir.Checked = value
-                            Case "RandomAutoTrail"
-                                Exit Select
-                                value = False 'TODO causing load problems when omitted
-                                If value = "" Then value = False
-                                FormMain.chbAutoTrail.Checked = value
-                            Case "RandomAutoLoadButtons"
-                                If value = "" Then value = False
-                                FormMain.chbLoadButtonFiles.Checked = value
-                            Case "OptionsShowAttr"
-                                If value = "" Then value = False
-                                FormMain.chbShowAttr.Checked = value
-                            Case "OptionsPreviewLinks"
-                                If value = "" Then value = False
-                                FormMain.chbPreviewLinks.Checked = value
-                            Case "OptionsEncrypt"
-                                If value = "" Then value = False
-                                FormMain.chbEncrypt.Checked = value
-                            Case "OptionsAutoAdvance"
-                                If value = "" Then value = False
-                                FormMain.CHBAutoAdvance.Checked = value
-                            Case "OptionsSeparate"
-                                If value = "" Then value = False
-                                FormMain.chbSeparate.Checked = value
-
-                            Case "ThumbnailDestination" 'Drive
-                                If value = "" Then value = BrowseToFolder("Choose Thumbnail Destination", PrefsPath)
-                                ThumbDestination = value
-                                DriveString = GetDriveString(value)
-
-                            Case "ButtonFolder" 'Drive
-                                If value = "" Then value = BrowseToFolder("Choose Button folder", PrefsPath)
-                                Buttonfolder = value
-                                DriveString = GetDriveString(value)
-                            Case "AbsoluteJump"
-                                FormMain.SP.AbsoluteJump = value
-                            Case "FractionalJump"
-                                FormMain.SP.FractionalJump = value
-                            Case "Speed"
-                          '  FormMain.SP.Speed = value
-                            Case "Navstate"
-                                FormMain.NavigateMoveState.State = value
-                            Case "MovieScan"
-                                FormMain.chbSlideShow.Checked = value
-
-                            Case "Scan Bookmarks"
-                                FormMain.chbScan.Checked = value
-                            Case "SingleLinks"
-                                FormMain.cbxSingleLinks.Checked = value
-                            Case "Movie Slide Show Speed"
-                                FormMain.tbMovieSlideShowSpeed.Value = value
-                            Case "SlowMo Sound Option"
-                                FormMain.SlowMoSoundOpt = value
-                        End Select
-
-                    End If
-                Next
-            Else 'No relevant prefs file found.
+                LoadPreferencesFromList(prefslist)
+            Else
                 PreferencesReset(True)
             End If
         End If
+
         FormMain.tssMoveCopy.Text = CurrentFolder
-        'MsgBox(DriveString)
     End Sub
+
+    Private Sub LoadPreferencesFromList(prefslist As List(Of String))
+        For Each s In prefslist
+            If InStr(s, "$") <> 0 Then
+                Dim name As String = Split(s, "$")(0)
+                Dim value As String = Split(s, "$")(1)
+                ProcessPreferenceItem(name, value)
+            End If
+        Next
+    End Sub
+
+    Private Sub ProcessPreferenceItem(name As String, value As String)
+        Select Case name
+            Case "LastTimeSuccessful"
+                LastTimeSuccessful = value
+            Case "VertSplit"
+                FormMain.ctrFileBoxes.SplitterDistance = value
+            Case "HorSplit"
+                FormMain.ctrMainFrame.SplitterDistance = value
+            Case "File" 'Drive
+                If PassFilename() = "" Then
+                    Media.MediaPath = value
+                Else
+                    Media.MediaPath = PassFilename()
+                End If
+            Case "Filter"
+                FormMain.CurrentFilterState.State = value
+
+            Case "SortOrder"
+                If value = "" Then value = 0
+                FormMain.PlayOrder.State = value
+            Case "StartPoint"
+                If value = "" Then value = 0
+                Media.SPT.State = value
+            Case "State"
+                If value = "" Then value = 0
+                FormMain.NavigateMoveState.State = value
+            Case "LastButtonFile" 'Drive
+                If PassFilename().Contains(".msb") Then
+                    value = PassFilename()
+                End If
+
+                If value = "" Then value = LoadButtonFileName("")
+                ButtonFilePath = value
+                DriveString = GetDriveString(value)
+            Case "LastAlpha"
+                If value = "" Then value = 0
+                iCurrentAlpha = value
+            Case "Favourites" 'Drive
+                If value = "" Then value = BrowseToFolder("Choose favourites path", PrefsPath)
+                CurrentFavesPath = value
+                DriveString = GetDriveString(value)
+            Case "PreviewLinks"
+                If value = "" Then value = False
+                FormMain.chbPreviewLinks.Checked = value
+            Case "RootScanPath" 'Drive
+                If value = "" Then value = BrowseToFolder("Choose root scanning path", PrefsPath)
+                Rootpath = value
+                DriveString = GetDriveString(value)
+            Case "Directories List" 'Drive
+                If value = "" Then value = PrefsPath & "Directories.txt"
+
+
+                DriveString = GetDriveString(value)
+            Case "GlobalFaves" 'Drive
+                Dim ff As New IO.DirectoryInfo(value)
+                If value = "" Or Not ff.Exists Then
+                    value = BrowseToFolder("Choose global favourites path", PrefsPath)
+                End If
+                GlobalFavesPath = value
+                DriveString = GetDriveString(value)
+            Case "AutoLoadButtons"
+                If value = "" Then value = False
+                FormMain.chbLoadButtonFiles.Checked = value
+
+            Case "RandomNextFile"
+                If value = "" Then value = False
+
+                FormMain.chbNextFile.Checked = value
+            Case "RandomOnDirectoryChange"
+                If value = "" Then value = False
+                FormMain.chbOnDir.Checked = value
+            Case "RandomAutoTrail"
+                Exit Select
+                value = False 'TODO causing load problems when omitted
+                If value = "" Then value = False
+                FormMain.chbAutoTrail.Checked = value
+            Case "RandomAutoLoadButtons"
+                If value = "" Then value = False
+                FormMain.chbLoadButtonFiles.Checked = value
+            Case "OptionsShowAttr"
+                If value = "" Then value = False
+                FormMain.chbShowAttr.Checked = value
+            Case "OptionsPreviewLinks"
+                If value = "" Then value = False
+                FormMain.chbPreviewLinks.Checked = value
+            Case "OptionsEncrypt"
+                If value = "" Then value = False
+                FormMain.chbEncrypt.Checked = value
+            Case "OptionsAutoAdvance"
+                If value = "" Then value = False
+                FormMain.CHBAutoAdvance.Checked = value
+            Case "OptionsSeparate"
+                If value = "" Then value = False
+                FormMain.chbSeparate.Checked = value
+
+            Case "ThumbnailDestination" 'Drive
+                If value = "" Then value = BrowseToFolder("Choose Thumbnail Destination", PrefsPath)
+                ThumbDestination = value
+                DriveString = GetDriveString(value)
+
+            Case "ButtonFolder" 'Drive
+                If value = "" Then value = BrowseToFolder("Choose Button folder", PrefsPath)
+                Buttonfolder = value
+                DriveString = GetDriveString(value)
+            Case "AbsoluteJump"
+                FormMain.SP.AbsoluteJump = value
+            Case "FractionalJump"
+                FormMain.SP.FractionalJump = value
+            Case "Speed"
+                          '  FormMain.SP.Speed = value
+            Case "Navstate"
+                FormMain.NavigateMoveState.State = value
+            Case "MovieScan"
+                FormMain.chbSlideShow.Checked = value
+
+            Case "Scan Bookmarks"
+                FormMain.chbScan.Checked = value
+            Case "SingleLinks"
+                FormMain.cbxSingleLinks.Checked = value
+            Case "Movie Slide Show Speed"
+                FormMain.tbMovieSlideShowSpeed.Value = value
+            Case "SlowMo Sound Option"
+                FormMain.SlowMoSoundOpt = value
+                ' Similar cases here ...
+            Case Else
+                ' Handle other cases ...
+        End Select
+    End Sub
+
+
     Private Function BrowseToFolder(Title As String, DefaultPath As String) As String
         Dim path As String = ""
         With New FolderBrowserDialog
