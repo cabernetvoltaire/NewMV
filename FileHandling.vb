@@ -232,22 +232,6 @@ Friend Module FileHandling
 
         End Try
     End Sub
-    'Private Sub GetFiles(dir As DirectoryInfo, flist As List(Of String))
-    '    For Each m In dir.EnumerateFiles("*", SearchOption.AllDirectories)
-    '        flist.Add(m.FullName)
-    '    Next
-    '    Exit Sub
-    '    For Each m In dir.EnumerateFiles()
-    '        flist.Add(m.FullName)
-    '    Next
-    '    For Each x In dir.EnumerateDirectories
-    '        GetFiles(x, flist)
-    '    Next
-    'End Sub
-    Public Sub MoveFilesNew(files As List(Of String), strDest As String, Optional Folder As Boolean = False)
-        Dim x As New FileOperations With {.Files = files, .DestinationFolder = New DirectoryInfo(strDest)}
-        x.MoveFiles()
-    End Sub
 
 
     ''' <summary>
@@ -609,7 +593,9 @@ Friend Module FileHandling
 
         RaiseEvent DeleteEmptyFoldersCompleted(Nothing, Nothing)
     End Sub
-
+    Public Sub OnDeleteEmptyFolderCompleted(sender As Object, e As EventArgs)
+        CleanUpTree(sender, e)
+    End Sub
     Public Sub CleanUpTree(sender As Object, e As EventArgs)
         FormMain.tvmain2.Refresh()
     End Sub

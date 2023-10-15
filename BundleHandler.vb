@@ -72,6 +72,7 @@ Public Class BundleHandler
         Next
         blnSuppressCreate = True
         MoveFiles(list, CurrentFolder.FullName)
+        FSTree.RefreshTree(Path)
         Return Nothing
 
     End Function
@@ -118,6 +119,7 @@ Public Class BundleHandler
     Public Async Function RemoveEmptyFolders(path As String, recurse As Boolean) As Task
         Dim folder As New IO.DirectoryInfo(path)
         Try
+            'Check that all the folders and files have gone in the tree below.
             Dim NoOfFiless = folder.EnumerateFiles.Count
             Dim NoOfFolders = folder.EnumerateDirectories.Count
             If recurse Then

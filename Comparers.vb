@@ -1,4 +1,4 @@
-﻿
+﻿Imports System.IO
 Public Class MyComparer
         Implements Generic.IComparer(Of Long)
 
@@ -127,62 +127,96 @@ Public Class CompareByFilesize
 Public Class CompareByEndNumber
     Implements Generic.IComparer(Of String)
 
+    'Public Function Compare(x As String, y As String) As Integer Implements IComparer(Of String).Compare
+    '    x = FilenameFromPath(x, False)
+    '    y = FilenameFromPath(y, False)
+    '    'Counting from end, find the trailing numerics
+    '    Dim i = 0
+    '    Dim xnum, ynum As String
+    '    xnum = ""
+    '    ynum = ""
+    '    For i = 0 To x.Length - 1
+    '        Dim m = x.Length - 1 - i
+    '        If Instr("0123456789", x(m)) <> 0 Then
+    '            xnum = x(x.Length - i - 1) & xnum
+    '        Else
+    '            If xnum = "" Then
+    '            Else
+    '                Exit For
+
+    '            End If
+    '        End If
+    '    Next
+    '    For i = 0 To y.Length - 1
+    '        Dim m = y.Length - 1 - i
+    '        If InStr("0123456789", y(m)) <> 0 Then
+    '            ynum = y(y.Length - i - 1) & ynum
+    '        Else
+    '            If ynum = "" Then
+    '            Else
+    '                Exit For
+
+    '            End If
+    '        End If
+    '    Next
+    '    'If same Then order in normal way
+    '    If ynum.Length = xnum.Length Or ynum = "" Or xnum = "" Then
+    '        If y < x Then
+    '            Return 1
+    '        ElseIf x < y Then
+    '            Return -1
+    '        Else
+    '            Return 0
+    '        End If
+    '    Else
+    '        'Otherwise, order according to those numbers
+    '        Dim ynumnum = Val(ynum)
+    '        Dim xnumnum = Val(xnum)
+    '        If ynumnum < xnumnum Then
+    '            Return 1
+    '        ElseIf xnumnum < ynumnum Then
+    '            Return -1
+    '        Else
+    '            Return 0
+    '        End If
+    '    End If
+
+    'End Function
+
     Public Function Compare(x As String, y As String) As Integer Implements IComparer(Of String).Compare
-        x = FilenameFromPath(x, False)
-        y = FilenameFromPath(y, False)
-        'Counting from end, find the trailing numerics
-        Dim i = 0
-        Dim xnum, ynum As String
-        xnum = ""
-        ynum = ""
-        For i = 0 To x.Length - 1
-            Dim m = x.Length - 1 - i
-            If Instr("0123456789", x(m)) <> 0 Then
-                xnum = x(x.Length - i - 1) & xnum
-            Else
-                If xnum = "" Then
-                Else
-                    Exit For
+        ' Extract filenames without paths
+        Dim fileNameX As String = Path.GetFileName(x)
+        Dim fileNameY As String = Path.GetFileName(y)
 
-                End If
-            End If
-        Next
-        For i = 0 To y.Length - 1
-            Dim m = y.Length - 1 - i
-            If InStr("0123456789", y(m)) <> 0 Then
-                ynum = y(y.Length - i - 1) & ynum
-            Else
-                If ynum = "" Then
-                Else
-                    Exit For
+        ' Find trailing numeric parts
+        Dim xNumericPart As String = GetTrailingNumericPart(fileNameX)
+        Dim yNumericPart As String = GetTrailingNumericPart(fileNameY)
 
-                End If
-            End If
-        Next
-        'If same Then order in normal way
-        If ynum.Length = xnum.Length Or ynum = "" Or xnum = "" Then
-            If y < x Then
-                Return 1
-            ElseIf x < y Then
-                Return -1
-            Else
-                Return 0
-            End If
-        Else
-            'Otherwise, order according to those numbers
-            Dim ynumnum = Val(ynum)
-            Dim xnumnum = Val(xnum)
-            If ynumnum < xnumnum Then
-                Return 1
-            ElseIf xnumnum < ynumnum Then
-                Return -1
-            Else
-                Return 0
+        ' If both have numeric parts, compare them numerically
+        If Not String.IsNullOrEmpty(xNumericPart) AndAlso Not String.IsNullOrEmpty(yNumericPart) Then
+            Dim xNum As Integer
+            Dim yNum As Integer
+            If Integer.TryParse(xNumericPart, xNum) AndAlso Integer.TryParse(yNumericPart, yNum) Then
+                Return xNum.CompareTo(yNum)
             End If
         End If
 
+        ' If one or both don't have numeric parts, compare them as strings
+        Return String.Compare(fileNameX, fileNameY)
     End Function
 
+    Private Function GetTrailingNumericPart(fileName As String) As String
+        ' Iterate in reverse to find the trailing numeric part
+        Dim numericPart As String = ""
+        For i As Integer = fileName.Length - 1 To 0 Step -1
+            If Char.IsDigit(fileName(i)) Then
+                numericPart = fileName(i) & numericPart
+            Else
+                Exit For
+            End If
+        Next
+        Return numericPart
+    End Function
 
 End Class
 

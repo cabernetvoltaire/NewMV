@@ -16,7 +16,7 @@ Imports System.Timers
 Public Class FormMain
     Inherits Form
 
-
+    Public Event MainFormLoaded As EventHandler
     Public DB As New Database
     Public Initialising As Boolean = True
     Public AutoLoadButtons As Boolean = False
@@ -41,7 +41,7 @@ Public Class FormMain
     Public folderwatcher As FileSystemWatcher
     Public WithEvents FOP As FileOperations
     Public WithEvents BH As New ButtonHandler With {.RowProgressBar = ProgressBar1}
-    Public Splash As New SplashScreen1
+
     'Public openvr As New openvrsystem()
     Public SlowMoSoundOpt As SlowMoSoundOptions = SlowMoSoundOptions.Silent
 
@@ -57,6 +57,7 @@ Public Class FormMain
     Public speedkeys = {KeySpeed1, KeySpeed2, KeySpeed3}
     Public WithEvents FBH As New FileboxHandler()
     Public WithEvents LBH As New ListBoxHandler()
+    Private splashScreen As SplashScreenForm
     Private ScanInstructions = {"Movie scan in progress" & vbCrLf & "Selects next movie automatically.",
         "Movie Scan in progress" & vbCrLf & "Change speed with slider.",
         "Auto Trail in progress" & vbCrLf & "Change core speed change with slider"}
@@ -70,13 +71,12 @@ Public Class FormMain
 
         ' This call is required by the designer.
         InitializeComponent()
-
+        splashScreen = New SplashScreenForm
         ' Enable high-DPI support
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
 
         InitializeFolderWatcher()
         '' Configure the timer
-
     End Sub
 
     Private Sub InitializeFolderWatcher()
@@ -1487,17 +1487,10 @@ Public Class FormMain
 #Region "Control Handlers"
 
     Private Sub Form1_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Splash.Hide()
-        Try
-            CurrentFolder = "C:\"
-            GlobalInitialise()
 
-        Catch ex As Exception
 
-        End Try
 
-        Me.Visible = True
-
+        splashScreen.Close()
 
     End Sub
     Public Sub ControlSetFocus(control As Control)
@@ -2019,6 +2012,7 @@ Public Class FormMain
         'Else
 
         DeleteEmptyFolders(CurrentFolder)
+
         ' tvmain2.RefreshTree(CurrentFolder)
         'End If
 
@@ -2092,14 +2086,21 @@ Public Class FormMain
     End Sub
 
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Me.Visible = False
+        splashScreen.Show()
+        Try
+            CurrentFolder = "C:\"
+            GlobalInitialise()
 
+        Catch ex As Exception
+
+        End Try
         ConstructMenuShortcuts()
         ConstructMenutooltips()
         Marks.Bar = Scrubber
         Scrubber.Size = New Size(Scrubber.Width + 1, Scrubber.Height + 1)
         Scrubber.Size = New Size(Scrubber.Width - 1, Scrubber.Height - 1)
         Marks.Create()
+
     End Sub
 
     Private Sub ToggleMove()
@@ -2646,7 +2647,7 @@ Public Class FormMain
         Dim d As New IO.DirectoryInfo(CurrentFolder)
         If d.Exists Then
             'MSFiles.CancelURLS()
-            Await x.HarvestFolder(New IO.DirectoryInfo(CurrentFolder)) 'TODO: sometimes crashes because CurrentFolder doesn't exist
+            x.HarvestFolder(New IO.DirectoryInfo(CurrentFolder)) 'TODO: sometimes crashes because CurrentFolder doesn't exist
             ' tvMain2.RefreshTree(CurrentFolder)
             tmrUpdateFileList.Enabled = True
         End If
