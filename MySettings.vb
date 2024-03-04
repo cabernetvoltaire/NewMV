@@ -29,6 +29,7 @@ Friend Module Mysettings
     Public ButtonFilePath As String
     Public Buttonfolder As String
     Public ThumbDestination As String
+    Public ScreenDestination As String
     Public ListFilePath As String
     Public PrefsPath As String = GetFolderPath(SpecialFolder.ApplicationData) & "\Metavisua\Preferences\"
     Public PrefsFilePath As String = PrefsPath & "\" & DrivesScan() & "MVPrefs.txt"
@@ -151,6 +152,8 @@ Friend Module Mysettings
             .Add("SingleLinks" & "$" & FormMain.cbxSingleLinks.Checked)
             .Add("Movie Slide Show Speed" & "$" & FormMain.tbMovieSlideShowSpeed.Value)
             .Add("SlowMo Sound Option" & "$" & FormMain.SlowMoSoundOpt)
+            .Add("DontLoadVids" & "$" & FormMain.cbxDontLoad.Checked.ToString)
+            .Add("DontPreLoadVids" & "$" & FormMain.cbxDontPreLoad.Checked.ToString)
 
 
         End With
@@ -166,143 +169,37 @@ Friend Module Mysettings
 
 
     End Sub
-    Public Sub SavePreferencesJSON()
-        Dim preferences As New Dictionary(Of String, Object) From {
-        {"LastTimeSuccessful", LastTimeSuccessful},
-        {"VertSplit", FormMain.ctrFileBoxes.SplitterDistance},
-        {"HorSplit", FormMain.ctrMainFrame.SplitterDistance},
-        {"File", If(LastTimeSuccessful, Media.MediaPath, FormMain.LastGoodFile)},
-        {"Filter", FormMain.CurrentFilterState.State},
-        {"SortOrder", FormMain.PlayOrder.State},
-        {"StartPoint", Media.SPT.State},
-        {"State", FormMain.NavigateMoveState.State},
-        {"LastButtonFile", ButtonFilePath},
-        {"LastAlpha", iCurrentAlpha},
-        {"Favourites", CurrentFavesPath},
-        {"PreviewLinks", FormMain.chbPreviewLinks.Checked},
-        {"RootScanPath", Rootpath},
-        {"DirectoriesList", DirectoriesListFile},
-        {"GlobalFaves", GlobalFavesPath},
-        {"RandomNextFile", FormMain.chbNextFile.Checked},
-        {"RandomOnDirectoryChange", FormMain.chbOnDir.Checked},
-        {"RandomAutoTrail", FormMain.chbAutoTrail.Checked},
-        {"RandomAutoLoadButtons", FormMain.chbLoadButtonFiles.Checked},
-        {"OptionsShowAttr", FormMain.chbShowAttr.Checked},
-        {"OptionsPreviewLinks", FormMain.chbPreviewLinks.Checked},
-        {"OptionsEncrypt", FormMain.chbEncrypt.Checked},
-        {"OptionsAutoAdvance", FormMain.CHBAutoAdvance.Checked},
-        {"OptionsSeparate", FormMain.chbSeparate.Checked},
-        {"ThumbnailDestination", ThumbDestination},
-        {"ButtonFolder", Buttonfolder},
-        {"FractionalJump", FormMain.SP.FractionalJump},
-        {"AbsoluteJump", FormMain.SP.AbsoluteJump},
-        {"Speed", FormMain.SP.Speed},
-        {"MovieScan", FormMain.chbSlideShow.Checked},
-        {"ScanBookmarks", FormMain.chbScan.Checked},
-        {"SingleLinks", FormMain.cbxSingleLinks.Checked},
-        {"MovieSlideShowSpeed", FormMain.tbMovieSlideShowSpeed.Value},
-        {"SlowMoSoundOption", FormMain.SlowMoSoundOpt}
-    }
-
-        Dim preferencesJson As String = JsonConvert.SerializeObject(preferences)
-
-        Dim prefsFilePath As String = IO.Path.Combine(PrefsPath, DrivesScan() & "MVPrefs.json")
-
-        If IO.File.Exists(prefsFilePath) Then
-            IO.File.Delete(prefsFilePath)
-        End If
-
-        IO.File.WriteAllText(prefsFilePath, preferencesJson)
-    End Sub
-    Public Sub PreferencesSaveNew()
-        With Settings
-            '        
-            '    "Horizontal split position",
-            '    ,
-            '   
-            '    ,
-            '    "Current navigate/move state",
-            '    ,
-            '    "Current alphabet button",
-            '    "Current favourites location",
-            '    "Preview links?",
-            '    "Root scan path",
-            '    "Directories list:",
-            '    "Global favourites directory",
-            '    "Choose next file at random",
-            '    "Always choose random file on directory change",
-            '    "Auto trail mode",
-            '"Auto load button sets",
-            '"Show attributes",
-            '"Preview links",
-            '"Encrypt text files",
-            '"Auto advance",
-            '"Directory containing thumbnails",
-            '"Directory containing button files"
-
-            .Add(New Setting("Last close successful", LastTimeSuccessful, False))
-            .Add(New Setting("Vertical Split position", FormMain.ctrFileBoxes.SplitterDistance, FormMain.ctrFileBoxes.Height / 4))
-            .Add(New Setting("Horizontal split position", FormMain.ctrMainFrame.SplitterDistance, FormMain.ctrFileBoxes.Width * 0.75))
-            If LastTimeSuccessful Then
-                .Add(New Setting("Last file loaded", Media.MediaPath, ""))
-            Else
-                .Add(New Setting("Last file loaded", FormMain.LastGoodFile, ""))
-            End If
-            .Add(New Setting("Current filter state", FormMain.CurrentFilterState.State, 0))
-            .Add(New Setting("Current sort order", FormMain.PlayOrder.State, 0))
-            .Add(New Setting("Current start point state", Media.SPT.State, 0))
-            .Add(New Setting("Current navigate/move state", FormMain.NavigateMoveState.State, 0))
-            .Add(New Setting("Last button file loaded", ButtonFilePath, ""))
-            .Add(New Setting("Current alphabet button", iCurrentAlpha, 0))
-            .Add(New Setting("Favourites", CurrentFavesPath, ""))
-            .Add(New Setting("PreviewLinks", FormMain.chbPreviewLinks.Checked, False))
-            .Add(New Setting("RootScanPath", Rootpath, "C:"))
-            .Add(New Setting("Directories List", DirectoriesListFile, "")) 'DirectoriesListFile,))
-            .Add(New Setting("GlobalFaves", GlobalFavesPath, "C:"))
-
-
-        End With
-
-        ''    Dim f As New IO.FileInfo(PrefsFilePath)
-        ''    If f.Exists = False Then
-        ''    Else
-        ''        f.Delete()
-        ''        ' PrefsFilePath = PrefsFilePath.Replace(".", Str(Int(Rnd() * 1000)) & ".")
-        ''    End If
-
-        ''    WriteListToFile(PrefsList, PrefsFilePath, False)
-
-
-    End Sub
 
 
     Public Sub PreferencesGet()
+        ' Return and reset preferences if this is the first load
         If FirstLoad Then
             ResetDefaultPrefs()
-            Return
+            Exit Sub
         End If
 
-        Dim prefslist As New List(Of String)
-        Dim f As New IO.FileInfo(PrefsFilePath)
-        Dim prefs As New IO.DirectoryInfo(PrefsPath)
-
-        ' Check if folders exist, initialize if they don't
-        If Not prefs.Exists Then
+        ' Ensure the preferences directory exists, initialize folders if it doesn't
+        If Not IO.Directory.Exists(PrefsPath) Then
             InitialiseFolders()
         End If
 
-        If f.Exists Then
-            prefslist = ReadListfromFile(f.FullName, False)
+        ' Proceed only if the preferences file exists
+        If IO.File.Exists(PrefsFilePath) Then
+            Dim prefsList As List(Of String) = ReadListfromFile(PrefsFilePath, False)
 
+            ' Set the splitter distance based on the form's height
             FormMain.ctrPicAndButtons.SplitterDistance = 8 * FormMain.ctrPicAndButtons.Height / 10
 
-            If CheckDrives(prefslist) Then
-                LoadPreferencesFromList(prefslist)
+            ' Load preferences from the list if all required drives are available,
+            ' otherwise reset to default preferences
+            If CheckDrives(prefsList) Then
+                LoadPreferencesFromList(prefsList)
             Else
                 PreferencesReset(True)
             End If
         End If
 
+        ' Update the status strip with the current folder path
         FormMain.tssMoveCopy.Text = CurrentFolder
     End Sub
 
@@ -326,7 +223,11 @@ Friend Module Mysettings
                 FormMain.ctrMainFrame.SplitterDistance = value
             Case "File" 'Drive
                 If PassFilename() = "" Then
-                    Media.MediaPath = value
+                    If LastTimeSuccessful Then
+                        Media.MediaPath = value
+                    Else
+                        Media.MediaPath = ""
+                    End If
                 Else
                     Media.MediaPath = PassFilename()
                 End If
@@ -440,6 +341,10 @@ Friend Module Mysettings
             Case "SlowMo Sound Option"
                 FormMain.SlowMoSoundOpt = value
                 ' Similar cases here ...
+            Case "DontLoadVids"
+                FormMain.cbxDontLoad.Checked = Boolean.Parse(value)
+            Case "DontPreLoadVids"
+                FormMain.cbxDontPreLoad.Checked = Boolean.Parse(value)
             Case Else
                 ' Handle other cases ...
         End Select
@@ -539,33 +444,41 @@ Friend Module Mysettings
     ''' Creates five folders in Application Data/Metavisua
     ''' </summary>
     Private Sub InitialiseFolders()
-        Dim f As New IO.DirectoryInfo(GetFolderPath(SpecialFolder.ApplicationData))
-        f.CreateSubdirectory("Metavisua")
-        Dim subdir As New IO.DirectoryInfo(f.FullName & "\Metavisua")
-        Dim x() As String = {"Thumbs", "Buttons", "Lists", "Preferences", "Shortcuts"}
-        For i = 0 To x.Length - 1
-            subdir.CreateSubdirectory(x(i))
+        ' Define the base directory under Application Data
+        Dim baseDir As String = IO.Path.Combine(GetFolderPath(SpecialFolder.ApplicationData), "Metavisua")
 
-        Next
-        For i = 0 To x.Length - 1
-            Dim subsub As New IO.DirectoryInfo(subdir.FullName & "\" & x(i))
-            Select Case i
-                Case 0
-                    ThumbDestination = subsub.FullName
-                Case 1
-                    Buttonfolder = subsub.FullName
-                Case 2
-                    ListFilePath = subsub.FullName
-                Case 3
-                    PrefsFilePath = subsub.FullName & "\MVPrefs.txt"
-                Case 4
-                    CurrentFavesPath = subsub.FullName
-                    GlobalFavesPath = subsub.FullName
+        ' Ensure the base directory exists
+        IO.Directory.CreateDirectory(baseDir)
+
+        ' Define subdirectories
+        Dim subDirs As String() = {"Thumbs", "Buttons", "Lists", "Preferences", "Shortcuts", "Screenshots"}
+
+        ' Iterate through the subdirectories and create them
+        For Each subDirName As String In subDirs
+            Dim subDirPath As String = IO.Path.Combine(baseDir, subDirName)
+            IO.Directory.CreateDirectory(subDirPath)
+
+            ' Assign directory paths to global variables based on the subdirectory name
+            Select Case subDirName
+                Case "Thumbs"
+                    ThumbDestination = subDirPath
+                Case "Buttons"
+                    Buttonfolder = subDirPath
+                Case "Lists"
+                    ListFilePath = subDirPath
+                Case "Preferences"
+                    PrefsFilePath = IO.Path.Combine(subDirPath, "MVPrefs.txt")
+                Case "Shortcuts"
+                    CurrentFavesPath = subDirPath
+                    GlobalFavesPath = subDirPath
+                Case "Screenshots"
+                    ScreenDestination = subDirPath
 
             End Select
         Next
-
     End Sub
+
+
     Private Function DrivesScan() As String
         Dim drivestring As String = ""
         For Each m In My.Computer.FileSystem.Drives

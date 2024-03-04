@@ -30,7 +30,7 @@ Public Class MediaHandler
     Private MetaDirectory As IReadOnlyList(Of MetadataExtractor.Directory)
     Public ShowMeta As Boolean = False
     Public IsCurrent As Boolean = False
-
+    Public DontLoadVids As Boolean = False
     Private WithEvents ResetPosition As New Timer With {.Interval = 1000} 'Changing can affect loading
     Public WithEvents PositionUpdater As New Timer With {.Interval = 200} 'Too short causes a crash on exiting.
     Public WithEvents ResetPositionCanceller As New Timer With {.Interval = 30000}
@@ -211,8 +211,8 @@ Public Class MediaHandler
                     If Not DontLoad Then LoadMedia()
                     mMediaDirectory = f.Directory.FullName
                 Else
-                    mMediaPath = DefaultFile
-                    mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
+                    ' mMediaPath = ""
+                    'mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
                     If Not DontLoad Then LoadMedia()
                 End If
 
@@ -677,30 +677,60 @@ Public Class MediaHandler
 
         Await Browser.ExecuteScriptAsync(setFontSizeScript)
     End Function
+    Public Sub ExtractFrameUsingFFmpeg(videoUrl As String, outputImagePath As String, framePosition As String)
+        Dim startInfo As New ProcessStartInfo("C:\ffmpeg.exe")
+        startInfo.UseShellExecute = False
+        startInfo.RedirectStandardError = True
+        startInfo.CreateNoWindow = True
+        startInfo.Arguments = $"-ss {framePosition} -i ""{videoUrl}"" -frames:v 1 ""{outputImagePath}"" -y"
 
+        Using proc As New Process()
+            proc.StartInfo = startInfo
+            proc.Start()
+            Dim erroroutput As String = proc.StandardError.ReadToEnd()
+            proc.WaitForExit()
+            Console.WriteLine(erroroutput)
+        End Using
+    End Sub
     Private Sub HandleMovie(URL As String)
         If URL.EndsWith("exe") Then BreakExecution()
 
-        If URL <> mPlayer.URL Then
-            If mPlayer Is Nothing Then
-            Else
-                Try
-                    mPlayer.URL = URL
-                Catch EX As Exception
-                    'BreakExecution()
-                    Debug.WriteLine(EX.Message)
-                End Try
-            End If
+        If DontLoadVids Then
+            Dim outputImagePath As String = Path.Combine(Application.StartupPath, "frame.jpg")
+
+            ' Example: Assuming you want to capture a frame from the middle of a 2-minute video
+            Dim framePosition As String = "00:01:00" ' HH:mm:ss format for 1 minute
+
+            ' Extract the frame using FFmpeg
+            ExtractFrameUsingFFmpeg(URL, outputImagePath, framePosition)
+
+            ' Show the frame in a PictureBox or another suitable control
+            ' This assumes you have a PictureBox named pictureBox1 on your form
+            Try
+                Me.MediaPath = outputImagePath
+            Catch ex As Exception
+                Debug.WriteLine(ex.Message)
+            End Try
 
         Else
-            mlinkcounter = 0
-            GetBookmark()
+            If Not mPlayer Is Nothing AndAlso URL <> mPlayer.URL Then
+                Try
+                    mPlayer.URL = URL
+                Catch ex As Exception
+                    Debug.WriteLine(ex.Message)
+                End Try
+            Else
+                mlinkcounter = 0
+                GetBookmark()
+            End If
 
+            MediaJumpToMarker() ' Place after load
         End If
-        MediaJumpToMarker() 'Place after load
-        DisplayerName = mPlayer.Name
+
+        DisplayerName = If(mPlayer IsNot Nothing, mPlayer.Name, "FrameViewer")
         DebugStartpoint(Me)
     End Sub
+
     Public Sub PlaceResetter(ResetOn As Boolean)
         ResetPosition.Enabled = ResetOn
 

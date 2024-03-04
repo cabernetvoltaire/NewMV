@@ -117,7 +117,7 @@ Public Class FormButton
         BH.InitialiseActualButtons()
         If BH.ButtonsLoaded Then
         Else
-            BH.LoadButtonSet(LoadButtonFileName(ButtonFilePath))
+            BH.LoadButtonSetAsync(LoadButtonFileName(ButtonFilePath))
         End If
         buttons = BH.buttons
         buttons.CurrentLetter = iCurrentAlpha

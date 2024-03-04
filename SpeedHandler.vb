@@ -143,7 +143,7 @@
             End If
         End Get
         Set(ByVal value As Integer)
-            FrameRates(mSpeed) = value
+            FrameRates(Math.Abs(mSpeed)) = value
             '  RaiseEvent SpeedChanged(Me, Nothing)
         End Set
     End Property

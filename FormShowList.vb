@@ -39,4 +39,8 @@
     Private Sub FormShowList_GotFocus(sender As Object, e As EventArgs) Handles Me.GotFocus
         LBH.ListBox.BackColor = CurrentfilterState.Colour
     End Sub
+
+    Private Sub LoadListToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LoadListToolStripMenuItem.Click
+
+    End Sub
 End Class

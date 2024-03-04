@@ -312,4 +312,44 @@
         LoadThumbnails()
         mRefresh = False
     End Sub
+
+    Private Sub UpdateVisibleThumbnails()
+        ' Calculate the visible range based on the scroll position and the size of thumbnails
+        Dim flp = FlowLayoutPanel1
+
+        Dim startIndex As Integer = CInt(flp.VerticalScroll.Value / ThumbnailHeight)
+        Dim endIndex As Integer = Math.Min(startIndex + (flp.ClientSize.Height / ThumbnailHeight), mList.Count - 1)
+
+        ' Create or load thumbnails for the visible range
+        For i As Integer = startIndex To endIndex
+            If Pics(i) Is Nothing Then
+                ' Create a new PictureBox and load the thumbnail
+                Pics(i) = New PictureBox
+                Dim f As String = mList(i)
+                Dim typ As Filetype = FindType(f)
+                Pics(i).Image = GetThumb(PaintArgs, ThumbWidth, f, typ)
+                ' Set other properties and event handlers for the PictureBox here
+                ' ...
+                flp.Controls.Add(Pics(i))
+            End If
+        Next
+
+        ' Unload or recycle thumbnails that are no longer visible
+        For i As Integer = 0 To mList.Count - 1
+            If i < startIndex Or i > endIndex Then
+                If Pics(i) IsNot Nothing Then
+                    ' Remove the PictureBox from the FlowLayoutPanel and dispose of it
+                    flp.Controls.Remove(Pics(i))
+                    Pics(i).Dispose()
+                    Pics(i) = Nothing
+                End If
+            End If
+        Next
+    End Sub
+
+    Private Sub flp_Scroll(sender As Object, e As ScrollEventArgs) Handles TableLayoutPanel1.Scroll
+        ' When the user scrolls, update the visible thumbnails
+        UpdateVisibleThumbnails()
+    End Sub
+
 End Class

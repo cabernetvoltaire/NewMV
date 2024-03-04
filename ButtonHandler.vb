@@ -1,5 +1,7 @@
 ﻿Imports System.Threading
 Imports System.IO
+Imports System.Threading.Tasks
+
 Imports System.Windows.Forms
 Public Class ButtonHandler
     Public isOverSpawnedForm As Boolean
@@ -39,9 +41,44 @@ Public Class ButtonHandler
     Sub OnLetterChanged(sender As Object, e As EventArgs) Handles buttons.LetterChanged
         RaiseEvent LetterChanged(sender, e)
     End Sub
-    Public Sub LoadButtonSet(Optional filename As String = "")
-        Try
+    'Public Sub LoadButtonSet(Optional filename As String = "")
+    '    Try
 
+    '        Dim path As String
+    '        Dim file As New IO.FileInfo(filename)
+
+    '        If filename = "" Or Not file.Exists Then
+    '            path = LoadButtonFileName("")
+    '        Else
+    '            path = filename
+    '        End If
+    '        If path = "" Then Exit Sub
+
+    '        buttons.Clear()
+    '        Dim btnList As New List(Of String)
+    '        btnList = ReadListfromFile(path, True)
+    '        LoadListIn(btnList)
+    '        ButtonfilePath = path
+    '        Dim dir As New IO.DirectoryInfo(Buttonfolder)
+    '        For Each f In dir.EnumerateDirectories
+    '            If f.FullName.EndsWith(".msb") Then
+    '                mListOfButtonFiles.Add(f.FullName)
+    '            End If
+    '        Next
+    '        RaiseEvent ButtonFileChanged(Me, Nothing)
+    '        UpdateButtonAppearance()
+    '    Catch ex As Exception
+    '        MsgBox("Button load failed")
+    '    End Try
+
+    'End Sub
+
+    Public Sub LoadButtonSetAsync(Optional filename As String = "")
+        Task.Run(Sub() LoadButtonSet(filename))
+    End Sub
+
+    Private Sub LoadButtonSet(filename As String)
+        Try
             Dim path As String
             Dim file As New IO.FileInfo(filename)
 
@@ -65,11 +102,13 @@ Public Class ButtonHandler
             Next
             RaiseEvent ButtonFileChanged(Me, Nothing)
             UpdateButtonAppearance()
+
         Catch ex As Exception
+            ' Marshalling the exception handling to the UI thread
             MsgBox("Button load failed")
         End Try
-
     End Sub
+
 
     Public Sub New()
 
@@ -89,18 +128,9 @@ Public Class ButtonHandler
                     m.Letter = (subs(1))
                     m.Path = (subs(2))
                     m.Label = (subs(3))
-                    'If LoadEmptyDirectories Then
-                    AddLoadedButtonToSet(m)
-                    'Else
-                    '    If m.Path = "" Then
-                    '    Else
 
-                    '        Dim x As New IO.DirectoryInfo(m.Path)
-                    '        If x.EnumerateFiles.Count <> 0 Then
-                    '            AddLoadedButtonToSet(m)
-                    '        End If
-                    '    End If
-                    'End If
+                    AddLoadedButtonToSet(m)
+
 
                 Catch ex As Exception
                     'MsgBox("Button skipped")
@@ -229,6 +259,23 @@ Public Class ButtonHandler
         'RaiseEvent ButtonsAltered(Me, Nothing)
         Return newbuttons
     End Function
+    ''' <summary>
+    ''' Assigns a list of paths to the buttons, as if it were assign linear. 
+    ''' </summary>
+    ''' <param name="s"></param>
+    Public Sub AssignList(s As List(Of String))
+        Dim i = 0
+        For Each d In s
+            Dim btn As MVButton = buttons.CurrentRow.Buttons(i)
+            If Not btn.Empty Then
+                buttons.InsertRow(buttons.CurrentLetter)
+            End If
+            buttons.CurrentRow.Buttons(i).Path = d
+            i = (i + 1) Mod 8
+        Next
+        RaiseEvent ButtonsAltered(Me, Nothing)
+    End Sub
+
     Public Sub AssignAlphabetical(e As DirectoryInfo)
         buttons.Clear()
         Dim i = 0
@@ -323,19 +370,7 @@ Public Class ButtonHandler
     Private Shared Sub CreateListOfLargeDirectories(SizeMagnitude As Byte, exclude As String, d As DirectoryInfo, dlist As SortedList(Of Long, DirectoryInfo))
         Dim dirlist As New List(Of String)
         dirlist = GenerateSafeFolderList(d.FullName, SizeMagnitude)
-        'For Each x In dirlist
-        '    Dim di As New DirectoryInfo(x)
-        '    Dim disize = GetDirSize(di.FullName, 0, False)
-        '    If (exclude = "" Or Not di.Name.Contains(exclude)) And disize > 10 ^ SizeMagnitude Then
-        '        'MsgBox(di.Name & " is " & Format(GetDirSize(di.FullName, 0), "###,###,###,###,###.#"))
-        '        While dlist.Keys.Contains(disize)
-        '            disize += 1
-        '        End While
-        '        dlist.Add(disize, di)
-        '        CreateListOfLargeDirectories(SizeMagnitude, exclude, di, dlist)
-        '    End If
 
-        'Next
     End Sub
     ''' <summary>
     ''' Creates a dlist of directories whose depth is smaller than depth.
@@ -380,7 +415,18 @@ Public Class ButtonHandler
     Friend Sub RefreshButtons()
         SwitchRow(buttons.CurrentRow)
     End Sub
+    Friend Sub FindRowContaining(s As String)
+        For Each m In Me.buttons.CurrentSet
+            For Each f In m.Buttons
+                If Path.GetFileName(f.Path).IndexOf(s, StringComparison.OrdinalIgnoreCase) >= 0 Then
+                    buttons.CurrentRow = m
+                    buttons.CurrentLetter = m.Letter
+                    SwitchRow(buttons.CurrentRow)
+                End If
+            Next
 
+        Next
+    End Sub
     Public Sub InitialiseActualButtons()
         For i = 0 To 7
             ActualButtons(i).Tag = i
@@ -489,6 +535,7 @@ Public Class ButtonHandler
         SaveButtonSet(ButtonfilePath)
     End Sub
     Public Sub GetSubButtons(Findstring As String)
+        '
         If Findstring = "" AndAlso Oldbuttons.Count <> 0 Then
             RestoreButtons()
         Else

@@ -119,21 +119,53 @@ Class DateMove
 
     End Sub
     Public Sub FilterBySize(FolderName As String, Recurse As Boolean)
+        Dim rootDir As New IO.DirectoryInfo(FolderName)
 
-        Dim s As New IO.DirectoryInfo(FolderName)
-        For Each f In s.GetFiles
+        If Recurse Then
+            For Each subDir In rootDir.GetDirectories()
+                FilterBySize(subDir.FullName, True)
+            Next
+        End If
+
+        For Each f In rootDir.GetFiles()
             For m = 5 To 10
-                If f.Length < 10 ^ m And f.Length >= 10 ^ (m - 1) Then
-                    f.Directory.CreateSubdirectory(SizeNames(m - 5) & "\")
-                    f.MoveTo(f.DirectoryName & "\" & SizeNames(m - 5) & "\" & f.Name)
+                If f.Length < 10 ^ m AndAlso f.Length >= 10 ^ (m - 1) Then
+                    Dim sizeDirName As String = SizeNames(m - 5)
+                    Dim targetDirPath As String = IO.Path.Combine(rootDir.FullName, sizeDirName)
+
+                    If Not IO.Directory.Exists(targetDirPath) Then
+                        IO.Directory.CreateDirectory(targetDirPath)
+                    End If
+
+                    Dim targetFilePath As String = IO.Path.Combine(targetDirPath, f.Name)
+
+                    ' Check if the target file already exists and generate a unique file name if necessary
+                    Dim newFilePath As String = EnsureUniqueFileName(targetFilePath)
+
+                    f.MoveTo(newFilePath)
+                    Exit For
                 End If
             Next
-
-            'If f.Directory.EnumerateDirectories(Str(i)) Is Nothing Then
         Next
-        RaiseEvent FilesMoved(Nothing, Nothing)
 
+        RaiseEvent FilesMoved(Nothing, Nothing)
     End Sub
+
+    Private Function EnsureUniqueFileName(targetFilePath As String) As String
+        Dim counter As Integer = 1
+        Dim fileNameWithoutExtension As String = IO.Path.GetFileNameWithoutExtension(targetFilePath)
+        Dim extension As String = IO.Path.GetExtension(targetFilePath)
+        Dim directoryPath As String = IO.Path.GetDirectoryName(targetFilePath)
+        Dim newFilePath As String = targetFilePath
+
+        While IO.File.Exists(newFilePath)
+            newFilePath = IO.Path.Combine(directoryPath, $"{fileNameWithoutExtension} ({counter}){extension}")
+            counter += 1
+        End While
+
+        Return newFilePath
+    End Function
+
 
     Public Sub FilterByLinkFolder(FolderName As String)
         Dim s As New IO.DirectoryInfo(FolderName)

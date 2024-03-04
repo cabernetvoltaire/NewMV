@@ -9,7 +9,7 @@ Public Class MediaSwapper
     Public SlowSoundOption As SlowMoSoundOptions
     Public MediaHandlers As New List(Of MediaHandler) From {Media1, Media2, Media3}
     Public IsFullScreen As Boolean
-
+    Public DontLoad As Boolean = False
     Private Outliner As New PictureBox With {.BackColor = Color.HotPink}
     Private WithEvents PauseAll As New Timer With {.Interval = 3000, .Enabled = False}
     Private mRandomNext As Boolean = False
@@ -125,7 +125,7 @@ Public Class MediaSwapper
     ''' Loads the media marked index, and puts the previous and next files into the other two media handlers
     ''' </summary>
     ''' <param name="index"></param>
-    Private Sub SetIndex(index As Integer)
+    Private Sub SetIndexOld(index As Integer)
         mListcount = Listbox.Items.Count
         If mListcount >= 0 Then
 
@@ -152,6 +152,41 @@ Public Class MediaSwapper
             oldindex = index
         Else
         End If
+    End Sub
+    Private Sub SetIndex(index As Integer)
+        mListcount = Listbox.Items.Count
+        If mListcount > 0 Then ' Fix: changed from >= 0 to > 0 to make sense logically
+
+            Static oldindex As Integer
+            ' Determine direction for navigation
+            NextF.Forwards = (mListIndex > oldindex) Or (mListIndex = 0)
+            NextF.CurrentIndex = index
+
+            ' Load only the current item if loadSingleItem is True
+            If DontLoad Then
+                CurrentItem = NextF.CurrentItem
+                Prepare(Media1, CurrentItem)
+                ShowPlayer(Media1)
+                ' Assuming a method to load media based on CurrentItem
+            Else
+                ' Original logic for loading next and previous along with current
+                CurrentItem = NextF.CurrentItem
+                GetNext() ' Assumes GetNext method prepares the NextF.NextItem
+                PreviousItem = NextF.PreviousItem
+
+                Select Case CurrentItem
+                    Case Media2.MediaPath
+                        RotateMedia(Media2, Media3, Media1)
+                    Case Media3.MediaPath
+                        RotateMedia(Media3, Media1, Media2)
+                    Case Else
+                        RotateMedia(Media1, Media2, Media3)
+                End Select
+            End If
+
+            oldindex = index
+        End If
+        GC.Collect()
     End Sub
 
     ''' <summary>
@@ -254,6 +289,20 @@ Public Class MediaSwapper
         MHX.PlaceResetter(False) 'Starts the video playing
         MHX.Visible = False
         'MHX.SoundHandler.SoundPlayer = FormMain.SoundWMP
+        If Not DontLoad Then Sound(MHX)
+
+        With MHX.Player
+            .Visible = True
+            .BringToFront()
+            .settings.mute = Muted
+            'LabelStartPoint(MHX)
+            RaiseEvent MediaShown(MHX, Nothing)
+        End With
+
+
+    End Sub
+
+    Private Sub Sound(MHX As MediaHandler)
         Soundhandler.CurrentPlayer = MHX.Player
         Soundhandler.SoundPlayer.URL = MHX.Player.URL
         Soundhandler.SoundPlayer.Ctlcontrols.currentPosition = MHX.Position
@@ -268,16 +317,8 @@ Public Class MediaSwapper
             Case SlowMoSoundOptions.Silent
                 Soundhandler.Muted = True
         End Select
-        With MHX.Player
-            .Visible = True
-            .BringToFront()
-            .settings.mute = Muted
-            'LabelStartPoint(MHX)
-            RaiseEvent MediaShown(MHX, Nothing)
-        End With
-
-
     End Sub
+
     Public Sub SetStartStates(ByRef SH As StartPointHandler)
         For Each m In MediaHandlers
             m.SPT.State = SH.State

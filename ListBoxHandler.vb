@@ -248,9 +248,13 @@ Public Class ListBoxHandler
     End Sub
     Public Sub SetIndex(num As Integer, Optional force As Boolean = False)
         Try
-            ListBox.SelectedIndex = num
-            If force Then RaiseEvent ListIndexChanged(ListBox, Nothing)
+            If ListBox.Items.Count > num Then
+                ListBox.SelectedIndex = num
+            Else
+                ListBox.SelectedIndex = ListBox.Items.Count - 1
+            End If
 
+            If force Then RaiseEvent ListIndexChanged(ListBox, Nothing)
         Catch ex As Exception
             MsgBox(ex.Message)
         End Try

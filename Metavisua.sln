@@ -7,6 +7,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Metavisua", "Metavisua.vbpr
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "FSTReeTVS", "..\MasaSam.Forms.Controls\FSTReeTVS.vbproj", "{A37365BE-2593-47B7-8F95-82E7209D0C31}"
 EndProject
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "TestTree2023", "..\TestTree2023\TestTree2023.vbproj", "{4D48D380-B482-4418-AB8B-36D28A7F1F0C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,17 @@ Global
 		{A37365BE-2593-47B7-8F95-82E7209D0C31}.Release|x64.Build.0 = Release|x64
 		{A37365BE-2593-47B7-8F95-82E7209D0C31}.Release|x86.ActiveCfg = Release|Any CPU
 		{A37365BE-2593-47B7-8F95-82E7209D0C31}.Release|x86.Build.0 = Release|Any CPU
+		{4D48D380-B482-4418-AB8B-36D28A7F1F0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D48D380-B482-4418-AB8B-36D28A7F1F0C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4D48D380-B482-4418-AB8B-36D28A7F1F0C}.Debug|x64.Build.0 = Debug|Any CPU
+		{4D48D380-B482-4418-AB8B-36D28A7F1F0C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4D48D380-B482-4418-AB8B-36D28A7F1F0C}.Debug|x86.Build.0 = Debug|Any CPU
+		{4D48D380-B482-4418-AB8B-36D28A7F1F0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D48D380-B482-4418-AB8B-36D28A7F1F0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D48D380-B482-4418-AB8B-36D28A7F1F0C}.Release|x64.ActiveCfg = Release|Any CPU
+		{4D48D380-B482-4418-AB8B-36D28A7F1F0C}.Release|x64.Build.0 = Release|Any CPU
+		{4D48D380-B482-4418-AB8B-36D28A7F1F0C}.Release|x86.ActiveCfg = Release|Any CPU
+		{4D48D380-B482-4418-AB8B-36D28A7F1F0C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
