@@ -752,17 +752,6 @@ Public Class MediaHandler
     End Sub
 
 
-    Public Sub OrientPic(img As Image)
-        Select Case ImageOrientation(img)
-            Case ExifOrientations.BottomRight
-                img.RotateFlip(RotateFlipType.Rotate180FlipNone)
-            Case ExifOrientations.RightTop
-                img.RotateFlip(RotateFlipType.Rotate90FlipNone)
-            Case ExifOrientations.LeftBottom
-                img.RotateFlip(RotateFlipType.Rotate270FlipNone)
-
-        End Select
-    End Sub
     Sub DisposeMovie()
         Exit Sub
         Try
@@ -859,7 +848,7 @@ Public Class MediaHandler
                 '   Speed.PausedPosition = mPlayPosition
                 mDuration = mPlayer.currentMedia.duration
             Catch ex As Exception
-
+                MsgBox(ex.Message)
             End Try
         End If
 

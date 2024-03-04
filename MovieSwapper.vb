@@ -37,27 +37,38 @@ Public Class MediaSwapper
     Public Property PreviousItem As String
     Public Event MediaShown(sender As Object, e As EventArgs)
 #Region "Properties"
+    Public Property FileList As List(Of String)
+        Get
+            Return mFileList
+        End Get
+        Set(value As List(Of String))
+            mFileList = value
+            mListcount = mFileList.Count
+            NextF.List = mFileList
+            GetNext() ' Refresh next item based on the new list
+        End Set
+    End Property
 
     ''' <summary>
     ''' Assigns the listbox which this Media Swapper controls
     ''' </summary>
     ''' <returns></returns>
-    Public Property Listbox() As ListBox
-        Get
-            Return mListbox
-        End Get
-        Set(ByVal value As ListBox)
-            mListbox = value
+    'Public Property Listbox() As ListBox
+    '    Get
+    '        Return mListbox
+    '    End Get
+    '    Set(ByVal value As ListBox)
+    '        mListbox = value
 
-            NextF.Listbox = value
+    '        NextF.Listbox = value
 
-            For Each m In mListbox.Items
-                mFileList.Add(m)
-            Next
-            ' NextF.List = mFileList
-            GetNext()
-        End Set
-    End Property
+    '        For Each m In mListbox.Items
+    '            mFileList.Add(m)
+    '        Next
+    '        ' NextF.List = mFileList
+    '        GetNext()
+    '    End Set
+    'End Property
     Private Sub GetNext()
         If mRandomNext Then
             NextItem = NextF.RandomItem
@@ -84,6 +95,7 @@ Public Class MediaSwapper
 
         End Set
     End Property
+
     Public Sub New(ByRef MP1 As AxWindowsMediaPlayer, ByRef MP2 As AxWindowsMediaPlayer, ByRef MP3 As AxWindowsMediaPlayer, ByRef PB1 As PictureBox, ByRef PB2 As PictureBox, ByRef PB3 As PictureBox, ByRef B1 As Microsoft.Web.WebView2.WinForms.WebView2, ByRef b2 As Microsoft.Web.WebView2.WinForms.WebView2, ByRef b3 As Microsoft.Web.WebView2.WinForms.WebView2)
 
         AssignPlayers(MP1, MP2, MP3)
@@ -121,40 +133,9 @@ Public Class MediaSwapper
 
 
     End Sub
-    ''' <summary>
-    ''' Loads the media marked index, and puts the previous and next files into the other two media handlers
-    ''' </summary>
-    ''' <param name="index"></param>
-    Private Sub SetIndexOld(index As Integer)
-        mListcount = Listbox.Items.Count
-        If mListcount >= 0 Then
 
-            Static oldindex As Integer
-            'Find the next and previous items for easy forward and backward
-            NextF.Forwards = (mListIndex > oldindex) Or (mListIndex = 0)
-            NextF.CurrentIndex = index
-
-            CurrentItem = NextF.CurrentItem
-            GetNext()
-            PreviousItem = NextF.PreviousItem
-
-            Select Case CurrentItem
-
-                Case Media2.MediaPath
-                    RotateMedia(Media2, Media3, Media1)
-                Case Media3.MediaPath
-                    RotateMedia(Media3, Media1, Media2)
-                Case Else
-                    RotateMedia(Media1, Media2, Media3)
-            End Select
-
-
-            oldindex = index
-        Else
-        End If
-    End Sub
     Private Sub SetIndex(index As Integer)
-        mListcount = Listbox.Items.Count
+        mListcount = FileList.Count
         If mListcount > 0 Then ' Fix: changed from >= 0 to > 0 to make sense logically
 
             Static oldindex As Integer

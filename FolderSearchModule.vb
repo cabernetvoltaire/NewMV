@@ -1,14 +1,22 @@
 ﻿Imports System.IO
 Module FolderSearchModule
     ' Function to collect all folders and subfolders starting from the root
+    ' In FolderSearchModule
+    Public Async Function GetAllFoldersAsync(rootFolder As String) As Task(Of List(Of String))
+        Return Await Task.Run(Function()
+                                  Dim allFolders As New List(Of String)
+                                  Try
+                                      CollectFoldersRecursively(rootFolder, allFolders)
+                                  Catch ex As Exception
+                                      MsgBox("An error occurred: " & ex.Message)
+                                  End Try
+                                  Return allFolders
+                              End Function)
+    End Function
+
+
     Public Function GetAllFolders(rootFolder As String) As List(Of String)
-        Dim allFolders As New List(Of String)
-        Try
-            CollectFoldersRecursively(rootFolder, allFolders)
-        Catch ex As Exception
-            MsgBox("An error occurred: " & ex.Message)
-        End Try
-        Return allFolders
+
 
     End Function
 

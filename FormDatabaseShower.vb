@@ -11,7 +11,7 @@ Public Class FormDatabaseShower
     End Sub
 
     Private Sub LoadEntriesThread(DB As Database)
-        dgv.ColumnCount = 4
+        dgv.ColumnCount = 5
         dgv.RowCount = DB.Entries.Count
 
         Dim i = 0
@@ -21,6 +21,7 @@ Public Class FormDatabaseShower
             dgv.Rows(i).Cells(1).Value = entry.Path
             dgv.Rows(i).Cells(2).Value = entry.Size
             dgv.Rows(i).Cells(3).Value = entry.Dt
+            dgv.Rows(i).Cells(4).Value = entry.Rand
             Application.DoEvents()
             i += 1
         Next

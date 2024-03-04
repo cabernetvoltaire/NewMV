@@ -1,21 +1,31 @@
 ﻿Imports System.IO
-Public Class FolderSearch ' Replace with your actual form's class name
+Public Class FolderSearch
 
     Public Rootfolder As String = "Q:\"
     Private allFolders As List(Of String) = New List(Of String) ' Store all folders here
     Private lbh As New ListBoxHandler
     Public t As New Timer With {.Interval = 300}
 
-    Private Sub FolderSearch_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ' Collect all folders and subfolders at the initial stage
-        allFolders = FolderSearchModule.GetAllFolders(Rootfolder)
-        For Each f In allFolders
-            ListBox1.Items.Add(f)
-        Next
+
+    Private Async Sub FolderSearch_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' Use Await to asynchronously get the folders and continue on the UI thread once complete
+        allFolders = Await FolderSearchModule.GetAllFoldersAsync(Rootfolder)
+
+        ' Ensure UI updates are performed on the UI thread
+        UpdateListBox(allFolders)
+
         lbh.ListBox = ListBox1
         AddHandler t.Tick, AddressOf ProcessText
-
     End Sub
+
+    Private Sub UpdateListBox(folders As List(Of String))
+        ListBox1.Items.Clear()
+        For Each f In folders
+            ListBox1.Items.Add(f)
+        Next
+    End Sub
+
+
 
     Private Sub TextBox1_TextChanged(sender As Object, e As EventArgs) Handles TextBox1.TextChanged
         t.Enabled = True

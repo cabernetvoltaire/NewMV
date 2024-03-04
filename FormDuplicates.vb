@@ -1,4 +1,6 @@
-﻿Public Class FormDuplicates
+﻿Imports System.IO
+
+Public Class FormDuplicates
     Private mDB As Database
     Public DupsThread As Threading.Thread()
     Public Event FileHighlighted(sender As Object, e As EventArgs)
@@ -176,6 +178,41 @@
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
         RemoveAllDuplicates()
     End Sub
+    Public Function ReadBinary(path As String, size As Long, start As Long) As Byte()
+        Dim bytesRead As Long
+        Dim bytes(size) As Byte
+        Using strm As New FileStream(path, FileMode.Open, FileAccess.Read)
+            strm.Position = start
+            Using rdr As New BinaryReader(strm)
+
+                bytesRead = rdr.Read(bytes, 0, size)
+
+
+            End Using
+        End Using
+        Return bytes
+        Exit Function
+    End Function
+
+    Public Function AreSameFile(path As String, qath As String) As Boolean
+        Dim same As Boolean = False
+        Dim pbytes, qbytes As Byte()
+        pbytes = ReadBinary(path, 1000, 5000)
+        qbytes = ReadBinary(qath, 1000, 5000)
+        Dim k As Integer
+        While k < 1000
+
+            If pbytes(k) = qbytes(k) Then
+                same = True
+            Else
+                same = False
+                Exit While
+            End If
+            k += 1
+        End While
+
+        Return same
+    End Function
 End Class
 Public Class DuplicatePanel
     Private mDuplicates As DuplicateSet

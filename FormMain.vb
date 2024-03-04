@@ -123,7 +123,8 @@ Public Class FormMain
             control.Focus()
         End If
         If TypeOf (control) Is ListBox Then
-            MSFiles.Listbox = control
+            Dim listboxcontrol As ListBox = CType(control, ListBox)
+            MSFiles.FileList = listboxcontrol.Items.Cast(Of String).ToList()
         End If
         SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
     End Sub
@@ -219,14 +220,14 @@ Public Class FormMain
         NewIndex.Enabled = True
 
     End Sub
-    Public Sub IndexHandler(sender As Object, e As EventArgs) ' Handles lbxShowList.SelectedIndexChanged, lbxFiles.SelectedIndexChanged
+    Public Sub IndexHandler(sender As Object, e As EventArgs)
         Dim lbx As ListBox = sender
         If lbx.SelectionMode = SelectionMode.One Then
             Dim i As Long = lbx.SelectedIndex
             If i = -1 Then
             Else
                 ' Debug.Print(vbCrLf & vbCrLf & "NEXT SELECTION ---------------------------------------")
-                MSFiles.Listbox = lbx
+                MSFiles.FileList = lbx.Items.Cast(Of String)().ToList()
                 If blnFullScreen Then
                     FullScreen.FSFiles.ListIndex = i
                 Else
@@ -594,7 +595,7 @@ Public Class FormMain
 
         T.Start()
 
-        OnFolderMoved(Source)
+        OnFolderMoved(Source, Dest)
 
     End Sub
 
@@ -608,7 +609,7 @@ Public Class FormMain
 
         DeleteEmptyFolders(CurrentFolder)
 
-        ' tvmain2.RefreshTree(CurrentFolder)
+        tvmain2.RefreshTree(CurrentFolder)
         'End If
 
     End Sub
@@ -782,7 +783,28 @@ Public Class FormMain
     '    GoFullScreen(True)
 
     'End Sub
+    Private Function LoadImage(fname As String) As Image
+        Try
+            Dim FileStream1 As New System.IO.FileStream(fname, IO.FileMode.Open, IO.FileAccess.Read)
 
+
+            Try
+                Dim MyImage As Image = Image.FromStream(FileStream1)
+                FileStream1.Close()
+                '  FileStream1.Dispose()
+                Return MyImage
+            Catch ex As System.ArgumentException
+                FileStream1.Close()
+                FileStream1.Dispose()
+                Return Nothing
+            End Try
+        Catch ex As Exception
+
+            Return Nothing
+        End Try
+
+
+    End Function
 
     Private Sub ThumbnailsStart()
         Dim t As New Thumbnails With {
@@ -1345,7 +1367,7 @@ Public Class FormMain
         'Check for button file
 
         Dim f As New IO.DirectoryInfo(Foldername)
-        Dim file As New IO.FileInfo(f.FullName & "\" & Foldername & ".msb")
+        Dim file As New IO.FileInfo(Buttonfolder & "\" & Foldername & ".msb")
         Static lastasked As String
         If file.Exists Then ';And file.FullName <> lastasked Then
 
@@ -2007,7 +2029,20 @@ Public Class FormMain
         tmrHighlightCurrent.Enabled = False
     End Sub
 
+    Friend Sub PrependFolderName(list As List(Of String))
+        For Each s In list
+            Dim f As New IO.FileInfo(s)
+            Dim name = f.Name
+            Dim dir = f.Directory.Name
+            ' AllFaveMinder.CheckFile(f)
+            Try
+                f.MoveTo(Path.GetFullPath(s).Replace(f.Name, dir & "_" & name))
 
+            Catch ex As Exception
+
+            End Try
+        Next
+    End Sub
     Private Sub PrependAllFilenamesWithFolderNameToolStripMenuItem_Click(sender As Object, e As EventArgs)
         MSFiles.CancelURL()
         Dim list As New List(Of String)
@@ -2683,9 +2718,10 @@ Public Class FormMain
             tvmain2.tvFiles_KeyDown(sender, e)
         End If
     End Sub
-    Friend Sub OnFolderMoved(ByVal path As String)
+    Friend Sub OnFolderMoved(ByVal Source As String, ByVal Dest As String)
         Dim d As New IO.DirectoryInfo(tvmain2.SelectedFolder)
-        tvmain2.RemoveNode(path)
+        'tvmain2.RemoveNode(Source)
+        tvmain2.MoveNode(Source, Dest)
         ' tvMain2.RefreshTree(d.FullName)
         'Dim dir As New IO.DirectoryInfo(path)
         'Dir.Delete()
@@ -2870,7 +2906,55 @@ Public Class FormMain
             SP.Slideshow = False
         End If
     End Sub
+    Sub RemoveBrackets(list As List(Of String))
+        Dim x As New BracketRemover
+        x.ListOfFiles = list
+        x.RemoveBrackets()
+        Exit Sub
+        For Each f In list
+            Dim file As New IO.FileInfo(f)
+            If file.Exists Then
+                Dim n As String = file.Name
+                'Need to use regex here.
+                For i = 1 To 100
+                    If n = n.Replace("(" & Str(i) & ")", "") Then
+                    Else
+                        n.Replace("(" & Str(i) & ")", "")
+                    End If
 
+
+                Next
+                n = AppendExistingFilename(n, file)
+                If file.Name <> n Then
+
+                    Try
+                        My.Computer.FileSystem.RenameFile(file.FullName, n)
+
+                    Catch ex As Exception
+                        MsgBox(ex.Message)
+                    End Try
+                End If
+
+            End If
+
+        Next
+    End Sub
+    Public Sub SelectDeadLinks(lbx As ListBox)
+
+        HighlightList(lbx, GetDeadLinks(lbx))
+
+    End Sub
+
+    Public Sub HighlightList(lbx As ListBox, ls As List(Of String))
+        lbx.SelectedItems.Clear()
+        lbx.Refresh()
+        lbx.SelectionMode = SelectionMode.MultiExtended
+        For Each f In ls
+            Dim i = lbx.FindString(f)
+            If i >= 0 Then lbx.SetSelected(i, True)
+        Next
+
+    End Sub
     Private Sub DeleteFolder(FolderName As String, tvw As FileSystemTree, blnConfirm As Boolean)
 
         If My.Computer.FileSystem.DirectoryExists(FolderName) Then
@@ -2879,7 +2963,8 @@ Public Class FormMain
                 m = MsgBox("Delete folder " & FolderName & "?", MsgBoxStyle.YesNoCancel)
             End If
             If Not blnConfirm OrElse m = MsgBoxResult.Yes Then
-                MoveFolder(FolderName, "")
+
+                SafeDeleteDir(New DirectoryInfo(FolderName))
                 tvw.Traverse(False)
                 tvw.RemoveNode(FolderName)
                 BH.SwapPath(FolderName, "")
@@ -2958,14 +3043,14 @@ Public Class FormMain
             SP.TogglePause()
             FullScreen.Show()
             FullScreen.FSFiles = MSFiles
-            FullScreen.FSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
+            FullScreen.FSFiles.ListIndex = MSFiles.ListIndex
             ' TogglePause()
         Else
             '            SplitterPlace(0.25)
             MSFiles = FullScreen.FSFiles
             MSFiles.AssignPlayers(MainWMP1, MainWMP2, MainWMP3)
             MSFiles.AssignPictures(PictureBox1, PictureBox2, PictureBox3)
-            MSFiles.ListIndex = MSFiles.Listbox.SelectedIndex
+            MSFiles.ListIndex = MSFiles.ListIndex
 
 
             FullScreen.Close()
@@ -2992,7 +3077,7 @@ Public Class FormMain
         PreferencesSave()
         LBHH.ListBox = FocusControl
         LBHH.ListBox.SelectionMode = SelectionMode.One
-        MSFiles.Listbox = LBHH.ListBox
+        'MSFiles.Listbox = LBHH.ListBox
         MSFiles.RandomNext = Random
         If Random Then
             LBHH.ListBox.SelectedItem = MSFiles.NextItem

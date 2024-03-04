@@ -121,6 +121,30 @@
         Return ClassifyImage
     End Function
 
+    Public Function ImageOrientation(ByRef img As Image) As ExifOrientations
+        ' Get the index of the orientation property.
+        Dim orientation_index As Integer = Array.IndexOf(img.PropertyIdList, OrientationId)
+
+        ' If there is no such property, return Unknown.
+        If (orientation_index < 0) Then Return ExifOrientations.Unknown
+
+        ' Return the orientation value.
+        Return DirectCast(img.GetPropertyItem(OrientationId).Value(0), ExifOrientations)
+    End Function
+
+
+    Public Sub OrientPic(img As Image)
+        Select Case ImageOrientation(img)
+            Case ExifOrientations.BottomRight
+                img.RotateFlip(RotateFlipType.Rotate180FlipNone)
+            Case ExifOrientations.RightTop
+                img.RotateFlip(RotateFlipType.Rotate90FlipNone)
+            Case ExifOrientations.LeftBottom
+                img.RotateFlip(RotateFlipType.Rotate270FlipNone)
+
+        End Select
+    End Sub
+
 #End Region
 #Region "Events"
     Public Sub New(p As PictureBox)

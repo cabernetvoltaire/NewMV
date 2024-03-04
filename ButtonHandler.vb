@@ -39,7 +39,7 @@ Public Class ButtonHandler
         SwitchRow(buttons.CurrentRow)
     End Sub
     Sub OnLetterChanged(sender As Object, e As EventArgs) Handles buttons.LetterChanged
-        RaiseEvent LetterChanged(sender, e)
+        'RaiseEvent LetterChanged(sender, e)
     End Sub
     'Public Sub LoadButtonSet(Optional filename As String = "")
     '    Try
@@ -88,18 +88,19 @@ Public Class ButtonHandler
                 path = filename
             End If
             If path = "" Then Exit Sub
-
             buttons.Clear()
             Dim btnList As New List(Of String)
             btnList = ReadListfromFile(path, True)
             LoadListIn(btnList)
             ButtonfilePath = path
+
             Dim dir As New IO.DirectoryInfo(Buttonfolder)
             For Each f In dir.EnumerateDirectories
                 If f.FullName.EndsWith(".msb") Then
                     mListOfButtonFiles.Add(f.FullName)
                 End If
             Next
+
             RaiseEvent ButtonFileChanged(Me, Nothing)
             UpdateButtonAppearance()
 
@@ -280,7 +281,9 @@ Public Class ButtonHandler
         buttons.Clear()
         Dim i = 0
         Dim lst As New Dictionary(Of String, String)
-        For Each dx In GenerateSafeFolderList(e.FullName)
+        Dim ls As New List(Of String)
+        CollectFoldersRecursively(e.FullName, ls)
+        For Each dx In ls
             'For Each dx In GetAllFolders(e, "*")
             Dim d As New DirectoryInfo(dx)
             lst.Add(d.FullName, d.Name)
@@ -371,21 +374,6 @@ Public Class ButtonHandler
         Dim dirlist As New List(Of String)
         dirlist = GenerateSafeFolderList(d.FullName, SizeMagnitude)
 
-    End Sub
-    ''' <summary>
-    ''' Creates a dlist of directories whose depth is smaller than depth.
-    ''' </summary>
-    ''' <param name="Depth"></param>
-    ''' <param name="exclude"></param>
-    ''' <param name="d"></param>
-    ''' <param name="dlist"></param>
-    Private Shared Sub CreateListOfShallowDirectories(Depth As Byte, exclude As String, d As DirectoryInfo, dlist As SortedList(Of Long, DirectoryInfo))
-        Dim dirlist As New List(Of String)
-        dirlist = GenerateSafeFolderList(d.FullName, True)
-        For Each x In dirlist
-            Dim di As New DirectoryInfo(x)
-
-        Next
     End Sub
     Public Sub AssignButton(ByVal ButtonNumber As Byte, ByVal Path As String)
         Dim f As New DirectoryInfo(Path)

@@ -11,7 +11,7 @@ Friend Module FileHandling
     Public Random As RandomHandler = FormMain.Random
     Public NavigateMoveState As StateHandler = FormMain.NavigateMoveState
     ' Public FP As New FilePump
-    Public Event FolderMoved(Path As String)
+    Public Event FolderMoved(Source As String, Dest As String)
     Public Event FileMoved(Files As List(Of String), lbx As ListBox)
 
     Public WithEvents t As Thread
@@ -90,6 +90,11 @@ Friend Module FileHandling
         Debug.Print(LongAsTimeCode(M.SPT.StartPoint) & " startpoint")
         Debug.Print("")
     End Sub
+    Public Sub ReplaceListboxItem(lbx As ListBox, index As Integer, newitem As String)
+        lbx.Items.RemoveAt(index)
+        lbx.Items.Insert(index, newitem)
+
+    End Sub
     Public Sub OnFilesMoved(files As List(Of String), lbx1 As ListBox)
         lbx1.SelectionMode = SelectionMode.One
         Dim ind As Long = lbx1.SelectedIndex
@@ -129,35 +134,111 @@ Friend Module FileHandling
             End If
         Next
     End Sub
-    Public Sub MoveFolder(Dir As String, Dest As String)
+    'Public Sub MoveFolder(Dir As String, Dest As String)
+    '    MSFiles.CancelURL()
+
+    '    If Dest = "" Then
+    '        Dim SourceDir As New DirectoryInfo(Dir)
+    '        'DirectoriesList.Remove(SourceDir.FullName)
+    '        For Each d In SourceDir.EnumerateDirectories("*", SearchOption.AllDirectories)
+    '            MoveDirectoryContents(d, True)
+    '        Next
+    '        MoveDirectoryContents(SourceDir, True)
+    '    Else
+
+
+    '        Dim TargetDir As New DirectoryInfo(Dest)
+    '        Dim SourceDir As New DirectoryInfo(Dir)
+
+    '        MoveDirectoryContents(TargetDir, SourceDir, SourceDir, True)
+    '        If SourceDir.Exists Then
+    '            If SourceDir.GetFiles.Count = 0 And SourceDir.GetDirectories.Count = 0 Then
+    '                SourceDir.Delete()
+    '            Else
+    '                For Each d In SourceDir.EnumerateDirectories("*", SearchOption.AllDirectories)
+    '                    MoveDirectoryContents(TargetDir, SourceDir, d, True)
+    '                Next
+    '            End If
+    '        End If
+    '    End If
+
+    'End Sub
+    Public Sub MoveFolder(ByVal Dir As String, ByVal Dest As String)
+        ' Cancel any related operations that might interfere with moving the directory
         MSFiles.CancelURL()
+        ' Define DirectoryInfo objects for source and destination directories
+        Dim sourceDir As New DirectoryInfo(Dir)
 
-        If Dest = "" Then
-            Dim SourceDir As New DirectoryInfo(Dir)
-            'DirectoriesList.Remove(SourceDir.FullName)
-            For Each d In SourceDir.EnumerateDirectories("*", SearchOption.AllDirectories)
-                MoveDirectoryContents(d, True)
-            Next
-            MoveDirectoryContents(SourceDir, True)
-        Else
+        Dim targetDir As New DirectoryInfo(Dest)
 
+        ' Construct the new path where the source directory will be moved
+        ' This creates a path like "C:\second\first"
+        Dim newDestinationPath As String = Path.Combine(targetDir.FullName, sourceDir.Name)
 
-            Dim TargetDir As New DirectoryInfo(Dest)
-            Dim SourceDir As New DirectoryInfo(Dir)
-
-            MoveDirectoryContents(TargetDir, SourceDir, SourceDir, True)
-            If SourceDir.Exists Then
-                If SourceDir.GetFiles.Count = 0 And SourceDir.GetDirectories.Count = 0 Then
-                    SourceDir.Delete()
-                Else
-                    For Each d In SourceDir.EnumerateDirectories("*", SearchOption.AllDirectories)
-                        MoveDirectoryContents(TargetDir, SourceDir, d, True)
-                    Next
-                End If
-            End If
+        ' Check if the target "second\first" directory already exists
+        If Directory.Exists(newDestinationPath) Then
+            ' Handle the situation where the target directory already exists
+            ' You might want to merge contents, or inform the user, etc.
+            ' For simplicity, let's assume you want to delete it (be cautious with this approach)
+            'SafeDeleteDir(New DirectoryInfo(newDestinationPath))
+            '            Directory.Delete(newDestinationPath, True) ' True for recursive deletion
         End If
 
+        ' Ensure the parent directory "C:\second" exists before moving
+        If Not targetDir.Exists Then
+            targetDir.Create()
+        End If
+
+        Try
+            ' Move the directory
+            Directory.Move(sourceDir.FullName, newDestinationPath)
+
+        Catch ex As IOException
+            ' Handle exceptions, such as permission issues, here
+            Console.WriteLine($"An error occurred: {ex.Message}")
+        End Try
     End Sub
+
+    'Public Sub MoveFolder(Dir As String, Dest As String)
+    '    MSFiles.CancelURL()
+
+    '    Dim sourceDir As New DirectoryInfo(Dir)
+    '    Dim targetDir As New DirectoryInfo(Dest)
+
+    '    ' Merge contents from sourceDir to targetDir
+    '    MergeDirectoryContents(sourceDir, targetDir)
+
+    '    ' Optionally, delete the source directory if you want to 'move'
+    '    ' Be careful with this, especially if merging was the primary goal
+    '    MoveDirectoryContents(sourceDir) ' Uncomment with caution
+    'End Sub
+    ''Public Sub MoveFolder(Dir As String, Dest As String)
+    '    MSFiles.CancelURL()
+
+    '    ' Check if the source directory exists
+    '    Dim SourceDir As New DirectoryInfo(Dir)
+    '    If Not SourceDir.Exists Then
+    '        Throw New DirectoryNotFoundException($"Source directory does not exist: {Dir}")
+    '    End If
+
+    '    ' If Dest is not specified, perhaps throw an error or specify what should happen
+    '    If String.IsNullOrWhiteSpace(Dest) Then
+    '        Throw New ArgumentException("Destination directory cannot be empty.")
+    '    End If
+
+    '    Dim TargetDir As New DirectoryInfo(Dest)
+
+    '    ' If moving within the same root directory, handle as needed
+    '    ' For a straightforward move, just use Directory.Move
+    '    If Not TargetDir.Exists Then
+    '        Directory.CreateDirectory(TargetDir.FullName)
+    '    End If
+
+    '    ' Move the directory
+    '    Dim newDirPath As String = Path.Combine(Dest, SourceDir.Name)
+    '    Directory.Move(Dir, newDirPath)
+    'End Sub
+
 
     Private Sub MoveDirectoryContents(TargetDir As DirectoryInfo, SourceDir As DirectoryInfo, d As DirectoryInfo, Optional Parent As Boolean = False)
         Dim flist As New List(Of String)
@@ -180,7 +261,34 @@ Friend Module FileHandling
 
     End Sub
 
-    Private Sub MoveDirectoryContents(SourceDir As DirectoryInfo, Optional Parent As Boolean = False)
+    Private Sub MergeDirectoryContents(sourceDir As DirectoryInfo, targetDir As DirectoryInfo)
+        ' Ensure the target directory exists
+        If Not targetDir.Exists Then
+            targetDir.Create()
+        End If
+
+        ' Copy each file to the target directory
+        For Each file In sourceDir.GetFiles()
+            Dim targetFilePath = Path.Combine(targetDir.FullName, file.Name)
+
+            ' Handle file conflicts (e.g., overwrite, skip, or rename)
+            If IO.File.Exists(targetFilePath) Then
+                ' Example: Rename instead of overwrite
+                targetFilePath = Path.Combine(targetDir.FullName, $"{Path.GetFileNameWithoutExtension(file.Name)}_{Guid.NewGuid()}{file.Extension}")
+            End If
+
+            file.CopyTo(targetFilePath, False)
+        Next
+
+        ' Recursively copy subdirectories
+        For Each subdir In sourceDir.GetDirectories()
+            Dim nextTargetSubdir = targetDir.CreateSubdirectory(subdir.Name)
+            MergeDirectoryContents(subdir, nextTargetSubdir)
+        Next
+    End Sub
+
+
+    Public Sub SafeDeleteDir(SourceDir As DirectoryInfo, Optional Parent As Boolean = False)
         ''To delete all the files in SourceDir
         'Dim flist As New List(Of String)
         'For Each f In SourceDir.EnumerateFiles("*", SearchOption.TopDirectoryOnly)
@@ -205,15 +313,6 @@ Friend Module FileHandling
     ''' <param name="strDest"></param>
 
     Public Sub MoveFiles(files As List(Of String), strDest As String, Optional Folder As Boolean = False)
-        'Dim Fileundo As New Undo
-        'With Fileundo
-        '    .FileList = files
-        '    .Action = Undo.Functions.MoveFiles
-        '    .Destination = strDest
-
-        'End With
-        'UndoOperations.Push(Fileundo)
-
 
         Dim s As String = strDest 'if strDest is empty then delete
 
@@ -236,7 +335,7 @@ Friend Module FileHandling
 
 
         GC.Collect()
-        't.Join()
+
 
         RaiseEvent FileMoved(files, FormMain.FBH.ListBox)
 
@@ -277,8 +376,8 @@ Friend Module FileHandling
                         HandleMoveOriginalState(m, strDest)
                 End Select
             Catch ex As Exception
-                ' Consider logging the exception or optionally showing a message box here
-                ' MsgBox(ex.Message)
+
+                MsgBox(ex.Message)
             End Try
         Next
 
@@ -560,7 +659,7 @@ Friend Module FileHandling
         End If
 
         ' Optionally, invoke the event handler if needed to perform additional clean-up
-        CleanUpTree(Nothing, Nothing)
+        ' CleanUpTree(Nothing, Nothing)
     End Sub
 
     Public Sub CleanUpTree(sender As Object, e As EventArgs)

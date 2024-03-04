@@ -233,7 +233,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System">
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.dll</HintPath>
     </Reference>
     <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.AppContext.4.3.0\lib\net463\System.AppContext.dll</HintPath>
@@ -446,7 +446,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AutoTrailer.vb" />
+    <Compile Include="Brackets.vb" />
     <Compile Include="BundleHandler.vb" />
+    <Compile Include="Database2.vb" />
     <Compile Include="DirectoryLister.vb" />
     <Compile Include="FavouriteFiles.Designer.vb">
       <DependentUpon>FavouriteFiles.vb</DependentUpon>
@@ -462,6 +464,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FolderSearchModule.vb" />
+    <Compile Include="FolderTreeView.vb" />
     <Compile Include="Form6.Designer.vb">
       <DependentUpon>Form6.vb</DependentUpon>
     </Compile>
@@ -568,6 +571,12 @@
     <Compile Include="MetaData3.vb" />
     <Compile Include="Module1.vb" />
     <Compile Include="Module2.vb" />
+    <Compile Include="TreeTry.Designer.vb">
+      <DependentUpon>TreeTry.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TreeTry.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="VideoTrim.vb" />
     <Compile Include="MovieSwapper - Copy %282%29.vb" />
     <Compile Include="MovieSwapper.vb" />
@@ -731,6 +740,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Thumbnails2.resx">
       <DependentUpon>Thumbnails2.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TreeTry.resx">
+      <DependentUpon>TreeTry.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TreeView.resx">
       <DependentUpon>TreeView.vb</DependentUpon>

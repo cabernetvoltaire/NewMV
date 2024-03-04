@@ -340,8 +340,49 @@ Public Class ListBoxHandler
 #End Region
 
 #Region "List functions"
+    Private Function SetPlayOrder(Order As Byte, List As List(Of String), Reverse As Boolean) As List(Of String)
+        Try
+            Select Case Order
+                Case SortHandler.Order.Name
+                    List.Sort(New CompareByEndNumber)
+                Case SortHandler.Order.Size
+                    Dim cpr As New CompareByFilesize
+                    List.Sort(cpr)
+                Case SortHandler.Order.DateTime
+                    Dim cpr As New CompareByDate
+                    List.Sort(cpr)
+                Case SortHandler.Order.PathName
+                    List.Sort()
+                Case SortHandler.Order.Random
+                    List = Randomise(Of String)(List)
+
+                Case SortHandler.Order.Type
+                    Dim cpr As New CompareByType
+                    List.Sort(cpr)
 
 
+            End Select
+        Catch ex As Exception
+
+        End Try
+        If Reverse Then
+            List.Reverse()
+        End If
+        Return List
+    End Function
+    Private Function Randomise(Of T)(ByVal list As List(Of T)) As List(Of T)
+        Dim rand As New Random()
+        Dim temp As T
+        Dim indexRand As Integer
+        Dim indexLast As Integer = list.Count - 1
+        For index As Integer = 0 To indexLast
+            indexRand = rand.Next(index, indexLast)
+            temp = list(indexRand)
+            list(indexRand) = list(index)
+            list(index) = temp
+        Next index
+        Return list
+    End Function
 #End Region
 
 
