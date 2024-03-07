@@ -439,6 +439,7 @@
     <Compile Include="AddFolders.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="AppSettings.vb" />
     <Compile Include="Attributes.Designer.vb">
       <DependentUpon>Attributes.vb</DependentUpon>
     </Compile>
@@ -448,6 +449,7 @@
     <Compile Include="AutoTrailer.vb" />
     <Compile Include="Brackets.vb" />
     <Compile Include="BundleHandler.vb" />
+    <Compile Include="CustomTimer.vb" />
     <Compile Include="Database2.vb" />
     <Compile Include="DirectoryLister.vb" />
     <Compile Include="FavouriteFiles.Designer.vb">
@@ -595,12 +597,6 @@
     <Compile Include="OrphanFinder.vb" />
     <Compile Include="PictureHandler.vb" />
     <Compile Include="PlayListHandler.vb" />
-    <Compile Include="Preferences.Designer.vb">
-      <DependentUpon>Preferences.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Preferences.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="RandomHandler.vb" />
     <Compile Include="Settings.vb" />
     <Compile Include="FormShowList.Designer.vb">
@@ -649,7 +645,6 @@
     <Compile Include="Thumbnails2.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TrailMode.vb" />
     <Compile Include="TreeView.Designer.vb">
       <DependentUpon>TreeView.vb</DependentUpon>
     </Compile>
@@ -714,9 +709,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MetaData.resx">
       <DependentUpon>MetaData.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Preferences.resx">
-      <DependentUpon>Preferences.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormFullScreen.resx">
       <DependentUpon>FormFullScreen.vb</DependentUpon>

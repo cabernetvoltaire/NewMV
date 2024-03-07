@@ -4,8 +4,7 @@ Imports System.ComponentModel
 Imports System.IO
 Imports System.Threading
 Imports MasaSam.Forms.Controls
-
-
+'Imports Microsoft.Office.Interop.Excel
 Imports Microsoft.VisualBasic.FileIO
 
 
@@ -57,18 +56,15 @@ Public Class FormMain
     Private ScanInstructions = {"Movie scan in progress" & vbCrLf & "Selects next movie automatically.",
         "Movie Scan in progress" & vbCrLf & "Change speed with slider.",
         "Auto Trail in progress" & vbCrLf & "Change core speed change with slider"}
-    'Private ReadOnly _keyPressTimer As New Timers.Timer()
-    'Private ReadOnly _inputBuffer As New StringBuilder()
-    'Private Const TimePeriodMilliseconds As Double = 200 ' Set the time period in milliseconds
 
-    'Public Event KeySequenceCompleted(ByVal sender As Object, ByVal e As KeySequenceEventArgs)
 #End Region
     Private WithEvents keyPressTimer As New Windows.Forms.Timer()
-
+    Public Parameters As New AppSettings
     Private Sub CurrentDomain_UnhandledException(sender As Object, e As UnhandledExceptionEventArgs)
 
-        LastTimeSuccessful = False
-        PreferencesSave()
+        'LastTimeSuccessful = False
+        ' PreferencesSave()
+        SavePreferences(Parameters)
     End Sub
 
 
@@ -85,7 +81,7 @@ Public Class FormMain
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
 
         InitializeFolderWatcher()
-
+        Parameters = SettingsManager.LoadSettings
     End Sub
 
     Private Sub InitializeFolderWatcher()
@@ -175,7 +171,7 @@ Public Class FormMain
         tmrMovieSlideShow.Enabled = False
         MSFiles.Soundhandler.ResetPos.Enabled = False
         LastTimeSuccessful = True
-        PreferencesSave()
+        SavePreferences(Parameters)
         Application.Exit()
     End Sub
 
@@ -226,16 +222,12 @@ Public Class FormMain
             Dim i As Long = lbx.SelectedIndex
             If i = -1 Then
             Else
-                ' Debug.Print(vbCrLf & vbCrLf & "NEXT SELECTION ---------------------------------------")
                 MSFiles.FileList = lbx.Items.Cast(Of String)().ToList()
                 If blnFullScreen Then
                     FullScreen.FSFiles.ListIndex = i
                 Else
                     MSFiles.ListIndex = i
-
                 End If
-
-                'Media.MediaPath = lbx.Items(i)
             End If
         End If
     End Sub
@@ -684,7 +676,6 @@ Public Class FormMain
 
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-
         AddHandler AppDomain.CurrentDomain.UnhandledException, AddressOf CurrentDomain_UnhandledException
         splashScreen.Show()
         Try
@@ -920,31 +911,19 @@ Public Class FormMain
     End Sub
 
     Private Sub AutoTrail(sender As Object) 'Called on each autotrail tick, using tbAutotrail value for Time unit
-        'Exit Sub
-        Dim trail As New TrailMode
-        AT.RandomTimes = New Single() {0.5F, 1.0F, 1.5F, 2.0F}
-
-        AT.Framerates = SP.FrameRates
         Dim i As Byte = AT.SpeedIndex
-
         UpdateTimerInterval()
-
         ChangePlaybackSpeed(i)
-
-
         'If we are holding Alt, change the file
-        ChangeFileIfRequired(sender)
-
+        ' ChangeFileIfRequired(sender)
         'This actually does the main job
         Dim ex1 As New KeyEventArgs(KeyJumpRandom Or Keys.Alt)
-        Dim ex2 As New KeyEventArgs(KeyJumpRandom)
         JumpToVideoSegment(ex1)
     End Sub
 
     Private Sub UpdateTimerInterval()
         Dim TimeUnit As Byte = tbAutoTrail.Value
-        AT.RandomTimes = New Single() {0.5F, 1.0F, 1.5F, 2.0F}
-        AT.AdvanceChance = 25
+        ' AT.AdvanceChance = 10
         tmrAutoTrail.Interval = Math.Max(CInt(AT.Duration * 1000), 500)
     End Sub
 
@@ -954,18 +933,14 @@ Public Class FormMain
                 'Ctrl means dont change
             Else
                 '    To change the file.
-                Debug.Print("Change file")
-
                 HandleKeys(sender, New KeyEventArgs(KeyNextFile))
-                'count = Media.Markers.Count
             End If
-
         End If
     End Sub
 
     Private Sub JumpToVideoSegment(ex1 As KeyEventArgs)
         'Go to markers first
-        If AT.Counter > 0 Or (AT.Counter = 0 And Rnd() > 0.6) Then
+        If AT.Counter > 0 Or (AT.Counter = 0 And Rnd() > 0.9) Then
             JumpToMark(ex1)
             If AT.Counter > 0 Then AT.Counter -= 1
         Else
@@ -1503,7 +1478,7 @@ Public Class FormMain
     End Sub
 
     Private Sub SaveToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles SaveToolStripMenuItem1.Click
-        PreferencesSave()
+        SavePreferences(Parameters)
 
     End Sub
 
@@ -1520,7 +1495,7 @@ Public Class FormMain
             If MsgBox("Make " & CurrentFolder & " the new Favourites folder?", MsgBoxStyle.OkCancel, "Assign Favourites folder") = MsgBoxResult.Ok Then
                 CurrentFavesPath = CurrentFolder
                 'FaveMinder.NewPath(CurrentFavesPath)
-                PreferencesSave()
+                SavePreferences(Parameters)
 
             End If
 
@@ -2410,7 +2385,7 @@ Public Class FormMain
 
     End Sub
 
-    Private Sub FormMain_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
+    Private Sub Me_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
         ' DrawScrubberMarks()
     End Sub
 
@@ -2662,7 +2637,8 @@ Public Class FormMain
                 CurrentFilterState.State = FilterHandler.FilterState.LinkOnly
             End If
         End If
-        If Not Media.DontLoad Then PreferencesSave()
+        If Not Media.DontLoad Then SavePreferences(Parameters)
+
     End Sub
     Private Sub SetControlColours(MainColor As Color, FilterColor As Color)
         If Media.DontLoad Then Exit Sub
@@ -3074,7 +3050,8 @@ Public Class FormMain
     Dim LBHH As New ListBoxHandler()
     Public Sub AdvanceFile(blnForward As Boolean, Optional Random As Boolean = False)
         LastGoodFile = Media.MediaPath
-        PreferencesSave()
+        SavePreferences(Parameters)
+
         LBHH.ListBox = FocusControl
         LBHH.ListBox.SelectionMode = SelectionMode.One
         'MSFiles.Listbox = LBHH.ListBox
@@ -3097,6 +3074,7 @@ Public Class FormMain
         MasterContainer.SplitterDistance = MasterContainer.Height / 3
         'UpdateFileInfo()
     End Sub
+
 
     Public Sub MediaSmallJump(e As KeyEventArgs, Small As Boolean, forward As Boolean)
         Media.SmallJump(e, Small, forward)
@@ -3128,6 +3106,7 @@ Public Class FormMain
     Public Sub ToggleAutoTrail()
 
         tmrAutoTrail.Enabled = Not tmrAutoTrail.Enabled
+        MSFiles.Soundhandler.AutoTrail = tmrAutoTrail.Enabled
         chbAutoTrail.Checked = tmrAutoTrail.Enabled
         TrailerModeToolStripMenuItem.Checked = tmrAutoTrail.Enabled
         If tmrAutoTrail.Enabled Then
@@ -3275,7 +3254,8 @@ Public Class FormMain
                             End If
                             Media.Speed.PausedPosition = Media.Player.Ctlcontrols.currentPosition
                         Else
-                            MediaSmallJump(e, e.Modifiers = Keys.Control, e.KeyCode > (KeySmallJumpUp + KeySmallJumpDown) / 2)
+
+                            Media.SmallJump(e, e.Modifiers = Keys.Control, e.KeyCode > (KeySmallJumpUp + KeySmallJumpDown) / 2)
                             If tmrMovieSlideShow.Enabled Then
                                 ToggleMovieSlideShow()
                             End If
@@ -3291,18 +3271,13 @@ Public Class FormMain
                         SP.ChangeJump(True, e.KeyCode = KeyBigJumpOn)
                         UpdateFileInfo()
                     Else
-
                     End If
                 Else
                     MediaLargeJump(e, e.Modifiers = Keys.Control, e.KeyCode = KeyBigJumpOn)
                     If tmrMovieSlideShow.Enabled Then
                         ToggleMovieSlideShow()
                     End If
-
                 End If
-
-                'e.SuppressKeyPress = True
-
             Case KeyMarkFavourite
                 If e.Control And e.Alt And e.Shift Then
                     RemoveAllFavourites(Media.MediaPath)
@@ -3326,10 +3301,8 @@ Public Class FormMain
                         RemoveMarker(Media.MediaPath, l)
 
                     End If
-                    'DrawScrubberMarks()
                 Else
                     AddMarker()
-                    '    DrawScrubberMarks()
                 End If
 
             Case KeyJumpToPoint
@@ -3351,7 +3324,7 @@ Public Class FormMain
 
             Case KeyJumpRandom
                 If e.Control AndAlso e.Shift Then
-                    JumpRandom(True)
+                    JumpRandom(True) 'Autotrail
                 ElseIf e.Alt Then
                     ToggleMovieScan()
                 Else
@@ -3505,17 +3478,19 @@ Public Class FormMain
     End Sub
 
     Private Shared Function ExitApplication(e As KeyEventArgs) As KeyEventArgs
-        If e.Alt Then
-            For Each m In MSFiles.MediaHandlers
-                m.ResetPositionCanceller.Enabled = True
-            Next
-            LastTimeSuccessful = True
-            PreferencesSave()
-            e.SuppressKeyPress = True
-            Application.Exit()
-        End If
+        Exit Function
+        'If e.Alt Then
+        '    For Each m In MSFiles.MediaHandlers
+        '        m.ResetPositionCanceller.Enabled = True
+        '    Next
+        '    LastTimeSuccessful = True
+        '    SavePreferences(Parameters)
 
-        Return e
+        '    e.SuppressKeyPress = True
+        '    Application.Exit()
+        'End If
+
+        'Return e
     End Function
 
     Public Sub HandleFunctionKeyDown(sender As Object, e As KeyEventArgs)
@@ -3794,9 +3769,9 @@ Public Class FormMain
         Media.DontLoad = True
         splashScreen.UpdateStatus("Fetching preferences...")
 
-        PreferencesGet()
-
-        LastTimeSuccessful = False
+        'PreferencesGet()
+        GetPreferences(Parameters)
+        '   LastTimeSuccessful = False
         'Media.Picture = PictureBox1
         tbPercentage.Enabled = True
 
@@ -3810,18 +3785,14 @@ Public Class FormMain
         MSFilesNew.MediaHandlers.Add(New MediaHandler("2"))
         MSFilesNew.MediaHandlers.Add(New MediaHandler("3"))
 
-        NavigateMoveState.State = StateHandler.StateOptions.Navigate
         OnRandomChanged()
         ControlSetFocus(lbxFiles)
         Media.DontLoad = False
         PopulateContextMenu("File")
         ctrPicAndButtons.Panel1.Controls.Add(Media.Textbox)
-        ' LoadShowList("C:\Users\paulc\AppData\Roaming\Metavisua\Lists\ITC.msl")
         FBH.DirectoryPath = CurrentFolder
-        ' tvMain2.SelectedFolder = CurrentFolder
         FBH.ListBox = lbxFiles
         LBH.ListBox = lbxShowList
-        '   DatabaseForm.Show()
         Dim ff As String = PassFilename()
 
         If ff.EndsWith(".msl") Then
@@ -3831,6 +3802,82 @@ Public Class FormMain
         End If
         Me.Show()
     End Sub
+    Private Sub GetPreferences(p As AppSettings)
+        LastTimeSuccessful = p.LastTimeSuccessful
+        ctrFileBoxes.SplitterDistance = p.VertSplit
+        ctrMainFrame.SplitterDistance = p.HorSplit
+        CurrentFilterState.State = p.Filter
+        PlayOrder.State = p.SortOrder
+        Media.SPT.State = p.Startpoint
+        NavigateMoveState.State = p.State
+        ButtonFilePath = p.LastButtonFile
+        iCurrentAlpha = p.CurrentAlpha
+        Media.MediaPath = p.LastGoodFilePath
+        CurrentFavesPath = p.FavouritesPath
+        chbPreviewLinks.Checked = p.PreviewLinks
+        Rootpath = p.RootScanPath
+        GlobalFavesPath = p.GlobalFavesPath
+        chbLoadButtonFiles.Checked = p.RandomAutoLoadButtons
+        chbNextFile.Checked = p.RandomNextFile
+        chbOnDir.Checked = p.RandomOnDirectoryChange
+        chbAutoTrail.Checked = p.RandomAutoTrail
+        chbShowAttr.Checked = p.ShowAttributes
+        chbEncrypt.Checked = p.Encrypt
+        CHBAutoAdvance.Checked = p.AutoAdvance
+        chbSeparate.Checked = p.Separate
+        ThumbDestination = p.ThumbnailDestination
+        Buttonfolder = p.ButtonFolder
+        SP.AbsoluteJump = p.AbsoluteJump
+        SP.FractionalJump = p.FractionalJump
+        NavigateMoveState.State = p.State
+        chbSlideShow.Checked = p.MovieScan
+        chbScan.Checked = p.ScanBookmarks
+        cbxSingleLinks.Checked = p.SingleLinks
+        tbMovieSlideShowSpeed.Value = p.MovieSlideShowSpeed
+        SlowMoSoundOpt = p.SlowmoSoundOption
+        cbxDontLoad.Checked = Boolean.Parse(p.DontLoadVidsShowPic)
+        cbxDontPreLoad.Checked = Boolean.Parse(p.DontPreLoadVids)
+    End Sub
+    Private Sub SavePreferences(p As AppSettings)
+
+        ' Capture settings from form and controls
+        p.LastTimeSuccessful = LastTimeSuccessful
+        p.LastGoodFilePath = Media.MediaPath
+        p.VertSplit = ctrFileBoxes.SplitterDistance
+        p.HorSplit = ctrMainFrame.SplitterDistance
+        p.Filter = CurrentFilterState.State
+        p.SortOrder = PlayOrder.State
+        p.Startpoint = Media.SPT.State
+        p.State = NavigateMoveState.State
+        p.LastButtonFile = ButtonFilePath
+        p.CurrentAlpha = iCurrentAlpha
+        p.FavouritesPath = CurrentFavesPath
+        p.PreviewLinks = chbPreviewLinks.Checked
+        p.RootScanPath = Rootpath
+        p.GlobalFavesPath = GlobalFavesPath
+        p.RandomAutoLoadButtons = chbLoadButtonFiles.Checked
+        p.RandomNextFile = chbNextFile.Checked
+        p.RandomOnDirectoryChange = chbOnDir.Checked
+        p.RandomAutoTrail = chbAutoTrail.Checked
+        p.ShowAttributes = chbShowAttr.Checked
+        p.Encrypt = chbEncrypt.Checked
+        p.AutoAdvance = CHBAutoAdvance.Checked
+        p.Separate = chbSeparate.Checked
+        p.ThumbnailDestination = ThumbDestination
+        p.ButtonFolder = Buttonfolder
+        p.AbsoluteJump = SP.AbsoluteJump
+        p.FractionalJump = SP.FractionalJump
+        p.MovieScan = chbSlideShow.Checked
+        p.ScanBookmarks = chbScan.Checked
+        p.SingleLinks = cbxSingleLinks.Checked
+        p.MovieSlideShowSpeed = tbMovieSlideShowSpeed.Value
+        p.SlowmoSoundOption = SlowMoSoundOpt
+        p.DontLoadVidsShowPic = cbxDontLoad.Checked.ToString()
+        p.DontPreLoadVids = cbxDontPreLoad.Checked.ToString()
+
+        SettingsManager.SaveSettings(p)
+    End Sub
+
 
     Private Sub InitialiseButtons()
         BH.Tooltip = Me.ToolTip1
@@ -3886,8 +3933,15 @@ Public Class FormMain
         f.Show()
     End Sub
 
-    Private Sub FormMain_MenuComplete(sender As Object, e As EventArgs) Handles Me.MenuComplete
+    Private Sub Me_MenuComplete(sender As Object, e As EventArgs) Handles Me.MenuComplete
 
+    End Sub
+
+    Private Sub ctrFileBoxes_SplitterMoved(sender As Object, e As SplitterEventArgs) Handles ctrFileBoxes.SplitterMoved
+
+    End Sub
+
+    Private Sub ctrMainFrame_SplitterMoved(sender As Object, e As SplitterEventArgs) Handles ctrMainFrame.SplitterMoved
     End Sub
 #End Region
 

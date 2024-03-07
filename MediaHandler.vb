@@ -211,14 +211,11 @@ Public Class MediaHandler
                     If Not DontLoad Then LoadMedia()
                     mMediaDirectory = f.Directory.FullName
                 Else
-                    ' mMediaPath = ""
-                    'mMediaDirectory = New IO.FileInfo(mMediaPath).Directory.FullName
                     If Not DontLoad Then LoadMedia()
                 End If
 
                 mMarkers = GetMarkersFromLinkList()
                 mMarkers.Sort()
-                'RaiseEvent MediaChanged(Me, New EventArgs)
 
             End If
 
@@ -469,8 +466,7 @@ Public Class MediaHandler
     Public Sub LargeJump(e As KeyEventArgs, Small As Boolean, Forward As Boolean)
         If Playing Then
 
-            Dim Extra As Integer = 1
-            If Small Then Extra = 5
+            Dim Extra As Integer = If(Small, 5, 1)
             If Forward Then
                 Position = Math.Min(Duration, Position + Duration / (Extra * Speed.FractionalJump))
                 If Position = Duration Then RaiseEvent MediaFinished(Me, Nothing)
@@ -482,6 +478,25 @@ Public Class MediaHandler
         End If
 
     End Sub
+    ' Example fields in your form or class
+    Private jumpTimer As New CustomTimer(100)
+
+
+
+    ' Event handler for the custom tick event
+    Private Sub OnJumpTimerTick(sender As Object, e As CustomTickEventArgs)
+        Dim extra As Integer = If(jumpTimer.SmallJump, 10, 1)
+        If jumpTimer.ForwardJump Then
+            Position += Speed.AbsoluteJump / extra
+        Else
+            Position -= Speed.AbsoluteJump / extra
+        End If
+    End Sub
+
+    ' Modified SmallJump method that no longer requires KeyEventArgs
+
+
+
     Public Sub SmallJump(e As KeyEventArgs, Small As Boolean, Forward As Boolean)
         Dim extra As Integer = 1
         If Small Then extra = 10
@@ -490,6 +505,12 @@ Public Class MediaHandler
         Else
             Media.Position = Media.Position - Speed.AbsoluteJump / extra
         End If
+
+    End Sub
+    Public Sub SmallJumpN(e As KeyEventArgs, Small As Boolean, Forward As Boolean)
+        jumpTimer.SmallJump = Small
+        jumpTimer.ForwardJump = Forward
+        jumpTimer.StartTimer()
 
     End Sub
     Public Sub MediaJumpToMarker()
@@ -584,18 +605,19 @@ Public Class MediaHandler
                 HandlePic(mMediaPath)
             Case Filetype.Browsable
             Case Filetype.Unknown
-
-                'mPlayer.URL = ""
-                'mPicBox.Dispose()
-                Exit Sub
+                StopPlayback()
         End Select
-        Try
-
-
-        Catch ex As Exception
-
-        End Try
     End Sub
+    Public Sub StopPlayback()
+        ' Stop playback and clean up resources
+        If Player IsNot Nothing AndAlso Not String.IsNullOrEmpty(Player.URL) Then
+            Player.Ctlcontrols.stop()
+            Player.URL = String.Empty
+            '... Additional cleanup as necessary
+        End If
+    End Sub
+
+
     'Private Async Sub HandleDoc(url As String)
     '    Dim fileReader As String
     '    fileReader = My.Computer.FileSystem.ReadAllText(url)
@@ -780,7 +802,7 @@ Public Class MediaHandler
 
     Private Sub Uhoh() Handles mPlayer.ErrorEvent
 
-        'MsgBox("Error " & mPlayer.Error.ToString & " in MediaPlayer")
+        MsgBox("Error " & mPlayer.Error.ToString & " in MediaPlayer")
     End Sub
 
     Private ReadOnly mResetCounter As Integer

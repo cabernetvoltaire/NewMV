@@ -104,6 +104,8 @@ Friend Module Mysettings
     Public ChosenPlayOrder As Byte = 0
 #End Region
     Public Sub PreferencesSave()
+        SettingsManager.SaveSettings(FormMain.Parameters)
+        Exit Sub
         'SavePreferences()
         'Exit Sub
         Dim PrefsList As New List(Of String)
@@ -169,9 +171,32 @@ Friend Module Mysettings
 
 
     End Sub
+    Public Sub PreferencesGetNew(p As AppSettings)
+        ' Return and reset preferences if this is the first load
 
+        ' Ensure the preferences directory exists, initialize folders if it doesn't
+
+        ' Proceed only if the preferences file exists
+        If IO.File.Exists(PrefsFilePath) Then
+            Dim prefsList As List(Of String) = ReadListfromFile(PrefsFilePath, False)
+
+            ' Set the splitter distance based on the form's height
+
+            ' Load preferences from the list if all required drives are available,
+            ' otherwise reset to default preferences
+            If CheckDrives(prefsList) Then
+                LoadPreferencesFromList(prefsList)
+            Else
+                PreferencesReset(True)
+            End If
+        End If
+
+        ' Update the status strip with the current folder path
+        FormMain.tssMoveCopy.Text = CurrentFolder
+    End Sub
 
     Public Sub PreferencesGet()
+        Exit Sub
         ' Return and reset preferences if this is the first load
         If FirstLoad Then
             ResetDefaultPrefs()
@@ -212,6 +237,7 @@ Friend Module Mysettings
             End If
         Next
     End Sub
+
 
     Private Sub ProcessPreferenceItem(name As String, value As String)
         Select Case name
@@ -399,6 +425,7 @@ Friend Module Mysettings
     End Sub
 
     Private Sub ResetDefaultPrefs()
+        Exit Sub
         InitialiseFolders()
 
         With My.Computer.Registry.CurrentUser
@@ -427,7 +454,7 @@ Friend Module Mysettings
         prefslist = ReadListfromFile(PrefsFilePath, False)
         Dim screed As String = ""
 
-        Preferences.Show()
+        ' Preferences.Show()
 
         Dim s() As String = prefslist.ToArray()
         For i = 0 To s.GetUpperBound(0)
@@ -437,7 +464,7 @@ Friend Module Mysettings
 
         Next
         screed = screed.Replace("$", vbTab + vbTab + vbTab + vbTab + vbTab + vbTab + vbTab)
-        Preferences.PrefsText.Text = screed
+        ' Preferences.PrefsText.Text = screed
 
     End Sub
     ''' <summary>

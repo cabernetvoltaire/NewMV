@@ -25,7 +25,6 @@ Public Class MediaSwapper
 
     Private mFileList As New List(Of String) '
     Private mListIndex As Integer
-    Private mListbox As New ListBox
     Private mListcount As Integer
     Public CurrentURLS As New List(Of String)
 
@@ -49,26 +48,6 @@ Public Class MediaSwapper
         End Set
     End Property
 
-    ''' <summary>
-    ''' Assigns the listbox which this Media Swapper controls
-    ''' </summary>
-    ''' <returns></returns>
-    'Public Property Listbox() As ListBox
-    '    Get
-    '        Return mListbox
-    '    End Get
-    '    Set(ByVal value As ListBox)
-    '        mListbox = value
-
-    '        NextF.Listbox = value
-
-    '        For Each m In mListbox.Items
-    '            mFileList.Add(m)
-    '        Next
-    '        ' NextF.List = mFileList
-    '        GetNext()
-    '    End Set
-    'End Property
     Private Sub GetNext()
         If mRandomNext Then
             NextItem = NextF.RandomItem
@@ -166,16 +145,9 @@ Public Class MediaSwapper
             End If
 
             oldindex = index
-        End If
-        GC.Collect()
-    End Sub
+            End If
 
-    ''' <summary>
-    ''' Loads the files into the Media Handler and sets it going, but doesn't release the pause (reset). 
-    ''' </summary>
-    ''' <param name="MH"></param>
-    ''' <param name="path"></param>
-    ''' <returns></returns>
+    End Sub
 
     Private Function Prepare(ByRef MH As MediaHandler, path As String) As Boolean
         Report("PREPARE: " & MH.Player.Name & " with " & path)
@@ -184,9 +156,7 @@ Public Class MediaSwapper
             MH.Metadata = x.PropertyString
         End If
 
-        'BreakExecution()
         If MH.MediaPath <> path Or FullScreen.Changing Then MH.MediaPath = path
-        'MH.MediaPath = path 'If MH.MediaPath <> path Then Still not right for pics
         Select Case MH.MediaType
             Case Filetype.Movie
                 If blnFullScreen Then
@@ -195,9 +165,6 @@ Public Class MediaSwapper
                 End If
                 If FullScreen.Changing Then
                 Else
-
-
-
                     MH.PlaceResetter(True)
                 End If
                 DisposePic(MH.PicHandler.PicBox)
@@ -214,14 +181,11 @@ Public Class MediaSwapper
                 Return False
 
         End Select
-        'NB Duration is not loaded by this point. 
         CurrentURLS.Add(path)
         MH.IsCurrent = False
     End Function
 
     Private Sub RotateMedia(ByRef ThisMH As MediaHandler, ByRef NextMH As MediaHandler, ByRef PrevMH As MediaHandler)
-        'CurrentURLS.Clear()
-        ' HideMedias(ThisMH)
         If getAvailableRAM() < 10 ^ 9 Then
             MsgBox("Ram low")
         End If
@@ -239,14 +203,14 @@ Public Class MediaSwapper
             Case Filetype.Doc
                 If separate Then OutlineControl(ThisMH.Picture, Outliner)
                 ShowTextFile(ThisMH)
+            Case Else
+                ShowPlayer(ThisMH)
         End Select
         Prepare(PrevMH, PreviousItem)
         Prepare(NextMH, NextItem)
     End Sub
     Private Sub ShowPicture(ByRef MHX As MediaHandler)
         MuteAll(True)
-
-        ' HideMedias(MHX)
         MHX.Picture.Visible = True
         MHX.Picture.BringToFront()
         RaiseEvent MediaShown(MHX, Nothing)
@@ -254,8 +218,6 @@ Public Class MediaSwapper
     End Sub
     Private Sub ShowTextFile(ByRef MHX As MediaHandler)
         MuteAll(True)
-        ' HideMedias(MHX)
-
         MHX.Visible = False
         MHX.Browser.BringToFront()
         MHX.Browser.Visible = True
@@ -264,19 +226,15 @@ Public Class MediaSwapper
     End Sub
     Private Sub ShowPlayer(ByRef MHX As MediaHandler)
         MuteAll(True)
-        '  HideMedias(MHX)
 
-        'ResetPositionsAgain()
         MHX.PlaceResetter(False) 'Starts the video playing
         MHX.Visible = False
-        'MHX.SoundHandler.SoundPlayer = FormMain.SoundWMP
-        If Not DontLoad Then Sound(MHX)
+        Sound(MHX)
 
         With MHX.Player
             .Visible = True
             .BringToFront()
             .settings.mute = Muted
-            'LabelStartPoint(MHX)
             RaiseEvent MediaShown(MHX, Nothing)
         End With
 
@@ -286,15 +244,14 @@ Public Class MediaSwapper
     Private Sub Sound(MHX As MediaHandler)
         Soundhandler.CurrentPlayer = MHX.Player
         Soundhandler.SoundPlayer.URL = MHX.Player.URL
-        Soundhandler.SoundPlayer.Ctlcontrols.currentPosition = MHX.Position
+
+        ' Soundhandler.SoundPlayer.Ctlcontrols.currentPosition = MHX.Position
         Select Case SlowSoundOption
             Case SlowMoSoundOptions.Slow
                 Soundhandler.SPH = FormMain.SP
                 Soundhandler.Slow = Not Soundhandler.SPH.Fullspeed
             Case SlowMoSoundOptions.Normal
-                'Soundhandler.STPH = MHX.SPT
                 Soundhandler.SPH = New SpeedHandler
-                'Soundhandler.Muted = False
             Case SlowMoSoundOptions.Silent
                 Soundhandler.Muted = True
         End Select
@@ -318,17 +275,6 @@ Public Class MediaSwapper
         Next
     End Sub
 
-    Function DisposeMedia(player As AxWindowsMediaPlayer) As Integer
-        player.close()
-        player.currentPlaylist.clear()
-        Return 0
-    End Function
-    Private Sub ResetPositionsAgain()
-        For Each m In MediaHandlers
-            m.ResetPositionCanceller.Enabled = True
-            m.PlaceResetter(True)
-        Next
-    End Sub
     Public Sub CancelURL(filepath As String)
         For Each m In MediaHandlers
             If m.MediaPath = filepath Then m.CancelMedia()

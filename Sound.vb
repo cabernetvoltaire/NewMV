@@ -6,6 +6,7 @@
     Public AllowedLag As Long = 15
 
     Private mMuted As Boolean
+    Public AutoTrail As Boolean = False
     Public Property CurrentPlayer() As AxWMPLib.AxWindowsMediaPlayer
         Get
             Return mCurrentPlayer
@@ -13,8 +14,10 @@
         Set(ByVal value As AxWMPLib.AxWindowsMediaPlayer)
             If value IsNot mCurrentPlayer Then
                 mCurrentPlayer = value
-                ' mCurrentPlayer.URL = value.URL
                 SoundPlayer.URL = value.URL
+                If AutoTrail Then
+                    SoundPlayer.Ctlcontrols.currentPosition = 60
+                End If
             End If
         End Set
     End Property
@@ -52,24 +55,28 @@
     End Property
 
     Private Sub SlowSound()
-
-        If mSlow Then
-            SoundPlayer.URL = mCurrentPlayer.URL
+        If AutoTrail Then
+            'SoundPlayer.URL = mCurrentPlayer.URL
             SoundPlayer.settings.mute = False
             mCurrentPlayer.settings.mute = True
-            SoundPlayer.Ctlcontrols.currentPosition = CurrentPlayer.Ctlcontrols.currentPosition
-            SoundPlayer.settings.rate = SPH.FrameRate / 30
-        Else
-            SoundPlayer.URL = ""
+            Exit Sub
+        End If
+        If mSlow Then
+                SoundPlayer.URL = mCurrentPlayer.URL
+                SoundPlayer.settings.mute = False
+                mCurrentPlayer.settings.mute = True
+                SoundPlayer.Ctlcontrols.currentPosition = CurrentPlayer.Ctlcontrols.currentPosition
+                SoundPlayer.settings.rate = SPH.FrameRate / 30
+
+            Else
+
+                SoundPlayer.URL = ""
             SoundPlayer.settings.mute = True
             mCurrentPlayer.settings.mute = False
         End If
     End Sub
-    'Private Sub ChangePos() Handles mCurrentPlayer.PositionChange
-    '    SoundPlayer.Ctlcontrols.currentPosition = CurrentPlayer.Ctlcontrols.currentPosition
-    'End Sub
-
     Private Sub OnSpeedChange() Handles SPH.SpeedChanged
+        If AutoTrail Then Exit Sub
         SoundPlayer.settings.rate = FormMain.SP.FrameRate
         SlowSound()
         'SoundPlayer.settings.rate = SPH.FrameRate / 30
@@ -81,10 +88,13 @@
         SoundPlayer.settings.rate = mCurrentPlayer.settings.rate
     End Sub
     Private Sub OnPosChange() Handles mCurrentPlayer.PositionChange
+        If AutoTrail Then Exit Sub
+
         SoundPlayer.Ctlcontrols.currentPosition = mCurrentPlayer.Ctlcontrols.currentPosition
         ToggleReset()
     End Sub
     Private Sub ResetPos_Tick() Handles ResetPos.Tick
+        If AutoTrail Then Exit Sub
         Dim x = SoundPlayer.Ctlcontrols.currentPosition
         Dim y = mCurrentPlayer.Ctlcontrols.currentPosition
         If x - y > AllowedLag Then

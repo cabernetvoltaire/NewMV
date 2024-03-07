@@ -106,7 +106,7 @@ Public Class ButtonHandler
 
         Catch ex As Exception
             ' Marshalling the exception handling to the UI thread
-            MsgBox("Button load failed")
+            ' MsgBox("Button load failed")
         End Try
     End Sub
 
