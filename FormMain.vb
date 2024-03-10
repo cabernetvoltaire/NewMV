@@ -245,7 +245,7 @@ Public Class FormMain
                     If Media.IncrementLinkCounter(True) = 0 Then
                         'Static pos As Long = Media.Position
                         If Media.Position > Media.Markers(Media.Markers.Count - 1) Then
-                            MediaLargeJump(Nothing, False, True)
+                            MediaLargeJump(False, True)
                         Else
                             AdvanceFile(True, Random.NextSelect)
                         End If
@@ -253,7 +253,7 @@ Public Class FormMain
                         Media.MediaJumpToMarker(ToMarker:=True)
                     End If
                 Else
-                    MediaLargeJump(Nothing, False, True)
+                    MediaLargeJump(False, True)
                 End If
             End If
         Else
@@ -331,42 +331,14 @@ Public Class FormMain
         HighlightCurrent(Media.MediaPath)
         'LoadDefaultShowList()
     End Sub
-
-
-    'Public Sub SetMotion(KeyCode As Integer)
-
-    '    Dim intSpeed As Integer
-    '    Media.Player.Ctlcontrols.pause()
-    '    tmrMediaSpeed.Enabled = True
-    '    Select Case KeyCode
-    '        Case KeySpeed1
-    '            intSpeed = 1000 / iPlaybackSpeed(0)
-    '        Case KeySpeed2
-    '            intSpeed = 1000 / iPlaybackSpeed(1)
-    '        Case KeySpeed3
-    '            intSpeed = 1000 / iPlaybackSpeed(2)
-    '    End Select
-
-    '    tmrMediaSpeed.Interval = intSpeed ' 020406
-
-    'End Sub
-
-    'Private Sub tmrMediaSpeed_Tick(sender As Object, e As EventArgs) Handles tmrMediaSpeed.Tick
-    '    Media.Player.Ctlcontrols.step(1)
-    'End Sub
-
     Private Sub tmrInitialise_Tick(sender As Object, e As EventArgs) Handles tmrInitialise.Tick
         MsgBox("Initialise")
         ' ToolStripButton3_Click(Me, e)
         tmrInitialise.Enabled = False
     End Sub
-
-
-
     Private Sub ButtonListToolStripMenuItem1_Click(sender As Object, e As EventArgs)
         BH.SaveButtonSet()
     End Sub
-
     Private Sub tmrUpdateForm_Tick(sender As Object, e As EventArgs) Handles tmrUpdateForm.Tick
         MsgBox("UF")
         Me.Update()
@@ -545,9 +517,11 @@ Public Class FormMain
                         Case Keys.I
                             VideoTrim.StartTime = Media.Position
                             VideoTrim.Active = True
+                            MsgBox("Extraction at current point begun. Choose end point (Alt shift O)")
                         Case Keys.O
                             VideoTrim.Finish = Media.Position
                             Marks.Create()
+                            MsgBox("Now Alt Shift P to process, or carry on to cancel.")
                         Case Keys.P
                             AddHandler VideoTrim.Finished, AddressOf VideoTrimFinished
                             VideoTrim.InputFile1 = MSFiles.CurrentItem
@@ -577,7 +551,7 @@ Public Class FormMain
     End Sub
     Private Sub VideoTrimFinished(sender As Object, e As EventArgs)
         Dim output As String = sender
-
+        MsgBox("Finished extracting")
     End Sub
     Private Sub MovingFolder(Source As String, Dest As String)
         T = New Thread(New ThreadStart(Sub() MoveFolder(Source, Dest))) With {
@@ -906,59 +880,64 @@ Public Class FormMain
 
     Private Sub tmrAutoTrail_Tick(sender As Object, e As EventArgs) Handles tmrAutoTrail.Tick
 
-        If Not CtrlDown And Not Media.DontLoad Then AutoTrail(sender)
-
+        If Not CtrlDown And Not Media.DontLoad Then AutoTrail()
     End Sub
 
-    Private Sub AutoTrail(sender As Object) 'Called on each autotrail tick, using tbAutotrail value for Time unit
-        Dim i As Byte = AT.SpeedIndex
+    Private Sub AutoTrail()
+        'Dim i As Byte = AT.SpeedIndex ' Assuming SpeedIndex calculation logic is implemented as needed
         UpdateTimerInterval()
-        ChangePlaybackSpeed(i)
-        'If we are holding Alt, change the file
-        ' ChangeFileIfRequired(sender)
-        'This actually does the main job
-        Dim ex1 As New KeyEventArgs(KeyJumpRandom Or Keys.Alt)
-        JumpToVideoSegment(ex1)
-    End Sub
+        ChangePlaybackSpeed()
 
-    Private Sub UpdateTimerInterval()
-        Dim TimeUnit As Byte = tbAutoTrail.Value
-        ' AT.AdvanceChance = 10
-        tmrAutoTrail.Interval = Math.Max(CInt(AT.Duration * 1000), 500)
-    End Sub
-
-    Private Sub ChangeFileIfRequired(sender As Object)
-        If AltDown Or Int(Rnd() * AT.AdvanceChance) + 1 = 1 Then
-            If CtrlDown Then
-                'Ctrl means dont change
-            Else
-                '    To change the file.
-                HandleKeys(sender, New KeyEventArgs(KeyNextFile))
-            End If
+        ' Check if we are still in the initial moments phase
+        If AT.InitialMomentsCount > 0 Then
+            ' Choose moments from the very beginning
+            SelectInitialMoments()
+            AT.InitialMomentsCount -= 1 ' Decrement the counter
+        Else
+            ' Standard random jumping behavior
+            JumpToVideoSegment()
         End If
     End Sub
+    Private Sub SelectInitialMoments()
+        ' Example: Jump to 5%, 10%, and 15% of the video duration in the first 3 ticks
+        Dim startPoint As Double = (Media.Duration * 0.05 * AT.InitialMomentsCount)
+        Media.MediaJumpToMarker(ToPoint:=startPoint)
+    End Sub
 
-    Private Sub JumpToVideoSegment(ex1 As KeyEventArgs)
-        'Go to markers first
-        If AT.Counter > 0 Or (AT.Counter = 0 And Rnd() > 0.9) Then
-            JumpToMark(ex1)
-            If AT.Counter > 0 Then AT.Counter -= 1
+    Private Sub JumpToVideoSegment()
+        ' Determine whether to jump to a mark based on AdvanceChance
+        If AT.ShouldAdvance() Then
+            JumpToMark(True, True)
         Else
             JumpRandom(False)
         End If
     End Sub
 
-    Private Sub ChangePlaybackSpeed(i As Byte)
-        Select Case i
+    Private Sub ChangePlaybackSpeed()
+        Dim speedSetting As Integer = AT.DetermineSpeedSetting()
+        Select Case speedSetting
             Case 0, 1, 2
-                SP.FrameRate = AT.Framerates(i)
-                SpeedChange(New KeyEventArgs(speedkeys(i)))
+                SP.FrameRate = AT.Framerates(speedSetting)
+                SpeedChange(New KeyEventArgs(speedkeys(speedSetting)))
             Case 3
                 tmrSlowMo.Enabled = False
                 Media.Player.settings.rate = 1
                 Media.Player.Ctlcontrols.play()
+                ' Handle other cases as needed...
         End Select
     End Sub
+    Private Sub UpdateTimerInterval()
+
+        ' Convert the duration from seconds to milliseconds for the Timer.Interval property
+        Dim interval As Integer = CInt(AT.GetRandomDuration * 1000)
+
+        ' Ensure there's a minimum interval to avoid too rapid execution
+        interval = Math.Max(interval, 500) ' Setting a minimum interval of 500 milliseconds
+
+        ' Update the timer's interval
+        tmrAutoTrail.Interval = interval
+    End Sub
+
 
     Private Sub ConstructMenuShortcuts()
         'Dim prefixkeys As Keys
@@ -1079,7 +1058,7 @@ Public Class FormMain
     End Sub
 
     Private Sub TrailerModeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TrailerModeToolStripMenuItem.Click
-
+        'Media.AT.Play()
         tmrAutoTrail.Enabled = Not tmrAutoTrail.Enabled
     End Sub
 
@@ -1283,9 +1262,10 @@ Public Class FormMain
 
         Dim x As New FormShowList
         x.Show()
-
+        x.Order = PlayOrder.State
         x.ListofFiles = LBH.ItemList
         ' End If
+        CollapseShowlist(True)
     End Sub
 
 
@@ -1838,6 +1818,7 @@ Public Class FormMain
     End Sub
 
     Private Sub chbAutoTrail_CheckedChanged(sender As Object, e As EventArgs) Handles chbAutoTrail.CheckedChanged
+
         tmrAutoTrail.Enabled = chbAutoTrail.Checked
     End Sub
 
@@ -2640,6 +2621,7 @@ Public Class FormMain
         If Not Media.DontLoad Then SavePreferences(Parameters)
 
     End Sub
+
     Private Sub SetControlColours(MainColor As Color, FilterColor As Color)
         If Media.DontLoad Then Exit Sub
         Me.SuspendLayout()
@@ -2654,6 +2636,9 @@ Public Class FormMain
         tvmain2.HighlightSelectedNodes()
         Me.ResumeLayout()
     End Sub
+
+
+
     Public Sub OnSpeedChange(sender As Object, e As EventArgs) Handles SP.SpeedChanged
         If SP.Slideshow Then
             tmrSlideShow.Interval = SP.Interval
@@ -3076,13 +3061,13 @@ Public Class FormMain
     End Sub
 
 
-    Public Sub MediaSmallJump(e As KeyEventArgs, Small As Boolean, forward As Boolean)
-        Media.SmallJump(e, Small, forward)
+    Public Sub MediaSmallJump(Small As Boolean, forward As Boolean)
+        Media.SmallJump(Small, forward)
 
     End Sub
 
-    Public Sub MediaLargeJump(e As KeyEventArgs, Small As Boolean, Forward As Boolean)
-        Media.LargeJump(e, Small, Forward)
+    Public Sub MediaLargeJump(Small As Boolean, Forward As Boolean)
+        Media.LargeJump(Small, Forward)
 
     End Sub
     Public Sub JumpRandom(blnAutoTrail As Boolean)
@@ -3255,7 +3240,7 @@ Public Class FormMain
                             Media.Speed.PausedPosition = Media.Player.Ctlcontrols.currentPosition
                         Else
 
-                            Media.SmallJump(e, e.Modifiers = Keys.Control, e.KeyCode > (KeySmallJumpUp + KeySmallJumpDown) / 2)
+                            Media.SmallJump(e.Modifiers = Keys.Control, e.KeyCode > (KeySmallJumpUp + KeySmallJumpDown) / 2)
                             If tmrMovieSlideShow.Enabled Then
                                 ToggleMovieSlideShow()
                             End If
@@ -3273,7 +3258,7 @@ Public Class FormMain
                     Else
                     End If
                 Else
-                    MediaLargeJump(e, e.Modifiers = Keys.Control, e.KeyCode = KeyBigJumpOn)
+                    MediaLargeJump(e.Modifiers = Keys.Control, e.KeyCode = KeyBigJumpOn)
                     If tmrMovieSlideShow.Enabled Then
                         ToggleMovieSlideShow()
                     End If
@@ -3598,22 +3583,36 @@ Public Class FormMain
             If e.Alt Then
                 Media.LinkCounter = Media.RandomCounter
             Else
-                'Media.StartPoint.IncrementMarker()
                 Media.IncrementLinkCounter(e.Modifiers <> Keys.Control)
-                '     Media.LinkCounter = Media.FindNearestCounter(e.Modifiers = Keys.Control)
             End If
-            '  Media.Bookmark = -2
             Media.MediaJumpToMarker(ToMarker:=True)
-
         Else
-            MediaLargeJump(e, e.Modifiers = Keys.Control, True)
-
-            'JumpRandom(e.Control And e.Shift)
+            MediaLargeJump(e.Modifiers = Keys.Control, True)
         End If
         e.Handled = True
         e.SuppressKeyPress = True
         Return e
     End Function
+    Private Sub JumpToMark(forward As Boolean, Optional randomJump As Boolean = False)
+        If Media.Markers.Count > 0 Then
+            If randomJump Then
+                ' Assign a random index from the markers list
+                Media.LinkCounter = Media.RandomCounter
+            Else
+                ' Increment or decrement the LinkCounter based on the forward parameter
+                Media.IncrementLinkCounter(forward)
+            End If
+
+            ' Perform the jump to the specified marker
+            Media.MediaJumpToMarker(ToMarker:=True)
+        Else
+            ' If no markers are available, perform a larger jump
+            ' The function MediaLargeJump and its parameters might need to be adjusted according to its definition
+            ' Assuming MediaLargeJump is another method that you've implemented
+            Media.LargeJump(forward, False)
+        End If
+    End Sub
+
 
     Private Sub RemoveAllFavourites(mediaPath As String)
         Throw New NotImplementedException()
@@ -3771,6 +3770,7 @@ Public Class FormMain
 
         'PreferencesGet()
         GetPreferences(Parameters)
+        SetControlColours(NavigateMoveState.Colour, CurrentFilterState.Colour)
         '   LastTimeSuccessful = False
         'Media.Picture = PictureBox1
         tbPercentage.Enabled = True
@@ -3806,6 +3806,7 @@ Public Class FormMain
         LastTimeSuccessful = p.LastTimeSuccessful
         ctrFileBoxes.SplitterDistance = p.VertSplit
         ctrMainFrame.SplitterDistance = p.HorSplit
+        ctrPicAndButtons.SplitterDistance = p.ButtonSplit
         CurrentFilterState.State = p.Filter
         PlayOrder.State = p.SortOrder
         Media.SPT.State = p.Startpoint
@@ -3820,7 +3821,7 @@ Public Class FormMain
         chbLoadButtonFiles.Checked = p.RandomAutoLoadButtons
         chbNextFile.Checked = p.RandomNextFile
         chbOnDir.Checked = p.RandomOnDirectoryChange
-        chbAutoTrail.Checked = p.RandomAutoTrail
+        ' chbAutoTrail.Checked = p.RandomAutoTrail
         chbShowAttr.Checked = p.ShowAttributes
         chbEncrypt.Checked = p.Encrypt
         CHBAutoAdvance.Checked = p.AutoAdvance
@@ -3858,7 +3859,7 @@ Public Class FormMain
         p.RandomAutoLoadButtons = chbLoadButtonFiles.Checked
         p.RandomNextFile = chbNextFile.Checked
         p.RandomOnDirectoryChange = chbOnDir.Checked
-        p.RandomAutoTrail = chbAutoTrail.Checked
+        'p.RandomAutoTrail = chbAutoTrail.Checked
         p.ShowAttributes = chbShowAttr.Checked
         p.Encrypt = chbEncrypt.Checked
         p.AutoAdvance = CHBAutoAdvance.Checked
@@ -3874,7 +3875,7 @@ Public Class FormMain
         p.SlowmoSoundOption = SlowMoSoundOpt
         p.DontLoadVidsShowPic = cbxDontLoad.Checked.ToString()
         p.DontPreLoadVids = cbxDontPreLoad.Checked.ToString()
-
+        p.buttonSplit = ctrPicAndButtons.SplitterDistance
         SettingsManager.SaveSettings(p)
     End Sub
 

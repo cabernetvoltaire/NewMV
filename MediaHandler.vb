@@ -26,6 +26,7 @@ Public Class MediaHandler
         .Font = New Font("Calibri", 16, FontStyle.Regular),
         .BackColor = Color.Black,
         .ForeColor = Color.AntiqueWhite}
+    Public Property AT As New AutoTrail(mPlayer, Markers)
     Public Property Browser As New Microsoft.Web.WebView2.WinForms.WebView2
     Private MetaDirectory As IReadOnlyList(Of MetadataExtractor.Directory)
     Public ShowMeta As Boolean = False
@@ -463,7 +464,7 @@ Public Class MediaHandler
     End Sub
 #End Region
 #Region "Media Handlers"
-    Public Sub LargeJump(e As KeyEventArgs, Small As Boolean, Forward As Boolean)
+    Public Sub LargeJump(Small As Boolean, Forward As Boolean)
         If Playing Then
 
             Dim Extra As Integer = If(Small, 5, 1)
@@ -497,7 +498,7 @@ Public Class MediaHandler
 
 
 
-    Public Sub SmallJump(e As KeyEventArgs, Small As Boolean, Forward As Boolean)
+    Public Sub SmallJump(Small As Boolean, Forward As Boolean)
         Dim extra As Integer = 1
         If Small Then extra = 10
         If Forward Then
@@ -513,7 +514,58 @@ Public Class MediaHandler
         jumpTimer.StartTimer()
 
     End Sub
-    Public Sub MediaJumpToMarker()
+    Public Sub MediaJumpToMarker(Optional ToPoint As Double = -1, Optional ToStart As Boolean = False, Optional ToEnd As Boolean = False, Optional ToMarker As Boolean = False)
+        ' Initialize common StartPointHandler properties
+        Dim startPointHandler As New StartPointHandler With {.Duration = mDuration}
+
+        ' Check for the 'ToEnd' condition first, as it might override others
+        If ToEnd Then
+            startPointHandler.State = StartPointHandler.StartTypes.NearEnd
+            mPlayPosition = startPointHandler.StartPoint
+        ElseIf ToStart Then
+            ' Jump to the start
+            startPointHandler.State = StartPointHandler.StartTypes.Beginning
+            mPlayPosition = startPointHandler.StartPoint
+        ElseIf ToMarker AndAlso mMarkers.Count > 0 Then
+            ' Jump to a specific marker
+            startPointHandler.Marker = mMarkers.Item(LinkCounter)
+            mPlayPosition = startPointHandler.StartPoint
+        ElseIf ToPoint > 0 Then
+            ' Jump to a particular point
+            startPointHandler.State = StartPointHandler.StartTypes.ParticularAbsolute
+            startPointHandler.Absolute = ToPoint
+            mPlayPosition = startPointHandler.StartPoint
+        ElseIf SPT.State = StartPointHandler.StartTypes.FirstMarker Then
+            ' Handle the FirstMarker condition within the main logic
+            If mBookmark > -1 Then
+                mPlayPosition = mBookmark
+            ElseIf mMarkers.Count > 0 Then
+                startPointHandler.Marker = mMarkers.Item(LinkCounter)
+                mPlayPosition = startPointHandler.StartPoint
+            Else
+                startPointHandler.Reset()
+                mPlayPosition = startPointHandler.StartPoint
+            End If
+        Else
+            ' Default behavior: use paused position if available, else jump to StartPoint defined by SPT
+            If Speed.PausedPosition <> 0 Then
+                mPlayPosition = Speed.PausedPosition
+            Else
+                mPlayPosition = SPT.StartPoint
+            End If
+        End If
+
+        ' Validate the play position before updating
+        If mPlayPosition > mDuration Then
+            ' Log or handle overreach scenario
+            Report($"{mPlayPosition} Over-reach {mDuration}", 0, False)
+        Else
+            ' Set the media player's current position to the determined play position
+            mPlayer.Ctlcontrols.currentPosition = mPlayPosition
+        End If
+    End Sub
+
+    Public Sub MediaJumpToMarkerOld()
         If SPT.State = StartPointHandler.StartTypes.FirstMarker Then
             If mBookmark > -1 Then
                 mPlayPosition = mBookmark
@@ -535,7 +587,8 @@ Public Class MediaHandler
         mPlayer.Ctlcontrols.currentPosition = mPlayPosition
         '  Debug.Print("MJM: Position of " & mPlayer.URL & " reset to " & LongAsTimeCode(mPlayPosition))
     End Sub
-    Public Sub MediaJumpToMarker(Optional ToPoint As Double = 0, Optional ToStart As Boolean = False, Optional ToEnd As Boolean = False, Optional ToMarker As Boolean = False)
+
+    Public Sub MediaJumpToMarkerOld(Optional ToPoint As Double = 0, Optional ToStart As Boolean = False, Optional ToEnd As Boolean = False, Optional ToMarker As Boolean = False)
         'This is a logical mess.
         'There are markers, so jump to the next one
         If ToEnd Then 'Special Case where jump to end button pressed

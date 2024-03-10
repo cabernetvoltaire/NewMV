@@ -658,6 +658,7 @@ Partial Class FormMain
         'ctrMainFrame
         '
         Me.ctrMainFrame.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ctrMainFrame.IsSplitterFixed = True
         Me.ctrMainFrame.Location = New System.Drawing.Point(3, 239)
         Me.ctrMainFrame.Name = "ctrMainFrame"
         '
@@ -794,7 +795,7 @@ Partial Class FormMain
         Me.lbxShowList.Location = New System.Drawing.Point(0, 0)
         Me.lbxShowList.Name = "lbxShowList"
         Me.lbxShowList.Size = New System.Drawing.Size(474, 550)
-        Me.lbxShowList.TabIndex = 20
+        Me.lbxShowList.TabIndex = 0
         '
         'ctrPicAndButtons
         '

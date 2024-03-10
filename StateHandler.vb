@@ -11,7 +11,7 @@
 
     End Enum
     Public Event StateChanged(sender As Object, e As EventArgs)
-    Public mColour() As Color = ({Color.Aqua, Color.Orange, Color.LightPink, Color.LightGreen, Color.Tomato, Color.BurlyWood, Color.BlueViolet})
+    Public Colours() As Color = ({Color.Aqua, Color.Orange, Color.LightPink, Color.LightGreen, Color.Tomato, Color.BurlyWood, Color.BlueViolet})
 
     Private mDescription = {"Navigate Mode", "Move Mode", "Move (Leave link)", "Copy", "Copy Link", "Exchange Link", "Move original"}
     Private mInstructions = {"Function keys navigate to folder." & vbCrLf & "[SHIFT] + Fn moves file. " & vbCrLf & "[CTRL] + [SHIFT] +Fn moves folder" & vbCrLf & "[ALT]+[CTRL]+[SHIFT] + Fn redefines key",
@@ -24,7 +24,7 @@
     }
     Public ReadOnly Property Colour() As Color
         Get
-            Return mColour(mState)
+            Return Colours(mState)
         End Get
     End Property
     Public ReadOnly Property Description() As String

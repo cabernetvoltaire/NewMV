@@ -30,18 +30,15 @@
         mDuration = 100
         mAbsolute = 120
         mDistance = 65
-
+        mDescList.AddRange(mOrder)
     End Sub
 #Region "Properties"
-
     Public ReadOnly Property Descriptions As List(Of String)
         Get
-            For i = 0 To 6
-                mDescList.Add(mOrder(i))
-            Next
-            Descriptions = mDescList
+            Return mDescList
         End Get
     End Property
+
     Public ReadOnly Property Description() As String
         Get
             Return mOrder(mState)
@@ -68,20 +65,12 @@
             mDistance = value
         End Set
     End Property
-    Private mMarkers As New List(Of Double)
-    Public Property Markers() As List(Of Double)
-        Get
-            Return mMarkers
-        End Get
-        Set(ByVal value As List(Of Double))
 
-            mMarkers = value
-        End Set
-    End Property
+    Public Property Markers() As New List(Of Double)
     Private mCurrentMarker As Long
     Public ReadOnly Property CurrentMarker() As Long
         Get
-            mCurrentMarker = mMarkers(mMarkCounter)
+            mCurrentMarker = Markers(mMarkCounter)
             Return mCurrentMarker
         End Get
     End Property
@@ -121,13 +110,13 @@
         End Get
 
     End Property
-    Private mState As Byte
-    Public Property State() As Byte
+    Private mState As StartTypes
+    Public Property State() As StartTypes
         Get
             Return mState
         End Get
-        Set(ByVal value As Byte)
-            Dim b As Byte = mState
+        Set(ByVal value As StartTypes)
+            Dim b As StartTypes = mState
             mState = value
             If b <> mState Then
                 SetStartPoint()
@@ -161,19 +150,19 @@
     End Property
 #End Region
 #Region "Methods"
-    Public Sub IncrementState(max As Byte)
+    Public Sub IncrementState(max As StartTypes)
         State = (State + 1) Mod max
     End Sub
     Private Property mMarkCounter = 0
 
     Public Sub Reset()
-        mMarkers.Clear()
+        Markers.Clear()
         SetStartPoint()
     End Sub
     Private Function SetStartPoint() As Long
         Select Case mState
             Case StartTypes.FirstMarker
-                mStartPoint = If(mMarkers.Any(), mMarkers(0), GetAdjustedStartPoint(mDistance))
+                mStartPoint = If(Markers.Any(), Markers(0), GetAdjustedStartPoint(mDistance))
             Case StartTypes.Beginning
                 mStartPoint = 0
             Case StartTypes.NearBeginning, StartTypes.NearEnd
@@ -189,14 +178,13 @@
         ' Apply limits
         mStartPoint = ApplyLimitsToStartPoint(mStartPoint)
         If mStartPoint > mDuration Then MsgBox("Too far")
-
-        Return mStartPoint
         RaiseEvent StartPointChanged(Me, Nothing)
+        Return mStartPoint
     End Function
 
     Private Function GetAdjustedStartPoint(value As Long) As Long
         If value > mDuration / 2 Then
-            Return mDuration * If(mState = StartTypes.NearBeginning, 0.1, 0.9)
+            value = mDuration * If(mState = StartTypes.NearBeginning, 0.1, 0.9)
         End If
         Return value
     End Function

@@ -44,7 +44,7 @@ Public Module General
     Public RandomInstance As New Random()
     Public BreakHere As Boolean = True
     Friend ShowListVisible As Boolean = False
-    Public Declare Function SearchTreeForFile Lib "imagehlp" (ByVal RootPath As String, ByVal InputPathName As String, ByVal OutputPathBuffer As String) As Long
+    ' Public Declare Function SearchTreeForFile Lib "imagehlp" (ByVal RootPath As String, ByVal InputPathName As String, ByVal OutputPathBuffer As String) As Long
     Public Const LinkExt As String = ".mvl"
     Public Property bImageDimensionState As Byte
     Public Property ShiftDown As Boolean
@@ -55,21 +55,13 @@ Public Module General
 
     Public VIDEOEXTENSIONS = ".divx.vob.webm.avi.flv.mov.m4p.mpeg.f4v.mpg.m4a.m4v.mkv.mp4.rm.ram.wmv.wav.mp3.3gp"
     Public PICEXTENSIONS = "arw.jpeg.png.jpg.bmp.gif.jfif.webp"
-    Public DirectoriesListFile
     Public separate As Boolean = False
     Public DebugOn As Boolean = True
-    Public t As Threading.Thread
     Public CurrentFolder As String = "C:\"
     ' Public DirectoriesList As New List(Of String)
 
     Public Encrypted As Boolean = False
     Public WithEvents Encrypter As New Encryption("Spunky")
-    Public UndoOperations As New Stack(Of Undo)
-
-
-
-
-    Public lngShowlistLines As Long = 0
     Public ReadOnly Property Asterisk As SystemSound
     Public Orientation() As String = {"Unknown", "TopLeft", "TopRight", "BottomRight", "BottomLeft", "LeftTop", "RightTop", "RightBottom", "LeftBottom"}
 #End Region

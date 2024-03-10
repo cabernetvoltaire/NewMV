@@ -1,6 +1,6 @@
 ﻿Public Class FormShowList
     Dim LBH As New ListBoxHandler()
-
+    Public Property Order As New SortOrder
     Public Sub ShowListForm_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
         FormMain.Main_KeyDown(sender, e)
         e.SuppressKeyPress = True
@@ -30,7 +30,9 @@
         End Get
         Set(ByVal value As List(Of String))
             mListofFiles = value
+            LBH.OrderList()
             LBH.FillBox(mListofFiles)
+
         End Set
     End Property
 

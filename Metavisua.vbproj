@@ -446,6 +446,7 @@
     <Compile Include="Attributes.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="AutoTrail2.vb" />
     <Compile Include="AutoTrailer.vb" />
     <Compile Include="Brackets.vb" />
     <Compile Include="BundleHandler.vb" />
@@ -579,6 +580,7 @@
     <Compile Include="TreeTry.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="UndoNew.vb" />
     <Compile Include="VideoTrim.vb" />
     <Compile Include="MovieSwapper - Copy %282%29.vb" />
     <Compile Include="MovieSwapper.vb" />
@@ -651,7 +653,6 @@
     <Compile Include="TreeView.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Undo.vb" />
     <Compile Include="UserPrefs.vb" />
     <Compile Include="VideoThumbnailer.vb" />
   </ItemGroup>

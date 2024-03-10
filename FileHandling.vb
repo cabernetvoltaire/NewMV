@@ -35,6 +35,7 @@ Friend Module FileHandling
     End Sub
     Public Sub OnMediaFinished(sender As Object, e As EventArgs) Handles Media.MediaFinished
         FormMain.AdvanceFile(True, FormMain.Random.NextSelect)
+        FormMain.AT.InitialMomentsCount = 3
         'Media.Playing= False
     End Sub
     '  Public WithEvents SndH As New SoundController
@@ -63,7 +64,7 @@ Friend Module FileHandling
 
         'Media.SetLink(0)
         With FormMain
-            .AT.Counter = Media.Markers.Count
+            '.AT.Counter = Media.Markers.Count
             .Att.DestinationLabel = .lblAttributes
             If Not .tmrSlideShow.Enabled And .chbShowAttr.Checked Then
                 .TextBox1.Text = Media.Metadata
@@ -134,35 +135,7 @@ Friend Module FileHandling
             End If
         Next
     End Sub
-    'Public Sub MoveFolder(Dir As String, Dest As String)
-    '    MSFiles.CancelURL()
 
-    '    If Dest = "" Then
-    '        Dim SourceDir As New DirectoryInfo(Dir)
-    '        'DirectoriesList.Remove(SourceDir.FullName)
-    '        For Each d In SourceDir.EnumerateDirectories("*", SearchOption.AllDirectories)
-    '            MoveDirectoryContents(d, True)
-    '        Next
-    '        MoveDirectoryContents(SourceDir, True)
-    '    Else
-
-
-    '        Dim TargetDir As New DirectoryInfo(Dest)
-    '        Dim SourceDir As New DirectoryInfo(Dir)
-
-    '        MoveDirectoryContents(TargetDir, SourceDir, SourceDir, True)
-    '        If SourceDir.Exists Then
-    '            If SourceDir.GetFiles.Count = 0 And SourceDir.GetDirectories.Count = 0 Then
-    '                SourceDir.Delete()
-    '            Else
-    '                For Each d In SourceDir.EnumerateDirectories("*", SearchOption.AllDirectories)
-    '                    MoveDirectoryContents(TargetDir, SourceDir, d, True)
-    '                Next
-    '            End If
-    '        End If
-    '    End If
-
-    'End Sub
     Public Sub MoveFolder(ByVal Dir As String, ByVal Dest As String)
         ' Cancel any related operations that might interfere with moving the directory
         MSFiles.CancelURL()
@@ -199,67 +172,9 @@ Friend Module FileHandling
         End Try
     End Sub
 
-    'Public Sub MoveFolder(Dir As String, Dest As String)
-    '    MSFiles.CancelURL()
-
-    '    Dim sourceDir As New DirectoryInfo(Dir)
-    '    Dim targetDir As New DirectoryInfo(Dest)
-
-    '    ' Merge contents from sourceDir to targetDir
-    '    MergeDirectoryContents(sourceDir, targetDir)
-
-    '    ' Optionally, delete the source directory if you want to 'move'
-    '    ' Be careful with this, especially if merging was the primary goal
-    '    MoveDirectoryContents(sourceDir) ' Uncomment with caution
-    'End Sub
-    ''Public Sub MoveFolder(Dir As String, Dest As String)
-    '    MSFiles.CancelURL()
-
-    '    ' Check if the source directory exists
-    '    Dim SourceDir As New DirectoryInfo(Dir)
-    '    If Not SourceDir.Exists Then
-    '        Throw New DirectoryNotFoundException($"Source directory does not exist: {Dir}")
-    '    End If
-
-    '    ' If Dest is not specified, perhaps throw an error or specify what should happen
-    '    If String.IsNullOrWhiteSpace(Dest) Then
-    '        Throw New ArgumentException("Destination directory cannot be empty.")
-    '    End If
-
-    '    Dim TargetDir As New DirectoryInfo(Dest)
-
-    '    ' If moving within the same root directory, handle as needed
-    '    ' For a straightforward move, just use Directory.Move
-    '    If Not TargetDir.Exists Then
-    '        Directory.CreateDirectory(TargetDir.FullName)
-    '    End If
-
-    '    ' Move the directory
-    '    Dim newDirPath As String = Path.Combine(Dest, SourceDir.Name)
-    '    Directory.Move(Dir, newDirPath)
-    'End Sub
 
 
-    Private Sub MoveDirectoryContents(TargetDir As DirectoryInfo, SourceDir As DirectoryInfo, d As DirectoryInfo, Optional Parent As Boolean = False)
-        Dim flist As New List(Of String)
-        Dim newpath As String = d.FullName
-        If Parent Then
-            newpath = newpath.Replace(SourceDir.Parent.FullName, TargetDir.FullName)
-        Else
-            newpath = newpath.Replace(SourceDir.FullName, TargetDir.FullName)
 
-        End If
-        Dim NewDir As New DirectoryInfo(newpath)
-        If NewDir.Exists = False Then
-            NewDir.Create()
-        End If
-        For Each f In d.EnumerateFiles("*", SearchOption.TopDirectoryOnly)
-            flist.Add(f.FullName)
-        Next
-        blnSuppressCreate = True
-        MoveFiles(flist, newpath, True)
-
-    End Sub
 
     Private Sub MergeDirectoryContents(sourceDir As DirectoryInfo, targetDir As DirectoryInfo)
         ' Ensure the target directory exists

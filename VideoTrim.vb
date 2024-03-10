@@ -41,7 +41,7 @@ Module VideoTrim
 
 
     End Sub
-    Private Sub ExtractVideoSegment(inputFile As String, startTime As Integer, duration As Integer, outputFile As String)
+    Private Sub ExtractVideoSegmentOld(inputFile As String, startTime As Integer, duration As Integer, outputFile As String)
         ' Create an FFmpeg process
         Using ffmpegProcess As New Process()
             ffmpegProcess.StartInfo.FileName = "C:\ffmpeg.exe"
@@ -63,6 +63,38 @@ Module VideoTrim
                 Console.WriteLine("An error occurred during the extraction process.")
                 Console.WriteLine("Error code: " & ffmpegProcess.ExitCode)
                 Console.WriteLine("Error message: " & ffmpegProcess.StandardError.ReadToEnd())
+            End If
+        End Using ' This will call Dispose() on the process, cleaning up resources
+    End Sub
+    Private Sub ExtractVideoSegment(inputFile As String, startTime As Integer, duration As Integer, outputFile As String)
+        ' Create an FFmpeg process
+        Using ffmpegProcess As New Process()
+            ffmpegProcess.StartInfo.FileName = "C:\ffmpeg.exe"
+            ffmpegProcess.StartInfo.Arguments = $"-i ""{inputFile}"" -ss {startTime} -t {duration} -c copy ""{outputFile}"""
+
+            ffmpegProcess.StartInfo.UseShellExecute = False
+            ffmpegProcess.StartInfo.CreateNoWindow = True
+            ffmpegProcess.StartInfo.RedirectStandardOutput = True
+            ffmpegProcess.StartInfo.RedirectStandardError = True
+
+            ' Start the FFmpeg process
+            ffmpegProcess.Start()
+
+            ' It's a good practice to read the error output as the process runs to avoid deadlock
+            Dim errorOutput As String = ffmpegProcess.StandardError.ReadToEnd()
+
+            ' Wait for the FFmpeg process to finish
+            ffmpegProcess.WaitForExit()
+
+            ' Check if the process exited successfully
+            If ffmpegProcess.ExitCode = 0 Then
+                Console.WriteLine("The portion of the MP4 file was successfully extracted.")
+                ' Raise the Finished event indicating success
+                RaiseEvent Finished(outputFile, EventArgs.Empty)
+            Else
+                Console.WriteLine("An error occurred during the extraction process.")
+                Console.WriteLine("Error code: " & ffmpegProcess.ExitCode)
+                Console.WriteLine("Error message: " & errorOutput)
             End If
         End Using ' This will call Dispose() on the process, cleaning up resources
     End Sub

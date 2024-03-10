@@ -145,51 +145,6 @@ Public Class MarkPlacement
         If VideoTrim.Active Then DrawConnectedCircles(VideoTrim.StartTime, VideoTrim.Finish)
     End Sub
 
-    Private Sub DrawMarksOLD() Handles tmr.Tick
-        If Duration = 0 Or Duration > 10 ^ 6 Then Exit Sub
-        Graphics.Clear(mBar.BackColor)
-        Dim start As Point
-        start.Y = 0
-        Dim endpt As Point
-        endpt.Y = mBar.Height
-        '  Duration = Math.Min(Duration, 50000)
-        'Draw Big Jumps
-        Dim JumpSize As Integer = Duration / Fractions
-        Dim px As Double = 0
-        While px < mBar.Width
-            Dim pen As New Pen(Color.Black, 2)
-            Dim x As Integer = CInt(px)
-
-            start.X = x
-            endpt.X = x
-            Graphics.DrawLine(pen, start, endpt)
-            px += mBar.Width / Fractions
-        End While
-        px = 0
-        'Draw small jumps
-        While px < mBar.Width
-            Dim pen As New Pen(Color.Green, 1)
-            Dim x As Integer = CInt(px)
-
-            start.X = x
-            endpt.X = x
-            Graphics.DrawLine(pen, start, endpt)
-            px += SmallJumps * mBar.Width / Duration
-        End While
-
-        'Draw Markers
-        If mMarkers Is Nothing Then Exit Sub
-        For Each m In mMarkers
-            start.X = mBar.Width * m / Duration
-            endpt.X = start.X
-            Dim pen As New Pen(Color.Yellow, 3)
-            Graphics.DrawLine(pen, start, endpt)
-        Next
-        mBar.Image = Bitmap
-        'Draw StartEnd
-        If VideoTrim.Active Then DrawConnectedCircles(VideoTrim.StartTime, VideoTrim.Finish)
-        'tmr.Enabled = False
-    End Sub
     Public Sub DrawConnectedCircles(timePosition1 As Double, timePosition2 As Double)
         Dim circleRadius As Integer = 3
         Dim verticalOffset As Integer = mBar.Height \ 2

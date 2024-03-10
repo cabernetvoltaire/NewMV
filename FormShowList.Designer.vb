@@ -31,12 +31,13 @@ Partial Class FormShowList
         'ListBox1
         '
         Me.ListBox1.AllowDrop = True
+        Me.ListBox1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ListBox1.FormattingEnabled = True
         Me.ListBox1.ItemHeight = 20
-        Me.ListBox1.Location = New System.Drawing.Point(50, 60)
+        Me.ListBox1.Location = New System.Drawing.Point(0, 33)
         Me.ListBox1.Margin = New System.Windows.Forms.Padding(2)
         Me.ListBox1.Name = "ListBox1"
-        Me.ListBox1.Size = New System.Drawing.Size(423, 304)
+        Me.ListBox1.Size = New System.Drawing.Size(655, 342)
         Me.ListBox1.TabIndex = 0
         '
         'MenuStrip1

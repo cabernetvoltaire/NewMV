@@ -36,7 +36,8 @@ Public Class AppSettings
     Public Property FractionalJump As Integer
     Public Property AbsoluteJump As Integer
     Public Property Speed As Integer
-    Public Property Colours As List(Of Color)
+    Public Property StateColours As Color()
+    Public Property ButtonSplit As Integer
 
 
     Public Sub New()
@@ -70,6 +71,9 @@ Public Class AppSettings
         Me.RootScanPath = "Q:\"
         Me.HorSplit = 500
         Me.VertSplit = 500
+        Me.ButtonSplit = 1500
+        Me.StateColours = {Color.Aqua, Color.Orange, Color.LightPink, Color.LightGreen, Color.Tomato, Color.BurlyWood, Color.BlueViolet}
+
 
     End Sub
 End Class

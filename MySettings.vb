@@ -133,7 +133,6 @@ Friend Module Mysettings
             .Add("Favourites" & "$" & CurrentFavesPath)
             .Add("PreviewLinks" & "$" & FormMain.chbPreviewLinks.Checked)
             .Add("RootScanPath" & "$" & Rootpath)
-            .Add("Directories List" & "$" & DirectoriesListFile) 'DirectoriesListFile)
             .Add("GlobalFaves" & "$" & GlobalFavesPath)
             .Add("RandomNextFile" & "$" & FormMain.chbNextFile.Checked)
             .Add("RandomOnDirectoryChange" & "$" & FormMain.chbOnDir.Checked)
